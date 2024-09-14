@@ -9,6 +9,24 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  const handleLogin = () => {
+    // e.preventDefault();
+    // // validate form
+    // if (!email && !password) {
+    //   toast.error("Email dan Password belum diisi");
+    //   return;
+    // } else if (!email) {
+    //   toast.error("Email belum diisi");
+    //   return;
+    // } else if (!password) {
+    //   toast.error("Password belum diisi");
+    //   return;
+    // } else if (password.length < 8) {
+    //   toast.error("Password min 8 karakter!");
+    //   return;
+    // }
+  };
+
   const togglePassword = () => {
     setShowPassword(!showPassword);
   };
@@ -16,10 +34,7 @@ const Login = () => {
   return (
     <div className="flex min-h-screen">
       <div className="w-[100%] lg:w-[50%] flex flex-col justify-center items-center mx-[23px] lg:px-[145px]">
-        <form
-          // onSubmit={}
-          className="w-full"
-        >
+        <form onSubmit={handleLogin} className="w-full">
           <h1 className="text-[24px] font-bold text-blue-800 mb-8 ">Masuk</h1>
           <div className="flex flex-col gap-5">
             <div className="flex flex-col">
