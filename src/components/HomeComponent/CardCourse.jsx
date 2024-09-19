@@ -120,7 +120,7 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
 
     const NextArrow = ({ onClick }) => {
       return (
-          <div className="absolute -right-8 top-1/2 transform -translate-y-1/2 cursor-pointer z-10" onClick={onClick}>
+          <div className="absolute lg:-right-8 hidden lg:block top-1/2 transform -translate-y-1/2 cursor-pointer z-10" onClick={onClick}>
               <FaArrowRight size={24} className="text-color-primary" />
           </div>
       );
@@ -129,7 +129,7 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
   // Custom Prev Arrow
   const PrevArrow = ({ onClick }) => {
       return (
-          <div className="absolute -left-8 top-1/2 transform -translate-y-1/2 cursor-pointer z-10 rounded-full bg-white " onClick={onClick}>
+          <div className="absolute  lg:-left-8 -left-4 hidden lg:block top-1/2 transform -translate-y-1/2 cursor-pointer z-10 rounded-full bg-white " onClick={onClick}>
               <FaArrowLeft size={24} className="text-color-primary" />
           </div>
       );
