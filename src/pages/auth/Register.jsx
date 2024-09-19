@@ -118,7 +118,7 @@ const Register = () => {
                 </div>
               </div>
             </div>
-            <button className=" btn  w-full text-[14px] font-medium bg-blue-800 text-white py-[10px] rounded-2xl mt-5 ">
+            <button className=" btn  w-full text-[14px] font-medium bg-[#0A61AA] text-white py-[10px] rounded-2xl mt-5 ">
               Daftar
             </button>
             <div className="flex justify-center items-center gap-2 mt-6">
@@ -131,7 +131,7 @@ const Register = () => {
         </div>
 
         {/* Gambar Kanan */}
-        <div className="hidden lg:flex justify-center items-center bg-blue-800 w-[50%] min-h-[100dvh]">
+        <div className="hidden lg:flex justify-center items-center bg-[#0A61AA] w-[50%] min-h-[100dvh]">
           <img src="/LOGO.jpg" alt="logo" className="" />
         </div>
       </div>
