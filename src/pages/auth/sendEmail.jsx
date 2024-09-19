@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
-const sendEmail = () => {
-  return (
-    <div>sendEmail</div>
-  )
-}
+const SendEmail = () => {
+  return <div>S</div>;
+};
 
-export default sendEmail
+export default SendEmail;
