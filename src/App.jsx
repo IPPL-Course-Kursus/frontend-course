@@ -4,6 +4,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/auth/Login";
 import ResetPassword from "./pages/auth/ResetPassword";
 import Register from "./pages/auth/Register";
+// import sendEmail from "./pages/auth/sendEmail";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/reset" element={<ResetPassword />} />
+          {/* <Route path="/send-email" element={<sendEmail />} /> */}
 
           {/* NotFound */}
           <Route path="/*" element={<NotFound />} />

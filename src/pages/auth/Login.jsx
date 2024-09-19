@@ -80,7 +80,7 @@ const Login = () => {
               </div>
             </div>
           </div>
-          <button className=" btn  w-full text-[14px] font-medium bg-blue-800 text-white py-[10px] rounded-2xl mt-5 ">
+          <button to= "/"className=" btn  w-full text-[14px] font-medium bg-blue-800 text-white py-[10px] rounded-2xl mt-5 ">
             Masuk
           </button>
           <div className="flex flex-col justify-center items-center gap-2 mt-6">

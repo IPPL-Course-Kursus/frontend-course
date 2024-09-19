@@ -10,7 +10,7 @@ const ResetPassword = () => {
           // onSubmit={}
           className="w-full"
         >
-          <h1 className="text-[24px] font-bold text-blue-800 mb-8 ">Reset Password</h1>
+          <h1 className="text-[24px] font-bold text-blue-800 mb-8 ">Mengirim Email</h1>
           <div className="flex flex-col gap-5">
             <div className="flex flex-col">
               <label className="text-[12px] mb-1 font-Poppins ">Masukkan Email</label>
