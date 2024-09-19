@@ -51,7 +51,7 @@ const Login = () => {
             <div className="flex flex-col text-[12px]">
               <div className="flex justify-between items-center">
                 <label className="mb-[4px]">Password</label>
-                <Link to="/reset">
+                <Link to="/send-email">
                   <span className="text-blue-800 font-Poppins">Lupa Kata Sandi</span>
                 </Link>
               </div>
@@ -80,7 +80,10 @@ const Login = () => {
               </div>
             </div>
           </div>
-          <button to= "/"className=" btn  w-full text-[14px] font-medium bg-blue-800 text-white py-[10px] rounded-2xl mt-5 ">
+          <button
+            to="/"
+            className=" btn  w-full text-[14px] font-medium bg-blue-800 text-white py-[10px] rounded-2xl mt-5 "
+          >
             Masuk
           </button>
           <div className="flex flex-col justify-center items-center gap-2 mt-6">
@@ -95,7 +98,7 @@ const Login = () => {
       </div>
 
       {/* Gambar Kanan */}
-      <div className="hidden lg:flex justify-center items-center bg-blue-800 w-[50%] min-h-[100dvh]">
+      <div className="hidden lg:flex justify-center items-center bg-[#0A61AA] w-[50%] min-h-[100dvh]">
         <img src="/LOGO.jpg" alt="logo" className="" />
       </div>
     </div>

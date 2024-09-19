@@ -5,7 +5,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { FaStar } from "react-icons/fa";
 import { Book, Clock, Gem, Shield } from "lucide-react";
-import ProgressBar from "../MyCourseComponent/ProgressBar";
+import ProgressBar from "../MyCourse/ProgressBar";
+// import ProgressBar from "../MyCourseComponent/ProgressBar";
 
 const CardCourse = () => {
   const [selectCategoryId, setSelectCategoryId] = useState(null);
@@ -151,7 +152,7 @@ const CardCourse = () => {
         </div>
       </div>
       {/* CARD */}
-      <div className="max-w-screen-xl mx-auto px-6 lg:p-0">
+      <div className="max-w-screen-lg mx-auto px-6 lg:p-0">
         <div className="grid mt-2 gap-2 grid-cols-1 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:mt-4">
           {dataKategoriPopular.map((val) => (
             <div
