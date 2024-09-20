@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelas Saya</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Untuk menyembunyikan dan menampilkan konten berdasarkan state */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Header -->
+    <header class="bg-blue-600 p-4 flex justify-between items-center">
+        <div class="text-white font-bold text-lg">LOGO</div>
+        <div class="flex-grow max-w-lg mx-4 relative">
+            <input type="text" placeholder="Find A Course!" class="w-full px-4 py-2 rounded-lg">
+            <button class="absolute right-2 top-2">
+                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="text-white flex items-center">
+            <button class="mr-4">Akun</button>
+            <button>
+                <svg class="w-6 h-6 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content: Flexbox untuk Sidebar dan Konten Utama -->
+    <main class="flex p-8">
+        <!-- Sidebar -->
+        <aside class="w-1/4">
+            <div class="mb-4">
+                <h2 class="font-bold text-lg">Filter</h2>
+                <div>
+                    <label class="block my-2">
+                        <input type="checkbox" class="mr-2"> Paling Baru
+                    </label>
+                    <label class="block my-2">
+                        <input type="checkbox" class="mr-2"> Paling Populer
+                    </label>
+                    <label class="block my-2">
+                        <input type="checkbox" class="mr-2"> Promo
+                    </label>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <h2 class="font-bold text-lg">Kategori</h2>
+                <div>
+                    <label class="block my-2">
+                        <input type="checkbox" class="mr-2"> UI/UX Design
+                    </label>
+                    <label class="block my-2">
+                        <input type="checkbox" class="mr-2" checked> Web Development
+                    </label>
+                    <label class="block my-2">
+                        <input type="checkbox" class="mr-2" checked> Android Development
+                    </label>
+                    <label class="block my-2">
+                        <input type="checkbox" class="mr-2"> Data Science
+                    </label>
+                    <label class="block my-2">
+                        <input type="checkbox" class="mr-2"> Business Intelligence
+                    </label>
+                </div>
+            </div>
+
+            <div>
+                <h2 class="font-bold text-lg">Level Kesulitan</h2>
+                <div>
+                    <label class="block my-2">
+                        <input type="checkbox" class="mr-2"> Beginner Level
+                    </label>
+                    <label class="block my-2">
+                        <input type="checkbox" class="mr-2"> Intermediate Level
+                    </label>
+                    <label class="block my-2">
+                        <input type="checkbox" class="mr-2" checked> Advanced Level
+                    </label>
+                </div>
+            </div>
+
+            <button class="text-red-500 mt-4">Hapus Filter</button>
+        </aside>
+
+        <!-- Konten Utama -->
+        <div class="w-3/4">
+            <!-- Tabs Section (Button Atas Card) -->
+            <div class="flex justify-center my-8">
+                <button class="px-6 py-2 bg-gray-200 text-black rounded-l-lg focus:bg-red-600 focus:text-white">All</button>
+                <button class="px-6 py-2 bg-gray-200 text-black focus:bg-red-600 focus:text-white">In Progress</button>
+                <button class="px-6 py-2 bg-gray-200 text-black rounded-r-lg focus:bg-red-600 focus:text-white">Selesai</button>
+            </div>
+
+            <!-- Cards Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 justify-center">
+                <!-- Card 1 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <img src="https://via.placeholder.com/150" class="w-full" alt="Course Image">
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg">UI/UX Design</h3>
+                        <p class="text-gray-500">Belajar Web Designer dengan Figma</p>
+                        <div class="mt-2 flex items-center">
+                            <span class="bg-green-500 text-white text-xs px-2 py-1 rounded">Intermediate</span>
+                            <span class="ml-4 text-gray-600">10 Modul</span>
+                            <span class="ml-4 text-gray-600">120 Menit</span>
+                        </div>
+                        <div class="relative pt-2 mt-4">
+                            <div class="h-2 rounded-full bg-purple-200">
+                                <div class="w-3/4 h-full bg-purple-500 rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <img src="https://via.placeholder.com/150" class="w-full" alt="Course Image">
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg">Web Development</h3>
+                        <p class="text-gray-500">Belajar Web Developer dengan Laravel</p>
+                        <div class="mt-2 flex items-center">
+                            <span class="bg-green-500 text-white text-xs px-2 py-1 rounded">Intermediate</span>
+                            <span class="ml-4 text-gray-600">10 Modul</span>
+                            <span class="ml-4 text-gray-600">120 Menit</span>
+                        </div>
+                        <div class="relative pt-2 mt-4">
+                            <div class="h-2 rounded-full bg-purple-200">
+                                <div class="w-3/4 h-full bg-purple-500 rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <img src="https://via.placeholder.com/150" class="w-full" alt="Course Image">
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg">Android Development</h3>
+                        <p class="text-gray-500">Belajar Android Developer dengan Kotlin</p>
+                        <div class="mt-2 flex items-center">
+                            <span class="bg-green-500 text-white text-xs px-2 py-1 rounded">Intermediate</span>
+                            <span class="ml-4 text-gray-600">10 Modul</span>
+                            <span class="ml-4 text-gray-600">120 Menit</span>
+                        </div>
+                        <div class="relative pt-2 mt-4">
+                            <div class="h-2 rounded-full bg-purple-200">
+                                <div class="w-3/4 h-full bg-purple-500 rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                    <img src="https://via.placeholder.com/150" class="w-full" alt="Course Image">
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg">Data Science</h3>
+                        <p class="text-gray-500">Belajar Data Science dengan Python</p>
+                        <div class="mt-2 flex items-center">
+                            <span class="bg-green-500 text-white text-xs px-2 py-1 rounded">Intermediate</span>
+                            <span class="ml-4 text-gray-600">10 Modul</span>
+                            <span class="ml-4 text-gray-600">120 Menit</span>
+                        </div>
+                        <div class="relative pt-2 mt-4">
+                            <div class="h-2 rounded-full bg-purple-200">
+                                <div class="w-3/4 h-full bg-purple-500 rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card lainnya di sini... -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Script -->
+    <script>
+        // Event listener untuk tombol "All"
+        document.getElementById('all-btn').addEventListener('click', function() {
+            document.getElementById('all-btn').classList.add('bg-red-600', 'text-white');
+            document.getElementById('in-progress-btn').classList.remove('bg-red-600', 'text-white');
+            document.getElementById('selesai-btn').classList.remove('bg-red-600', 'text-white');
+
+            document.getElementById('all-content').classList.remove('hidden');
+            document.getElementById('in-progress-content').classList.add('hidden');
+            document.getElementById('selesai-content').classList.add('hidden');
+        });
+
+        // Event listener untuk tombol "In Progress"
+        document.getElementById('in-progress-btn').addEventListener('click', function() {
+            document.getElementById('in-progress-btn').classList.add('bg-red-600', 'text-white');
+            document.getElementById('all-btn').classList.remove('bg-red-600', 'text-white');
+            document.getElementById('selesai-btn').classList.remove('bg-red-600', 'text-white');
+
+            document.getElementById('all-content').classList.add('hidden');
+            document.getElementById('in-progress-content').classList.remove('hidden');
+            document.getElementById('selesai-content').classList.add('hidden');
+        });
+
+        // Event listener untuk tombol "Selesai"
+        document.getElementById('selesai-btn').addEventListener('click', function() {
+            document.getElementById('selesai-btn').classList.add('bg-red-600', 'text-white');
+            document.getElementById('all-btn').classList.remove('bg-red-600', 'text-white');
+            document.getElementById('in-progress-btn').classList.remove('bg-red-600', 'text-white');
+
+            document.getElementById('all-content').classList.add('hidden');
+            document.getElementById('in-progress-content').classList.add('hidden');
+            document.getElementById('selesai-content').classList.remove('hidden');
+        });
+
+        
+    </script>
+
+</body>
+</html>
+
