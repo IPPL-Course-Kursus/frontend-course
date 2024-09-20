@@ -1,6 +1,7 @@
 import { Link, NavLink } from "react-router-dom";
 import CardCategory from "../components/HomeComponent/cardCategory";
 import CardCourse from "../components/HomeComponent/CardCourse";
+import CardFree from "../components/HomeComponent/CardFree";
 import imgSection from "../assets/bernadya.svg";
 import profilePic from "../assets/profil.png";
 import { IoIosArrowForward } from "react-icons/io";
@@ -65,7 +66,7 @@ const Home = () => {
                     </div>
                 </div>
             </div>
-            <CardCourse title="Kursus Free" />
+            <CardFree  />
             <div className="w-full h-auto bg-gray-100 py-16 mt-10">
                 <div className="max-w-3xl mx-auto bg-white px-6 lg:px-12 relative">
                     <div className="flex flex-col  items-center lg:flex-row lg:items-center">
