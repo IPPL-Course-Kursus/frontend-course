@@ -18,7 +18,7 @@ const SendEmail = () => {
               <input
                 type="email"
                 className="border text-[14px] w-full p-2 rounded-2xl "
-                placeholder="Contoh: gun@gmail.com"
+                placeholder="Contoh: gunt@gmail.com"
                 value={email}
                 autoComplete="current-email"
                 onChange={(e) => setEmail(e.target.value)}
