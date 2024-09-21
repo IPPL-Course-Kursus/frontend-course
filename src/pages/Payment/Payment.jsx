@@ -28,15 +28,6 @@ const Payment = () => {
     setPaymentMethod("Transfer Bank");
   };
 
-  const datapayment = [
-    {
-      id: 1,
-      name: "UI/UX Design",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: " Saman",
-      img: "https://indi.tech/wp-content/uploads/2022/03/Screenshot-2022-03-24-223956.png",
-    },
-  ];
   return (
     <>
       <div className="h-full bg-[#FFFF] pb-32 md:w-full">
