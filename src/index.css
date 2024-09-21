@@ -1,3 +1,40 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .all-\[unset\] {
+      all: unset;
+    }
+  }
+  
+  :root {
+    --attention: rgba(249, 204, 0, 1);
+    --b-300: rgba(0, 101, 255, 1);
+    --b-500: rgba(0, 62, 156, 1);
+    --background: rgba(243, 247, 251, 1);
+    --base-white: rgba(255, 255, 255, 1);
+    --black: rgba(0, 0, 0, 1);
+    --deep-grey: rgba(138, 138, 138, 1);
+    --heading-font-family: "Montserrat", Helvetica;
+    --heading-font-size: 20px;
+    --heading-font-style: normal;
+    --heading-font-weight: 700;
+    --heading-letter-spacing: 0px;
+    --heading-line-height: 14px;
+    --shadow-high: 0px 0px 10px 0px rgba(0, 0, 0, 0.15);
+    --success: rgba(115, 202, 92, 1);
+    --text-button-font-family: "Montserrat", Helvetica;
+    --text-button-font-size: 16px;
+    --text-button-font-style: normal;
+    --text-button-font-weight: 700;
+    --text-button-letter-spacing: 0px;
+    --text-button-line-height: 24px;
+    --text-font-family: "Montserrat", Helvetica;
+    --text-font-size: 12px;
+    --text-font-style: normal;
+    --text-font-weight: 400;
+    --text-letter-spacing: 0px;
+    --text-line-height: 20px;
+  }
+  
