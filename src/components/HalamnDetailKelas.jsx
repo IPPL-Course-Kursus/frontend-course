@@ -1,4 +1,4 @@
-import React from "react";
+
 import { FiArrowLeft } from "./FiArrowLeft";
 import { FiList } from "./FiList";
 import { FiUser } from "./FiUser";
