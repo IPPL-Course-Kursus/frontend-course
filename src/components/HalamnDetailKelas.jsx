@@ -13,22 +13,6 @@ export const HalamnDetailKelas = () => {
               Tentang Kelas
             </div>
             <div className="flex w-[700px] items-center justify-center gap-[5px] p-[5px] relative flex-[0_0_auto]">
-              <p className="relative flex-1 mt-[-1.00px] [font-family:'Montserrat-SemiBold',Helvetica] font-semibold text-[#000000cc] text-[10px] tracking-[0] leading-6">
-                &nbsp;&nbsp;&nbsp;&nbsp; Design system adalah kumpulan komponen design, code, ataupun dokumentasi yang
-                dapat digunakan sebagai panduan utama yang memunginkan designer serta developer memiliki lebih banyak
-                kontrol atas berbagai platform. Dengan hadirnya design system, dapat menjaga konsistensi tampilan user
-                interface dan meningkatkan user experience menjadi lebih baik. Disisi bisnis, design system sangat
-                berguna dalam menghemat waktu dan biaya ketika mengembangkan suatu produk.
-                <br />
-                &nbsp;&nbsp;&nbsp;&nbsp;Bersama mentor XXX, kita akan mempelajari design system dari mulai manfaat, alur
-                kerja pembuatannya, tools yang digunakan, hingga pada akhirnya, kita akan membuat MVP dari design
-                system. Selain itu, mentor juga akan menjelaskan berbagai resource yang dibutuhkan untuk mencari
-                inspirasi mengenai design system.
-                <br />
-                &nbsp;&nbsp;&nbsp;&nbsp; Kelas ini sesuai untuk Anda yang ingin memahami apa itu design system. Tidak
-                hanya ditujukan untuk UI/UX Designer ataupun Developer, kelas ini sangat sesuai untuk stakeholder lain
-                agar dapat memudahkan tim dalam bekerja sama. Yuk segera daftar dan kami tunggu di kelas ya!
-              </p>
             </div>
             <div className="relative w-[318px] font-heading font-[number:var(--heading-font-weight)] text-black text-[length:var(--heading-font-size)] tracking-[var(--heading-letter-spacing)] leading-[var(--heading-line-height)] [font-style:var(--heading-font-style)]">
               Kelas Ini Ditujukan Untuk
