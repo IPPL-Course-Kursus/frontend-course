@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topik Kelas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Red+Rose:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400&family=Red+Rose:wght@400;700&display=swap');
+        .font-logo {
+            font-family: 'Red Rose', sans-serif;
+        }
+
+        .font-montserrat {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .font-poppins {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .text-primary {
+            color: #0A61AA;
+        }
+
+        .bg-primary {
+            background-color: #0A61AA;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ccc;
+            padding: 5px;
+            border-radius: 5px;
+            width: 100px;
+            position: relative;
+        }
+        .search-container input {
+            border: none;
+            outline: none;
+            flex: 1;
+            padding-left: 10px;
+            padding-right: 50px;
+            height: 35px;
+            font-size: 16px;
+        }
+        .search-icon-container {
+            position: absolute;
+            right: 5px;
+            background-color: #0A61AA;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .search-icon {
+            color: #FFFFFF;
+            font-size: 17.3px;
+        }
+    </style>
+    <title>Find a Search</title>
+</head>
+<body class="bg-blue-50 min-h-[1785px]">
+
+<!-- Bagian Navbar -->
+<nav class="bg-white p-4 shadow-md flex justify-between items-center">
+    <div class="flex items-center">
+        <span class="self-center text-[32px] font-bold" style="font-family: 'Red Rose', sans-serif; color: #0A61AA">LOGO</span>
+            </div>
+
+<!-- Bar pencarian dengan ukuran lebih kecil -->
+    <div class="flex-grow flex justify-center">
+        <div class="w-[400px] h-[40px] border border-black rounded-full relative">
+            <input type="text" placeholder="Find a Course!" class="w-full h-full pl-4 pr-12 text-[12px] font-montserrat leading-[20px]
+            text-[#8A8A8A] focus:outline-none rounded-full">
+                <div class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-[#0A61AA] rounded-full w-[35px] h-[35px] 
+                flex justify-center items-center">
+                    <i class="fas fa-search text-white" style="font-size: 17.3px;"></i>
+                        </div>
+                    </div>
+                </div>
+
+    <div class="flex items-center space-x-4">
+        <i class="fas fa-bars text-[#0A61AA] text-[24px]"></i>
+            <i class="fa-regular fa-user text-[#0A61AA] text-[24px]"></i>
+                <button class="font-montserrat font-bold text-[18px] leading-[24px] text-[#0A61AA]">Akun</button>
+                    </div>
+                        <div class="flex items-center space-x-4 mx-10"></div>
+                    </nav>
+
+<!-- Bagian Katalog Kelas -->
+<section class="text-center bg-white py-12 mt-4">
+    <h1 class="self-center text-[25px] font-semibold" style="font-family: 'Poppins', sans-serif; color:#000000">Katalog Kelas</h1>
+        <h2 class="self-center text-[35px] font-semibold" style="font-family: 'Poppins', sans-serif; color:#000000"
+            >Kelas di Etam Code berbasis Industri</h1>
+                <p class="text-gray-600 max-w-2xl mx-auto font-montserrat">
+                Etam Code menyediakan berbagai macam kelas yang sudah berbasis industri untuk meningkatkan keterampilan digital kamu.
+                    </p>
+                </section>
+
+<!-- Bagian Topik Kelas -->
+<section class="py-8">
+    <div class="flex justify-between items-center">
+        <h3 class="self-center text-[32px] font-bold" style="font-family: 'Red Rose', sans-serif; color: #000000">TOPIK KELAS</h3>
+        <div class="flex-1 flex justify-center">
+            <div class="flex space-x-4">
+                <button class="bg-blue-600 text-white px-4 py-2 rounded-full font-montserrat font-bold text-[12px]">All</button>
+                <button class="bg-gray-200 text-black px-4 py-2 rounded-full font-montserrat font-bold text-[12px]">Kelas Berbayar</button>
+                <button class="bg-gray-200 text-black px-4 py-2 rounded-full font-montserrat font-bold text-[12px]">Kelas Gratis</button>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
