@@ -6,6 +6,7 @@ import ResetPassword from "./pages/auth/ResetPassword";
 import Register from "./pages/auth/Register";
 import SendEmail from "./pages/auth/sendEmail";
 import { HalamnDetailKelas } from "./components/HalamnDetailKelas";
+import Payment from "./pages/Payment/Payment";
 // import sendEmail from "./pages/auth/sendEmail";
 
 function App() {
@@ -19,10 +20,13 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/reset" element={<ResetPassword />} />
-          {/* <Route path="/send-email" element={<sendEmail />} /> */}
-          <Route path="send-email" element={<SendEmail/>} />
+
+          <Route path="send-email" element={<SendEmail />} />
           {/* Rute ke halaman detail kelas */}
           <Route path="/detail-kelas" element={<HalamnDetailKelas />} />
+
+          {/* Paymnent */}
+          <Route path="/payment" element={<Payment />} />
 
           {/* NotFound */}
           <Route path="/*" element={<NotFound />} />

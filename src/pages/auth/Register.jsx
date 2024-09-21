@@ -9,6 +9,8 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [Negara, setNegara] = useState("");
+  const [kota, setKota] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async () => {
@@ -80,6 +82,44 @@ const Register = () => {
                   type="text"
                   className="border w-full p-2 rounded-2xl"
                   placeholder="+62"
+                  value={phone}
+                  autoComplete="tel"
+                  onChange={(e) => {
+                    const input = e.target.value;
+                    if (validatePhoneInput(input)) {
+                      setPhone(input);
+                    }
+                  }}
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-[12px] mb-[4px] font-Poppins">Negara</label>
+                <input
+                  type="text"
+                  className="border w-full p-2 rounded-2xl"
+                  placeholder="Negara"
+                  value={Negara}
+                  autoComplete=""
+                  onChange={(e) => setNegara(e.target.value)}
+                />a
+              </div>
+              <div className="flex flex-col">
+                <label className="text-[12px] mb-[4px] font-Poppins">Kota</label>
+                <input
+                  type="text"
+                  className="border w-full p-2 rounded-2xl"
+                  placeholder="Kota"
+                  value={kota}
+                  autoComplete="tel"
+                  onChange={(e) => setKota(e.target.value)}
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-[12px] mb-[4px] font-Poppins">Tanggal Lahir</label>
+                <input
+                  type="date"
+                  className="border w-full p-2 rounded-2xl"
+                  // placeholder=""
                   value={phone}
                   autoComplete="tel"
                   onChange={(e) => {

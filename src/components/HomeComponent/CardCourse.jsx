@@ -44,41 +44,41 @@ const CardCourse = () => {
       instruktur: " Lana",
       img: "https://niagaspace.sgp1.digitaloceanspaces.com/blog/wp-content/uploads/2023/04/03075503/salah-satu-langkah-dalam-cara-menjadi-web-developer-adalah-mempelajari-bahasa-untuk-coding-1024x792.webp",
     },
-    {
-      id: 4,
-      name: "Android Development",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: "Alim",
-      img: "https://developer.android.com/static/images/social/android-developers.png?hl=id",
-    },
-    {
-      id: 5,
-      name: "iOS Development",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: "Rywota",
-      img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjg9e0Catb89J5lz6qcpVGmISSa-3ITiJKaA&s",
-    },
-    {
-      id: 6,
-      name: "Data Science",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: "Alex",
-      img: "https://www.solulab.com/wp-content/uploads/2024/09/Data-Science-Development-Company.jpg",
-    },
-    {
-      id: 7,
-      name: "Machine Learning",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: "Helmi",
-      img: "https://itbox.id/wp-content/uploads/2023/03/Machine-Learning.jpeg",
-    },
-    {
-      id: 8,
-      name: "Cybersecurity",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: "Arwin",
-      img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsh3n29Iw5iVmWbLRoDJPkilEDOlJks8JNMg&s",
-    },
+  //   {
+  //     id: 4,
+  //     name: "Android Development",
+  //     overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
+  //     instruktur: "Alim",
+  //     img: "https://developer.android.com/static/images/social/android-developers.png?hl=id",
+  //   },
+  //   {
+  //     id: 5,
+  //     name: "iOS Development",
+  //     overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
+  //     instruktur: "Rywota",
+  //     img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjg9e0Catb89J5lz6qcpVGmISSa-3ITiJKaA&s",
+  //   },
+  //   {
+  //     id: 6,
+  //     name: "Data Science",
+  //     overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
+  //     instruktur: "Alex",
+  //     img: "https://www.solulab.com/wp-content/uploads/2024/09/Data-Science-Development-Company.jpg",
+  //   },
+  //   {
+  //     id: 7,
+  //     name: "Machine Learning",
+  //     overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
+  //     instruktur: "Helmi",
+  //     img: "https://itbox.id/wp-content/uploads/2023/03/Machine-Learning.jpeg",
+  //   },
+  //   {
+  //     id: 8,
+  //     name: "Cybersecurity",
+  //     overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
+  //     instruktur: "Arwin",
+  //     img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsh3n29Iw5iVmWbLRoDJPkilEDOlJks8JNMg&s",
+  //   },
   ];
 
   const settings = {
@@ -153,12 +153,11 @@ const CardCourse = () => {
       </div>
       {/* CARD */}
       <div className="max-w-screen-lg mx-auto px-6 lg:p-0">
-        <div className="grid mt-2 gap-2 grid-cols-1 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:mt-4">
+        <div className="grid mt-2 gap-2 grid-cols-1 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:mt-">
           {dataKategoriPopular.map((val) => (
             <div
               key={val.id}
-              className="w-full mt-3 my-2 bg-white shadow-xl rounded-xl overflow-hidden pb-3"
-            >
+              className="w-full mt-3 my-2 bg-white shadow-xl rounded-xl overflow-hidden pb-3">
               <div className="flex flex-col">
                 <div>
                   <img

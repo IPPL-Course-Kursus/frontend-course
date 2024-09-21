@@ -1,4 +1,3 @@
-import React from "react";
 import { FiArrowLeft } from "./FiArrowLeft";
 import { FiList } from "./FiList";
 import { FiUser } from "./FiUser";
@@ -14,20 +13,22 @@ export const HalamnDetailKelas = () => {
             </div>
             <div className="flex w-[700px] items-center justify-center gap-[5px] p-[5px] relative flex-[0_0_auto]">
               <p className="relative flex-1 mt-[-1.00px] [font-family:'Montserrat-SemiBold',Helvetica] font-semibold text-[#000000cc] text-[10px] tracking-[0] leading-6">
-                &nbsp;&nbsp;&nbsp;&nbsp; Design system adalah kumpulan komponen design, code, ataupun dokumentasi yang
-                dapat digunakan sebagai panduan utama yang memunginkan designer serta developer memiliki lebih banyak
-                kontrol atas berbagai platform. Dengan hadirnya design system, dapat menjaga konsistensi tampilan user
-                interface dan meningkatkan user experience menjadi lebih baik. Disisi bisnis, design system sangat
+                &nbsp;&nbsp;&nbsp;&nbsp; Design system adalah kumpulan komponen design, code,
+                ataupun dokumentasi yang dapat digunakan sebagai panduan utama yang memunginkan
+                designer serta developer memiliki lebih banyak kontrol atas berbagai platform.
+                Dengan hadirnya design system, dapat menjaga konsistensi tampilan user interface dan
+                meningkatkan user experience menjadi lebih baik. Disisi bisnis, design system sangat
                 berguna dalam menghemat waktu dan biaya ketika mengembangkan suatu produk.
                 <br />
-                &nbsp;&nbsp;&nbsp;&nbsp;Bersama mentor XXX, kita akan mempelajari design system dari mulai manfaat, alur
-                kerja pembuatannya, tools yang digunakan, hingga pada akhirnya, kita akan membuat MVP dari design
-                system. Selain itu, mentor juga akan menjelaskan berbagai resource yang dibutuhkan untuk mencari
-                inspirasi mengenai design system.
+                &nbsp;&nbsp;&nbsp;&nbsp;Bersama mentor XXX, kita akan mempelajari design system dari
+                mulai manfaat, alur kerja pembuatannya, tools yang digunakan, hingga pada akhirnya,
+                kita akan membuat MVP dari design system. Selain itu, mentor juga akan menjelaskan
+                berbagai resource yang dibutuhkan untuk mencari inspirasi mengenai design system.
                 <br />
-                &nbsp;&nbsp;&nbsp;&nbsp; Kelas ini sesuai untuk Anda yang ingin memahami apa itu design system. Tidak
-                hanya ditujukan untuk UI/UX Designer ataupun Developer, kelas ini sangat sesuai untuk stakeholder lain
-                agar dapat memudahkan tim dalam bekerja sama. Yuk segera daftar dan kami tunggu di kelas ya!
+                &nbsp;&nbsp;&nbsp;&nbsp; Kelas ini sesuai untuk Anda yang ingin memahami apa itu
+                design system. Tidak hanya ditujukan untuk UI/UX Designer ataupun Developer, kelas
+                ini sangat sesuai untuk stakeholder lain agar dapat memudahkan tim dalam bekerja
+                sama. Yuk segera daftar dan kami tunggu di kelas ya!
               </p>
             </div>
             <div className="relative w-[318px] font-heading font-[number:var(--heading-font-weight)] text-black text-[length:var(--heading-font-size)] tracking-[var(--heading-letter-spacing)] leading-[var(--heading-line-height)] [font-style:var(--heading-font-style)]">
@@ -131,7 +132,11 @@ export const HalamnDetailKelas = () => {
                 <div className="absolute w-[97px] h-[97px] top-[73px] left-[305px]">
                   <div className="h-[97px]">
                     <div className="relative w-[97px] h-[97px] bg-b-500 rounded-[48.68px] border-[10px] border-solid border-b-300">
-                      <img className="absolute w-[45px] h-[50px] top-3.5 left-[23px]" alt="Vector" src="vector.svg" />
+                      <img
+                        className="absolute w-[45px] h-[50px] top-3.5 left-[23px]"
+                        alt="Vector"
+                        src="vector.svg"
+                      />
                     </div>
                   </div>
                 </div>
@@ -153,13 +158,16 @@ export const HalamnDetailKelas = () => {
           </div>
         </div>
         <div className="fixed w-full h-[100px] top-0 left-0 bg-b-500 shadow-shadow-high">
-
           <div className="flex w-[526px] items-center gap-4 px-6 py-3 absolute top-[18px] left-[264px] bg-base-white rounded-2xl">
             <div className="relative flex-1 font-text font-[number:var(--text-font-weight)] text-deep-grey text-[length:var(--text-font-size)] tracking-[var(--text-letter-spacing)] leading-[var(--text-line-height)] [font-style:var(--text-font-style)]">
               &nbsp;&nbsp;&nbsp;&nbsp;Cari Kursus terbaik....
             </div>
             <div className="relative w-[38px] h-[38px] bg-b-500 rounded-[10px]">
-              <img className="absolute w-6 h-6 top-[7px] left-[7px]" alt="Bx search alt" src="bx-search-alt.svg" />
+              <img
+                className="absolute w-6 h-6 top-[7px] left-[7px]"
+                alt="Bx search alt"
+                src="bx-search-alt.svg"
+              />
             </div>
           </div>
           <div className="absolute top-[30px] left-[51px] [font-family:'Red_Rose-Bold',Helvetica] font-bold text-background text-[32px] tracking-[0] leading-9 whitespace-nowrap">
