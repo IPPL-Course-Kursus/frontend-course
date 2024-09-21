@@ -40,7 +40,7 @@ const Payment = () => {
           </div>
           <div className="w-[80%] mx-auto">
             <div className="bg-[#FF0000] text-white text-center my-14 py-2 rounded-xl md:py-4 md:text-xl">
-              Selesaikan Pembayaran sebelum 10 Maret 2023 12:00
+              Selesaikan Pembayaran sebelum 10 Maret 2023 00:00
             </div>
           </div>
           <form onSubmit={handleTransaction}>
