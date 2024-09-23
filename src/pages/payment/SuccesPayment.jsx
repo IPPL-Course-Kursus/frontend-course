@@ -9,7 +9,7 @@ const SuccesPayment = () => {
       </div>
       <div className="text-center">
         <h1 className="text-3xl md:text-4xl font-bold text-blue-600 mb-4">Selamat!</h1>
-        <img src="image-2.png" alt="Confirmation Image" className="mx-auto mb-8 max-w-full h-auto" />
+        <img src="/images/image-2.png" alt="Confirmation Image" className="mx-auto mb-8 max-w-full h-auto" />
         <p className="text-gray-600 mb-4">Transaksi pembayaran kelas premium berhasil!</p>
         <p className="text-gray-600 mb-14">E-receipt telah dikirimkan ke email.</p>
         <div className="flex flex-col items-center space-y-4">
