@@ -74,7 +74,7 @@ export const HalamnDetailKelas = () => {
             <br />
             Perencanaan Peluncuran Produk
           </p>
-          <p className="absolute w-[679px] top-[1174px] left-0.5 [font-family:'Montserrat-Medium',Helvetica] font-medium text-[10px] text-black tracking-[0] leading-6">
+          <p className="absolute w-[679px] top-[1174px]  left-0.5 [font-family:'Montserrat-Medium',Helvetica] font-medium text-[10px] text-black tracking-[0] leading-6">
             Chapter 3 - Manajemen Produk Lanjutan
             <br />
             Pengelolaan Siklus Hidup Produk
