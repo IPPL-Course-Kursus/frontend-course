@@ -1,45 +1,80 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import {
+  // useEffect,
+  useState,
+} from "react";
+import {
+  Link,
+  useNavigate,
+
+  // , useNavigate
+} from "react-router-dom";
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
+
+import { register } from "../../redux/actions/AuthActions";
+import { useDispatch } from "react-redux";
+// import { collection, getDocs } from "firebase/firestore";
+// import { auth, db } from "../../config/firebase"; // Adjust the path as necessary
+
+// import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+// import { doc, setDoc } from "firebase/firestore";
+
 // import toast, { Toaster } from "react-hot-toast";
 
 const Register = () => {
-  const [name, setName] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [Negara, setNegara] = useState("");
-  const [kota, setKota] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [country, setCountry] = useState("");
+  const [city, setCity] = useState("");
+  const [tanggalLahir, setTanggalLahir] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = async () => {
-    // masih error bagian alert
-    // e.preventDefault();
-    // if (!name && !email && !phone && !password) {
-    //   toast.error("Semua Form Harus Diisi");
-    //   return;
-    // } else if (name == "") {
-    //   toast.error("Nama Masih Kosong");
-    //   return;
-    // } else if (email == "") {
-    //   toast.error("Email Masih Kosong");
-    // } else if (phone === "") {
-    //   toast.error("Nomor Telepon masih kosong");
-    //   return;
-    // } else if (password === "") {
-    //   toast.error("Password masih kosong");
-    //   return;
-    // } else if (password.length < 8) {
-    //   toast.error("Password min 8 karakter!");
-    //   return;
-    // } else if (!/[A-Z]/.test(password)) {
-    //   toast.error("Password harus memiliki setidaknya satu huruf besar");
-    //   return;
-    // } else if (!/[0-9]/.test(password)) {
-    //   toast.error("Password harus memiliki setidaknya satu angka");
-    //   return;
-    // }
+  const handleRegister = async (event) => {
+    event.preventDefault();
+    //   createUserWithEmailAndPassword(auth, email, password)
+    //     .then((userCredential) => {
+    //       console.log(userCredential);
+    //       const user = userCredential.user;
+    //       console.log(user);
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
+    //   // if (!name && !email && !phone && !password) {
+    //   //   toast.error("Semua Form Harus Diisi");
+    //   //   return;
+    //   // } else if (name == "") {
+    //   //   toast.error("Nama Masih Kosong");
+    //   //   return;
+    //   // } else if (email == "") {
+    //   //   toast.error("Email Masih Kosong");
+    //   // } else if (phone === "") {
+    //   //   toast.error("Nomor Telepon masih kosong");
+    //   //   return;
+    //   // } else if (password === "") {
+    //   //   toast.error("Password masih kosong");
+    //   //   return;
+    //   // } else if (password.length < 8) {
+    //   //   toast.error("Password min 8 karakter!");
+    //   //   return;
+    //   // } else if (!/[A-Z]/.test(password)) {
+    //   //   toast.error("Password harus memiliki setidaknya satu huruf besar");
+    //   //   return;
+    //   // } else if (!/[0-9]/.test(password)) {
+    //   //   toast.error("Password harus memiliki setidaknya satu angka");
+    //   //   return;
+    //   // }
+    console.log("Email:", email);
+    console.log("lahir", tanggalLahir);
+
+    dispatch(
+      register(email, password, fullName, phoneNumber, country, city, tanggalLahir, navigate)
+    );
   };
 
   const validatePhoneInput = (input) => {
@@ -49,95 +84,98 @@ const Register = () => {
   const togglePassword = () => {
     setShowPassword(!showPassword);
   };
+
   return (
     <>
       <div className="flex min-h-screen">
         <div className="w-[100%] lg:w-[50%] flex flex-col justify-center items-center mx-[23px] lg:px-[145px]">
-          <form onSubmit={handleSubmit} className="w-full">
+          <form onSubmit={handleRegister} className="w-full">
             <h1 className="text-[24px] font-bold text-blue-800 mb-8 ">DAFTAR</h1>
             <div className="flex flex-col gap-5">
               <div className="flex flex-col">
-                <label className="text-[12px] mb-[4px] font-Poppins ">name</label>
+                <label className="text-[16px] mb-[4px] font-semibold font-Poppins ">name</label>
                 <input
                   type="text"
-                  className="border w-full p-2 rounded-2xl"
+                  className="border shadow-sm w-full p-2 rounded-xl"
                   placeholder="Nama Lengkap"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
                 />
               </div>
               <div className="flex flex-col">
-                <label className="text-[12px] mb-[4px] font-Poppins ">Email</label>
+                <label className="text-[16px] mb-[4px] font-semibold font-Poppins ">Email</label>
                 <input
                   type="email"
-                  className="border w-full p-2 rounded-2xl"
+                  className="border shadow-sm w-full p-2 rounded-xl"
                   placeholder="Contoh: Guntur@mail.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div className="flex flex-col">
-                <label className="text-[12px] mb-[4px] font-Poppins">No Telepon</label>
+                <label className="text-[16px] mb-[4px] font-semibold font-Poppins">
+                  No Telepon
+                </label>
                 <input
                   type="text"
-                  className="border w-full p-2 rounded-2xl"
+                  className="border shadow-sm w-full p-2 rounded-xl"
                   placeholder="+62"
-                  value={phone}
+                  value={phoneNumber}
                   autoComplete="tel"
                   onChange={(e) => {
                     const input = e.target.value;
                     if (validatePhoneInput(input)) {
-                      setPhone(input);
+                      setPhoneNumber(input);
                     }
                   }}
                 />
               </div>
               <div className="flex flex-col">
-                <label className="text-[12px] mb-[4px] font-Poppins">Negara</label>
+                <label className="ttext-[16px] mb-[4px] font-semibold font-Poppins">Negara</label>
                 <input
                   type="text"
-                  className="border w-full p-2 rounded-2xl"
+                  className="border shadow-sm w-full p-2 rounded-xl"
                   placeholder="Negara"
-                  value={Negara}
+                  value={country}
                   autoComplete=""
-                  onChange={(e) => setNegara(e.target.value)}
-                />a
-              </div>
-              <div className="flex flex-col">
-                <label className="text-[12px] mb-[4px] font-Poppins">Kota</label>
-                <input
-                  type="text"
-                  className="border w-full p-2 rounded-2xl"
-                  placeholder="Kota"
-                  value={kota}
-                  autoComplete="tel"
-                  onChange={(e) => setKota(e.target.value)}
+                  onChange={(e) => setCountry(e.target.value)}
                 />
               </div>
               <div className="flex flex-col">
-                <label className="text-[12px] mb-[4px] font-Poppins">Tanggal Lahir</label>
+                <label className="text-[16px] mb-[4px] font-semibold font-Poppins">Kota</label>
+                <input
+                  type="text"
+                  className="border shadow-sm w-full p-2 rounded-xl"
+                  placeholder="Kota"
+                  value={city}
+                  autoComplete="tel"
+                  onChange={(e) => setCity(e.target.value)}
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="text-[16px] mb-[4px] font-semibold font-Poppins">
+                  Tanggal Lahir
+                </label>
                 <input
                   type="date"
-                  className="border w-full p-2 rounded-2xl"
+                  className="border shadow-sm w-full p-2 rounded-xl"
                   // placeholder=""
-                  value={phone}
-                  autoComplete="tel"
-                  onChange={(e) => {
-                    const input = e.target.value;
-                    if (validatePhoneInput(input)) {
-                      setPhone(input);
-                    }
-                  }}
+                  value={tanggalLahir}
+                  autoComplete=""
+                  // onChange={handleDateChange}
+                  onChange={(e) => setTanggalLahir(e.target.value)}
                 />
               </div>
               <div className="flex flex-col">
                 <div className="flex justify-between items-center">
-                  <label className="text-[12px] mb-[4px] font-Poppins">Buat Password</label>
+                  <label className="text-[16px] mb-[4px] font-semibold font-Poppins">
+                    Buat Password
+                  </label>
                 </div>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
-                    className="border w-full p-2 rounded-2xl pr-[3.5rem]"
+                    className="border shadow-sm w-full p-2 rounded-xl pr-[3.5rem]"
                     placeholder="Masukkan Password"
                     value={password}
                     autoComplete="current-password"
@@ -158,7 +196,10 @@ const Register = () => {
                 </div>
               </div>
             </div>
-            <button className=" btn  w-full text-[14px] font-medium bg-[#0A61AA] text-white py-[10px] rounded-2xl mt-5 ">
+            <button
+              className=" btn  w-full text-[14px] font-medium bg-[#0A61AA] text-white py-[10px] rounded-2xl mt-5 "
+              type="submit"
+            >
               Daftar
             </button>
             <div className="flex justify-center items-center gap-2 mt-6">

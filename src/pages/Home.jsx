@@ -7,6 +7,7 @@ import profilePic from "../assets/profil.png";
 import { IoIosArrowForward } from "react-icons/io";
 import 'swiper/css';
 import 'swiper/css/navigation';
+import Footer from "../components/Footer";
 
 const Home = () => {
     return (
@@ -94,12 +95,13 @@ const Home = () => {
                                 <p className="text-gray-500 ml-10">Mahasiswa</p>
                             </div>
                         </div>
-                            <div className="relative mt-10 lg:absolute -right-0 lg:-right-6 w-14 h-14 bg-neutral rounded-full">
+                            <div className="relative mt-10 lg:absolute -right-0 lg:-right-6 w-12 h-12 bg-neutral rounded-full">
                               <IoIosArrowForward className="w-10 h-10 text-white absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2"/>
                             </div>
                     </div>
                 </div>
             </div>
+            <Footer/>
         </>
     );
 };
