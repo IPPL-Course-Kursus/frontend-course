@@ -1,26 +1,24 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react';
 
-const SuccessPage = () => {
+const SuccesPayment = () => {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+    <main className="max-w-sm md:max-w-5xl mx-auto mt-10 p-4">
+      <div className="bg-green-500 text-white p-2 rounded-lg text-center font-semibold mb-14">
+        Terimakasih atas pembayaran transaksi
+      </div>
       <div className="text-center">
-        <div className="mb-4 text-sm font-semibold bg-green-500 text-white py-2 px-4 rounded-full">
-          Terimakasih atas pembayaran transaksi
-        </div>
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-blue-800">Selamat!</h1>
-          <p className="text-base text-gray-700">Transaksi pembayaran kelas premium berhasil!</p>
-          <p className="text-base text-gray-700">E-receipt telah dikirimkan ke email.</p>
-        </div>
-        <img src="path_to_success_image.png" alt="Success" className="mb-6"/>
-        <div className="space-y-4">
-          <button className="bg-blue-600 text-white py-2 px-8 rounded-full">Mulai Belajar</button>
-          <button className="bg-blue-500 text-white py-2 px-8 rounded-full">Kembali ke Beranda</button>
+        <h1 className="text-3xl md:text-4xl font-bold text-blue-600 mb-4">Selamat!</h1>
+        <img src="image-2.png" alt="Confirmation Image" className="mx-auto mb-8 max-w-full h-auto" />
+        <p className="text-gray-600 mb-4">Transaksi pembayaran kelas premium berhasil!</p>
+        <p className="text-gray-600 mb-14">E-receipt telah dikirimkan ke email.</p>
+        <div className="flex flex-col items-center space-y-4">
+          <a href="#" className="bg-blue-600 text-white py-2 px-32 rounded-full font-bold inline-block">Mulai Belajar</a>
+          <a href="#" className="text-blue-600 font-semibold">Kembali ke Beranda</a>
         </div>
       </div>
-    </div>
+    </main>
   );
-}
+};
 
-export default SuccessPage;
+export default SuccesPayment;
