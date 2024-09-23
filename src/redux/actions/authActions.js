@@ -11,7 +11,6 @@ export const login = (email, password, navigate) => async (dispatch) => {
       password,
     });
 
-    // Destructure the response data
     const { success, message, data } = response.data;
     console.log(response.data);
 

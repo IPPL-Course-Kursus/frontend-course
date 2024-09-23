@@ -5,40 +5,55 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
-import { useDispatch } from "react-redux";
-import { login } from "../../redux/actions/AuthActions";
+import { signInWithEmailAndPassword } from "firebase/auth/cordova";
 // import { signInWithEmailAndPassword } from "firebase/auth";
-// import { auth } from "../../config/firebase";
+import { auth } from "../../config/firebase";
+// import { login } from "../../redux/actions/AuthActions";
 
 // import { login } from "../../redux/actions/AuthActions";
 
 const Login = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = (event) => {
-    event.preventDefault();
-    // // validate form
-    // if (!email && !password) {
-    //   toast.error("Email dan Password belum diisi");
-    //   return;
-    // } else if (!email) {
-    //   toast.error("Email belum diisi");
-    //   return;
-    // } else if (!password) {
-    //   toast.error("Password belum diisi");
-    //   return;
-    // } else if (password.length < 8) {
-    //   toast.error("Password min 8 karakter!");
-    //   return;
-    // }
-    // dispatch(login(email, password, navigate));
-    dispatch(login(email, password, navigate));
+  // const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      console.log("Logged in user:", user);
+      alert("Login successful!");
+      navigate("/"); // Redirect to home or desired page after login
+    } catch (error) {
+      console.error("Error during login:", error.message);
+      alert("Login failed. Please check your email and password.");
+    }
   };
+
+  // const handleLogin = () => {
+  //   // e.preventDefault();
+  //   // // validate form
+  //   // if (!email && !password) {
+  //   //   toast.error("Email dan Password belum diisi");
+  //   //   return;
+  //   // } else if (!email) {
+  //   //   toast.error("Email belum diisi");
+  //   //   return;
+  //   // } else if (!password) {
+  //   //   toast.error("Password belum diisi");
+  //   //   return;
+  //   // } else if (password.length < 8) {
+  //   //   toast.error("Password min 8 karakter!");
+  //   //   return;
+  //   // }
+  //   // dispatch(login(email, password, navigate));
+  // };
 
   const togglePassword = () => {
     setShowPassword(!showPassword);
@@ -52,12 +67,10 @@ const Login = () => {
             <h1 className="text-[24px] font-bold text-blue-800 mb-8 ">Masuk</h1>
             <div className="flex flex-col gap-5">
               <div className="flex flex-col">
-                <label className="text-[16px] mb-[4px] font-semibold font-Poppins">
-                  Email/No Telepon
-                </label>
+                <label className="text-[12px] mb-1 font-Poppins ">Email/No Telepon</label>
                 <input
                   type="email"
-                  className="border shadow-sm text-[14px] w-full p-2 rounded-xl "
+                  className="border shadow-sm w-full p-2 rounded-xl "
                   placeholder="Contoh: gun@gmail.com"
                   value={email}
                   autoComplete="current-email"
@@ -66,17 +79,15 @@ const Login = () => {
               </div>
               <div className="flex flex-col text-[12px]">
                 <div className="flex justify-between items-center">
-                  <label className="mb-[4px] text-[16px] font-semibold">Password</label>
+                  <label className="mb-[4px]">Password</label>
                   <Link to="/send-email">
-                    <span className="text-blue-800 font-Poppins text-[13px] font-semibold">
-                      Lupa Kata Sandi
-                    </span>
+                    <span className="text-blue-800 font-Poppins">Lupa Kata Sandi</span>
                   </Link>
                 </div>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
-                    className="border shadow-sm text-[14px] w-full p-2 rounded-xl "
+                    className="border shadow-sm w-full p-2 rounded-xl "
                     placeholder="Masukkan password"
                     value={password}
                     autoComplete="current-password"
@@ -99,6 +110,7 @@ const Login = () => {
               </div>
             </div>
             <button
+              to="/"
               className=" btn  w-full text-[14px] font-medium bg-blue-800 text-white py-[10px] rounded-2xl mt-5 "
               type="submit"
             >
