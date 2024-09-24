@@ -1,5 +1,4 @@
-
-const RiwayatPembayaran = () => {
+const UbahPassword = () => {
     return (
       <div>
         <h2>Ini adalah halaman Ubah Password</h2>
@@ -7,5 +6,4 @@ const RiwayatPembayaran = () => {
     );
   };
   
-  export default RiwayatPembayaran;
-  
+  export default UbahPassword;
