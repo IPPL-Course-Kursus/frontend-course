@@ -1,25 +1,9 @@
-import {
-  // useEffect,
-  useState,
-} from "react";
-import {
-  Link,
-  useNavigate,
-
-  // , useNavigate
-} from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
-
-import { register } from "../../redux/actions/AuthActions";
 import { useDispatch } from "react-redux";
-// import { collection, getDocs } from "firebase/firestore";
-// import { auth, db } from "../../config/firebase"; // Adjust the path as necessary
-
-// import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
-// import { doc, setDoc } from "firebase/firestore";
-
-// import toast, { Toaster } from "react-hot-toast";
+import { register } from "../../redux/actions/authActions";
 
 const Register = () => {
   const dispatch = useDispatch();
@@ -34,8 +18,8 @@ const Register = () => {
   const [tanggalLahir, setTanggalLahir] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleRegister = async (event) => {
-    event.preventDefault();
+  const handleRegister = async (e) => {
+    e.preventDefault();
     //   createUserWithEmailAndPassword(auth, email, password)
     //     .then((userCredential) => {
     //       console.log(userCredential);

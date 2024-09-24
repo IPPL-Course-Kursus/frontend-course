@@ -5,9 +5,9 @@ import Login from "./pages/auth/Login";
 import ResetPassword from "./pages/auth/ResetPassword";
 import Register from "./pages/auth/Register";
 import SendEmail from "./pages/auth/sendEmail";
-import { DetailKelas } from "./pages/kelas/DetailKelas"
-import SuccessPage from "./pages/payment/SuccesPayment";
-import PaymentPage from "./pages/payment/PaymentPage";
+import SuccessPage from "./pages/Payment/SuccesPayment";
+import PaymentPage from "./pages/Payment/PaymentPage";
+import DetailKelas from "./pages/Detail/DetailKelas";
 
 // import sendEmail from "./pages/auth/sendEmail";
 
@@ -24,7 +24,7 @@ function App() {
           <Route path="/reset" element={<ResetPassword />} />
 
           <Route path="send-email" element={<SendEmail />} />
-          
+
           {/* route detail kelas */}
           <Route path="/detail_kelas" element={<DetailKelas />} />
 
