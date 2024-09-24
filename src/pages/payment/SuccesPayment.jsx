@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react';
 
-const SuccesPayment = () => {
+const SuccessPayment = () => {
   return (
     <main className="max-w-sm md:max-w-5xl mx-auto mt-10 p-4">
       <div className="bg-green-500 text-white p-2 rounded-lg text-center font-semibold mb-14">
@@ -21,4 +21,4 @@ const SuccesPayment = () => {
   );
 };
 
-export default SuccesPayment;
+export default SuccessPayment;

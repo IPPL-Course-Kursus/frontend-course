@@ -96,7 +96,7 @@ const Home = () => {
                             </div>
                         </div>
                             <div className="relative mt-10 lg:absolute -right-0 lg:-right-6 w-12 h-12 bg-neutral rounded-full">
-                              <IoIosArrowForward className="w-10 h-10 text-white absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2"/>
+                            <IoIosArrowForward className="w-10 h-10 text-white absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2"/>
                             </div>
                     </div>
                 </div>
