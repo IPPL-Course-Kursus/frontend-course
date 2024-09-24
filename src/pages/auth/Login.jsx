@@ -5,55 +5,51 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
-import { signInWithEmailAndPassword } from "firebase/auth/cordova";
-// import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../config/firebase";
-// import { login } from "../../redux/actions/AuthActions";
-
-// import { login } from "../../redux/actions/AuthActions";
+import { useDispatch } from "react-redux";
+import { login } from "../../redux/actions/authActions";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  // const handleLogin = async (e) => {
+  //   e.preventDefault();
 
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+  //   try {
+  //     const userCredential = await signInWithEmailAndPassword(auth, email, password);
+  //     const user = userCredential.user;
 
-      console.log("Logged in user:", user);
-      alert("Login successful!");
-      navigate("/"); // Redirect to home or desired page after login
-    } catch (error) {
-      console.error("Error during login:", error.message);
-      alert("Login failed. Please check your email and password.");
-    }
-  };
-
-  // const handleLogin = () => {
-  //   // e.preventDefault();
-  //   // // validate form
-  //   // if (!email && !password) {
-  //   //   toast.error("Email dan Password belum diisi");
-  //   //   return;
-  //   // } else if (!email) {
-  //   //   toast.error("Email belum diisi");
-  //   //   return;
-  //   // } else if (!password) {
-  //   //   toast.error("Password belum diisi");
-  //   //   return;
-  //   // } else if (password.length < 8) {
-  //   //   toast.error("Password min 8 karakter!");
-  //   //   return;
-  //   // }
-  //   // dispatch(login(email, password, navigate));
+  //     console.log("Logged in user:", user);
+  //     alert("Login successful!");
+  //     navigate("/"); // Redirect to home or desired page after login
+  //   } catch (error) {
+  //     console.error("Error during login:", error.message);
+  //     alert("Login failed. Please check your email and password.");
+  //   }
   // };
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    // Validasi form
+    // if (!email && !password) {
+    //   toast.error("Email dan Password belum diisi");
+    //   return;
+    // } else if (!email) {
+    //   toast.error("Email belum diisi");
+    //   return;
+    // } else if (!password) {
+    //   toast.error("Password belum diisi");
+    //   return;
+    // } else if (password.length < 8) {
+    //   toast.error("Password min 8 karakter!");
+    //   return;
+    // }
+    dispatch(login(email, password, navigate));
+  };
 
   const togglePassword = () => {
     setShowPassword(!showPassword);
