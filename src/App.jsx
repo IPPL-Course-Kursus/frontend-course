@@ -5,9 +5,9 @@ import Login from "./pages/auth/Login";
 import ResetPassword from "./pages/auth/ResetPassword";
 import Register from "./pages/auth/Register";
 import SendEmail from "./pages/auth/sendEmail";
-import DetailKelas from ".pages/Detail/DetailKelas";
-import SuccessPage from "./pages/payment/SuccesPayment";
-import Payment from "./pages/payment/Payment";
+import SuccessPage from "./pages/payment/SuccessPage";
+import PaymentPage from "./pages/Payment/PaymentPage";
+import DetailKelas from "./pages/Detail/DetailKelas";
 // import sendEmail from "./pages/auth/sendEmail";
 
 function App() {
@@ -27,7 +27,7 @@ function App() {
           <Route path="/detail-kelas" element={<DetailKelas />} />
 
           {/* Rute ke Halaman Payment */}
-          <Route path="/payment" element={<Payment />} />
+          <Route path="/payment" element={<PaymentPage />} />
           {/* Rute ke halaman Success Payment */}
           <Route path="/succes-payment" element={<SuccessPage />} />
 

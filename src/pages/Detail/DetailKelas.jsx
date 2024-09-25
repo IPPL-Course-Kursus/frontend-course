@@ -1,7 +1,7 @@
 import CardCourse from "../../components/HomeComponent/CardCourse";
 
 
-export const DetailKelas = () => {
+const DetailKelas = () => {
   return (
     <div className="w-full h-full p-4">
       {/* Bagian Judul dan Deskripsi */}
