@@ -5,7 +5,7 @@ import Login from "./pages/auth/Login";
 import ResetPassword from "./pages/auth/ResetPassword";
 import Register from "./pages/auth/Register";
 import SendEmail from "./pages/auth/sendEmail";
-import { HalamnDetailKelas } from "./components/HalamnDetailKelas";
+import DetailKelas from ".pages/Detail/DetailKelas";
 import SuccessPage from "./pages/payment/SuccesPayment";
 import Payment from "./pages/payment/Payment";
 // import sendEmail from "./pages/auth/sendEmail";
@@ -24,7 +24,7 @@ function App() {
 
           <Route path="send-email" element={<SendEmail />} />
           {/* Rute ke halaman detail kelas */}
-          <Route path="/detail-kelas" element={<HalamnDetailKelas />} />
+          <Route path="/detail-kelas" element={<DetailKelas />} />
 
           {/* Rute ke Halaman Payment */}
           <Route path="/payment" element={<Payment />} />
