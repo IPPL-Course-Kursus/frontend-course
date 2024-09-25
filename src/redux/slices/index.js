@@ -1,7 +1,10 @@
 import { combineReducers } from "redux";
-import AuthReducers from "./authSlice";
+import {AuthReducer, emailReducer, resetPasswordReducer} from "./authSlice";
+  
 
 export default combineReducers({
-  // auth: authReducers,
-  auth: AuthReducers
+  
+  auth: AuthReducer,
+  email: emailReducer,
+  resetPassword: resetPasswordReducer
 });

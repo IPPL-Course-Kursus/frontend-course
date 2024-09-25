@@ -1,10 +1,9 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-// const dotenv = require("dotenv");
+import { getFunctions } from "firebase/functions";
 
-// dotenv.config();
-
+// Konfigurasi Firebase
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FB_API_KEY,
   authDomain: import.meta.env.VITE_FB_AUTH_DOMAIN,
@@ -15,11 +14,17 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FB_MEASUREMENT_ID,
 };
 
+// Inisialisasi Firebase app
 const app = initializeApp(firebaseConfig);
+
+// Inisialisasi services Firebase
 const db = getFirestore(app);
 const auth = getAuth(app);
+const functions = getFunctions(app);
 
-export { db, auth };
+// Ekspor services Firebase
+export { db, auth, functions };
+
 
 // import { initializeApp } from "firebase/app";
 // import { getFirestore } from "firebase/firestore";
