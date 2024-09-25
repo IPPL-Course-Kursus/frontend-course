@@ -4,7 +4,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/auth/Login";
 import ResetPassword from "./pages/auth/ResetPassword";
 import Register from "./pages/auth/Register";
-import SendEmail from "./pages/auth/sendEmail";
+import SendEmail from "./pages/auth/SendEmail";
 import SuccessPage from "./pages/payment/SuccesPayment";
 import PaymentPage from "./pages/Payment/PaymentPage";
 import DetailKelas from "./pages/Detail/DetailKelas";
@@ -30,6 +30,11 @@ function AppRoutes() {
     if (mode === "resetPassword") {
       localStorage.setItem("oobCode", oobCode);
       navigate("/reset");
+    }
+    
+    if (mode === "verifyEmail") {
+      localStorage.setItem("oobCode", oobCode);
+      navigate("/verify-email");
     }
   }, [location, navigate]);
 
