@@ -22,14 +22,14 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/reset" element={<ResetPassword />} />
 
-          <Route path="send-email" element={<SendEmail />} />
+          <Route path="sendemail" element={<SendEmail />} />
           {/* Rute ke halaman detail kelas */}
-          <Route path="/detail-kelas" element={<DetailKelas />} />
+          <Route path="/detailkelas" element={<DetailKelas />} />
 
           {/* Rute ke Halaman Payment */}
           <Route path="/payment" element={<PaymentPage />} />
           {/* Rute ke halaman Success Payment */}
-          <Route path="/succes-payment" element={<SuccessPage />} />
+          <Route path="/successpage" element={<SuccessPage />} />
 
           {/* NotFound */}
           <Route path="/*" element={<NotFound />} />
