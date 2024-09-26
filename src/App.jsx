@@ -1,20 +1,13 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "./pages/Home";
-import NotFound from "./pages/NotFound";
-import Login from "./pages/auth/Login";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import MainProfile from "./pages/MainProfile";
 
 function App() {
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
-
-          {/* Auth */}
-          <Route path="/login" element={<Login />} />
-
-          {/* NotFound */}
-          <Route path="/*" element={<NotFound />} />
+          <Route path="/" element={<Navigate to="/mainprofile" />} />
+          <Route path="/mainprofile" element={<MainProfile />} />
         </Routes>
       </BrowserRouter>
     </>
