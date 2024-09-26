@@ -1,14 +1,15 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "./pages/Home";
-import NotFound from "./pages/NotFound";
 import Login from "./pages/auth/Login";
-import ResetPassword from "./pages/auth/ResetPassword";
 import Register from "./pages/auth/Register";
+import ResetPassword from "./pages/auth/ResetPassword";
 import SendEmail from "./pages/auth/sendEmail";
-import SuccessPage from "./pages/Payment/SuccesPayment";
-import PaymentPage from "./pages/Payment/PaymentPage";
 import DetailKelas from "./pages/Detail/DetailKelas";
+import Home from "./pages/Home";
 import MyCourse from "./pages/mycourse";
+import NotFound from "./pages/NotFound";
+import PaymentPage from "./pages/Payment/PaymentPage";
+import SuccessPage from "./pages/Payment/SuccesPayment";
+import TopikKelas from "./pages/TopikKelas";
 // import sendEmail from "./pages/auth/sendEmail";
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
           <Route path="/detail_kelas" element={<DetailKelas />} />
 
           <Route path="/MyCourse" element={<MyCourse />} />
+          <Route path="/TopikKelas" element={<TopikKelas/>} />
 
           {/* Paymnent */}
           <Route path="/payment" element={<PaymentPage />} />
