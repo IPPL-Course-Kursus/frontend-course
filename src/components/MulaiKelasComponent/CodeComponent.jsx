@@ -1,27 +1,26 @@
-import React, { useState } from 'react';
+import { useState } from "react";
 
-function App() {
-  const [code, setCode] = useState('');
-  const [output, setOutput] = useState('');
+const CodeComponent = () => {
+  const [code, setCode] = useState("");
+  const [output, setOutput] = useState("");
 
   const runCode = () => {
     try {
       const result = eval(code); // Menjalankan kode yang dimasukkan
-      setOutput(result || 'Code ran successfully');
+      setOutput(result || "Code ran successfully");
     } catch (error) {
-      setOutput('Error: ' + error.message);
+      setOutput("Error: " + error.message);
     }
   };
 
   const copyCode = () => {
     navigator.clipboard.writeText(code);
-    alert('Kode berhasil disalin!');
+    alert("Kode berhasil disalin!");
   };
 
   const resetCode = () => {
-    setCode('');
+    setCode("");
   };
-
   return (
     <div className="bg-gray-100 min-h-screen">
       {/* Navbar */}
@@ -34,9 +33,7 @@ function App() {
               placeholder="Cari Kursus terbaik..."
               className="rounded-full px-4 py-2"
             />
-            <button className="bg-white text-blue-800 rounded-full px-4 py-2 ml-2">
-              Kelas
-            </button>
+            <button className="bg-white text-blue-800 rounded-full px-4 py-2 ml-2">Kelas</button>
           </div>
         </div>
       </nav>
@@ -92,17 +89,23 @@ function App() {
             <p className="text-gray-600 font-bold">Chapter 1 - Pendahuluan</p>
             <ul className="ml-4 mt-2">
               <li className="flex items-center gap-2">
-                <span className="bg-blue-600 text-white w-6 h-6 flex items-center justify-center rounded-full">1</span>
+                <span className="bg-blue-600 text-white w-6 h-6 flex items-center justify-center rounded-full">
+                  1
+                </span>
                 <p className="text-gray-600">Lorem Ipsum</p>
                 <span className="ml-auto text-gray-500">✔️</span>
               </li>
               <li className="flex items-center gap-2">
-                <span className="bg-blue-200 text-blue-600 w-6 h-6 flex items-center justify-center rounded-full">2</span>
+                <span className="bg-blue-200 text-blue-600 w-6 h-6 flex items-center justify-center rounded-full">
+                  2
+                </span>
                 <p className="text-gray-600">Lorem Ipsum</p>
                 <span className="ml-auto text-gray-500">✔️</span>
               </li>
               <li className="flex items-center gap-2">
-                <span className="bg-blue-200 text-blue-600 w-6 h-6 flex items-center justify-center rounded-full">3</span>
+                <span className="bg-blue-200 text-blue-600 w-6 h-6 flex items-center justify-center rounded-full">
+                  3
+                </span>
                 <p className="text-gray-600">Lorem Ipsum</p>
                 <span className="ml-auto text-gray-500">🔒</span>
               </li>
@@ -113,17 +116,23 @@ function App() {
             <p className="text-gray-600 font-bold">Chapter 2 - Memulai Desain</p>
             <ul className="ml-4 mt-2">
               <li className="flex items-center gap-2">
-                <span className="bg-blue-200 text-blue-600 w-6 h-6 flex items-center justify-center rounded-full">1</span>
+                <span className="bg-blue-200 text-blue-600 w-6 h-6 flex items-center justify-center rounded-full">
+                  1
+                </span>
                 <p className="text-gray-600">Lorem Ipsum</p>
                 <span className="ml-auto text-gray-500">🔒</span>
               </li>
               <li className="flex items-center gap-2">
-                <span className="bg-blue-200 text-blue-600 w-6 h-6 flex items-center justify-center rounded-full">2</span>
+                <span className="bg-blue-200 text-blue-600 w-6 h-6 flex items-center justify-center rounded-full">
+                  2
+                </span>
                 <p className="text-gray-600">Lorem Ipsum</p>
                 <span className="ml-auto text-gray-500">🔒</span>
               </li>
               <li className="flex items-center gap-2">
-                <span className="bg-blue-200 text-blue-600 w-6 h-6 flex items-center justify-center rounded-full">3</span>
+                <span className="bg-blue-200 text-blue-600 w-6 h-6 flex items-center justify-center rounded-full">
+                  3
+                </span>
                 <p className="text-gray-600">Lorem Ipsum</p>
                 <span className="ml-auto text-gray-500">🔒</span>
               </li>
@@ -143,13 +152,22 @@ function App() {
         ></textarea>
 
         <div className="mt-4 flex gap-4">
-          <button className="btn-run bg-green-500 text-white py-2 px-4 rounded-md" onClick={runCode}>
+          <button
+            className="btn-run bg-green-500 text-white py-2 px-4 rounded-md"
+            onClick={runCode}
+          >
             Run Code
           </button>
-          <button className="btn-copy bg-blue-500 text-white py-2 px-4 rounded-md" onClick={copyCode}>
+          <button
+            className="btn-copy bg-blue-500 text-white py-2 px-4 rounded-md"
+            onClick={copyCode}
+          >
             Copy Code
           </button>
-          <button className="btn-reset bg-red-500 text-white py-2 px-4 rounded-md" onClick={resetCode}>
+          <button
+            className="btn-reset bg-red-500 text-white py-2 px-4 rounded-md"
+            onClick={resetCode}
+          >
             Reset Code
           </button>
         </div>
@@ -160,6 +178,6 @@ function App() {
       </div>
     </div>
   );
-}
+};
 
-export default App;
+export default CodeComponent;

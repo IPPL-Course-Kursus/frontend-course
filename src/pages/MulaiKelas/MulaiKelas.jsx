@@ -69,14 +69,14 @@ const MulaiKelas = () => {
             <p className="text-gray-600 mt-2">
               Learn JavaScript, the world’s most popular programming language, with our
               beginner-friendly class. This course is perfect for those looking to build
-              foundational knowledge in JavaScript. You'll learn variables, functions, loops, and
+              foundational knowledge in JavaScript. Youll learn variables, functions, loops, and
               more, with practical examples to strengthen your skills. Learn JavaScript, the world’s
               most popular programming language, with our beginner-friendly class. This course is
-              perfect for those looking to build foundational knowledge in JavaScript. You'll learn
+              perfect for those looking to build foundational knowledge in JavaScript. Youll learn
               variables, functions, loops, and more, with practical examples to strengthen your
               skills.Learn JavaScript, the world’s most popular programming language, with our
               beginner-friendly class. This course is perfect for those looking to build
-              foundational knowledge in JavaScript. You'll learn variables, functions, loops, and
+              foundational knowledge in JavaScript. Youll learn variables, functions, loops, and
               more, with practical examples to strengthen your skills.
             </p>
           </section>

@@ -4,7 +4,7 @@ import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { register } from "../../redux/actions/authActions";
-// import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const dispatch = useDispatch();
@@ -22,30 +22,39 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    // if (!name && !email && !phoneNumber && !password) {
-    //   toast.error("Semua Form Harus Diisi");
-    //   return;
-    // } else if (name == "") {
-    //   toast.error("Nama Masih Kosong");
-    //   return;
-    // } else if (email == "") {
-    //   toast.error("Email Masih Kosong");
-    // } else if (phoneNumber === "") {
-    //   toast.error("Nomor Telepon masih kosong");
-    //   return;
-    // } else if (password === "") {
-    //   toast.error("Password masih kosong");
-    //   return;
-    // } else if (password.length < 8) {
-    //   toast.error("Password min 8 karakter!");
-    //   return;
-    // } else if (!/[A-Z]/.test(password)) {
-    //   toast.error("Password harus memiliki setidaknya satu huruf besar");
-    //   return;
-    // } else if (!/[0-9]/.test(password)) {
-    //   toast.error("Password harus memiliki setidaknya satu angka");
-    //   return;
-    // }
+    if (!fullName && !email && !phoneNumber && !country && !city && !tanggalLahir && !password) {
+      toast.error("Semua Form Harus Diisi");
+      return;
+    } else if (fullName == "") {
+      toast.error("Nama Masih Kosong");
+      return;
+    } else if (email == "") {
+      toast.error("Email Masih Kosong");
+    } else if (phoneNumber === "") {
+      toast.error("Nomor Telepon masih kosong");
+      return;
+    } else if (country === "") {
+      toast.error("Negara masih kosong");
+      return;
+    } else if (city === "") {
+      toast.error("Kota masih kosong");
+      return;
+    } else if (tanggalLahir === "") {
+      toast.error("Langgal Lahir masih kosong");
+      return;
+    } else if (password === "") {
+      toast.error("Password masih kosong");
+      return;
+    } else if (password.length < 8) {
+      toast.error("Password min 8 karakter!");
+      return;
+    } else if (!/[A-Z]/.test(password)) {
+      toast.error("Password harus memiliki setidaknya satu huruf besar");
+      return;
+    } else if (!/[0-9]/.test(password)) {
+      toast.error("Password harus memiliki setidaknya satu angka");
+      return;
+    }
     console.log("Email:", email);
     console.log("lahir", tanggalLahir);
 
