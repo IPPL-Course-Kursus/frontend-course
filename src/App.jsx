@@ -8,6 +8,7 @@ import SendEmail from "./pages/auth/sendEmail";
 import SuccessPage from "./pages/Payment/SuccesPayment";
 import PaymentPage from "./pages/Payment/PaymentPage";
 import DetailKelas from "./pages/Detail/DetailKelas";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 // import sendEmail from "./pages/auth/sendEmail";
 
@@ -27,7 +28,8 @@ function App() {
 
           {/* route detail kelas */}
           <Route path="/detail_kelas" element={<DetailKelas />} />
-
+          {/* route admin dashboard */}
+          <Route path="/admindashboard" element={<AdminDashboard />} />
           {/* Paymnent */}
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/succes-payment" element={<SuccessPage />} />
