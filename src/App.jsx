@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { Toaster } from "react-hot-toast"; // Import react-hot-toast
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/auth/Login";
@@ -12,18 +13,29 @@ import DetailKelas from "./pages/Detail/DetailKelas";
 import MainProfile from "./pages/Profile/MainProfile";
 import MyCourse from "./pages/Course/MyCourse";
 import VerifyEmail from "./pages/auth/VerifyEmail";
-import "react-toastify/dist/ReactToastify.css"; // Import CSS Toastify
 import TopikKelas from "./pages/TopikKelas/topikKelas";
 import MulaiKelas from "./pages/MulaiKelas/MulaiKelas";
 
-// import sendEmail from "./pages/auth/sendEmail";
 function App() {
   return (
     <BrowserRouter>
+      {/* Setup toaster untuk menampilkan notifikasi */}
+      <Toaster
+        position="bottom-center"
+        reverseOrder={false}
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: "#363636",
+            color: "#fff",
+          },
+        }}
+      />
       <AppRoutes />
     </BrowserRouter>
   );
 }
+
 function AppRoutes() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -43,38 +55,30 @@ function AppRoutes() {
       navigate("/verify-email");
     }
   }, [location, navigate]);
+
   return (
-    <>
-      {/* <BrowserRouter> */}
-      <Routes>
-        <Route path="/" element={<Home />} />
-
-        {/* Auth */}
-        <Route path="/login" element={<Login />} />
-
-        <Route path="/register" element={<Register />} />
-        <Route path="/reset" element={<ResetPassword />} />
-        <Route path="/send-email" element={<SendEmail />} />
-        <Route path="/Verify-email" element={<VerifyEmail />} />
-
-        {/* Profile */}
-        <Route path="/profile" element={<MainProfile />} />
-
-        {/* course */}
-        <Route path="/detail-kelas" element={<DetailKelas />} />
-        <Route path="/MyCourse" element={<MyCourse />} />
-        <Route path="/topik-kelas" element={<TopikKelas />} />
-        <Route path="/mulai-kelas" element={<MulaiKelas />} />
-
-        {/* Paymnent */}
-        <Route path="/payment" element={<PaymentPage />} />
-        <Route path="/succes-payment" element={<SuccessPage />} />
-
-        {/* NotFound */}
-        <Route path="/*" element={<NotFound />} />
-      </Routes>
-      {/* </BrowserRouter> */}
-    </>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      {/* Auth */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/reset" element={<ResetPassword />} />
+      <Route path="/send-email" element={<SendEmail />} />
+      <Route path="/verify-email" element={<VerifyEmail />} />
+      {/* Profile */}
+      <Route path="/profile" element={<MainProfile />} />
+      {/* Course */}
+      <Route path="/detail-kelas" element={<DetailKelas />} />
+      <Route path="/mycourse" element={<MyCourse />} />
+      <Route path="/topik-kelas" element={<TopikKelas />} />
+      <Route path="/mulai-kelas" element={<MulaiKelas />} />
+      {/* Payment */}
+      <Route path="/payment" element={<PaymentPage />} />
+      <Route path="/succes-payment" element={<SuccessPage />} />
+      {/* NotFound */}
+      <Route path="/*" element={<NotFound />} />
+    </Routes>
   );
 }
+
 export default App;
