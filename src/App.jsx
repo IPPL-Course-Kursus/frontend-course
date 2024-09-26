@@ -8,6 +8,7 @@ import SendEmail from "./pages/auth/sendEmail";
 import SuccessPage from "./pages/Payment/SuccesPayment";
 import PaymentPage from "./pages/Payment/PaymentPage";
 import DetailKelas from "./pages/Detail/DetailKelas";
+import MainProfile from "./pages/Profile/MainProfile";
 
 // import sendEmail from "./pages/auth/sendEmail";
 
@@ -22,8 +23,10 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/reset" element={<ResetPassword />} />
+          <Route path="/send-email" element={<SendEmail />} />
 
-          <Route path="send-email" element={<SendEmail />} />
+          {/* Profile */}
+          <Route path="/profile" element={<MainProfile />} />
 
           {/* route detail kelas */}
           <Route path="/detail_kelas" element={<DetailKelas />} />

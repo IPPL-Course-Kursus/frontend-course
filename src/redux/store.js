@@ -9,11 +9,13 @@
 // });
 
 import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "./slices/authSlice";
+import authSlice from "./slices/authSlice";
+import profileSlice from "./slices/profileSlice";
 
 const store = configureStore({
   reducer: {
-    auth: authReducer, // Pastikan authReducer sudah dihubungkan
+    auth: authSlice, // Pastikan authReducer sudah dihubungkan
+    profile: profileSlice, //
   },
 });
 
