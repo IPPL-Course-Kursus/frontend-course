@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
 
 const PaymentPage = () => {
   const [toggleBankTransfer, setToggleBankTransfer] = useState(false);
@@ -31,6 +33,7 @@ const PaymentPage = () => {
 
   return (
     <>
+    <Navbar/>
       <div className="h-full bg-[#FFFF] pb-32 md:w-full">
         <div className="md:w-[80%] md:mx-auto">
           <div className="flex pt-4">
@@ -199,6 +202,7 @@ const PaymentPage = () => {
           </form>
         </div>
       </div>
+      <Footer/>
     </>
   );
 };

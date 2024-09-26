@@ -16,6 +16,28 @@ const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
 
 // Login Fix
 
+// export const login = (email, password, navigate) => async (dispatch) => {
+//   try {
+//     // Masuk dengan Firebase Authentication
+//     const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
+//     // Dapatkan token
+//     const token = await userCredential.user.getIdToken();
+
+//     // Dispatch token dan data user ke Redux
+//     dispatch(setToken(token));
+//     dispatch(setUser({ email: userCredential.user.email, uid: userCredential.user.uid }));
+
+//     // Navigasi ke halaman utama
+//     navigate("/");
+
+//     // Notifikasi login berhasil
+//     toast.success("Login berhasil!");
+//   } catch (error) {
+//     console.error("Login error:", error.message);
+//     toast.error("Terjadi kesalahan saat login.");
+//   }
+// };
 export const login = (email, password, navigate) => async (dispatch) => {
   try {
     // Masuk dengan Firebase Authentication
@@ -24,12 +46,15 @@ export const login = (email, password, navigate) => async (dispatch) => {
     // Dapatkan token
     const token = await userCredential.user.getIdToken();
 
+    // Simpan token di localStorage
+    localStorage.setItem("token", token);
+
     // Dispatch token dan data user ke Redux
     dispatch(setToken(token));
     dispatch(setUser({ email: userCredential.user.email, uid: userCredential.user.uid }));
 
     // Navigasi ke halaman utama
-    navigate("/");
+    navigate("/profile");
 
     // Notifikasi login berhasil
     toast.success("Login berhasil!");
@@ -38,6 +63,7 @@ export const login = (email, password, navigate) => async (dispatch) => {
     toast.error("Terjadi kesalahan saat login.");
   }
 };
+
 export const register =
   (email, password, fullName, phoneNumber, country, city, tanggalLahir, navigate) =>
   async (dispatch) => {
@@ -173,7 +199,7 @@ export const verifyEmail = () => async (dispatch) => {
     // Mengirim permintaan verifikasi email ke backend
     const response = await axios.post(
       `${api_url}auth/verify-email`,
-      // "http://localhost:6969/auth/verify-email"
+      // "http://localhost:6969/auth/verify-email",
       { oobCode }
     );
 
