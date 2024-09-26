@@ -9,11 +9,14 @@
 // });
 
 import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "./slices/authSlice";
+import { authReducer, emailReducer, resetPasswordReducer, verifyEmailReducer } from "./slices/authSlice";
 
 const store = configureStore({
   reducer: {
-    auth: authReducer, // Pastikan authReducer sudah dihubungkan
+    auth: authReducer,
+    email: emailReducer, 
+    resetPassword: resetPasswordReducer,
+    verifyEmail: verifyEmailReducer
   },
 });
 
