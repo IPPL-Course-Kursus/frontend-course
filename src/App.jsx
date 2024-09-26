@@ -13,6 +13,7 @@ import MainProfile from "./pages/Profile/MainProfile";
 import MyCourse from "./pages/Course/MyCourse";
 import VerifyEmail from "./pages/auth/VerifyEmail";
 import "react-toastify/dist/ReactToastify.css"; // Import CSS Toastify
+import TopikKelas from "./pages/TopikKelas/topikKelas";
 
 // import sendEmail from "./pages/auth/sendEmail";
 function App() {
@@ -61,6 +62,7 @@ function AppRoutes() {
         {/* course */}
         <Route path="/detail-kelas" element={<DetailKelas />} />
         <Route path="/MyCourse" element={<MyCourse />} />
+        <Route path="/topik-kelas" element={<TopikKelas />} />
 
         {/* Paymnent */}
         <Route path="/payment" element={<PaymentPage />} />
