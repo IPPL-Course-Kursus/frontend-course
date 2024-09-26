@@ -1,0 +1,869 @@
+.web-mulai-kelas-child {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+    background-color: #0a61aa;
+    width: 1440px;
+    height: 100px;
+}
+.logo {
+    position: absolute;
+    top: 32px;
+    left: 28px;
+    font-size: 32px;
+    line-height: 36px;
+    font-family: 'Red Rose';
+    color: #f3f7fb;
+}
+.find-a-course {
+    flex: 1;
+    position: relative;
+    line-height: 20px;
+}
+.icon {
+    width: 38px;
+    position: relative;
+    height: 38px;
+}
+.find-a-course-parent {
+    position: absolute;
+    top: 19px;
+    left: 404px;
+    border-radius: 16px;
+    background-color: #fff;
+    width: 526px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 12px 24px;
+    box-sizing: border-box;
+    gap: 16px;
+    font-size: 12px;
+}
+.filist-icon {
+    width: 24px;
+    position: relative;
+    height: 24px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.akun {
+    position: relative;
+    line-height: 24px;
+}
+.selcted {
+    border-radius: 10px;
+    background-color: #fff;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 5px 25px;
+    gap: 10px;
+}
+.menu {
+    position: absolute;
+    top: 23px;
+    left: 1082px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0px;
+    gap: 24px;
+    color: #0a61aa;
+}
+.nav-child {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+    background-color: #003e9c;
+    width: 1440px;
+    height: 100px;
+}
+.cari-kursus-terbaik {
+    flex: 1;
+    position: relative;
+    line-height: 20px;
+    white-space: pre-wrap;
+}
+.cari-kursus-terbaik-parent {
+    position: absolute;
+    top: 18px;
+    left: 264px;
+    border-radius: 16px;
+    background-color: #fff;
+    width: 526px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 12px 24px;
+    box-sizing: border-box;
+    gap: 16px;
+}
+.nav {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 1440px;
+    height: 100px;
+    font-size: 12px;
+}
+.tentang-kelas {
+    width: 318px;
+    position: relative;
+    line-height: 14px;
+    display: inline-block;
+}
+.design-system-adalah {
+    margin: 0;
+    white-space: pre-wrap;
+}
+.paragraf1 {
+    flex: 1;
+    position: relative;
+    line-height: 24px;
+}
+.text {
+    width: 700px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    box-sizing: border-box;
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.8);
+}
+.anda-yang-ingin {
+    margin-bottom: 0px;
+}
+.anda-yang-ingin-memahami-poin {
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    padding-left: 13px;
+}
+.paragraf2 {
+    flex: 1;
+    position: relative;
+    line-height: 24px;
+    font-weight: 600;
+}
+.text1 {
+    align-self: stretch;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.8);
+}
+.paragraf {
+    position: absolute;
+    top: 360px;
+    left: 0px;
+    width: 700px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 10px;
+}
+.play-icon {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 700px;
+    height: 327px;
+}
+.paragraf-parent {
+    position: absolute;
+    top: 384px;
+    left: 140px;
+    width: 700px;
+    height: 774px;
+    font-size: 20px;
+    color: #000;
+}
+.title-course-child {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+    background-color: #ebf3fc;
+    width: 1440px;
+    height: 250px;
+}
+.name {
+    width: 174px;
+    position: relative;
+    line-height: 14px;
+    display: inline-block;
+    flex-shrink: 0;
+}
+.course-name {
+    width: 700px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 5px 0px;
+    box-sizing: border-box;
+}
+.intro-to-basic {
+    line-height: 24px;
+}
+.intro-to-basic-java-script {
+    margin-block-start: 0;
+    margin-block-end: 5px;
+}
+.by-simon-doe {
+    margin: 0;
+    font-size: 14px;
+    line-height: 18px;
+    color: #000;
+}
+.title-course1 {
+    align-self: stretch;
+    position: relative;
+    display: inline-block;
+    height: 46px;
+    flex-shrink: 0;
+    color: #202244;
+}
+.mdibadge-outline-icon {
+    width: 14px;
+    position: relative;
+    height: 14px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.level1 {
+    width: 161px;
+    position: relative;
+    line-height: 14px;
+    font-weight: 600;
+    display: inline-block;
+    flex-shrink: 0;
+}
+.level {
+    width: 163px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 4px;
+}
+.modul1 {
+    width: 123px;
+    position: relative;
+    line-height: 14px;
+    display: inline-block;
+    flex-shrink: 0;
+}
+.ritime-fill-icon {
+    width: 16px;
+    position: relative;
+    height: 16px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.durasi1 {
+    position: relative;
+    line-height: 14px;
+}
+.durasi {
+    flex: 1;
+    height: 14px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 2px;
+}
+.modul {
+    align-self: stretch;
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 4px;
+    color: #000;
+}
+.top {
+    align-self: stretch;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+.deets {
+    width: 700px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 3px 0px;
+    box-sizing: border-box;
+    font-size: 12px;
+}
+.detail-card {
+    position: absolute;
+    top: 80px;
+    left: 140px;
+    width: 700px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 5px;
+}
+.telegram {
+    position: absolute;
+    top: 190px;
+    left: 140px;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.05));
+    width: 250px;
+    height: 34px;
+}
+.fiarrow-left-icon {
+    width: 24px;
+    position: relative;
+    height: 24px;
+    overflow: hidden;
+    flex-shrink: 0;
+    z-index: 1;
+}
+.label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+}
+.text-content {
+    height: 46px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 10px;
+    box-sizing: border-box;
+    z-index: 0;
+}
+.list-item {
+    width: 968px;
+    border-radius: 25px;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 5px 16px;
+    box-sizing: border-box;
+    gap: 8px;
+}
+.beranda {
+    align-self: stretch;
+    height: 55px;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+.kembali {
+    position: absolute;
+    top: 20px;
+    left: 100px;
+    width: 375px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    font-size: 16px;
+    color: #000;
+}
+.title-course {
+    position: absolute;
+    top: 100px;
+    left: -6px;
+    width: 1440px;
+    height: 250px;
+    font-size: 20px;
+    color: #003e9c;
+}
+.materi-belajar {
+    flex: 1;
+    position: relative;
+    line-height: 14px;
+}
+.child {
+    position: absolute;
+    top: 1px;
+    left: 16px;
+    border-radius: 25px;
+    background-color: #d9d9d9;
+    width: 150px;
+    height: 16px;
+}
+.item {
+    position: absolute;
+    top: 1px;
+    left: 14.5px;
+    border-radius: 25px;
+    background-color: #003e9c;
+    width: 34px;
+    height: 16px;
+}
+.complete {
+    position: absolute;
+    top: 1px;
+    left: 18px;
+    line-height: 14px;
+    white-space: pre-wrap;
+    display: flex;
+    align-items: center;
+    width: 148px;
+    height: 15px;
+}
+.div {
+    flex: 1;
+    position: relative;
+    height: 18px;
+    z-index: 0;
+}
+.mdiprogress-check-icon {
+    width: 16px;
+    position: absolute;
+    margin: 0 !important;
+    top: 2px;
+    left: 0px;
+    height: 16px;
+    overflow: hidden;
+    flex-shrink: 0;
+    z-index: 1;
+}
+.progress-kelas {
+    width: 172px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0px 5px;
+    box-sizing: border-box;
+    position: relative;
+    gap: 5px;
+    font-size: 10px;
+    color: #fff;
+}
+.materi1 {
+    align-self: stretch;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    text-align: left;
+    font-size: 20px;
+    color: #000;
+}
+.intro {
+    width: 64.77%;
+    position: absolute;
+    margin: 0 !important;
+    top: calc(50% - 11px);
+    left: -0.28%;
+    line-height: 36px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    height: 22px;
+    z-index: 0;
+}
+.durasi2 {
+    width: 21.59%;
+    position: absolute;
+    margin: 0 !important;
+    top: calc(50% - 11px);
+    left: 70.45%;
+    line-height: 36px;
+    font-weight: 800;
+    color: #0065ff;
+    text-align: right;
+    display: flex;
+    align-items: center;
+    height: 22px;
+    z-index: 1;
+}
+.heading-1 {
+    width: 352px;
+    height: 22px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0px;
+    box-sizing: border-box;
+    position: relative;
+    text-align: left;
+    font-size: 12px;
+    color: #003e9c;
+}
+.oval {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0%;
+    right: 0%;
+    bottom: 0%;
+    left: 0%;
+    border-radius: 50%;
+    background-color: #ebf3fc;
+    border: 2px solid #ebf3fc;
+    box-sizing: border-box;
+}
+.b {
+    position: absolute;
+    width: 34.72%;
+    top: calc(50% - 7px);
+    left: 33.33%;
+    line-height: 14px;
+    display: inline-block;
+}
+.circle {
+    width: 36px;
+    position: relative;
+    height: 36px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.title {
+    width: 251px;
+    position: relative;
+    font-size: 12px;
+    line-height: 14px;
+    font-family: Inter;
+    color: #000;
+    text-align: left;
+    display: inline-block;
+    flex-shrink: 0;
+}
+.fill-1-icon {
+    width: 17.6px;
+    position: relative;
+    height: 18px;
+}
+.div1 {
+    width: 352px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+}
+.line-icon {
+    width: 352px;
+    position: relative;
+    height: 1px;
+}
+.card-1 {
+    width: 349px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 5px 0px;
+    box-sizing: border-box;
+    gap: 5px;
+}
+.title1 {
+    width: 251px;
+    position: relative;
+    font-size: 12px;
+    line-height: 20px;
+    color: #000;
+    text-align: left;
+    display: inline-block;
+    flex-shrink: 0;
+}
+.materi-gratis {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 5px 0px;
+}
+.intro1 {
+    width: 62.78%;
+    position: absolute;
+    margin: 0 !important;
+    top: calc(50% - 11px);
+    left: -0.28%;
+    line-height: 36px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    height: 22px;
+    z-index: 0;
+}
+.paragraf3 {
+    width: 349px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+.materi {
+    position: absolute;
+    top: 160px;
+    left: 891px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 16px;
+    background-color: #fff;
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 24px;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 10px;
+    color: #202244;
+}
+.selcted1 {
+    border-radius: 10px;
+    background-color: #0065ff;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 5px 25px;
+    gap: 10px;
+}
+.menu1 {
+    position: absolute;
+    top: 25px;
+    left: 1100px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0px;
+    gap: 24px;
+    color: #fff;
+}
+.java-script-compiler {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    line-height: 14px;
+    display: inline-block;
+    width: 318px;
+}
+.group-child {
+    position: absolute;
+    top: 42px;
+    left: 0px;
+    background-color: #ebf3fc;
+    width: 700px;
+    height: 672px;
+}
+.group-item {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background-color: #fff;
+    width: 688px;
+    height: 288px;
+}
+.group-inner {
+    position: absolute;
+    top: 4px;
+    left: 5px;
+    width: 486px;
+    height: 253px;
+    object-fit: cover;
+}
+.rectangle-parent {
+    position: absolute;
+    top: 87px;
+    left: 6px;
+    width: 688px;
+    height: 288px;
+}
+.rectangle-div {
+    position: absolute;
+    top: 48px;
+    left: 66px;
+    border-radius: 4px;
+    background-color: #73ca5c;
+    width: 68px;
+    height: 22px;
+}
+.solarcopy-outline-icon {
+    position: absolute;
+    top: 49px;
+    left: 37px;
+    width: 20px;
+    height: 20px;
+    overflow: hidden;
+}
+.run {
+    position: absolute;
+    top: 52px;
+    left: 76px;
+    font-size: 13px;
+    line-height: 14px;
+    font-weight: 500;
+    font-family: Poppins;
+    color: #fff;
+    display: inline-block;
+    width: 29px;
+}
+.phplay-icon {
+    position: absolute;
+    top: 49px;
+    left: 105px;
+    width: 19px;
+    height: 19px;
+    overflow: hidden;
+}
+.heroiconshome-solid {
+    position: absolute;
+    top: 49px;
+    left: 8px;
+    width: 20px;
+    height: 20px;
+    overflow: hidden;
+}
+.group-child1 {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background-color: #fff;
+    width: 685px;
+    height: 288px;
+}
+.image-2-icon {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 489px;
+    height: 139px;
+    object-fit: cover;
+}
+.rectangle-group {
+    position: absolute;
+    top: 415px;
+    left: 8px;
+    width: 685px;
+    height: 288px;
+}
+.output {
+    position: absolute;
+    top: 394px;
+    left: 8px;
+    font-size: 15px;
+    line-height: 14px;
+    display: inline-block;
+    width: 132px;
+}
+.java-script-compiler-parent {
+    position: absolute;
+    top: 1192px;
+    left: 140px;
+    width: 700px;
+    height: 714px;
+    font-size: 20px;
+    color: #000;
+}
+.nav-inner {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15);
+    background-color: #fff;
+    width: 1440px;
+    height: 100px;
+}
+.logo3 {
+    position: absolute;
+    top: 31px;
+    left: 51px;
+    line-height: 36px;
+}
+.icon3 {
+    width: 35px;
+    position: relative;
+    height: 35px;
+}
+.find-a-course-group {
+    position: absolute;
+    top: 26px;
+    left: 404px;
+    border-radius: 16px;
+    background-color: #fff;
+    border: 1px solid #000;
+    box-sizing: border-box;
+    width: 526px;
+    height: 48px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 12px 24px;
+    gap: 16px;
+    font-size: 12px;
+    color: #8a8a8a;
+    font-family: Montserrat;
+}
+.nav2 {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    border: 1px solid #000;
+    box-sizing: border-box;
+    width: 1440px;
+    height: 100px;
+    font-size: 32px;
+    color: #0a61aa;
+    font-family: 'Red Rose';
+}
+.menu3 {
+    position: absolute;
+    top: 25px;
+    left: 1100px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0px;
+    gap: 24px;
+    color: #0a61aa;
+}
+.web-mulai-kelas {
+    width: 100%;
+    position: relative;
+    background-color: #fff;
+    height: 1988px;
+    overflow: hidden;
+    text-align: left;
+    font-size: 16px;
+    color: #8a8a8a;
+    font-family: Montserrat;
+}
+

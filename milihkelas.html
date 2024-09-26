@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+code-editor-header {
+            font-family: Verdana, sans-serif;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #1e40af;
+}
+
+textarea {
+            width: 100%;
+            height: 250px;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            font-family: monospace;
+            font-size: 16px;
+            resize: none;
+            box-sizing: border-box;
+}
+
+.container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+}
+
+.btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-copy {
+            background-color: #4CAF50;
+        }
+
+        .btn-reset {
+            background-color: #f44336;
+        }
+
+.btn-container {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+      textarea {
+        width: 100%;
+        height: 200px;
+        padding: 10px;
+        border: 2px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        font-family: monospace;
+        font-size: 16px;
+      }
+
+      .output {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            min-height: 100px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: monospace;
+            font-size: 16px;
+        }
+        
+      .btn-run {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .btn-run:hover {
+        background-color: #45a049;
+      }
+    </style>
+    <title>UI/UX Design Course</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Navbar -->
+    <nav class="bg-blue-800 p-4">
+        <div class="container mx-auto flex justify-between">
+            <div class="text-white font-bold">LOGO</div>
+            <div>
+                <input type="text" placeholder="Cari Kursus terbaik..." class="rounded-full px-4 py-2">
+                <button class="bg-white text-blue-800 rounded-full px-4 py-2 ml-2">Kelas</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Course Content -->
+    <div class="container mx-auto mt-8 flex gap-8">
+        
+        <!-- Left Section (Course Info) -->
+        <div class="w-3/4 bg-white p-6 shadow-lg rounded-lg">
+            <div>
+                <h2 class="text-blue-600 text-xl font-bold">UI/UX Design</h2>
+                <p class="text-gray-600">Intro to Basic of User Interaction Design</p>
+                <p class="text-gray-500">by Simon Doe</p>
+            </div>
+
+            <!-- Course Metadata -->
+            <div class="flex items-center gap-6 mt-4">
+                <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">Beginner Level</span>
+                <span class="text-gray-600">5 Modul</span>
+                <span class="text-gray-600">45 Menit</span>
+            </div>
+
+            <!-- Video Placeholder -->
+            <div class="w-full bg-gray-300 h-64 mt-6 flex items-center justify-center rounded-lg">
+                <p class="text-gray-500">Video Placeholder</p>
+            </div>
+
+            <!-- Tentang Kelas Section -->
+            <div class="mt-6">
+                <h3 class="text-gray-700 text-xl font-semibold">Tentang Kelas</h3>
+                <p class="text-gray-600 mt-2">Design system adalah kumpulan komponen desain, code, ataupun dokumentasi...</p>
+            </div>
+
+            <!-- Target Audience Section -->
+            <div class="mt-6">
+                <h3 class="text-gray-700 text-xl font-semibold">Kelas Ini Ditujukan Untuk</h3>
+                <ul class="list-disc ml-6 mt-2 text-gray-600">
+                    <li>Anda yang ingin memahami prinsip dasar desain system</li>
+                    <li>Anda yang ingin memahami penulisan elemen</li>
+                    <li>Anda yang ingin lebih memahami design system</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Right Section (Materi Belajar) -->
+        <div class="w-1/4 bg-white p-6 shadow-lg rounded-lg">
+            <h3 class="text-gray-700 text-xl font-semibold">Materi Belajar</h3>
+
+            <div class="mt-4">
+                <p class="text-gray-600 font-bold">Chapter 1 - Pendahuluan</p>
+                <ul class="ml-4 mt-2">
+                    <li class="flex items-center gap-2">
+                        <span class="bg-blue-600 text-white w-6 h-6 flex items-center justify-center rounded-full">1</span>
+                        <p class="text-gray-600">Lorem Ipsum</p>
+                        <span class="ml-auto text-gray-500">✔️</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="bg-blue-200 text-blue-600 w-6 h-6 flex items-center justify-center rounded-full">2</span>
+                        <p class="text-gray-600">Lorem Ipsum</p>
+                        <span class="ml-auto text-gray-500">✔️</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="bg-blue-200 text-blue-600 w-6 h-6 flex items-center justify-center rounded-full">3</span>
+                        <p class="text-gray-600">Lorem Ipsum</p>
+                        <span class="ml-auto text-gray-500">🔒</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="mt-6">
+                <p class="text-gray-600 font-bold">Chapter 2 - Memulai Desain</p>
+                <ul class="ml-4 mt-2">
+                    <li class="flex items-center gap-2">
+                        <span class="bg-blue-200 text-blue-600 w-6 h-6 flex items-center justify-center rounded-full">1</span>
+                        <p class="text-gray-600">Lorem Ipsum</p>
+                        <span class="ml-auto text-gray-500">🔒</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="bg-blue-200 text-blue-600 w-6 h-6 flex items-center justify-center rounded-full">2</span>
+                        <p class="text-gray-600">Lorem Ipsum</p>
+                        <span class="ml-auto text-gray-500">🔒</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="bg-blue-200 text-blue-600 w-6 h-6 flex items-center justify-center rounded-full">3</span>
+                        <p class="text-gray-600">Lorem Ipsum</p>
+                        <span class="ml-auto text-gray-500">🔒</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <br>
+    <title><b>Simple Code Editor and Compiler</b></title>
+      <div class="container">
+        <h2>Code Editor and Compiler</h2>
+        <textarea id="code" placeholder="Write your code here..."></textarea>
+        <button class="btn-run" onclick="runCode()">Run Code</button>
+        <div class="output" id="output"></div>
+      </div>
+
+      <script>
+        function runCode() {
+          const code = document.getElementById('code').value;
+          try {
+            const result = eval(code);
+            document.getElementById('output').textContent = result || 'Code ran successfully';
+          } catch (error) {
+            document.getElementById('output').textContent = 'Error: ' + error.message;
+          }
+        }
+
+        function copyCode() {
+            var codeTextarea = document.getElementById("code");
+            codeTextarea.select();
+            document.execCommand("copy");
+            alert("Kode berhasil disalin!");
+        }
+
+        function resetCode() {
+            document.getElementById("code").value = "";
+        }
+      </script>
+
+
+</body>
+</html>

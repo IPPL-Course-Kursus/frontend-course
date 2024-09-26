@@ -4,6 +4,7 @@ import CardCategory from "../components/HomeComponent/cardCategory";
 import CardCourse from "../components/HomeComponent/CardCourse";
 import CardFree from "../components/HomeComponent/CardFree";
 import imgSection from "../assets/bernadya.svg";
+import Navbar from "../components/Navbar";
 import profilePic from "../assets/profil.png";
 import { IoIosArrowForward } from "react-icons/io";
 import 'swiper/css';
