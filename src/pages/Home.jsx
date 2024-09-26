@@ -3,6 +3,7 @@ import CardCategory from "../components/HomeComponent/CardCategory";
 import CardCourse from "../components/HomeComponent/CardCourse";
 import CardFree from "../components/HomeComponent/CardFree";
 import imgSection from "../assets/bernadya.svg";
+import Navbar from "../components/Navbar";
 import profilePic from "../assets/profil.png";
 import { IoIosArrowForward } from "react-icons/io";
 import 'swiper/css';
@@ -12,6 +13,7 @@ import Footer from "../components/Footer";
 const Home = () => {
     return (
         <>
+        <Navbar />
             <div className="w-full h-full  relative">
                 <img
                     src="/people_dasboard.png"

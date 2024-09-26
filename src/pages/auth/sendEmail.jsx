@@ -1,33 +1,52 @@
-// import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { sendEmail } from "../../redux/actions/authActions"; 
 
 const SendEmail = () => {
   const [email, setEmail] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { sending, success, error } = useSelector((state) => state.email);
+
+  // Pindahkan navigasi ke dalam useEffect
+  useEffect(() => {
+    if (success) {
+      navigate("/login"); // Navigasi hanya setelah render dan jika sukses
+    }
+  }, [success, navigate]);
+
+  const handleSend = (e) => {
+    e.preventDefault();
+    dispatch(sendEmail(email)); 
+  };  
 
   return (
     <div className="flex min-h-screen">
       <div className="w-[100%] lg:w-[50%] flex flex-col justify-center items-center mx-[23px] lg:px-[145px]">
-        <form
-          // onSubmit={}
-          className="w-full"
-        >
-          <h1 className="text-[24px] font-bold text-blue-800 mb-8 ">Mengirim Email</h1>
+        <form onSubmit={handleSend} className="w-full">
+          <h1 className="text-[24px] font-bold text-blue-800 mb-8">Mengirim Email</h1>
           <div className="flex flex-col gap-5">
             <div className="flex flex-col">
-              <label className="text-[12px] mb-1 font-Poppins ">Masukkan Email</label>
+              <label className="text-[12px] mb-1 font-Poppins">Masukkan Email</label>
               <input
                 type="email"
-                className="border text-[14px] w-full p-2 rounded-2xl "
+                className="border text-[14px] w-full p-2 rounded-2xl"
                 placeholder="Contoh: gunt@gmail.com"
                 value={email}
-                autoComplete="current-email"
                 onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
           </div>
-          <button className="btn  w-full text-[14px] font-medium bg-[#0A61AA] text-white py-[10px] rounded-2xl mt-5 ">
-            Kirim
+          <button
+            className="btn w-full text-[14px] font-medium bg-[#0A61AA] text-white py-[10px] rounded-2xl mt-5"
+            disabled={sending} // Disable button saat mengirim email
+          >
+            {sending ? "Mengirim..." : "Kirim"} {/* Ubah teks saat loading */}
           </button>
+          {error && <p className="text-red-500 mt-3">{error}</p>} {/* Tampilkan error jika ada */}
         </form>
       </div>
 

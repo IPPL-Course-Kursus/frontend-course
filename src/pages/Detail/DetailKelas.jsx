@@ -1,5 +1,4 @@
-import CardCourse from "../../components/HomeComponent/CardCourse";
-
+import CardRecomendation from "../../components/HomeComponent/CardRecomendation";
 
 export const DetailKelas = () => {
   return (
@@ -88,8 +87,8 @@ export const DetailKelas = () => {
       </div>
 
       {/* Bagian CardCourse */}
-      <div className="mt-12">
-        <CardCourse />
+      <div className="mt-4">
+        <CardRecomendation />
       </div>
     </div>
   );
