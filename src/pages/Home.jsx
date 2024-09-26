@@ -33,7 +33,7 @@ const Home = () => {
                             </h1>
                             <p className="hidden lg:block lg:absolute lg:text-4xl lg:top-[155px] lg:left-[280px] animate-pulse"></p>
                         </div>
-                        <NavLink as={Link} to={"/course"} className="mt-4 z-10">
+                        <NavLink as={Link} to={"/topik-kelas"} className="mt-4 z-10">
                             <button className="text-primary bg-white text-base font-semibold px-2 py-1 rounded-lg w-40 h-9 hover:scale-110 hover:bg-primary hover:text-white duration-300 lg:hover:border-white lg:hover:border">
                                 IKUTI KELAS
                             </button>

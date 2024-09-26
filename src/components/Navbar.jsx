@@ -95,12 +95,12 @@ const Navbar = () => {
 
   // // Fungsi logout
   // const handleLogout = () => {
-  //   dispatch(logout()); 
+  //   dispatch(logout());
   //   navigate("/"); // Mengarahkan pengguna ke halaman utama setelah logout
   // };
 
   return (
-    <div className="navbar bg-base-100">
+    <div className="navbar bg-base-100 shadow-lg">
       <div className="flex-none">
         <a className="btn btn-ghost lg:pl-10 text-xl text-primary" href="/">
           EtamCourse
@@ -135,9 +135,9 @@ const Navbar = () => {
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
               onClick={(e) => e.stopPropagation()} // Menjaga dropdown tetap terbuka saat mengklik
             >
-              <Link to="/profile">
+              <Link>
                 <li>
-                  <span className="justify-between font-medium cursor-pointer">Profile</span>{" "}
+                  <span  className="justify-between font-medium cursor-pointer">Profile</span>{" "}
                   {/* Ganti <a> dengan <span> */}
                 </li>
               </Link>

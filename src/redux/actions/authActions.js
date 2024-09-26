@@ -9,7 +9,8 @@ import {
 } from "../slices/authSlice";
 import { setToken, setUser } from "../slices/authSlice";
 import { auth } from "../../config/firebase";
-import { toast } from "react-toastify";
+
+import toast from "react-hot-toast";
 // import { createAsyncThunk } from "@reduxjs/toolkit";
 
 const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
@@ -38,6 +39,34 @@ const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
 //     toast.error("Terjadi kesalahan saat login.");
 //   }
 // };
+// export const login = (email, password, navigate) => async (dispatch) => {
+//   try {
+//     // Masuk dengan Firebase Authentication
+//     const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
+//     // Dapatkan token
+//     const token = await userCredential.user.getIdToken();
+
+//     // Simpan token di localStorage
+//     localStorage.setItem("token", token);
+
+//     // Dispatch token dan data user ke Redux
+//     dispatch(setToken(token));
+//     dispatch(setUser({ email: userCredential.user.email, uid: userCredential.user.uid }));
+//     console.log("ini token: ", token);
+//     // console.log("ini uid", user.uid);
+
+//     // Navigasi ke halaman utama
+//     navigate("/");
+
+//     // Notifikasi login berhasil
+//     toast.success("Login berhasil!");
+//   } catch (error) {
+//     console.error("Login error:", error.message);
+//     toast.error("Terjadi kesalahan saat login.");
+//   }
+// };
+
 export const login = (email, password, navigate) => async (dispatch) => {
   try {
     // Masuk dengan Firebase Authentication
@@ -49,18 +78,35 @@ export const login = (email, password, navigate) => async (dispatch) => {
     // Simpan token di localStorage
     localStorage.setItem("token", token);
 
+    // Ambil user uid dari userCredential
+    const uid = userCredential.user.uid;
+
+    // Logging token dan uid
+    console.log("Ini token: ", token);
+    console.log("Ini uid: ", uid);
+
     // Dispatch token dan data user ke Redux
     dispatch(setToken(token));
-    dispatch(setUser({ email: userCredential.user.email, uid: userCredential.user.uid }));
+    dispatch(setUser({ email: userCredential.user.email, uid: uid }));
 
+    setTimeout(() => {
+      navigate("/");
+    }, 1000);
     // Navigasi ke halaman utama
-    navigate("/profile");
-
-    // Notifikasi login berhasil
     toast.success("Login berhasil!");
+    // Notifikasi login berhasil
   } catch (error) {
-    console.error("Login error:", error.message);
-    toast.error("Terjadi kesalahan saat login.");
+    if (error.response) {
+      if (error.response.status === 403) {
+        toast.error("Email atau Password Anda salah. Silahkan coba lagi.");
+      } else if (error.response.status === 404) {
+        toast.error("Email tidak terdaftar. Silakan cek kembali email Anda.");
+      } else {
+        toast.error("Login gagal. Silakan coba lagi nanti.");
+      }
+    } else {
+      toast.error("Terjadi kesalahan pada server. Silakan coba lagi nanti.");
+    }
   }
 };
 
@@ -89,13 +135,23 @@ export const register =
       );
 
       // Notifikasi registrasi berhasil
-      toast.success("Registrasi berhasil! Silakan login.");
 
       // Arahkan ke halaman login setelah registrasi berhasil
-      navigate("/login");
+      setTimeout(() => {
+        navigate("/login");
+        toast.success("Registrasi berhasil! Silakan login.");
+      }, 1000);
     } catch (error) {
-      console.error("Register error:", error.message);
-      toast.error("Terjadi kesalahan saat registrasi.");
+      if (error.response) {
+        if (error.response.status === 500) {
+          // Status kode 500 menunjukkan kesalahan server
+          toast.error("Terjadi kesalahan pada server. Email mungkin sudah terdaftar.");
+        } else {
+          toast.error("Gagal mendaftarkan pengguna. Silakan coba lagi nanti.");
+        }
+      } else {
+        toast.error("Terjadi kesalahan pada server. Silakan coba lagi nanti.");
+      }
     }
   };
 

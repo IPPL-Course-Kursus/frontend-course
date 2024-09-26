@@ -7,33 +7,29 @@ import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { login } from "../../redux/actions/authActions";
+import toast from "react-hot-toast";
+// import { toast } from "react-toastify";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // const handleLogin = async (e) => {
-  //   e.preventDefault();
-
-  //   try {
-  //     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-  //     const user = userCredential.user;
-
-  //     console.log("Logged in user:", user);
-  //     alert("Login successful!");
-  //     navigate("/"); // Redirect to home or desired page after login
-  //   } catch (error) {
-  //     console.error("Error during login:", error.message);
-  //     alert("Login failed. Please check your email and password.");
-  //   }
-  // };
-
   const handleLogin = (e) => {
     e.preventDefault();
+    if (!email) {
+      setErrorMessage("Silahkan isi email anda");
+      return;
+    }
+
+    if (!password) {
+      setErrorMessage("Silahkan isi password anda");
+      return;
+    }
     // Validasi form
     // if (!email && !password) {
     //   toast.error("Email dan Password belum diisi");
@@ -45,9 +41,11 @@ const Login = () => {
     //   toast.error("Password belum diisi");
     //   return;
     // } else if (password.length < 8) {
-    //   toast.error("Password min 8 karakter!");
+    //   toast.error("Password harus minimal 8 karakter!");
     //   return;
     // }
+
+    // Jika validasi lolos, lakukan login
     dispatch(login(email, password, navigate));
   };
 
@@ -63,7 +61,9 @@ const Login = () => {
             <h1 className="text-[24px] font-bold text-black mb-8 ">Masuk</h1>
             <div className="flex flex-col gap-5">
               <div className="flex flex-col">
-                <label className="text-[14px] mb-1 font-Poppins font-medium">Email/No Telepon</label>
+                <label className="text-[14px] mb-1 font-Poppins font-medium">
+                  Email/No Telepon
+                </label>
                 <input
                   type="email"
                   className="border shadow-sm w-full p-2 rounded-xl "
@@ -77,9 +77,7 @@ const Login = () => {
                 <div className="flex justify-between items-center">
                   <label className="text-[14px] font-medium">Password</label>
                   <Link to="/send-email">
-                    <span className="text-[#0A61AA] font-medium font-Poppins">
-                      Lupa Kata Sandi
-                    </span>
+                    <span className="text-[#0A61AA] font-medium font-Poppins">Lupa Kata Sandi</span>
                   </Link>
                 </div>
                 <div className="relative">
@@ -89,7 +87,11 @@ const Login = () => {
                     placeholder="Masukkan password"
                     value={password}
                     autoComplete="current-password"
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(event) => {
+                      setPassword(event.target.value);
+                      // Hapus pesan kesalahan saat pengguna mulai mengetik ulang
+                      setErrorMessage("");
+                    }}
                   />
                   {/* buat hide password */}
                   <button
@@ -106,6 +108,9 @@ const Login = () => {
                   </button>
                 </div>
               </div>
+              {errorMessage && (
+                <p className="text-red-500 font-medium text-sm mb-2">{errorMessage}</p>
+              )}
             </div>
             <button
               to="/"
