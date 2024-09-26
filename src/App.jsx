@@ -9,6 +9,7 @@ import SuccessPage from "./pages/Payment/SuccesPayment";
 import PaymentPage from "./pages/Payment/PaymentPage";
 import DetailKelas from "./pages/Detail/DetailKelas";
 import MainProfile from "./pages/Profile/MainProfile";
+import MyCourse from "./pages/Course/MyCourse";
 
 // import sendEmail from "./pages/auth/sendEmail";
 
@@ -30,6 +31,8 @@ function App() {
 
           {/* route detail kelas */}
           <Route path="/detail_kelas" element={<DetailKelas />} />
+
+          <Route path="/MyCourse" element={<MyCourse />} />
 
           {/* Paymnent */}
           <Route path="/payment" element={<PaymentPage />} />
