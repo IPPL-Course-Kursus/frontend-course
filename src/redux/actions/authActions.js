@@ -57,8 +57,11 @@
 //       toast.error("Terjadi kesalahan saat login.");
 //     }
 //   };
-
+import axios from "axios";
+import { sendEmailStart, sendEmailSuccess, sendEmailFailure } from "../slices/authSlice";
+import { verifyEmailStart, verifyEmailSuccess, verifyEmailFailure } from "../slices/authSlice";
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
+import { resetPasswordStart, resetPasswordSuccess, resetPasswordFailure } from "../slices/authSlice";
 import { setToken, setUser } from "../slices/authSlice";
 import { auth } from "../../config/firebase";
 import { toast } from "react-toastify";
@@ -97,5 +100,70 @@ export const register =
     } catch (error) {
       console.error("Register error:", error.message);
       toast.error("Terjadi kesalahan saat registrasi.");
+    }
+  };
+
+  export const sendEmail = (email) => async (dispatch) => {
+    try {
+      dispatch(sendEmailStart());
+  
+      const response = await axios.post("http://localhost:6969/auth/forgot-password", { email });
+  
+      if (response.status === 200) {
+        dispatch(sendEmailSuccess());
+      } else {
+        throw new Error("Gagal mengirim email");
+      }
+    } catch (error) {
+      dispatch(sendEmailFailure(error.message)); 
+    }
+  };
+
+  export const resetPassword = (oobCode, password, confirmPassword) => async (dispatch) => {
+    try {
+      dispatch(resetPasswordStart());
+  
+
+      const response = await axios.post("http://localhost:6969/auth/reset-password", {
+        oobCode,
+        newPassword: password,
+        confirmPassword: confirmPassword,
+      });
+      console.log(response);
+      
+  
+      if (response.status === 200) {
+        dispatch(resetPasswordSuccess());
+        toast.success("Password berhasil diubah. Silakan login dengan password baru.");
+      } else {
+        throw new Error(response.data.message || "Gagal mereset password.");
+      }
+    } catch (error) {
+      dispatch(resetPasswordFailure(error.message));
+      toast.error(error.message || "Terjadi kesalahan saat mereset password.");
+    }
+  };
+
+  export const verifyEmail = () => async (dispatch) => {
+    try {
+      dispatch(verifyEmailStart()); // Memulai proses verifikasi email
+  
+      // Ambil oobCode dari localStorage
+      const oobCode = localStorage.getItem("oobCode");
+  
+      if (!oobCode) {
+        throw new Error("oobCode tidak ditemukan.");
+      }
+  
+      // Mengirim permintaan verifikasi email ke backend
+      const response = await axios.post("http://localhost:6969/auth/verify-email", { oobCode });
+  
+      if (response.status === 200) {
+        dispatch(verifyEmailSuccess()); // Dispatch jika verifikasi berhasil
+      } else {
+        throw new Error("Gagal memverifikasi email.");
+      }
+    } catch (error) {
+      dispatch(verifyEmailFailure(error.message)); // Dispatch jika verifikasi gagal
     }
   };
