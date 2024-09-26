@@ -58,7 +58,8 @@
 //     }
 //   };
 import axios from "axios";
-import { sendEmailStart, sendEmailSuccess, sendEmailFailure } from "../slices/authSlice"; // Import actions dari slice
+import { sendEmailStart, sendEmailSuccess, sendEmailFailure } from "../slices/authSlice";
+import { verifyEmailStart, verifyEmailSuccess, verifyEmailFailure } from "../slices/authSlice";
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { resetPasswordStart, resetPasswordSuccess, resetPasswordFailure } from "../slices/authSlice";
 import { setToken, setUser } from "../slices/authSlice";
@@ -140,5 +141,29 @@ export const register =
     } catch (error) {
       dispatch(resetPasswordFailure(error.message));
       toast.error(error.message || "Terjadi kesalahan saat mereset password.");
+    }
+  };
+
+  export const verifyEmail = () => async (dispatch) => {
+    try {
+      dispatch(verifyEmailStart()); // Memulai proses verifikasi email
+  
+      // Ambil oobCode dari localStorage
+      const oobCode = localStorage.getItem("oobCode");
+  
+      if (!oobCode) {
+        throw new Error("oobCode tidak ditemukan.");
+      }
+  
+      // Mengirim permintaan verifikasi email ke backend
+      const response = await axios.post("http://localhost:6969/auth/verify-email", { oobCode });
+  
+      if (response.status === 200) {
+        dispatch(verifyEmailSuccess()); // Dispatch jika verifikasi berhasil
+      } else {
+        throw new Error("Gagal memverifikasi email.");
+      }
+    } catch (error) {
+      dispatch(verifyEmailFailure(error.message)); // Dispatch jika verifikasi gagal
     }
   };

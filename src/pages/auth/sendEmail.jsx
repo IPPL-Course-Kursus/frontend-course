@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { sendEmail } from "../../redux/actions/authActions"; 
@@ -8,18 +8,19 @@ const SendEmail = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-
   const { sending, success, error } = useSelector((state) => state.email);
+
+  // Pindahkan navigasi ke dalam useEffect
+  useEffect(() => {
+    if (success) {
+      navigate("/login"); // Navigasi hanya setelah render dan jika sukses
+    }
+  }, [success, navigate]);
 
   const handleSend = (e) => {
     e.preventDefault();
     dispatch(sendEmail(email)); 
   };  
-
-
-  if (success) {
-    navigate("/login");
-  }
 
   return (
     <div className="flex min-h-screen">

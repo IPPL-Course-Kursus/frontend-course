@@ -9,13 +9,14 @@
 // });
 
 import { configureStore } from "@reduxjs/toolkit";
-import { authReducer, emailReducer, resetPasswordReducer } from "./slices/authSlice";
+import { authReducer, emailReducer, resetPasswordReducer, verifyEmailReducer } from "./slices/authSlice";
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
     email: emailReducer, 
-    resetPassword: resetPasswordReducer
+    resetPassword: resetPasswordReducer,
+    verifyEmail: verifyEmailReducer
   },
 });
 

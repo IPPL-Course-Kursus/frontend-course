@@ -42,6 +42,12 @@ const initialEmailState = {
   error: null,
 };
 
+const initialVerifyEmailState = {
+  sending: false,
+  success: false,
+  error: null,
+};
+
 // Membuat slice untuk auth
 const authSlice = createSlice({
   name: "auth",
@@ -110,13 +116,36 @@ const resetPasswordSlice = createSlice({
   },
 });
 
+const verifyEmailSlice = createSlice({
+  name: "email",
+  initialState: initialVerifyEmailState,
+  reducers: {
+    verifyEmailStart: (state) => {
+      state.sending = true;
+      state.success = false;
+      state.error = null;
+    },
+    verifyEmailSuccess: (state) => {
+      state.sending = false;
+      state.success = true;
+      state.error = null;
+    },
+    verifyEmailFailure: (state, action) => {
+      state.sending = false;
+      state.success = false;
+      state.error = action.payload;
+    },
+  },
+});
+
 export const { resetPasswordStart, resetPasswordSuccess, resetPasswordFailure } = resetPasswordSlice.actions;
 export const { setToken, setUser, logout } = authSlice.actions;
 export const { sendEmailStart, sendEmailSuccess, sendEmailFailure } = emailSlice.actions;
-
+export const { verifyEmailStart, verifyEmailSuccess, verifyEmailFailure } = verifyEmailSlice.actions;
 
 
 // Export reducer untuk digunakan di store
 export const authReducer = authSlice.reducer;
 export const emailReducer = emailSlice.reducer;
 export const resetPasswordReducer = resetPasswordSlice.reducer;
+export const verifyEmailReducer = verifyEmailSlice.reducer;

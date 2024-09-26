@@ -8,6 +8,7 @@ import SendEmail from "./pages/auth/SendEmail";
 import SuccessPage from "./pages/payment/SuccesPayment";
 import PaymentPage from "./pages/Payment/PaymentPage";
 import DetailKelas from "./pages/Detail/DetailKelas";
+import VerifyEmail from "./pages/auth/VerifyEmail";
 import { useEffect } from "react";
 
 function App() {
@@ -46,6 +47,7 @@ function AppRoutes() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/reset" element={<ResetPassword />} />
+      <Route path="/verify-email" element={<VerifyEmail />} />
 
       <Route path="send-email" element={<SendEmail />} />
 
