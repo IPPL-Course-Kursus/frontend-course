@@ -15,6 +15,8 @@ import MyCourse from "./pages/Course/MyCourse";
 import VerifyEmail from "./pages/auth/VerifyEmail";
 import TopikKelas from "./pages/TopikKelas/topikKelas";
 import MulaiKelas from "./pages/MulaiKelas/MulaiKelas";
+// import NoAccessToken from "./security/NoAccessToken";
+import AdminDashboard from "./components/Admin/AdminDashboard";
 
 function App() {
   return (
@@ -59,24 +61,49 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+
       {/* Auth */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/reset" element={<ResetPassword />} />
       <Route path="/send-email" element={<SendEmail />} />
       <Route path="/verify-email" element={<VerifyEmail />} />
+
       {/* Profile */}
       <Route path="/profile" element={<MainProfile />} />
+
       {/* Course */}
       <Route path="/detail-kelas" element={<DetailKelas />} />
       <Route path="/mycourse" element={<MyCourse />} />
       <Route path="/topik-kelas" element={<TopikKelas />} />
       <Route path="/mulai-kelas" element={<MulaiKelas />} />
+
       {/* Payment */}
       <Route path="/payment" element={<PaymentPage />} />
       <Route path="/succes-payment" element={<SuccessPage />} />
+
+      {/* Admin */}
+      <Route path="/admin/dashboard" element={<AdminDashboard />} />
+
       {/* NotFound */}
       <Route path="/*" element={<NotFound />} />
+
+      {/* <Route
+        path="/login"
+        element={
+          <NoAccessToken>
+            <Login />
+          </NoAccessToken>
+        }
+      />
+      <Route
+        path="/register"
+        element={
+          <NoAccessToken>
+            <Register />
+          </NoAccessToken>
+        }
+      /> */}
     </Routes>
   );
 }
