@@ -15,8 +15,8 @@ import MyCourse from "./pages/Course/MyCourse";
 import VerifyEmail from "./pages/auth/VerifyEmail";
 import TopikKelas from "./pages/TopikKelas/topikKelas";
 import MulaiKelas from "./pages/MulaiKelas/MulaiKelas";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 // import NoAccessToken from "./security/NoAccessToken";
-import AdminDashboard from "./components/Admin/AdminDashboard";
 
 function App() {
   return (

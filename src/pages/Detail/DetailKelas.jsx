@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import CardRecommended from "../../components/DetailComponent/CardRecommended";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
+import { FaBook } from "react-icons/fa";
+import { GrCertificate } from "react-icons/gr";
 // import { useState } from "react";
 // import PopupBuy from "../../components/DetailComponent/PopUpBuy";
 
@@ -39,9 +41,7 @@ export const DetailKelas = () => {
             </p>
 
             {/* Tombol Ikuti Kelas */}
-            <Link
-             to="/mulai-kelas"
-            >
+            <Link to="/mulai-kelas">
               <button
                 // onClick={() => setIsPopupBuy(true)}
                 className="mt-6 px-4 py-2 bg-[#0a61aa] text-white text-xs font-bold rounded-md"
@@ -82,11 +82,8 @@ export const DetailKelas = () => {
             <div className="mt-4 space-y-4">
               {/* Materi */}
               <div className="flex items-center bg-grey p-4 rounded-md">
-                <img
-                  className="w-[50px] h-[50px] mr-4"
-                  alt="Group"
-                  src="images/DetailKelas/detkelas1.png"
-                />
+                <FaBook className="w-[50px] h-[50px] mr-4 " />
+                {/* <img className="w-[50px] h-[50px] mr-4" alt="Group" src="" /> */}
                 <div>
                   <p className="font-medium text-[#151515] text-base leading-5">13 Materi</p>
                 </div>
@@ -94,11 +91,8 @@ export const DetailKelas = () => {
 
               {/* Sertifikat */}
               <div className="flex items-center bg-grey p-4 rounded-md">
-                <img
-                  className="w-[50px] h-[50px] mr-4"
-                  alt="Group"
-                  src="images/DetailKelas/detkelas2.png"
-                />
+                <GrCertificate className="w-[50px] h-[50px] mr-4 " />
+
                 <div>
                   <p className="font-medium text-[#151515] text-base leading-5">Sertifikat</p>
                 </div>
