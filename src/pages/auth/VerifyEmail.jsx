@@ -24,6 +24,7 @@ const VerifyEmail = () => {
         if (success) {
             navigate("/login");
             localStorage.removeItem("oobCode"); // Hapus oobCode dari localStorage setelah verifikasi
+            console.log(success);
         }
     }, [success, navigate]);
 

@@ -44,6 +44,7 @@ const ResetPassword = () => {
       toast.success("Password berhasil diubah. Silakan login dengan password baru.");
       navigate("/login");
       localStorage.removeItem("oobCode");
+      console.log(success);
     }
   }, [success, navigate]);
 
