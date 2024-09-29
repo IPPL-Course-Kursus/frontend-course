@@ -1,198 +1,273 @@
 import axios from "axios";
-import { sendEmailStart, sendEmailSuccess, sendEmailFailure, logout } from "../slices/authSlice";
-import { verifyEmailStart, verifyEmailSuccess, verifyEmailFailure } from "../slices/authSlice";
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  sendEmailStart,
+  sendEmailSuccess,
+  sendEmailFailure,
+  loginStart,
+  loginSuccess,
+  loginFailure,
+  registerStart,
+  registerSuccess,
+  registerFailure,
+  logout,
+  setUser,
+  setCredentials,
+} from "../reducers/authReducers";
+import { verifyEmailStart, verifyEmailSuccess, verifyEmailFailure } from "../reducers/authReducers";
 import {
   resetPasswordStart,
   resetPasswordSuccess,
   resetPasswordFailure,
-} from "../slices/authSlice";
-import { setToken, setUser } from "../slices/authSlice";
-import { auth } from "../../config/firebase";
-
+} from "../reducers/authReducers";
+// import Cookies from "js-cookie";
 import toast from "react-hot-toast";
-// import { createAsyncThunk } from "@reduxjs/toolkit";
 
 const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
 
-// Login Fix
+// export const login = (email, password, navigate) => async (dispatch, getState) => {
+//   dispatch(loginStart()); // Memulai proses login
+//   console.log("Proses login dimulai..."); // Console log untuk proses login
 
-// export const login = (email, password, navigate) => async (dispatch) => {
-//   try {
-//     // Masuk dengan Firebase Authentication
-//     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-
-//     // Dapatkan token
-//     const token = await userCredential.user.getIdToken();
-
-//     // Dispatch token dan data user ke Redux
-//     dispatch(setToken(token));
-//     dispatch(setUser({ email: userCredential.user.email, uid: userCredential.user.uid }));
-
-//     // Navigasi ke halaman utama
-//     navigate("/");
-
-//     // Notifikasi login berhasil
-//     toast.success("Login berhasil!");
-//   } catch (error) {
-//     console.error("Login error:", error.message);
-//     toast.error("Terjadi kesalahan saat login.");
+//   // Memvalidasi input
+//   if (!email || !password) {
+//     console.log("Email atau Password tidak diisi."); // Console log untuk validasi
+//     dispatch(loginFailure("Email dan Password harus diisi."));
+//     return;
 //   }
-// };
-// export const login = (email, password, navigate) => async (dispatch) => {
+
 //   try {
-//     // Masuk dengan Firebase Authentication
-//     const userCredential = await signInWithEmailAndPassword(auth, email, password);
+//     // Melakukan permintaan login
+//     const response = await axios.post(`${api_url}auth/login`, { email, password });
+//     console.log("Respons dari server:", response.data); // Console log untuk respons
 
-//     // Dapatkan token
-//     const token = await userCredential.user.getIdToken();
+//     const { success, message, data } = response.data;
+//     console.log("Respons dari server:", response.data); // Log respons
 
-//     // Simpan token di localStorage
-//     localStorage.setItem("token", token);
+//     if (success) {
+//       const { uid, token, user, role } = data; // Ambil data UID, token, user, dan role dari respons
+//       console.log("Login berhasil, data pengguna:", { uid, token, user, role }); // Console log untuk data pengguna
 
-//     // Dispatch token dan data user ke Redux
-//     dispatch(setToken(token));
-//     dispatch(setUser({ email: userCredential.user.email, uid: userCredential.user.uid }));
-//     console.log("ini token: ", token);
-//     // console.log("ini uid", user.uid);
+//       // Menyimpan token di cookies
+//       Cookies.set("token", token, { expires: 1 / 6 }); // Token berlaku selama 4 jam (1/6 hari)
 
-//     // Navigasi ke halaman utama
-//     navigate("/");
-
-//     // Notifikasi login berhasil
-//     toast.success("Login berhasil!");
+//       dispatch(setCredentials({ uid, token, user, role })); // Menyimpan UID, token, user, dan role
+//       dispatch(loginSuccess({ user, uid, token, role })); // Dispatch login success
+//       navigate("/"); // Navigasi ke halaman utama
+//     } else {
+//       console.log("Login gagal:", message); // Console log untuk pesan kesalahan
+//       dispatch(loginFailure(message || "Login gagal.")); // Dispatch jika login gagal
+//     }
 //   } catch (error) {
-//     console.error("Login error:", error.message);
-//     toast.error("Terjadi kesalahan saat login.");
+//     // Penanganan error lebih spesifik
+//     const errorMessage = error.response?.data?.message || "Terjadi kesalahan saat login.";
+//     console.log("Error saat login:", errorMessage); // Console log untuk error
+//     dispatch(loginFailure(errorMessage)); // Dispatch error
 //   }
 // };
 
 export const login = (email, password, navigate) => async (dispatch) => {
+  dispatch(loginStart()); // Memulai proses login
+  console.log("Proses login dimulai..."); // Console log untuk proses login
+
   try {
-    // Masuk dengan Firebase Authentication
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-
-    // Dapatkan token
-    const token = await userCredential.user.getIdToken();
-
-    // Simpan token di localStorage
-    localStorage.setItem("token", token);
-
-    // Ambil user uid dari userCredential
-    const uid = userCredential.user.uid;
-
-    // Logging token dan uid
-    console.log("Ini token: ", token);
-    console.log("Ini uid: ", uid);
-
-    // Dispatch token dan data user ke Redux
-    dispatch(setToken(token));
-    dispatch(setUser({ email: userCredential.user.email, uid: uid }));
-
-    setTimeout(() => {
-      navigate("/");
-    }, 1000);
-    // Navigasi ke halaman utama
-    toast.success("Login berhasil!");
-    // Notifikasi login berhasil
-  } catch (error) {
-    if (error.response) {
-      if (error.response.status === 403) {
-        toast.error("Email atau Password Anda salah. Silahkan coba lagi.");
-      } else if (error.response.status === 404) {
-        toast.error("Email tidak terdaftar. Silakan cek kembali email Anda.");
-      } else {
-        toast.error("Login gagal. Silakan coba lagi nanti.");
-      }
-    } else {
-      toast.error("Terjadi kesalahan pada server. Silakan coba lagi nanti.");
+    // Memvalidasi input
+    if (!email || !password) {
+      console.log("Email atau Password tidak diisi."); // Console log untuk validasi
+      dispatch(loginFailure("Email dan Password harus diisi."));
+      return;
     }
+
+    // Melakukan permintaan login
+    const response = await axios.post(`${api_url}auth/login`, { email, password });
+    console.log("Respons dari server:", response.data); // Console log untuk respons
+
+    const { success, message, data } = response.data;
+    console.log("Respons dari server:", response.data); // Log respons
+
+    if (success) {
+      const { uid, token, user, role } = data; // Ambil data UID, token, user, dan role dari respons
+      console.log("Login berhasil, data pengguna:", { uid, token, user, role }); // Console log untuk data pengguna
+
+      dispatch(setCredentials({ uid, token, user, role })); // Menyimpan UID, token, user, dan role
+      dispatch(loginSuccess({ user, uid, token, role })); // Dispatch login success
+      navigate("/"); // Navigasi ke halaman utama
+    } else {
+      console.log("Login gagal:", message); // Console log untuk pesan kesalahan
+      dispatch(loginFailure(message || "Login gagal.")); // Dispatch jika login gagal
+    }
+  } catch (error) {
+    // Penanganan error lebih spesifik
+    const errorMessage = error.response?.data?.message || "Terjadi kesalahan saat login.";
+    console.log("Error saat login:", errorMessage); // Console log untuk error
+    dispatch(loginFailure(errorMessage)); // Dispatch error
   }
 };
 
+// export const login = (email, password, navigate) => (dispatch) => {
+//   dispatch(loginStart()); // Memulai proses login
+//   console.log("Proses login dimulai..."); // Console log untuk proses login
+
+//   // Memvalidasi input
+//   if (!email || !password) {
+//     console.log("Email atau Password tidak diisi."); // Console log untuk validasi
+//     dispatch(loginFailure("Email dan Password harus diisi."));
+//     return;
+//   }
+
+//   // Melakukan permintaan login
+//   axios
+//     .post(`${api_url}auth/login`, { email, password })
+//     .then((response) => {
+//       console.log("Respons dari server:", response.data); // Console log untuk respons
+
+//       const { success, message, data } = response.data;
+//       console.log("Respons dari server:", response.data); // Log respons
+
+//       if (success) {
+//         const { uid, token, user, role } = data; // Ambil data UID, token, user, dan role dari respons
+//         console.log("Login berhasil, data pengguna:", { uid, token, user, role }); // Console log untuk data pengguna
+
+//         dispatch(setCredentials({ uid, token, user, role })); // Menyimpan UID, token, user, dan role
+//         dispatch(loginSuccess({ user, uid, token, role })); // Dispatch login success
+//         navigate("/"); // Navigasi ke halaman utama
+//       } else {
+//         console.log("Login gagal:", message); // Console log untuk pesan kesalahan
+//         dispatch(loginFailure(message || "Login gagal.")); // Dispatch jika login gagal
+//       }
+//     })
+//     .catch((error) => {
+//       // Penanganan error lebih spesifik
+//       const errorMessage = error.response?.data?.message || "Terjadi kesalahan saat login.";
+//       console.log("Error saat login:", errorMessage); // Console log untuk error
+//       dispatch(loginFailure(errorMessage)); // Dispatch error
+//     });
+// };
+// Register action
 export const register =
   (email, password, fullName, phoneNumber, country, city, tanggalLahir, navigate) =>
   async (dispatch) => {
+    dispatch(registerStart()); // Memulai proses registrasi
+
     try {
-      // Daftarkan pengguna baru menggunakan Firebase Authentication
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-
-      // Dapatkan token dari user yang baru terdaftar
-      const token = await userCredential.user.getIdToken();
-
-      // Dispatch token dan data user ke Redux
-      dispatch(setToken(token));
-      dispatch(
-        setUser({
-          email: userCredential.user.email,
-          uid: userCredential.user.uid,
-          fullName: fullName, // Bisa menyimpan nama pengguna dari input form register
-          phoneNumber,
-          country,
-          city,
-          tanggalLahir,
-        })
-      );
-
-      // Notifikasi registrasi berhasil
-
-      // Arahkan ke halaman login setelah registrasi berhasil
-      setTimeout(() => {
-        navigate("/login");
-        toast.success("Registrasi berhasil! Silakan login.");
-      }, 1000);
-    } catch (error) {
-      if (error.response) {
-        if (error.response.status === 500) {
-          // Status kode 500 menunjukkan kesalahan server
-          toast.error("Terjadi kesalahan pada server. Email mungkin sudah terdaftar.");
-        } else {
-          toast.error("Gagal mendaftarkan pengguna. Silakan coba lagi nanti.");
-        }
-      } else {
-        toast.error("Terjadi kesalahan pada server. Silakan coba lagi nanti.");
-      }
-    }
-  };
-
-export const getMe =
-  (navigate, navigatePathSuccess, navigatePathError) => async (dispatch, getState) => {
-    try {
-      let { token, user } = getState().auth;
-      console.log("Token berikut:", token);
-      console.log("UID berikut:", user);
-
-      // Cek apakah token valid
-      if (!token || (user && user.uid)) {
-        // Jika tidak ada token atau user sudah ada, tidak perlu mengambil data lagi
-        return;
-      }
-
-      const response = await axios.get(`${user.uid}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await axios.post(`${api_url}auth/register`, {
+        email,
+        password,
+        fullName,
+        phoneNumber,
+        country,
+        city,
+        tanggalLahir,
       });
 
-      const { data } = response.data;
-      // const { user } = data;
-
-      // Dispatch data pengguna yang diambil
-      dispatch(setUser(data));
-
-      // Jika sukses, arahkan ke halaman yang ditentukan
-      if (navigatePathSuccess) navigate(navigatePathSuccess);
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response && error.response.status === 401) {
-          dispatch(logout());
-        }
-        if (navigatePathError) navigate(navigatePathError);
+      if (response.status === 201) {
+        dispatch(registerSuccess()); // Dispatch jika registrasi berhasil
+        toast.success("Pendaftaran Berhasil!"); // Notifikasi berhasil
+        navigate("/login"); // Navigasi ke halaman login
+      } else {
+        throw new Error("Registrasi gagal.");
       }
-      console.error("Error fetching user data:", error);
-      alert(error?.message);
+    } catch (error) {
+      dispatch(
+        registerFailure(error.response?.data?.message || "Terjadi kesalahan saat registrasi.")
+      ); // Dispatch error
+      toast.error(error.message || "Terjadi kesalahan saat registrasi."); // Notifikasi gagal
     }
   };
+
+export const getMe = () => async (dispatch, getState) => {
+  try {
+    const { token, uid } = getState().auth;
+
+    if (!token || !uid) {
+      throw new Error("Token atau UID tidak tersedia.");
+    }
+
+    const response = await axios.get(`${api_url}auth/profile/${uid}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const { success, data } = response.data;
+
+    if (success) {
+      dispatch(setUser(data)); // Dispatch untuk menyimpan data user
+    } else {
+      dispatch(logout()); // Logout jika tidak berhasil
+    }
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    dispatch(logout()); // Logout jika terjadi kesalahan
+  }
+};
+
+// export const register =
+//   (email, password, fullName, phoneNumber, country, city, tanggalLahir, navigate) => async () => {
+//     try {
+//       const response = await axios.post(`${api_url}auth/register`, {
+//         email,
+//         password,
+//         fullName,
+//         phoneNumber,
+//         country,
+//         city,
+//         tanggalLahir,
+//       });
+//       console.log("Response from register:", response);
+
+//       if (response.status === 201) {
+//         const { email } = response.data.user;
+//         localStorage.setItem("email", email);
+//         toast.success("Pendaftaran Berhasil");
+//       }
+//       //   setTimeout(() => {
+//       navigate("/login");
+//       //   }, 1000);
+//     } catch (error) {
+//       console.error("Login error:", error);
+//       toast.error("Terjadi kesalahan saat login.");
+//     }
+//   };
+
+//
+// export const getMe =
+//   (navigate, navigatePathSuccess, navigatePathError) => async (dispatch, getState) => {
+//     try {
+//       let { token, user } = getState().auth;
+//       console.log("Token berikut:", token);
+//       console.log("UID berikut:", user);
+
+//       // Cek apakah token valid
+//       if (!token || (user && user.uid)) {
+//         // Jika tidak ada token atau user sudah ada, tidak perlu mengambil data lagi
+//         return;
+//       }
+
+//       const response = await axios.get(`${user.uid}`, {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       });
+
+//       const { data } = response.data;
+//       // const { user } = data;
+
+//       // Dispatch data pengguna yang diambil
+//       dispatch(setUser(data));
+
+//       // Jika sukses, arahkan ke halaman yang ditentukan
+//       if (navigatePathSuccess) navigate(navigatePathSuccess);
+//     } catch (error) {
+//       if (axios.isAxiosError(error)) {
+//         if (error.response && error.response.status === 401) {
+//           dispatch(logout());
+//         }
+//         if (navigatePathError) navigate(navigatePathError);
+//       }
+//       console.error("Error fetching user data:", error);
+//       alert(error?.message);
+//     }
+//   };
 
 export const sendEmail = (email) => async (dispatch) => {
   try {

@@ -8,7 +8,6 @@ import { FaRegEyeSlash } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { login } from "../../redux/actions/authActions";
 import toast from "react-hot-toast";
-// import { toast } from "react-toastify";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -31,19 +30,19 @@ const Login = () => {
       return;
     }
     // Validasi form
-    // if (!email && !password) {
-    //   toast.error("Email dan Password belum diisi");
-    //   return;
-    // } else if (!email) {
-    //   toast.error("Email belum diisi");
-    //   return;
-    // } else if (!password) {
-    //   toast.error("Password belum diisi");
-    //   return;
-    // } else if (password.length < 8) {
-    //   toast.error("Password harus minimal 8 karakter!");
-    //   return;
-    // }
+    if (!email && !password) {
+      toast.error("Email dan Password belum diisi");
+      return;
+    } else if (!email) {
+      toast.error("Email belum diisi");
+      return;
+    } else if (!password) {
+      toast.error("Password belum diisi");
+      return;
+    } else if (password.length < 8) {
+      toast.error("Password harus minimal 8 karakter!");
+      return;
+    }
 
     // Jika validasi lolos, lakukan login
     dispatch(login(email, password, navigate));
