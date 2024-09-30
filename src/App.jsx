@@ -10,11 +10,6 @@ import SendEmail from "./pages/auth/SendEmail";
 import SuccessPage from "./pages/payment/SuccesPayment";
 import PaymentPage from "./pages/Payment/PaymentPage";
 import DetailKelas from "./pages/Detail/DetailKelas";
-<<<<<<< HEAD
-import AdminDashboard from "./pages/admin/AdminDashboard";
-
-// import sendEmail from "./pages/auth/sendEmail";
-=======
 import MainProfile from "./pages/Profile/MainProfile";
 import MyCourse from "./pages/Course/MyCourse";
 import VerifyEmail from "./pages/auth/VerifyEmail";
@@ -22,7 +17,6 @@ import TopikKelas from "./pages/TopikKelas/topikKelas";
 import MulaiKelas from "./pages/MulaiKelas/MulaiKelas";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 // import NoAccessToken from "./security/NoAccessToken";
->>>>>>> cde403cafdb4ad3b6b15cc15d1c82ca8560a4dd6
 
 function App() {
   return (
@@ -53,15 +47,6 @@ function AppRoutes() {
     const mode = searchParams.get("mode");
     const oobCode = searchParams.get("oobCode");
 
-<<<<<<< HEAD
-          {/* route detail kelas */}
-          <Route path="/detail_kelas" element={<DetailKelas />} />
-          {/* route admin dashboard */}
-          <Route path="/admindashboard" element={<AdminDashboard />} />
-          {/* Paymnent */}
-          <Route path="/payment" element={<PaymentPage />} />
-          <Route path="/succes-payment" element={<SuccessPage />} />
-=======
     if (mode === "resetPassword") {
       localStorage.setItem("oobCode", oobCode);
       navigate("/reset");
@@ -72,7 +57,6 @@ function AppRoutes() {
       navigate("/verify-email");
     }
   }, [location, navigate]);
->>>>>>> cde403cafdb4ad3b6b15cc15d1c82ca8560a4dd6
 
   return (
     <Routes>
