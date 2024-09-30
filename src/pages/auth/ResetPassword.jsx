@@ -89,6 +89,7 @@ const ResetPassword = () => {
                   onClick={() => setShowPasswordDown(!showPasswordDown)}
                   className="absolute top-1/2 right-2 transform -translate-y-1/2 px-3 py-1 border rounded-lg"
                 >
+                  {/*  */}
                   {showPasswordDown ? <FaRegEyeSlash /> : <FaRegEye />}
                 </button>
               </div>
