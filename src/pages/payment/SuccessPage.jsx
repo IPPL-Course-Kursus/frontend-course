@@ -38,8 +38,4 @@ const SuccessPage = () => {
   );
 };
 
-<<<<<<< HEAD:src/pages/payment/SuccessPage.jsx
 export default SuccessPage;
-=======
-export default SuccesPayment;
->>>>>>> cde403cafdb4ad3b6b15cc15d1c82ca8560a4dd6:src/pages/payment/SuccesPayment.jsx

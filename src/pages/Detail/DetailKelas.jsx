@@ -7,16 +7,12 @@ import { GrCertificate } from "react-icons/gr";
 // import { useState } from "react";
 // import PopupBuy from "../../components/DetailComponent/PopUpBuy";
 
-<<<<<<< HEAD
-const DetailKelas = () => {
-=======
 export const DetailKelas = () => {
   // const [isPopupBuy, setIsPopupBuy] = useState(false);
 
   // const handlePopup = () => {
   //   setIsPopupBuy(false);
   // };
->>>>>>> cde403cafdb4ad3b6b15cc15d1c82ca8560a4dd6
   return (
     <>
       {/* <PopupBuy

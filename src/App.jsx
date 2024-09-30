@@ -7,7 +7,7 @@ import Login from "./pages/auth/Login";
 import ResetPassword from "./pages/auth/ResetPassword";
 import Register from "./pages/auth/Register";
 import SendEmail from "./pages/auth/SendEmail";
-import SuccessPage from "./pages/payment/SuccesPayment";
+import SuccessPage from "./pages/payment/SuccessPage";
 import PaymentPage from "./pages/Payment/PaymentPage";
 import DetailKelas from "./pages/Detail/DetailKelas";
 import MainProfile from "./pages/Profile/MainProfile";
