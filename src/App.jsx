@@ -16,6 +16,7 @@ import VerifyEmail from "./pages/auth/VerifyEmail";
 import TopikKelas from "./pages/TopikKelas/topikKelas";
 import MulaiKelas from "./pages/MulaiKelas/MulaiKelas";
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminDataKategori from "./pages/admin/AdminDataKategori";
 // import NoAccessToken from "./security/NoAccessToken";
 
 function App() {
@@ -84,11 +85,12 @@ function AppRoutes() {
 
       {/* Admin */}
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
+      <Route path="/admin/data-Kategori" element={<AdminDataKategori />} />
 
       {/* NotFound */}
-      <Route path="/*" element={<NotFound />} />
+      <Route path="/*" element={<NotFound />} />  
 
-      {/* <Route
+      {/* <Route  
         path="/login"
         element={
           <NoAccessToken>
