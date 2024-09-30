@@ -1,8 +1,15 @@
+<<<<<<< HEAD
 import { useState } from 'react';
 import { FaUsers, FaSearch, FaFilter } from 'react-icons/fa';
 
 const Dashboard = () => {
   // State untuk data statistik
+=======
+import { useState } from "react";
+import { FaUsers, FaSearch, FaFilter } from "react-icons/fa";
+
+const AdminDashboard = () => {
+>>>>>>> cde403cafdb4ad3b6b15cc15d1c82ca8560a4dd6
   const [stats] = useState({
     users: 450,
     instruktor: 25,
@@ -11,15 +18,24 @@ const Dashboard = () => {
   });
 
   // State untuk search input
+<<<<<<< HEAD
   const [globalSearch, setGlobalSearch] = useState('');
   const [paymentSearch, setPaymentSearch] = useState('');
 
   // State untuk filter status pembayaran
   const [filter, setFilter] = useState('');
+=======
+  const [globalSearch, setGlobalSearch] = useState("");
+  const [paymentSearch, setPaymentSearch] = useState("");
+
+  // State untuk filter status pembayaran
+  const [filter, setFilter] = useState("");
+>>>>>>> cde403cafdb4ad3b6b15cc15d1c82ca8560a4dd6
 
   // State untuk status pembayaran
   const [paymentStatus] = useState([
     {
+<<<<<<< HEAD
       id: 'johndoe123',
       kategori: 'UI/UX Design',
       kelasPremium: 'Belajar Web Designer dengan Figma',
@@ -66,13 +82,68 @@ const Dashboard = () => {
       status: 'SUDAH BAYAR',
       metodePembayaran: 'Credit Card',
       tanggalBayar: '10 Sep, 2023 at 2:00 AM',
+=======
+      id: "johndoe123",
+      kategori: "UI/UX Design",
+      kelasPremium: "Belajar Web Designer dengan Figma",
+      status: "SUDAH BAYAR",
+      metodePembayaran: "Credit Card",
+      tanggalBayar: "21 Sep, 2023 at 2:00 AM",
+    },
+    {
+      id: "supermanxx",
+      kategori: "UI/UX Design",
+      kelasPremium: "Belajar Web Designer dengan Figma",
+      status: "BELUM BAYAR",
+      metodePembayaran: "-",
+      tanggalBayar: "-",
+    },
+    {
+      id: "ironman99",
+      kategori: "Web Development",
+      kelasPremium: "CSS dan HTML dalam seminggu",
+      status: "SUDAH BAYAR",
+      metodePembayaran: "Credit Card",
+      tanggalBayar: "20 Sep, 2023 at 2:00 AM",
+    },
+    {
+      id: "lokiMaster",
+      kategori: "Data Science",
+      kelasPremium: "Data Cleaning untuk pemula",
+      status: "SUDAH BAYAR",
+      metodePembayaran: "Credit Card",
+      tanggalBayar: "19 Sep, 2023 at 2:00 AM",
+    },
+    {
+      id: "siapaAjaani",
+      kategori: "Data Science",
+      kelasPremium: "Data Cleaning untuk pemula",
+      status: "BELUM BAYAR",
+      metodePembayaran: "-",
+      tanggalBayar: "-",
+    },
+    {
+      id: "visionOKE",
+      kategori: "Data Science",
+      kelasPremium: "Data Cleaning untuk pemula",
+      status: "SUDAH BAYAR",
+      metodePembayaran: "Credit Card",
+      tanggalBayar: "10 Sep, 2023 at 2:00 AM",
+>>>>>>> cde403cafdb4ad3b6b15cc15d1c82ca8560a4dd6
     },
   ]);
 
   // Filter berdasarkan search input dan filter status pembayaran
+<<<<<<< HEAD
   const filteredPayments = paymentStatus.filter((payment) =>
     payment.id.toLowerCase().includes(paymentSearch.toLowerCase()) &&
     (filter === '' || payment.status === filter)
+=======
+  const filteredPayments = paymentStatus.filter(
+    (payment) =>
+      payment.id.toLowerCase().includes(paymentSearch.toLowerCase()) &&
+      (filter === "" || payment.status === filter)
+>>>>>>> cde403cafdb4ad3b6b15cc15d1c82ca8560a4dd6
   );
 
   // Fungsi untuk menangani perubahan filter status pembayaran
@@ -85,7 +156,11 @@ const Dashboard = () => {
       {/* Header - Hi Admin */}
       <div className="bg-[#F3F7FB] p-4 flex justify-between items-center mb-4 shadow-sm">
         <h1 className="text-2xl font-bold text-[#173D94]">Hi, Admin!</h1>
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> cde403cafdb4ad3b6b15cc15d1c82ca8560a4dd6
         {/* Search Bar Global */}
         <div className="relative flex items-center bg-white rounded-full shadow-md">
           <input
@@ -104,8 +179,13 @@ const Dashboard = () => {
       {/* Cards Users */}
       <div className="grid grid-cols-4 gap-6 mb-8">
         <div className="bg-primary text-white p-4 rounded-lg shadow-sm flex items-center justify-center">
+<<<<<<< HEAD
         <div className="bg-white rounded-full p-2">
           <FaUsers className="text-2xl text-primary" />
+=======
+          <div className="bg-white rounded-full p-2">
+            <FaUsers className="text-2xl text-primary" />
+>>>>>>> cde403cafdb4ad3b6b15cc15d1c82ca8560a4dd6
           </div>
           <div className="ml-4">
             <div className="text-2xl">{stats.users}</div>
@@ -115,8 +195,13 @@ const Dashboard = () => {
 
         {/* Cards Instruktor */}
         <div className="bg-success text-white p-4 rounded-lg shadow-sm flex items-center justify-center">
+<<<<<<< HEAD
         <div className="bg-white rounded-full p-2">
           <FaUsers className="text-2xl text-primary" />
+=======
+          <div className="bg-white rounded-full p-2">
+            <FaUsers className="text-2xl text-primary" />
+>>>>>>> cde403cafdb4ad3b6b15cc15d1c82ca8560a4dd6
           </div>
           <div className="ml-4">
             <div className="text-2xl">{stats.instruktor}</div>
@@ -126,8 +211,13 @@ const Dashboard = () => {
 
         {/* Cards Free Class */}
         <div className="bg-[#173D94] text-white p-4 rounded-lg shadow-sm flex items-center justify-center">
+<<<<<<< HEAD
         <div className="bg-white rounded-full p-2">
           <FaUsers className="text-2xl text-primary" />
+=======
+          <div className="bg-white rounded-full p-2">
+            <FaUsers className="text-2xl text-primary" />
+>>>>>>> cde403cafdb4ad3b6b15cc15d1c82ca8560a4dd6
           </div>
           <div className="ml-4">
             <div className="text-2xl">{stats.freeClass}</div>
@@ -137,8 +227,13 @@ const Dashboard = () => {
 
         {/* Cards Premium Class */}
         <div className="bg-[#173D94] text-white p-4 rounded-lg shadow-sm flex items-center justify-center">
+<<<<<<< HEAD
         <div className="bg-white rounded-full p-2">
           <FaUsers className="text-2xl text-primary" />
+=======
+          <div className="bg-white rounded-full p-2">
+            <FaUsers className="text-2xl text-primary" />
+>>>>>>> cde403cafdb4ad3b6b15cc15d1c82ca8560a4dd6
           </div>
           <div className="ml-4">
             <div className="text-2xl">{stats.premiumClass}</div>
@@ -151,10 +246,16 @@ const Dashboard = () => {
       <div className="flex justify-between items-center mb-4">
         {/* Judul Status Pembayaran */}
         <h2 className="text-xl font-bold">Status Pembayaran</h2>
+<<<<<<< HEAD
         
         {/* Filter Dropdown dan Search Icon */}
         <div className="flex items-center">
           
+=======
+
+        {/* Filter Dropdown dan Search Icon */}
+        <div className="flex items-center">
+>>>>>>> cde403cafdb4ad3b6b15cc15d1c82ca8560a4dd6
           {/* Filter Dropdown */}
           <div className="relative mr-2">
             <select
@@ -201,7 +302,15 @@ const Dashboard = () => {
                 <td className="px-4 py-2">{payment.id}</td>
                 <td className="px-4 py-2">{payment.kategori}</td>
                 <td className="px-4 py-2">{payment.kelasPremium}</td>
+<<<<<<< HEAD
                 <td className={`px-4 py-2 font-bold ${payment.status === 'SUDAH BAYAR' ? 'text-success' : 'text-failed'}`}>
+=======
+                <td
+                  className={`px-4 py-2 font-bold ${
+                    payment.status === "SUDAH BAYAR" ? "text-success" : "text-failed"
+                  }`}
+                >
+>>>>>>> cde403cafdb4ad3b6b15cc15d1c82ca8560a4dd6
                   {payment.status}
                 </td>
                 <td className="px-4 py-2">{payment.metodePembayaran}</td>

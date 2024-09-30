@@ -4,6 +4,7 @@ import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { register } from "../../redux/actions/authActions";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const dispatch = useDispatch();
@@ -20,39 +21,40 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    //   createUserWithEmailAndPassword(auth, email, password)
-    //     .then((userCredential) => {
-    //       console.log(userCredential);
-    //       const user = userCredential.user;
-    //       console.log(user);
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    //   // if (!name && !email && !phone && !password) {
-    //   //   toast.error("Semua Form Harus Diisi");
-    //   //   return;
-    //   // } else if (name == "") {
-    //   //   toast.error("Nama Masih Kosong");
-    //   //   return;
-    //   // } else if (email == "") {
-    //   //   toast.error("Email Masih Kosong");
-    //   // } else if (phone === "") {
-    //   //   toast.error("Nomor Telepon masih kosong");
-    //   //   return;
-    //   // } else if (password === "") {
-    //   //   toast.error("Password masih kosong");
-    //   //   return;
-    //   // } else if (password.length < 8) {
-    //   //   toast.error("Password min 8 karakter!");
-    //   //   return;
-    //   // } else if (!/[A-Z]/.test(password)) {
-    //   //   toast.error("Password harus memiliki setidaknya satu huruf besar");
-    //   //   return;
-    //   // } else if (!/[0-9]/.test(password)) {
-    //   //   toast.error("Password harus memiliki setidaknya satu angka");
-    //   //   return;
-    //   // }
+
+    if (!fullName && !email && !phoneNumber && !country && !city && !tanggalLahir && !password) {
+      toast.error("Semua Form Harus Diisi");
+      return;
+    } else if (fullName == "") {
+      toast.error("Nama Masih Kosong");
+      return;
+    } else if (email == "") {
+      toast.error("Email Masih Kosong");
+    } else if (phoneNumber === "") {
+      toast.error("Nomor Telepon masih kosong");
+      return;
+    } else if (country === "") {
+      toast.error("Negara masih kosong");
+      return;
+    } else if (city === "") {
+      toast.error("Kota masih kosong");
+      return;
+    } else if (tanggalLahir === "") {
+      toast.error("Langgal Lahir masih kosong");
+      return;
+    } else if (password === "") {
+      toast.error("Password masih kosong");
+      return;
+    } else if (password.length < 8) {
+      toast.error("Password min 8 karakter!");
+      return;
+    } else if (!/[A-Z]/.test(password)) {
+      toast.error("Password harus memiliki setidaknya satu huruf besar");
+      return;
+    } else if (!/[0-9]/.test(password)) {
+      toast.error("Password harus memiliki setidaknya satu angka");
+      return;
+    }
     console.log("Email:", email);
     console.log("lahir", tanggalLahir);
 
@@ -77,7 +79,7 @@ const Register = () => {
             <h1 className="text-[24px] font-bold text-blue-800 mb-8 ">DAFTAR</h1>
             <div className="flex flex-col gap-5">
               <div className="flex flex-col">
-                <label className="text-[16px] mb-[4px] font-semibold font-Poppins ">name</label>
+                <label className="text-[14px] mb-[4px] font-medium font-Poppins ">name</label>
                 <input
                   type="text"
                   className="border shadow-sm w-full p-2 rounded-xl"
@@ -87,7 +89,7 @@ const Register = () => {
                 />
               </div>
               <div className="flex flex-col">
-                <label className="text-[16px] mb-[4px] font-semibold font-Poppins ">Email</label>
+                <label className="text-[14px] mb-[4px] font-medium font-Poppins ">Email</label>
                 <input
                   type="email"
                   className="border shadow-sm w-full p-2 rounded-xl"
@@ -97,9 +99,7 @@ const Register = () => {
                 />
               </div>
               <div className="flex flex-col">
-                <label className="text-[16px] mb-[4px] font-semibold font-Poppins">
-                  No Telepon
-                </label>
+                <label className="text-[14px] mb-[4px] font-medium font-Poppins">No Telepon</label>
                 <input
                   type="text"
                   className="border shadow-sm w-full p-2 rounded-xl"
@@ -115,7 +115,7 @@ const Register = () => {
                 />
               </div>
               <div className="flex flex-col">
-                <label className="ttext-[16px] mb-[4px] font-semibold font-Poppins">Negara</label>
+                <label className="ttext-[14px] mb-[4px] font-medium font-Poppins">Negara</label>
                 <input
                   type="text"
                   className="border shadow-sm w-full p-2 rounded-xl"
@@ -126,7 +126,7 @@ const Register = () => {
                 />
               </div>
               <div className="flex flex-col">
-                <label className="text-[16px] mb-[4px] font-semibold font-Poppins">Kota</label>
+                <label className="text-[14px] mb-[4px] font-medium font-Poppins">Kota</label>
                 <input
                   type="text"
                   className="border shadow-sm w-full p-2 rounded-xl"
@@ -137,7 +137,7 @@ const Register = () => {
                 />
               </div>
               <div className="flex flex-col">
-                <label className="text-[16px] mb-[4px] font-semibold font-Poppins">
+                <label className="text-[14px] mb-[4px] font-medium font-Poppins">
                   Tanggal Lahir
                 </label>
                 <input
@@ -152,7 +152,7 @@ const Register = () => {
               </div>
               <div className="flex flex-col">
                 <div className="flex justify-between items-center">
-                  <label className="text-[16px] mb-[4px] font-semibold font-Poppins">
+                  <label className="text-[14px] mb-[4px] font-medium font-Poppins">
                     Buat Password
                   </label>
                 </div>
