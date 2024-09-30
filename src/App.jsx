@@ -6,13 +6,6 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/auth/Login";
 import ResetPassword from "./pages/auth/ResetPassword";
 import Register from "./pages/auth/Register";
-<<<<<<< HEAD
-import SendEmail from "./pages/auth/sendEmail";
-import SuccessPage from "./pages/payment/SuccessPage";
-import PaymentPage from "./pages/Payment/PaymentPage";
-import DetailKelas from "./pages/Detail/DetailKelas";
-// import sendEmail from "./pages/auth/sendEmail";
-=======
 import SendEmail from "./pages/auth/SendEmail";
 import SuccessPage from "./pages/payment/SuccesPayment";
 import PaymentPage from "./pages/Payment/PaymentPage";
@@ -24,7 +17,6 @@ import TopikKelas from "./pages/TopikKelas/topikKelas";
 import MulaiKelas from "./pages/MulaiKelas/MulaiKelas";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 // import NoAccessToken from "./security/NoAccessToken";
->>>>>>> cde403cafdb4ad3b6b15cc15d1c82ca8560a4dd6
 
 function App() {
   return (
@@ -50,16 +42,6 @@ function AppRoutes() {
   const navigate = useNavigate();
   const location = useLocation();
 
-<<<<<<< HEAD
-          <Route path="sendemail" element={<SendEmail />} />
-          {/* Rute ke halaman detail kelas */}
-          <Route path="/detailkelas" element={<DetailKelas />} />
-
-          {/* Rute ke Halaman Payment */}
-          <Route path="/payment" element={<PaymentPage />} />
-          {/* Rute ke halaman Success Payment */}
-          <Route path="/successpage" element={<SuccessPage />} />
-=======
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const mode = searchParams.get("mode");
@@ -75,7 +57,6 @@ function AppRoutes() {
       navigate("/verify-email");
     }
   }, [location, navigate]);
->>>>>>> cde403cafdb4ad3b6b15cc15d1c82ca8560a4dd6
 
   return (
     <Routes>
