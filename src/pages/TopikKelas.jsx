@@ -135,38 +135,36 @@ const TopikKelas = () => {
                 </div>
             </section>
 
-            <div className="py-8 px-10">
-                <div className="flex justify-between items-center">
-                    <h3 className="self-center text-[32px] font-bold" style={{ fontFamily: 'Red Rose, sans-serif', color: '#000000' }}>
+            <div className="py-8 px-4 md:px-10">
+                <div className="flex flex-col md:flex-row justify-between items-center">
+                    <h3 className="self-center text-[32px] font-bold" 
+                        style={{ fontFamily: "'Red Rose', sans-serif", color: '#000000' }}>
                         TOPIK KELAS
                     </h3>
-                    <div className="flex-1 flex justify-center">
-                        <div className="flex space-x-4">
-                            <button
-                                className={`filter-btn bg-blue-600 text-black px-6 py-2 w-40 rounded-full font-bold text-xs ${selectedFilter === 'All' ? 'bg-blue-600 text-white' : 'bg-white text-black hover:bg-gray-200'}`}
-                                onClick={() => handleFilterClick('All')}
-                            >
-                                All
-                            </button>
-                            <button
-                                className={`filter-btn bg-blue-600 text-black px-6 py-2 w-40 rounded-full font-bold text-xs ${selectedFilter === 'kelas_berbayar' ? 'bg-blue-600 text-white' : 'bg-white text-black hover:bg-gray-200'}`}
-                                onClick={() => handleFilterClick('kelas_berbayar')}
-                            >
-                                Kelas Berbayar
-                            </button>
-                            <button
-                                className={`filter-btn bg-blue-600 text-black px-6 py-2 w-40 rounded-full font-bold text-xs ${selectedFilter === 'Kelas_Gratis' ? 'bg-blue-600 text-white' : 'bg-white text-black hover:bg-gray-200'}`}
-                                onClick={() => handleFilterClick('Kelas_Gratis')}
-                            >
-                                Kelas Gratis
-                            </button>
-                        </div>
+                    <div className="flex flex-wrap justify-center mt-4 md:mt-0">
+                        <button
+                            className={`filter-btn bg-blue-600 text-black px-6 py-2 w-full md:w-auto rounded-full font-bold text-xs ${selectedFilter === 'All' ? 'bg-blue-600 text-white' : 'bg-white text-black hover:bg-gray-200'}`}
+                            onClick={() => handleFilterClick('All')}
+                        >
+                            All
+                        </button>
+                        <button
+                            className={`filter-btn bg-blue-600 text-black px-6 py-2 w-full md:w-auto rounded-full font-bold text-xs ${selectedFilter === 'kelas_berbayar' ? 'bg-blue-600 text-white' : 'bg-white text-black hover:bg-gray-200'}`}
+                            onClick={() => handleFilterClick('kelas_berbayar')}
+                        >
+                            Kelas Berbayar
+                        </button>
+                        <button
+                            className={`filter-btn bg-blue-600 text-black px-6 py-2 w-full md:w-auto rounded-full font-bold text-xs ${selectedFilter === 'Kelas_Gratis' ? 'bg-blue-600 text-white' : 'bg-white text-black hover:bg-gray-200'}`}
+                            onClick={() => handleFilterClick('Kelas_Gratis')}
+                        >
+                            Kelas Gratis
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <div className="flex flex-col md:flex-row pr-10">
-
+            <div className="flex flex-col md:flex-row pr-4 md:pr-10">
                 <div className="hidden md:block md:w-1/4">
                     <div className="bg-white shadow-md rounded-md p-4">
                         <h3 className="text-xl font-bold text-gray-800 mb-4">Filter</h3>
@@ -192,30 +190,55 @@ const TopikKelas = () => {
                                 <label htmlFor={`filter-${level}`} className="text-sm md:text-base">{level}</label>
                             </div>
                         ))}
-                        <button 
-                            onClick={clearFilters} 
-                            className="block mx-auto text-center px-10 py-2 rounded-md text-red-600 mt-10 whitespace-nowrap">
-                            Hapus Filter
-                        </button>
-
+                        <button onClick={clearFilters} className="bg-red-600 text-white px-4 py-2 rounded mt-4">Clear Filters</button>
                     </div>
                 </div>
 
-                <div className="md:w-3/4 md:ml-5">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {filteredCourses().map((course, index) => (
-                            <div className="bg-white p-4 rounded-md shadow-md" key={index}>
-                                <img src={course.image} alt={course.name} className="h-32 w-full object-cover rounded-md mb-4" />
-                                <h4 className="font-bold text-lg">{course.name}</h4>
-                                <p className="text-sm">Modules: {course.modules}</p>
-                                <p className="text-sm">Level: {course.level}</p>
-                                <p className="text-sm">Duration: {course.duration}</p>
-                                <p className="text-sm">Progress: {course.progress}</p>
-                                <p className="text-lg font-bold">Price: {course.harga}</p>
+                <div className="md:w-3/4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 md:mt-0">
+                    {filteredCourses().map((course, index) => (
+                        <div className="bg-white shadow-md rounded-md p-4" key={index}>
+                            <img src={course.image} alt={course.name} className="w-full h-32 object-cover rounded-md mb-4" />
+                            <h4 className="text-lg font-bold">{course.name}</h4>
+                            <p className="text-gray-600">Modules: {course.modules}</p>
+                            <p className="text-gray-600">Level: {course.level}</p>
+                            <p className="text-gray-600">Duration: {course.duration}</p>
+                            <p className="text-gray-600">Progress: {course.progress}</p>
+                            <p className="text-gray-600 font-bold">Harga: {course.harga}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            <div className="block md:hidden mt-4">
+                <button onClick={toggleMobileDropdown} className="bg-blue-600 text-white px-4 py-2 rounded">
+                    {isMobileDropdownVisible ? 'Hide Filters' : 'Show Filters'}
+                </button>
+                {isMobileDropdownVisible && (
+                    <div className="bg-white shadow-md rounded-md p-4 mt-2">
+                        <h3 className="text-lg font-bold mb-4">Filters</h3>
+                        {["Paling Baru", "Paling Populer", "Promo"].map((label, index) => (
+                            <div className="flex items-center mb-2" key={index}>
+                                <input type="checkbox" id={`mobile-filter-${label}`} checked={filterChecked[label]} onChange={() => handleCheckboxChange(label)} className="mr-2 checkbox-custom" />
+                                <label htmlFor={`mobile-filter-${label}`} className="text-sm">{label}</label>
                             </div>
                         ))}
+                        <h3 className="text-lg font-bold mt-4 mb-2">Kategori</h3>
+                        {["UI/UX Design", "Web Development", "Android Development", "Data Science", "Business Intelligence"].map((category, index) => (
+                            <div className="flex items-center mb-2" key={index}>
+                                <input type="checkbox" id={`mobile-filter-${category}`} checked={filterChecked[category]} onChange={() => handleCheckboxChange(category)} className="mr-2 checkbox-custom" />
+                                <label htmlFor={`mobile-filter-${category}`} className="text-sm">{category}</label>
+                            </div>
+                        ))}
+                        <h3 className="text-lg font-bold mt-4 mb-2">Level Kesulitan</h3>
+                        {["Beginner Level", "Intermediate Level", "Advanced Level"].map((level, index) => (
+                            <div className="flex items-center mb-2" key={index}>
+                                <input type="checkbox" id={`mobile-filter-${level}`} checked={filterChecked[level]} onChange={() => handleCheckboxChange(level)} className="mr-2 checkbox-custom" />
+                                <label htmlFor={`mobile-filter-${level}`} className="text-sm">{level}</label>
+                            </div>
+                        ))}
+                        <button onClick={clearFilters} className="bg-red-600 text-white px-4 py-2 rounded mt-4">Clear Filters</button>
                     </div>
-                </div>
+                )}
             </div>
         </main>
     );
