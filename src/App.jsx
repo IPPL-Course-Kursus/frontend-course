@@ -8,7 +8,7 @@ import ResetPassword from "./pages/auth/ResetPassword";
 import Register from "./pages/auth/Register";
 import SendEmail from "./pages/auth/SendEmail";
 import SuccessPage from "./pages/payment/SuccessPage";
-import PaymentPage from "./pages/Payment/PaymentPage";
+import PaymentPage from "./pages/payment/PaymentPage";
 import DetailKelas from "./pages/Detail/DetailKelas";
 import MainProfile from "./pages/Profile/MainProfile";
 import MyCourse from "./pages/Course/MyCourse";
@@ -17,6 +17,7 @@ import TopikKelas from "./pages/TopikKelas/topikKelas";
 import MulaiKelas from "./pages/MulaiKelas/MulaiKelas";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminDataKelas from "./pages/admin/DataKelas";
+import AdminDataInstuktur from "./pages/admin/AdminDataInstruktur";
 // import NoAccessToken from "./security/NoAccessToken";
 
 function App() {
@@ -86,6 +87,7 @@ function AppRoutes() {
       {/* Admin */}
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/admin/data-kelas" element={<AdminDataKelas />} />
+      <Route path="/admin/data-instruktur" element={<AdminDataInstuktur />} />
 
       {/* NotFound */}
       <Route path="/*" element={<NotFound />} />
