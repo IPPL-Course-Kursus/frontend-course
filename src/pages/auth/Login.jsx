@@ -131,7 +131,7 @@ const Login = () => {
 
         {/* Gambar Kanan */}
         <div className="hidden lg:flex justify-center items-center bg-[#0A61AA] w-[50%] min-h-[100dvh]">
-          <img src="/LOGO.jpg" alt="logo." />
+          <img src="/LOGO.png" alt="logo." />
         </div>
       </div>
     </>

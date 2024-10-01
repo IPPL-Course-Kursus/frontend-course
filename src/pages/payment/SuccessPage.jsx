@@ -2,6 +2,7 @@
 import React from "react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import { Link } from "react-router-dom";
 
 const SuccessPage = () => {
   return (
@@ -21,15 +22,14 @@ const SuccessPage = () => {
           <p className="text-gray-600 mb-4">Transaksi pembayaran kelas premium berhasil!</p>
           <p className="text-gray-600 mb-14">E-receipt telah dikirimkan ke email.</p>
           <div className="flex flex-col items-center space-y-4">
-            <a
-              href="#"
-              className="bg-blue-600 text-white py-2 px-32 rounded-full font-bold inline-block"
-            >
-              Mulai Belajar
-            </a>
-            <a href="#" className="text-blue-600 font-semibold">
-              Kembali ke Beranda
-            </a>
+            <Link to="/mulai-kelas">
+              <a className="bg-blue-600 text-white py-2 px-32 rounded-full font-bold inline-block">
+                Mulai Belajar
+              </a>
+            </Link>
+            <Link to="/">
+              <a className="text-blue-600 font-semibold">Kembali ke Beranda</a>
+            </Link>
           </div>
         </div>
       </main>
