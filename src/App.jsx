@@ -17,6 +17,7 @@ import TopikKelas from "./pages/TopikKelas/topikKelas";
 import MulaiKelas from "./pages/MulaiKelas/MulaiKelas";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminDataKategori from "./pages/admin/AdminDataKategori";
+import AdminDataModule from "./pages/admin/AdminDataModule";
 // import NoAccessToken from "./security/NoAccessToken";
 
 function App() {
@@ -83,9 +84,10 @@ function AppRoutes() {
       <Route path="/payment" element={<PaymentPage />} />
       <Route path="/succes-payment" element={<SuccessPage />} />
 
-      {/* Admin */}
+      {/* Admin */}Rout
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/admin/data-kategori" element={<AdminDataKategori />} />
+      <Route path="/admin/data-module" element={<AdminDataModule />} />
 
       {/* NotFound */}
       <Route path="/*" element={<NotFound />} />  
