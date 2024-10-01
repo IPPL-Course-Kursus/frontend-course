@@ -4,7 +4,7 @@ import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { Link } from "react-router-dom";
 
-const SuccesPayment = () => {
+const SuccessPage = () => {
   return (
     <>
       <Navbar />
@@ -38,4 +38,4 @@ const SuccesPayment = () => {
   );
 };
 
-export default SuccesPayment;
+export default SuccessPage;

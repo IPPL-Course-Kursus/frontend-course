@@ -8,7 +8,6 @@ const PaymentPage = () => {
   const [toggleBankTransfer, setToggleBankTransfer] = useState(false);
   const [toggleCreditCard, setToggleCreditCard] = useState(true);
 
-  // eslint-disable-next-line no-unused-vars
   const [paymentMethod, setPaymentMethod] = useState("Transfer Bank");
   const [cardNumber, setCardNumber] = useState("");
   const [cardHolderName, setCardHolderName] = useState("");
