@@ -1,23 +1,18 @@
-import React from "react";
+import PropTypes from "prop-types";
 
 const DataKelasInput = ({ show, onClose }) => {
   if (!show) return null; // Jika `show` false, jangan render apapun (sembunyikan pop-up)
 
   return (
     <div
-    className="fixed inset-0 flex justify-center items-center z-50"
-    style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
+      className="fixed inset-0 flex justify-center items-center z-50"
+      style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
     >
-    <div className="bg-white w-full max-w-lg h-[80vh] p-6 rounded-lg shadow-lg relative overflow-y-auto">
-        <button
-          className="absolute top-2 right-2 text-xl font-bold"
-          onClick={onClose}
-        >
+      <div className="bg-white w-full max-w-lg h-[80vh] p-6 rounded-lg shadow-lg relative overflow-y-auto">
+        <button className="absolute top-2 right-2 text-xl font-bold" onClick={onClose}>
           &times;
         </button>
-        <h2 className="text-xl font-bold text-[#0a61aa] mb-4 text-center">
-          Tambah Kelas
-        </h2>
+        <h2 className="text-xl font-bold text-[#0a61aa] mb-4 text-center">Tambah Kelas</h2>
 
         {/* input */}
         <form>
@@ -98,10 +93,7 @@ const DataKelasInput = ({ show, onClose }) => {
           </div>
 
           <div className="flex justify-center">
-            <button
-              type="submit"
-              className="py-2 px-6 bg-[#0a61aa] text-white rounded-xl"
-            >
+            <button type="submit" className="py-2 px-6 bg-[#0a61aa] text-white rounded-xl">
               Simpan
             </button>
           </div>
@@ -109,6 +101,11 @@ const DataKelasInput = ({ show, onClose }) => {
       </div>
     </div>
   );
+};
+
+DataKelasInput.propTypes = {
+  show: PropTypes.bool,
+  onClose: PropTypes.func,
 };
 
 export default DataKelasInput;
