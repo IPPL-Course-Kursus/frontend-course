@@ -1,11 +1,18 @@
 import { useState } from "react";
 import { FaSearch, FaFilter } from "react-icons/fa";
 import { IoAddCircleOutline } from "react-icons/io5";
+import DataKelasInput from "../../components/admin/DataKelasInput";
 
 const AdminDataKelas = () => {
 
     const [courseTypeSearch, setCourseTypeSearch] = useState("");
     const [searchVisible, setSearchVisible] = useState(false);
+
+    const [showPopup, setShowPopup] = useState(false);
+
+    const togglePopup = () => {
+        setShowPopup(!showPopup);
+      };
 
     const toggleSearch = () => {
         setSearchVisible(!searchVisible);
@@ -78,10 +85,11 @@ const AdminDataKelas = () => {
                 <div className="flex items-center space-x-2">
                     {/* tambah kelas */}
                     <div className="relative">
-                        <button className="py-1 px-4 bg-[#0a61aa] text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 flex items-center">
+                        <button className="py-1 px-4 bg-[#0a61aa] text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 flex items-center" onClick={togglePopup}>
                             <IoAddCircleOutline className="mr-2" />
                             Tambah
                         </button>
+                        <DataKelasInput show={showPopup} onClose={togglePopup} />
                     </div>
 
                     {/* filter */}
