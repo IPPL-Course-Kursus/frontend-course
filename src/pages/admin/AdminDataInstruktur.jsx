@@ -1,117 +1,75 @@
-// eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react';
 
-const AdminDataInstuktur = () => {
+const AdminDataInstruktur = () => {
   // Data instruktur
   const [instructors, setInstructors] = useState([
     { id: 1, name: 'Benedicta', photoUrl: '/path/to/photo1.jpg' },
-    { id: 2, name: 'Benedicta', photoUrl: '/path/to/photo2.jpg' },
-    { id: 3, name: 'Benedicta', photoUrl: '/path/to/photo3.jpg' },
-    { id: 4, name: 'Benedicta', photoUrl: '/path/to/photo4.jpg' }
+    { id: 2, name: 'John', photoUrl: '/path/to/photo2.jpg' },
+    { id: 3, name: 'Sarah', photoUrl: '/path/to/photo3.jpg' },
+    { id: 4, name: 'Michael', photoUrl: '/path/to/photo4.jpg' }
   ]);
 
-  // State untuk kontrol popup
+  // State untuk kontrol popup tambah/edit
   const [showPopup, setShowPopup] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [editInstructorId, setEditInstructorId] = useState(null);
-
-  // State untuk menyimpan instruktur baru atau yang sedang di-edit
+  const [currentInstructor, setCurrentInstructor] = useState(null);
   const [newInstructor, setNewInstructor] = useState({
     name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    photo: null
+    photoUrl: ''
   });
 
-  // Fungsi untuk menangani toggle popup (tambah dan edit)
+  // Fungsi untuk toggle popup tambah/edit
   const togglePopup = () => {
     setShowPopup(!showPopup);
+    if (!showPopup) {
+      setNewInstructor({ name: '', photoUrl: '' });
+      setIsEditing(false);
+    }
   };
 
-  // Fungsi untuk menangani perubahan input form
+  // Fungsi untuk menangani input
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setNewInstructor((prevState) => ({
-      ...prevState,
-      [name]: value
-    }));
+    setNewInstructor({ ...newInstructor, [name]: value });
   };
 
-  // Fungsi untuk menangani file upload
+  // Fungsi untuk menangani file input
   const handleFileChange = (e) => {
-    setNewInstructor((prevState) => ({
-      ...prevState,
-      photo: URL.createObjectURL(e.target.files[0])
-    }));
+    const file = e.target.files[0];
+    const photoUrl = URL.createObjectURL(file);
+    setNewInstructor({ ...newInstructor, photoUrl });
   };
 
-  // Fungsi untuk menambah instruktur baru
+  // Fungsi untuk tambah instruktur
   const handleAddInstructor = (e) => {
     e.preventDefault();
-    if (newInstructor.password !== newInstructor.confirmPassword) {
-      alert('Password dan konfirmasi password tidak cocok!');
-      return;
-    }
     const newId = instructors.length + 1;
-    const newInstructorData = {
-      id: newId,
-      name: newInstructor.name,
-      photoUrl: newInstructor.photo
-    };
-
-    setInstructors([...instructors, newInstructorData]);
-
-    // Reset form dan tutup popup
-    resetForm();
-    setShowPopup(false);
+    setInstructors([...instructors, { id: newId, ...newInstructor }]);
+    togglePopup(); // Tutup popup setelah submit
   };
 
-  // Fungsi untuk menghapus instruktur
+  // Fungsi untuk hapus instruktur
   const handleDeleteInstructor = (id) => {
     const updatedInstructors = instructors.filter((instructor) => instructor.id !== id);
     setInstructors(updatedInstructors);
   };
 
-  // Fungsi untuk membuka popup edit instruktur
+  // Fungsi untuk membuka form edit instruktur
   const handleEditInstructor = (instructor) => {
-    setNewInstructor({
-      name: instructor.name,
-      email: '',
-      password: '',
-      confirmPassword: '',
-      photo: instructor.photoUrl
-    });
-    setEditInstructorId(instructor.id);
     setIsEditing(true);
+    setCurrentInstructor(instructor);
+    setNewInstructor(instructor);
     setShowPopup(true);
   };
 
-  // Fungsi untuk menyimpan perubahan edit instruktur
+  // Fungsi untuk menyimpan perubahan setelah edit
   const handleSaveEditInstructor = (e) => {
     e.preventDefault();
     const updatedInstructors = instructors.map((instructor) =>
-      instructor.id === editInstructorId
-        ? { ...instructor, name: newInstructor.name, photoUrl: newInstructor.photo || instructor.photoUrl }
-        : instructor
+      instructor.id === currentInstructor.id ? newInstructor : instructor
     );
     setInstructors(updatedInstructors);
-    resetForm();
-    setShowPopup(false);
-    setIsEditing(false);
-  };
-
-  // Fungsi untuk mereset form
-  const resetForm = () => {
-    setNewInstructor({
-      name: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      photo: null
-    });
-    setEditInstructorId(null);
-    setIsEditing(false);
+    togglePopup(); // Tutup popup setelah simpan perubahan
   };
 
   return (
@@ -123,46 +81,43 @@ const AdminDataInstuktur = () => {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-bold">Data Instruktur</h2>
           <button
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition duration-300"
-            onClick={() => {
-              resetForm();
-              togglePopup();
-            }}
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+            onClick={togglePopup}
           >
             Tambah
           </button>
         </div>
 
-        <table className="min-w-full bg-white border">
-          <thead>
+        <table className="min-w-full bg-white">
+          <thead className="bg-[#F3F7FB] text-black">
             <tr>
-              <th className="px-4 py-2 border">ID</th>
-              <th className="px-4 py-2 border">Nama</th>
-              <th className="px-4 py-2 border">Url Photo</th>
-              <th className="px-4 py-2 border">Aksi</th>
+              <th className="px-4 py-2 text-left">ID</th>
+              <th className="px-4 py-2 text-left">Nama</th>
+              <th className="px-4 py-2 text-left">Foto</th>
+              <th className="px-4 py-2 text-left">Aksi</th>
             </tr>
           </thead>
           <tbody>
             {instructors.map((instructor) => (
-              <tr key={instructor.id}>
-                <td className="px-4 py-2 border">{instructor.id}</td>
-                <td className="px-4 py-2 border">{instructor.name}</td>
-                <td className="px-4 py-2 border">
+              <tr key={instructor.id} className="hover:bg-gray-100">
+                <td className="px-4 py-2 text-center">{instructor.id}</td>
+                <td className="px-4 py-2 text-center">{instructor.name}</td>
+                <td className="px-4 py-2 text-center">
                   <img
                     src={instructor.photoUrl}
                     alt={instructor.name}
-                    className="w-16 h-16 object-cover rounded-full"
+                    className="w-32 h-32 object-cover rounded-full"
                   />
                 </td>
-                <td className="px-4 py-2 border">
+                <td className="px-4 py-2 text-center">
                   <button
-                    className="bg-yellow-500 text-white px-2 py-1 rounded mr-2"
+                    className="bg-green-500 text-white px-4 py-2 rounded mr-2"
                     onClick={() => handleEditInstructor(instructor)}
                   >
                     Edit
                   </button>
                   <button
-                    className="bg-red-500 text-white px-2 py-1 rounded"
+                    className="bg-red-500 text-white px-4 py-2 rounded"
                     onClick={() => handleDeleteInstructor(instructor.id)}
                   >
                     Hapus
@@ -183,12 +138,38 @@ const AdminDataInstuktur = () => {
             </h2>
             <form onSubmit={isEditing ? handleSaveEditInstructor : handleAddInstructor}>
               <div className="mb-4">
-                <label className="block text-sm mb-2">Upload File</label>
+                <label className="block text-sm mb-2">Upload Foto</label>
                 <input
                   type="file"
                   className="w-full border p-2 rounded"
                   onChange={handleFileChange}
-                  required={!isEditing} // Required hanya saat tambah
+                  required={!isEditing} // Required hanya saat tambah instruktur
                 />
               </div>
-      
+              <div className="mb-4">
+                <label className="block text-sm mb-2">Nama Pengajar</label>
+                <input
+                  type="text"
+                  name="name"
+                  className="w-full border p-2 rounded"
+                  value={newInstructor.name}
+                  onChange={handleChange}
+                  placeholder="Masukkan Nama"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                className="bg-blue-600 text-white px-4 py-2 rounded w-full"
+              >
+                {isEditing ? 'Simpan Perubahan' : 'Simpan'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default AdminDataInstruktur;
