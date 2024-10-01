@@ -83,7 +83,7 @@ function AppRoutes() {
       <Route path="/succes-payment" element={<SuccessPage />} />
 
       {/* Admin */}
-      <Route path="/admin/dashboard" element={<AdminDashboard />} />
+      <Route path="/admindashboard" element={<AdminDashboard />} />
 
       {/* NotFound */}
       <Route path="/*" element={<NotFound />} />
