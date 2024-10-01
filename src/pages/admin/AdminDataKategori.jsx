@@ -103,7 +103,7 @@ const AdminDataKategori = () => {
       {/* Modal untuk Tambah/Edit */}
       {showModal ? (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white w-2/3 h-3/4 p-6 rounded-3xl shadow-lg relative">
+          <div className="bg-white w-2/3 h- p-6 rounded-3xl shadow-lg relative">
             <button
               className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
               onClick={toggleModal}

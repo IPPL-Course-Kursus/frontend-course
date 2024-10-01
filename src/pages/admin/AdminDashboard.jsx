@@ -12,6 +12,7 @@ const AdminDashboard = () => {
   // State untuk search input 
   const [globalSearch, setGlobalSearch] = useState("");
   const [paymentSearch, setPaymentSearch] = useState("");
+  const [searchVisible, setSearchVisible] = useState(false); // State untuk visibilitas input pencarian
 
   // State untuk filter status pembayaran
   const [filter, setFilter] = useState("");
@@ -68,10 +69,18 @@ const AdminDashboard = () => {
     },
   ]);
 
-  // Filter berdasarkan search input dan filter status pembayaran
+  // Filter berdasarkan global search, search payment, dan filter status pembayaran, tanggal
   const filteredPayments = paymentStatus.filter(
     (payment) =>
-      payment.id.toLowerCase().includes(paymentSearch.toLowerCase()) &&
+      (globalSearch === "" ||
+        payment.id.toLowerCase().includes(globalSearch.toLowerCase()) ||
+        payment.kategori.toLowerCase().includes(globalSearch.toLowerCase()) ||
+        payment.kelasPremium.toLowerCase().includes(globalSearch.toLowerCase())) &&
+      (paymentSearch === "" ||
+        payment.id.toLowerCase().includes(paymentSearch.toLowerCase()) ||
+        payment.kategori.toLowerCase().includes(paymentSearch.toLowerCase()) ||
+        payment.kelasPremium.toLowerCase().includes(paymentSearch.toLowerCase()) ||
+        payment.tanggalBayar.toLowerCase().includes(paymentSearch.toLowerCase())) &&
       (filter === "" || payment.status === filter)
   );
 
@@ -80,14 +89,18 @@ const AdminDashboard = () => {
     setFilter(e.target.value);
   };
 
+  // Fungsi untuk toggle visibilitas input pencarian
+  const toggleSearch = () => {
+    setSearchVisible(!searchVisible);
+  };
+
   return (
     <div className="p-6 bg-secondary min-h-screen font-poppins">
       {/* Header - Hi Admin */}
       <div className="bg-[#F3F7FB] p-4 flex justify-between items-center mb-4 shadow-sm">
         <h1 className="text-2xl font-bold text-[#173D94]">Hi, Admin!</h1>
-
         {/* Search Bar Global */}
-        <div className="relative flex items-center bg-white rounded-full shadow-md">
+        <div className="relative flex items-center bg-white rounded-full shadow-sm">
           <input
             type="text"
             value={globalSearch}
@@ -103,7 +116,7 @@ const AdminDashboard = () => {
 
       {/* Cards Users */}
       <div className="grid grid-cols-4 gap-6 mb-8">
-        <div className="bg-primary text-white p-4 rounded-lg shadow-sm flex items-center justify-center">
+        <div className="bg-primary text-white font-semibold p-4 rounded-lg shadow-sm flex items-center justify-center">
           <div className="bg-white rounded-full p-2">
             <FaUsers className="text-2xl text-primary" />
           </div>
@@ -114,7 +127,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Cards Instruktor */}
-        <div className="bg-success text-white p-4 rounded-lg shadow-sm flex items-center justify-center">
+        <div className="bg-success text-white font-semibold p-4 rounded-lg shadow-sm flex items-center justify-center">
           <div className="bg-white rounded-full p-2">
             <FaUsers className="text-2xl text-primary" />
           </div>
@@ -125,7 +138,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Cards Free Class */}
-        <div className="bg-[#173D94] text-white p-4 rounded-lg shadow-sm flex items-center justify-center">
+        <div className="bg-[#173D94] text-white font-semibold p-4 rounded-lg shadow-sm flex items-center justify-center">
           <div className="bg-white rounded-full p-2">
             <FaUsers className="text-2xl text-primary" />
           </div>
@@ -136,7 +149,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Cards Premium Class */}
-        <div className="bg-[#173D94] text-white p-4 rounded-lg shadow-sm flex items-center justify-center">
+        <div className="bg-[#173D94] text-white font-semibold p-4 rounded-lg shadow-sm flex items-center justify-center">
           <div className="bg-white rounded-full p-2">
             <FaUsers className="text-2xl text-primary" />
           </div>
@@ -169,13 +182,18 @@ const AdminDashboard = () => {
           </div>
 
           {/* Search Icon untuk Status Pembayaran */}
-          <div className="flex items-center">
-            <FaSearch className="text-[#173D94] text-lg cursor-pointer" />
+          <div className="relative flex items-center">
+            <FaSearch
+              className="text-[#173D94] text-lg cursor-pointer"
+              onClick={toggleSearch} // Event handler untuk toggle search visibility
+            />
             <input
               type="text"
               value={paymentSearch}
               onChange={(e) => setPaymentSearch(e.target.value)}
-              className="p-1 border border-[#173D94] rounded-full w-10"
+              className={`transition-all duration-300 ease-in-out border border-[#173D94] rounded-full ml-2 p-1 ${
+                searchVisible ? "w-40 opacity-100" : "w-0 opacity-0 pointer-events-none"
+              }`}
             />
           </div>
         </div>
@@ -195,22 +213,30 @@ const AdminDashboard = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredPayments.map((payment, index) => (
-              <tr key={index} className="border-t">
-                <td className="px-4 py-2">{payment.id}</td>
-                <td className="px-4 py-2">{payment.kategori}</td>
-                <td className="px-4 py-2">{payment.kelasPremium}</td>
-                <td
-                  className={`px-4 py-2 font-bold ${
-                    payment.status === "SUDAH BAYAR" ? "text-success" : "text-failed"
-                  }`}
-                >
-                  {payment.status}
+            {filteredPayments.length === 0 ? (
+              <tr>
+                <td colSpan="6" className="px-4 py-2 text-center">
+                  Tidak ada pembayaran yang ditemukan
                 </td>
-                <td className="px-4 py-2">{payment.metodePembayaran}</td>
-                <td className="px-4 py-2">{payment.tanggalBayar}</td>
               </tr>
-            ))}
+            ) : (
+              filteredPayments.map((payment, index) => (
+                <tr key={index} className="border-t">
+                  <td className="px-4 py-2 font-semibold">{payment.id}</td>
+                  <td className="px-4 py-2 font-semibold">{payment.kategori}</td>
+                  <td className="px-4 py-2 font-semibold">{payment.kelasPremium}</td>
+                  <td
+                    className={`px-4 py-2 font-semibold ${
+                      payment.status === "SUDAH BAYAR" ? "text-green-500" : "text-red-500"
+                    }`}
+                  >
+                    {payment.status}
+                  </td>
+                  <td className="px-4 py-2 font-semibold">{payment.metodePembayaran}</td>
+                  <td className="px-4 py-2 font-semibold">{payment.tanggalBayar}</td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

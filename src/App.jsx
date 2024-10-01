@@ -6,9 +6,9 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/auth/Login";
 import ResetPassword from "./pages/auth/ResetPassword";
 import Register from "./pages/auth/Register";
-import SendEmail from "./pages/auth/SendEmail";
-import SuccessPage from "./pages/payment/SuccesPayment";
-import PaymentPage from "./pages/Payment/PaymentPage";
+import SendEmail from "./pages/auth/sendEmail";
+import SuccessPage from "./pages/Payment/SuccessPage";
+import PaymentPage from "./pages/payment/PaymentPage";
 import DetailKelas from "./pages/Detail/DetailKelas";
 import MainProfile from "./pages/Profile/MainProfile";
 import MyCourse from "./pages/Course/MyCourse";
@@ -16,8 +16,10 @@ import VerifyEmail from "./pages/auth/VerifyEmail";
 import TopikKelas from "./pages/TopikKelas/topikKelas";
 import MulaiKelas from "./pages/MulaiKelas/MulaiKelas";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminDataKategori from "./pages/admin/AdminDataKategori";
+import AdminDataKelas from "./pages/admin/DataKelas";
+import AdminDataInstuktur from "./pages/admin/AdminDataInstruktur";
 import AdminDataModule from "./pages/admin/AdminDataModule";
+
 // import NoAccessToken from "./security/NoAccessToken";
 
 function App() {
@@ -82,11 +84,14 @@ function AppRoutes() {
 
       {/* Payment */}
       <Route path="/payment" element={<PaymentPage />} />
-      <Route path="/succes-payment" element={<SuccessPage />} />
+      <Route path="/success-payment" element={<SuccessPage />} />
 
-      {/* Admin */}Rout
+      {/* <Route path="/succes-payment" element={<SuccessPage />} /> */}
+
+      {/* Admin */}
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
-      <Route path="/admin/data-kategori" element={<AdminDataKategori />} />
+      <Route path="/admin/data-kelas" element={<AdminDataKelas />} />
+      <Route path="/admin/data-instruktur" element={<AdminDataInstuktur />} />
       <Route path="/admin/data-module" element={<AdminDataModule />} />
 
       {/* NotFound */}
