@@ -21,6 +21,7 @@ import AdminDataInstuktur from "./pages/admin/AdminDataInstruktur";
 import AdminDataModule from "./pages/admin/AdminDataModule";
 
 // import NoAccessToken from "./security/NoAccessToken";
+// import Protected from "./security/Protected";
 
 function App() {
   return (
@@ -97,15 +98,23 @@ function AppRoutes() {
       {/* NotFound */}
       <Route path="/*" element={<NotFound />} />  
 
-      {/* <Route  
+      {/* <Route
+        path="/"
+        element={
+          <Protected>
+            <Home />
+          </Protected>
+        }
+      /> */}
+      {/* <Route
         path="/login"
         element={
           <NoAccessToken>
             <Login />
           </NoAccessToken>
         }
-      />
-      <Route
+      /> */}
+      {/* <Route
         path="/register"
         element={
           <NoAccessToken>

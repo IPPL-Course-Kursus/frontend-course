@@ -3,15 +3,15 @@ import {
   sendEmailStart,
   sendEmailSuccess,
   sendEmailFailure,
-  loginStart,
+  // loginStart,
   loginSuccess,
-  loginFailure,
+  // loginFailure,
   registerStart,
   registerSuccess,
   registerFailure,
   logout,
   setUser,
-  setCredentials,
+  // setCredentials,
 } from "../reducers/authReducers";
 import { verifyEmailStart, verifyEmailSuccess, verifyEmailFailure } from "../reducers/authReducers";
 import {
@@ -19,12 +19,87 @@ import {
   resetPasswordSuccess,
   resetPasswordFailure,
 } from "../reducers/authReducers";
-// import Cookies from "js-cookie";
+import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 
 const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
 
-// export const login = (email, password, navigate) => async (dispatch, getState) => {
+// export const login = (email, password, navigate) => async (dispatch) => {
+//   try {
+//     const response = await axios.post(`${api_url}/auth/login`, {
+//       email,
+//       password,
+//     });
+//     const { data } = response.data;
+//     const { token } = data;
+
+//     dispatch(setToken(token));
+//     toast.success("Login Berhasil");
+//     setTimeout(() => {
+//       navigate("/");
+//     }, 1000); // Ganti nilai 1000 dengan durasi yang diinginkan (dalam milidetik)
+//   } catch (error) {
+//     if (error.response) {
+//       if (error.response.status === 403) {
+//         toast.error("Email atau Password Anda salah. Silahkan coba lagi.");
+//       } else if (error.response.status === 404) {
+//         toast.error("Email tidak terdaftar. Silakan cek kembali email Anda.");
+//       } else {
+//         toast.error("Login gagal. Silakan coba lagi nanti.");
+//       }
+//     } else {
+//       toast.error("Terjadi kesalahan pada server. Silakan coba lagi nanti.");
+//     }
+//   }
+// };
+
+export const login = (email, password, navigate) => async (dispatch) => {
+  try {
+    // Memvalidasi input
+    if (!email || !password) {
+      toast.error("Email dan Password harus diisi.");
+      return;
+    }
+
+    // Melakukan permintaan login
+    const response = await axios.post(`${api_url}auth/login`, {
+      email,
+      password,
+    });
+
+    const { data } = response.data;
+    const { token, user, role } = data; // Hanya menyimpan token, user, dan role
+
+    // Menyimpan token di cookies (4 jam)
+    Cookies.set("token", token, { expires: 1 / 6 });
+
+    // Dispatch tindakan untuk menyimpan token dan user di Redux
+    dispatch(loginSuccess({ token, user, role }));
+
+    toast.success("Login Berhasil");
+
+    // Navigasi ke halaman utama dengan delay
+    setTimeout(() => {
+      navigate("/");
+    }, 1000); // Durasi delay 1 detik
+  } catch (error) {
+    // Penanganan error yang lebih spesifik
+    if (error.response) {
+      if (error.response.status === 403) {
+        toast.error("Email atau Password Anda salah. Silahkan coba lagi.");
+      } else if (error.response.status === 404) {
+        toast.error("Email tidak terdaftar. Silakan cek kembali email Anda.");
+      } else {
+        toast.error("Login gagal. Silakan coba lagi nanti.");
+      }
+    } else {
+      toast.error("Terjadi kesalahan pada server. Silakan coba lagi nanti.");
+    }
+  }
+};
+
+// login Cookies
+// export const login = (email, password, navigate) => async (dispatch) => {
 //   dispatch(loginStart()); // Memulai proses login
 //   console.log("Proses login dimulai..."); // Console log untuk proses login
 
@@ -65,83 +140,44 @@ const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
 //   }
 // };
 
-export const login = (email, password, navigate) => async (dispatch) => {
-  dispatch(loginStart()); // Memulai proses login
-  console.log("Proses login dimulai..."); // Console log untuk proses login
-
-  try {
-    // Memvalidasi input
-    if (!email || !password) {
-      console.log("Email atau Password tidak diisi."); // Console log untuk validasi
-      dispatch(loginFailure("Email dan Password harus diisi."));
-      return;
-    }
-
-    // Melakukan permintaan login
-    const response = await axios.post(`${api_url}auth/login`, { email, password });
-    console.log("Respons dari server:", response.data); // Console log untuk respons
-
-    const { success, message, data } = response.data;
-    console.log("Respons dari server:", response.data); // Log respons
-
-    if (success) {
-      const { uid, token, user, role } = data; // Ambil data UID, token, user, dan role dari respons
-      console.log("Login berhasil, data pengguna:", { uid, token, user, role }); // Console log untuk data pengguna
-
-      dispatch(setCredentials({ uid, token, user, role })); // Menyimpan UID, token, user, dan role
-      dispatch(loginSuccess({ user, uid, token, role })); // Dispatch login success
-      navigate("/"); // Navigasi ke halaman utama
-    } else {
-      console.log("Login gagal:", message); // Console log untuk pesan kesalahan
-      dispatch(loginFailure(message || "Login gagal.")); // Dispatch jika login gagal
-    }
-  } catch (error) {
-    // Penanganan error lebih spesifik
-    const errorMessage = error.response?.data?.message || "Terjadi kesalahan saat login.";
-    console.log("Error saat login:", errorMessage); // Console log untuk error
-    dispatch(loginFailure(errorMessage)); // Dispatch error
-  }
-};
-
-// export const login = (email, password, navigate) => (dispatch) => {
+// export const login = (email, password, navigate) => async (dispatch) => {
 //   dispatch(loginStart()); // Memulai proses login
 //   console.log("Proses login dimulai..."); // Console log untuk proses login
 
-//   // Memvalidasi input
-//   if (!email || !password) {
-//     console.log("Email atau Password tidak diisi."); // Console log untuk validasi
-//     dispatch(loginFailure("Email dan Password harus diisi."));
-//     return;
+//   try {
+//     // Memvalidasi input
+//     if (!email || !password) {
+//       console.log("Email atau Password tidak diisi."); // Console log untuk validasi
+//       dispatch(loginFailure("Email dan Password harus diisi."));
+//       return;
+//     }
+
+//     // Melakukan permintaan login
+//     const response = await axios.post(`${api_url}auth/login`, { email, password });
+//     console.log("Respons dari server:", response.data); // Console log untuk respons
+
+//     const { success, message, data } = response.data;
+//     console.log("Respons dari server:", response.data); // Log respons
+
+//     if (success) {
+//       const { uid, token, user, role } = data; // Ambil data UID, token, user, dan role dari respons
+//       console.log("Login berhasil, data pengguna:", { uid, token, user, role }); // Console log untuk data pengguna
+
+//       dispatch(setCredentials({ uid, token, user, role })); // Menyimpan UID, token, user, dan role
+//       dispatch(loginSuccess({ user, uid, token, role })); // Dispatch login success
+//       navigate("/"); // Navigasi ke halaman utama
+//     } else {
+//       console.log("Login gagal:", message); // Console log untuk pesan kesalahan
+//       dispatch(loginFailure(message || "Login gagal.")); // Dispatch jika login gagal
+//     }
+//   } catch (error) {
+//     // Penanganan error lebih spesifik
+//     const errorMessage = error.response?.data?.message || "Terjadi kesalahan saat login.";
+//     console.log("Error saat login:", errorMessage); // Console log untuk error
+//     dispatch(loginFailure(errorMessage)); // Dispatch error
 //   }
-
-//   // Melakukan permintaan login
-//   axios
-//     .post(`${api_url}auth/login`, { email, password })
-//     .then((response) => {
-//       console.log("Respons dari server:", response.data); // Console log untuk respons
-
-//       const { success, message, data } = response.data;
-//       console.log("Respons dari server:", response.data); // Log respons
-
-//       if (success) {
-//         const { uid, token, user, role } = data; // Ambil data UID, token, user, dan role dari respons
-//         console.log("Login berhasil, data pengguna:", { uid, token, user, role }); // Console log untuk data pengguna
-
-//         dispatch(setCredentials({ uid, token, user, role })); // Menyimpan UID, token, user, dan role
-//         dispatch(loginSuccess({ user, uid, token, role })); // Dispatch login success
-//         navigate("/"); // Navigasi ke halaman utama
-//       } else {
-//         console.log("Login gagal:", message); // Console log untuk pesan kesalahan
-//         dispatch(loginFailure(message || "Login gagal.")); // Dispatch jika login gagal
-//       }
-//     })
-//     .catch((error) => {
-//       // Penanganan error lebih spesifik
-//       const errorMessage = error.response?.data?.message || "Terjadi kesalahan saat login.";
-//       console.log("Error saat login:", errorMessage); // Console log untuk error
-//       dispatch(loginFailure(errorMessage)); // Dispatch error
-//     });
 // };
+
 // Register action
 export const register =
   (email, password, fullName, phoneNumber, country, city, tanggalLahir, navigate) =>
@@ -175,6 +211,13 @@ export const register =
   };
 
 export const getMe = () => async (dispatch, getState) => {
+  const { auth } = getState(); // Pastikan ini mengakses state auth dengan benar
+  const { token } = auth || {}; // Pastikan token adalah null jika auth tidak ada
+
+  if (!token) {
+    // console.error("Token tidak tersedia");
+    return; // Hentikan jika token tidak ada
+  }
   try {
     const { token, uid } = getState().auth;
 
