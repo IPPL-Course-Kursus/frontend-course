@@ -7,11 +7,7 @@ import Login from "./pages/auth/Login";
 import ResetPassword from "./pages/auth/ResetPassword";
 import Register from "./pages/auth/Register";
 import SendEmail from "./pages/auth/sendEmail";
-<<<<<<< HEAD
-import SuccessPage from "./pages/payment/SuccessPage";
-=======
 import SuccessPage from "./pages/Payment/SuccessPage";
->>>>>>> 8bff2f55eb500fe3fa4bd680a954c3cca25a35e9
 import PaymentPage from "./pages/payment/PaymentPage";
 import DetailKelas from "./pages/Detail/DetailKelas";
 import MainProfile from "./pages/Profile/MainProfile";
@@ -22,11 +18,7 @@ import MulaiKelas from "./pages/MulaiKelas/MulaiKelas";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminDataKelas from "./pages/admin/DataKelas";
 import AdminDataInstuktur from "./pages/admin/AdminDataInstruktur";
-<<<<<<< HEAD
 import AdminDataModule from "./pages/admin/AdminDataModule";
-=======
-
->>>>>>> 8bff2f55eb500fe3fa4bd680a954c3cca25a35e9
 // import NoAccessToken from "./security/NoAccessToken";
 
 function App() {

@@ -74,13 +74,16 @@ const AdminDataInstruktur = () => {
   };
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4">Hi, Admin!</h1>
+    <div className="p-6 bg-secondary min-h-screen font-poppins">
+      {/* Section for "Hi, Admin!" */}
+      <div className="bg-[#F3F7FB] p-4 flex justify-between items-center mb-4 shadow-sm">
+        <h1 className="text-2xl font-bold text-[#173D94]">Hi, Admin!</h1>
+      </div>
 
       {/* Tabel Instruktur */}
-      <div className="bg-white shadow-lg rounded-lg p-4">
+      <div className="w-full bg-white shadow-lg rounded-lg p-4 overflow-x-auto">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-bold">Data Instruktur</h2>
+          <h2 className="text-base md:text-lg font-bold">Data Instruktur</h2>
           <button
             className="bg-blue-500 text-white px-4 py-2 rounded"
             onClick={togglePopup}
@@ -89,7 +92,7 @@ const AdminDataInstruktur = () => {
           </button>
         </div>
 
-        <table className="min-w-full bg-white">
+        <table className="w-full bg-white table-auto">
           <thead className="bg-[#F3F7FB] text-black">
             <tr>
               <th className="px-4 py-2 text-left">ID</th>
@@ -107,18 +110,18 @@ const AdminDataInstruktur = () => {
                   <img
                     src={instructor.photoUrl}
                     alt={instructor.name}
-                    className="w-32 h-32 object-cover rounded-full"
+                    className="w-20 h-20 md:w-32 md:h-32 object-cover rounded-full"
                   />
                 </td>
                 <td className="px-4 py-2 text-center">
                   <button
-                    className="bg-green-500 text-white px-4 py-2 rounded mr-2"
+                    className="bg-green-500 text-white px-3 py-2 rounded mr-2"
                     onClick={() => handleEditInstructor(instructor)}
                   >
                     Edit
                   </button>
                   <button
-                    className="bg-red-500 text-white px-4 py-2 rounded"
+                    className="bg-red-500 text-white px-3 py-2 rounded"
                     onClick={() => handleDeleteInstructor(instructor.id)}
                   >
                     Hapus
@@ -133,8 +136,8 @@ const AdminDataInstruktur = () => {
       {/* Popup Tambah/Edit Instruktur */}
       {showPopup && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-1/3">
-            <h2 className="text-xl font-bold mb-4">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full md:w-1/2 lg:w-1/3">
+            <h2 className="text-lg md:text-xl font-bold mb-4">
               {isEditing ? 'Edit Instruktur' : 'Tambah Instruktur'}
             </h2>
             <form onSubmit={isEditing ? handleSaveEditInstructor : handleAddInstructor}>
