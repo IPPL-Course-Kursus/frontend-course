@@ -18,6 +18,7 @@ import MulaiKelas from "./pages/MulaiKelas/MulaiKelas";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminDataKelas from "./pages/admin/DataKelas";
 import AdminDataInstuktur from "./pages/admin/AdminDataInstruktur";
+import AdminDataModule from "./pages/admin/AdminDataModule";
 
 // import NoAccessToken from "./security/NoAccessToken";
 
@@ -91,11 +92,12 @@ function AppRoutes() {
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/admin/data-kelas" element={<AdminDataKelas />} />
       <Route path="/admin/data-instruktur" element={<AdminDataInstuktur />} />
+      <Route path="/admin/data-module" element={<AdminDataModule />} />
 
       {/* NotFound */}
-      <Route path="/*" element={<NotFound />} />
+      <Route path="/*" element={<NotFound />} />  
 
-      {/* <Route
+      {/* <Route  
         path="/login"
         element={
           <NoAccessToken>
