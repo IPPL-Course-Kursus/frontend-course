@@ -18,8 +18,8 @@ import MulaiKelas from "./pages/MulaiKelas/MulaiKelas";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminDataKelas from "./pages/admin/DataKelas";
 import AdminDataInstuktur from "./pages/admin/AdminDataInstruktur";
-
 // import NoAccessToken from "./security/NoAccessToken";
+// import Protected from "./security/Protected";
 
 function App() {
   return (
@@ -96,14 +96,22 @@ function AppRoutes() {
       <Route path="/*" element={<NotFound />} />
 
       {/* <Route
+        path="/"
+        element={
+          <Protected>
+            <Home />
+          </Protected>
+        }
+      /> */}
+      {/* <Route
         path="/login"
         element={
           <NoAccessToken>
             <Login />
           </NoAccessToken>
         }
-      />
-      <Route
+      /> */}
+      {/* <Route
         path="/register"
         element={
           <NoAccessToken>
