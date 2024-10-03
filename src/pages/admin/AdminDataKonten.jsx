@@ -321,5 +321,4 @@ const AdminDataKonten = () => {
       </div>
     );
   }
-
 export default AdminDataKonten;
