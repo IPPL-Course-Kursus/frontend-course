@@ -292,8 +292,34 @@ const AdminDataKonten = () => {
             </div>
           </div>
         )}
+
+        {/* Modal Konfirmasi Hapus */}
+        {showDeleteModal && (
+          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white w-11/12 md:w-1/3 p-6 rounded-3xl shadow-lg relative">
+              <h2 className="text-center text-xl md:text-2xl font-bold mb-4 text-red-600">Konfirmasi Hapus Konten</h2>
+              <p className="text-center">Apakah yakin ingin menghapus konten ini?</p>
+              <div className="flex justify-center mt-4 space-x-4">
+                <button
+                  className="bg-red-600 hover:bg-red-700 text-black font-semibold py-2 px-4 rounded"
+                  onClick={confirmDelete}
+                >
+                  Hapus
+                </button>
+                <button
+                  className="bg-gray-300 hover:bg-gray-400 text-black font-semibold py-2 px-4 rounded"
+                  onClick={() => setShowDeleteModal(false)}
+                >
+                  Batal
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+
       </div>
     );
-}
+  }
 
 export default AdminDataKonten;
