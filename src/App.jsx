@@ -19,6 +19,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminDataKelas from "./pages/admin/DataKelas";
 import AdminDataInstuktur from "./pages/admin/AdminDataInstruktur";
 import AdminDataModule from "./pages/admin/AdminDataModule";
+import AdminDataKonten from "./pages/admin/AdminDataKonten";
 
 // import NoAccessToken from "./security/NoAccessToken";
 // import Protected from "./security/Protected";
@@ -94,6 +95,7 @@ function AppRoutes() {
       <Route path="/admin/data-kelas" element={<AdminDataKelas />} />
       <Route path="/admin/data-instruktur" element={<AdminDataInstuktur />} />
       <Route path="/admin/data-module" element={<AdminDataModule />} />
+      <Route path="/admin/data-konten" element={<AdminDataKonten />} />
 
       {/* NotFound */}
       <Route path="/*" element={<NotFound />} />  
