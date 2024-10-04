@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import CardPayment from "../../components/PayemnetComponent/CardPayment";
 
 const PaymentPage = () => {
   const [toggleBankTransfer, setToggleBankTransfer] = useState(false);
@@ -33,7 +34,7 @@ const PaymentPage = () => {
 
   return (
     <>
-    <Navbar/>
+      <Navbar />
       <div className="h-full bg-[#FFFF] pb-32 md:w-full">
         <div className="md:w-[80%] md:mx-auto">
           <div className="flex pt-4">
@@ -131,69 +132,11 @@ const PaymentPage = () => {
                     </div>
                   </div>
                 </div>
+
                 <div id="Class Buy" className=" md:ml-16">
-                  <div className="border-2 border-[#6148FF] rounded-xl my-5 p-4 md:my-0">
+                  <div className="border-2 border-gray-100 shadow-lg rounded-xl my-5 p-4 md:my-0">
                     <div className=" mx-auto">
-                      <div className="bg-white w-full h-[200px] rounded-xl shadow-xl md:w-[440px] md:h-[200px] md:mx-auto">
-                        <div className=" bg-gray-500 w-full h-[50%] rounded-t-xl">
-                          <img
-                            className="w-full h-full"
-                            //   src={banner}
-                            src="https://indi.tech/wp-content/uploads/2022/03/Screenshot-2022-03-24-223956.png"
-                          />
-                        </div>
-                        <div className="p-2">
-                          <div className="flex justify-between w-full">
-                            <div className="font-medium text-[#6148FF] md:text-xl">
-                              {/* {details.category} */}
-                              Design UI/UX
-                            </div>
-                          </div>
-                          <div className="font-medium md:text-xl">
-                            {/* {details.name} */}
-                            Lorem Ipsumahsdfabk
-                          </div>
-                          <div className="font-medium text-sm md:pt-2">
-                            {/* {details.mentor} */}
-                            By Saman
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex justify-between md:justify-around">
-                        <div className="pt-3">
-                          <div className="font-medium">Harga</div>
-                          <div>
-                            {/* Rp.{details.price} */}
-                            RP.190.000
-                          </div>
-                        </div>
-                        <div className="pt-3">
-                          <div className="font-medium">PPN 11%</div>
-                          <div>
-                            {/* Rp {(details.price * 11) / 100} */}
-                            Rp30.000
-                          </div>
-                        </div>
-                        <div className="pt-3">
-                          <div className="font-medium">Total Bayar</div>
-                          <div className="text-[#6148FF] font-bold">
-                            {/* Rp {details.price + (details.price * 11) / 100} */}
-                            Rp. 220.000
-                          </div>
-                        </div>
-                      </div>
-                      <div className="py-3">
-                        <button
-                          className="bg-[#FF0000] mx-auto text-center py-3 px-8 rounded-3xl text-white flex"
-                          type="submit"
-                        >
-                          Bayar dan Ikuti Kelas Selamanya{" "}
-                          <img
-                            //   src={next}
-                            className="ml-3"
-                          />
-                        </button>
-                      </div>
+                      <CardPayment />
                     </div>
                   </div>
                 </div>
@@ -202,7 +145,7 @@ const PaymentPage = () => {
           </form>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 };

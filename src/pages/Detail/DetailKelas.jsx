@@ -1,12 +1,26 @@
-import CardRecommended from "../../components/DetailKelas/CardRecommended";
+import { Link } from "react-router-dom";
+import CardRecommended from "../../components/DetailComponent/CardRecommended";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
-
+import { FaBook } from "react-icons/fa";
+import { GrCertificate } from "react-icons/gr";
+// import { useState } from "react";
+// import PopupBuy from "../../components/DetailComponent/PopUpBuy";
 
 export const DetailKelas = () => {
+  // const [isPopupBuy, setIsPopupBuy] = useState(false);
+
+  // const handlePopup = () => {
+  //   setIsPopupBuy(false);
+  // };
   return (
     <>
-    <Navbar/>
+      {/* <PopupBuy
+        isPopupBuy={isPopupBuy}
+        handlePopup={handlePopup}
+        // courseId={courseId}
+      /> */}
+      <Navbar />
       <div className="w-full h-full p-4">
         {/* Bagian Judul dan Deskripsi */}
         <div className=" flex flex-col sm:flex-row sm:items-start sm:justify-between w-full bg-[#f3f7fb]">
@@ -20,16 +34,21 @@ export const DetailKelas = () => {
             <p className="text-[#151515] text-[12px] sm:text-[15px] leading-tight mt-4">
               Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
               has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown
-              printer took a galley of type and scrambled it to make a type specimen book Lorem Ipsum
-              is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-              industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a
-              galley of type and scrambled it to make a type specimen book
+              printer took a galley of type and scrambled it to make a type specimen book Lorem
+              Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
+              been the industry&#39;s standard dummy text ever since the 1500s, when an unknown
+              printer took a galley of type and scrambled it to make a type specimen book
             </p>
 
             {/* Tombol Ikuti Kelas */}
-            <button className="mt-6 px-4 py-2 bg-[#0a61aa] text-white text-xs font-bold rounded-md">
-              Ikuti Kelas Ini
-            </button>
+            <Link to="/mulai-kelas">
+              <button
+                // onClick={() => setIsPopupBuy(true)}
+                className="mt-6 px-4 py-2 bg-[#0a61aa] text-white text-xs font-bold rounded-md"
+              >
+                Ikuti Kelas Ini
+              </button>
+            </Link>
           </div>
 
           {/* Gambar */}
@@ -50,10 +69,10 @@ export const DetailKelas = () => {
             <p className="mt-4 text-[#151515] text-[15px] leading-5">
               Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
               has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown
-              printer took a galley of type and scrambled it to make a type specimen book Lorem Ipsum
-              is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the
-              industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a
-              galley of type and scrambled it to make a type specimen book
+              printer took a galley of type and scrambled it to make a type specimen book Lorem
+              Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has
+              been the industry&#39;s standard dummy text ever since the 1500s, when an unknown
+              printer took a galley of type and scrambled it to make a type specimen book
             </p>
           </div>
 
@@ -63,7 +82,8 @@ export const DetailKelas = () => {
             <div className="mt-4 space-y-4">
               {/* Materi */}
               <div className="flex items-center bg-grey p-4 rounded-md">
-                <img className="w-[50px] h-[50px] mr-4" alt="Group" src="images/DetailKelas/detkelas1.png" />
+                <FaBook className="w-[50px] h-[50px] mr-4 " />
+                {/* <img className="w-[50px] h-[50px] mr-4" alt="Group" src="" /> */}
                 <div>
                   <p className="font-medium text-[#151515] text-base leading-5">13 Materi</p>
                 </div>
@@ -71,7 +91,8 @@ export const DetailKelas = () => {
 
               {/* Sertifikat */}
               <div className="flex items-center bg-grey p-4 rounded-md">
-                <img className="w-[50px] h-[50px] mr-4" alt="Group" src="images/DetailKelas/detkelas2.png" />
+                <GrCertificate className="w-[50px] h-[50px] mr-4 " />
+
                 <div>
                   <p className="font-medium text-[#151515] text-base leading-5">Sertifikat</p>
                 </div>

@@ -1,8 +1,13 @@
-import { useState } from "react";
+// import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
-import { Book, Clock, Gem, Shield } from "lucide-react";
-import ProgressBar from "../MyCourse/ProgressBar";
+import {
+  Book,
+  Clock,
+  // Gem,
+  Shield,
+} from "lucide-react";
+// import ProgressBar from "../MyCourse/ProgressBar";
 import PropTypes from "prop-types";
 
 const CardRecommended = ({ title = "Kelas rekomendasi" }) => {
@@ -51,7 +56,6 @@ const CardRecommended = ({ title = "Kelas rekomendasi" }) => {
               <div key={val.id} className="bg-white shadow-xl rounded-xl overflow-hidden">
                 <img src={val.img} alt={val.name} className="w-full h-28 object-cover" />
                 <div className="mx-2 md:mx-4 flex flex-col mt-1 md:mt-2">
-                  
                   <h1 className="text-color-primary font-bold text-sm lg:text-base -tracking-wide">
                     {val.name}
                   </h1>

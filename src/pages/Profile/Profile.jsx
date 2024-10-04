@@ -1,72 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { FaCamera } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
-import { getMe } from "../../redux/actions/authActions";
 
-// const Profile = () => {
-//   const dispatch = useDispatch();
-//   const [focusedField, setFocusedField] = useState("");
-//   const [profile, setProfile] = useState({
-//     name: "",
-//     email: "",
-//     phone: "",
-//     bio: "",
-//     country: "",
-//     city: "",
-//     address: "",
-//   });
-//   const [form, setForm] = useState({ ...profile });
-
-//   const { user } = useSelector((state) => state.auth);
-//   console.log(user);
-
-//   useEffect(() => {
-//     setForm({ ...profile });
-//   }, [profile]);
-//   // useEffect(() => {
-//   //   if (user) {
-//   //     setProfile({
-//   //       name: user.name,
-//   //       email: user.email,
-//   //       phone: user.phone,
-//   //       bio: user.bio,
-//   //       country: user.country,
-//   //       city: user.city,
-//   //       address: user.address,
-//   //     });
-//   //     setProfile(user.picture || "");
-//   //   }
-//   // }, [user]);
-
-//   useEffect(() => {
-//     dispatch(getMe(null));
-//   }, [dispatch]);
-
-//   const img = useRef();
-
-//   const handleInputChange = (e) => {
-//     const { name, value } = e.target;
-//     setForm((prevForm) => ({
-//       ...prevForm,
-//       [name]: value,
-//     }));
-//   };
-
-//   const handleSave = () => {
-//     setProfile(form);
-//   };
-
-//   const handleFocus = (field) => {
-//     setFocusedField(field);
-//   };
-
-//   const handleBlur = () => {
-//     setFocusedField("");
-//   };
 const Profile = () => {
-  const dispatch = useDispatch();
-
-  // Inisialisasi profil dan form
   const [profile, setProfile] = useState({
     name: "",
     email: "",
@@ -75,35 +10,10 @@ const Profile = () => {
     country: "",
     city: "",
     address: "",
-    picture: "", // Menambahkan field untuk gambar profil
   });
+
   const [form, setForm] = useState({ ...profile });
   const [focusedField, setFocusedField] = useState("");
-
-  const { user } = useSelector((state) => state.auth);
-  // console.log(user);
-
-  useEffect(() => {
-    // Update profil hanya jika user ada
-    if (user) {
-      setProfile({
-        name: user.name || "",
-        email: user.email || "",
-        phone: user.phone || "",
-        bio: user.bio || "",
-        country: user.country || "",
-        city: user.city || "",
-        address: user.address || "",
-        picture: user.picture || "", // Menyimpan gambar profil
-      });
-    }
-  }, [user]);
-
-  useEffect(() => {
-    dispatch(getMe(null)); // Memanggil action untuk mendapatkan data user
-  }, [dispatch]);
-
-  const img = useRef();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -114,7 +24,6 @@ const Profile = () => {
   };
 
   const handleSave = () => {
-    // Menyimpan data ke profil
     setProfile(form);
   };
 
@@ -125,13 +34,14 @@ const Profile = () => {
   const handleBlur = () => {
     setFocusedField("");
   };
+
   return (
     <div className="flex p-8">
       <div className="flex flex-col">
         <div className="relative items-center mr-8">
           <img
             src="/profile.jpg"
-            ref={img}
+            alt=""
             className="w-52 h-52 rounded-full border-2 border-blue-800 shadow-lg"
           />
 
@@ -236,7 +146,6 @@ const Profile = () => {
         </button>
       </div>
     </div>
-  
   );
 };
 
