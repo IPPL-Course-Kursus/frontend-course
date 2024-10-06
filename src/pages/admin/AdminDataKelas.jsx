@@ -4,6 +4,7 @@ import { IoAddCircleOutline } from "react-icons/io5";
 import DataKelasInput from "../../components/admin/DataKelasInput";
 import DataKelasUbah from "../../components/admin/DataKelasUbah";
 import DataKelasDetail from "../../components/admin/DataKelasDetail";
+import SideBar from "../../components/Sidebar/SidebarAdmin";
 
 const AdminDataKelas = () => {
     const [courseTypeSearch, setCourseTypeSearch] = useState("");
@@ -80,6 +81,8 @@ const AdminDataKelas = () => {
 
     return (
         <>
+            <div className="flex">
+                <SideBar />
             <div className="p-6 bg-secondary min-h-screen font-poppins">
                 {/* Header */}
                 <div className="bg-[#F3F7FB] p-4 flex justify-between items-center mb-4 shadow-sm">
@@ -202,6 +205,7 @@ const AdminDataKelas = () => {
 
                 {/* Pop-up untuk detail kelas */}
                 <DataKelasDetail show={showDetailPopup} onClose={() => setShowDetailPopup(false)} courseDetail={selectedCourse} />
+            </div>
             </div>
         </>
     );

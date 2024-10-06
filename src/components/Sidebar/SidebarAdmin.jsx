@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 const Sidebar = () => {
   const [isDataMenuOpen, setIsDataMenuOpen] = useState(false);
@@ -13,7 +13,7 @@ const Sidebar = () => {
         <h1 className="text-2xl font-bold">LOGO</h1>
       </div>
       <nav className="flex-1 px-2 py-4 space-y-2">
-        <a href="#" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
+        <a href="/admin/dashboard" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
           Dashboard
         </a>
         <div className="relative">
@@ -26,10 +26,13 @@ const Sidebar = () => {
           </button>
           {isDataMenuOpen && (
             <div className="pl-4">
-              <a href="#" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
+              <a href="/admin/data-kelas" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
+                Data Kelas
+              </a>
+              <a href="/admin/data-kategori" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
                 Data Kategori
               </a>
-              <a href="#" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
+              <a href="/admin/data-instruktur" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
                 Data Instruktur
               </a>
             </div>
