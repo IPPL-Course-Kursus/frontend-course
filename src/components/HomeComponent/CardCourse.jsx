@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -9,10 +9,19 @@ import ProgressBar from "../MyCourse/ProgressBar";
 import PropTypes from "prop-types";
 import { IoIosArrowDroprightCircle } from "react-icons/io";
 import { IoIosArrowDropleftCircle } from "react-icons/io";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllCourse } from "../../redux/actions/courseActions";
 
 const CardCourse = ({ title = "Kelas Populer" }) => {
   const [selectCategoryId, setSelectCategoryId] = useState(null);
   const sliderRef = useRef(null);
+  const dispatch = useDispatch();
+
+  const { courses } = useSelector((state) => state.course); // Accessing the course state
+
+  useEffect(() => {
+    dispatch(getAllCourse()); // Fetch all courses when component mounts
+  }, [dispatch]);
 
   const dataKategoriPopularName = [
     { id: null, name: "All" },
@@ -26,77 +35,78 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
     { id: 8, name: "Cybersecurity" },
   ];
 
-  const dataKategoriPopular = [
-    {
-      id: 1,
-      name: "UI/UX Design",
-      overview: "Belajar Web Designer dengan Figma",
-      instruktur: "Saman",
-      price: "Rp. 200.000",
-      img: "https://indi.tech/wp-content/uploads/2022/03/Screenshot-2022-03-24-223956.png",
-    },
-    {
-      id: 2,
-      name: "Product Manager",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: "Rajab",
-      price: "Rp. 200.000",
-      img: "https://media.licdn.com/dms/image/C5612AQEuWqyxzjrVYw/article-cover_image-shrink_720_1280/0/1588225642197?e=2147483647&v=beta&t=C_GHDsCbI-fy7-ishvy9FGJGHHqX-vfeZZm7Xe6DQgs",
-    },
-    {
-      id: 3,
-      name: "Web Development",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: " Lana",
-      price: "Rp. 200.000",
-      img: "https://niagaspace.sgp1.digitaloceanspaces.com/blog/wp-content/uploads/2023/04/03075503/salah-satu-langkah-dalam-cara-menjadi-web-developer-adalah-mempelajari-bahasa-untuk-coding-1024x792.webp",
-    },
-    {
-      id: 4,
-      name: "Android Development",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: "Alim",
-      price: "Rp. 200.000",
-      img: "https://developer.android.com/static/images/social/android-developers.png?hl=id",
-    },
-    {
-      id: 5,
-      name: "iOS Development",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: "Ricky",
-      price: "Rp. 200.000",
-      img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjg9e0Catb89J5lz6qcpVGmISSa-3ITiJKaA&s",
-    },
-    {
-      id: 6,
-      name: "Data Science",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: "Alex",
-      price: "Rp. 200.000",
-      img: "https://www.solulab.com/wp-content/uploads/2024/09/Data-Science-Development-Company.jpg",
-    },
-    {
-      id: 7,
-      name: "Machine Learning",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: "Helmi",
-      price: "Free",
-      img: "https://itbox.id/wp-content/uploads/2023/03/Machine-Learning.jpeg",
-    },
-    {
-      id: 8,
-      name: "Cybersecurity",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: "Arwin",
-      price: "Rp. 200.000",
-      img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsh3n29Iw5iVmWbLRoDJPkilEDOlJks8JNMg&s",
-    },
-  ];
+  // const dataKategoriPopular = [
+  //   {
+  //     id: 1,
+  //     name: "UI/UX Design",
+  //     overview: "Belajar Web Designer dengan Figma",
+  //     instruktur: "Saman",
+  //     price: "Rp. 200.000",
+  //     img: "https://indi.tech/wp-content/uploads/2022/03/Screenshot-2022-03-24-223956.png",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Product Manager",
+  //     overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
+  //     instruktur: "Rajab",
+  //     price: "Rp. 200.000",
+  //     img: "https://media.licdn.com/dms/image/C5612AQEuWqyxzjrVYw/article-cover_image-shrink_720_1280/0/1588225642197?e=2147483647&v=beta&t=C_GHDsCbI-fy7-ishvy9FGJGHHqX-vfeZZm7Xe6DQgs",
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Web Development",
+  //     overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
+  //     instruktur: " Lana",
+  //     price: "Rp. 200.000",
+  //     img: "https://niagaspace.sgp1.digitaloceanspaces.com/blog/wp-content/uploads/2023/04/03075503/salah-satu-langkah-dalam-cara-menjadi-web-developer-adalah-mempelajari-bahasa-untuk-coding-1024x792.webp",
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "Android Development",
+  //     overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
+  //     instruktur: "Alim",
+  //     price: "Rp. 200.000",
+  //     img: "https://developer.android.com/static/images/social/android-developers.png?hl=id",
+  //   },
+  //   {
+  //     id: 5,
+  //     name: "iOS Development",
+  //     overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
+  //     instruktur: "Ricky",
+  //     price: "Rp. 200.000",
+  //     img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjg9e0Catb89J5lz6qcpVGmISSa-3ITiJKaA&s",
+  //   },
+  //   {
+  //     id: 6,
+  //     name: "Data Science",
+  //     overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
+  //     instruktur: "Alex",
+  //     price: "Rp. 200.000",
+  //     img: "https://www.solulab.com/wp-content/uploads/2024/09/Data-Science-Development-Company.jpg",
+  //   },
+  //   {
+  //     id: 7,
+  //     name: "Machine Learning",
+  //     overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
+  //     instruktur: "Helmi",
+  //     price: "Free",
+  //     img: "https://itbox.id/wp-content/uploads/2023/03/Machine-Learning.jpeg",
+  //   },
+  //   {
+  //     id: 8,
+  //     name: "Cybersecurity",
+  //     overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
+  //     instruktur: "Arwin",
+  //     price: "Rp. 200.000",
+  //     img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsh3n29Iw5iVmWbLRoDJPkilEDOlJks8JNMg&s",
+  //   },
+  // ];
 
   // Filter courses by selected category
+  // Filter courses by selected category
   const filteredCourses = selectCategoryId
-    ? dataKategoriPopular.filter((course) => course.id === selectCategoryId)
-    : dataKategoriPopular;
+    ? courses.filter((course) => course.id === selectCategoryId)
+    : courses;
 
   const NextArrow = ({ onClick }) => {
     return (
@@ -213,37 +223,39 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
 
       {/* Card Course Section */}
       <div className="max-w-screen-lg mx-auto px-6 lg:p-0">
-        {selectCategoryId === null ? (
+        {Array.isArray(filteredCourses) && filteredCourses.length > 0 ? (
           <Slider {...courseSliderSettings}>
             {filteredCourses.map((val) => (
               <div key={val.id} className="p-2">
                 <div className="w-full bg-white shadow-xl rounded-xl overflow-hidden pb-3">
+
                   <div className="flex flex-col">
-                    <img src={val.img} alt={val.name} className="w-full h-28 object-cover" />
+                    <img src={val.img} alt={val.name} className="w-full h-32 object-cover" />
                     <div className="mx-2 md:mx-4 flex flex-col mt-1 md:mt-2">
                       <div className="flex justify-between items-center">
                         <h1 className="text-color-primary font-bold text-sm lg:text-base -tracking-wide">
-                          {val.name}
+                          {val.courseName}
                         </h1>
                         <p className="flex items-center font-semibold">
-                          <FaStar color="#F9CC00" className="w-4 h-4 lg:w-5 lg:h-5" /> 4.8
+                          <FaStar color="#F9CC00" className="w-4 h-4 lg:w-5 lg:h-5" />
+                          {val.rating || 4.8}
                         </p>
                       </div>
                       <h3 className="text-black font-semibold text-sm lg:text-base">
-                        {val.overview}
+                        {val.aboutCourse}
                       </h3>
                       <p className="text-black text-sm font-semibold">
-                        Instruktor {val.instruktur}
+                        Instruktor {val.user.fullName}
                       </p>
                       <div className="mt-3 flex justify-between flex-wrap">
                         <p className="flex items-center text-xs font-semibold text-color-primary">
-                          <Shield size={18} className="mr-1" /> Intermediate Level
+                          <Shield size={18} className="mr-1" /> {val.courseLevel.levelName}
                         </p>
                         <p className="flex items-center text-xs font-semibold text-color-primary">
-                          <Book size={18} className="mr-1" /> 10 Modul
+                          <Book size={18} className="mr-1" /> {val._count.chapters}
                         </p>
                         <p className="flex items-center text-xs font-semibold text-color-primary">
-                          <Clock size={18} className="mr-1" /> 90 Menit
+                          <Clock size={18} className="mr-1" /> {val.totalDuration} menit
                         </p>
                       </div>
                       <div className="my-2">
@@ -269,7 +281,7 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
                       {/* button ketika mau beli (ada harganya) */}
                       <div className="my-2">
                         <button className="py-1 px-4 bg-blue-400  text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
-                          {val.price}
+                          {val.courseDiscountPrice || val.coursePrice}
                         </button>
                       </div>
                       {/* Ini untuk riwayat dan status bayarnya belum bayar */}
