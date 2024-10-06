@@ -1,4 +1,5 @@
 import React from "react";
+import { Gem } from "lucide-react";
 
 const ContentCard = ({
   courseTitle,
@@ -69,7 +70,12 @@ const ContentCard = ({
 
           {/* Payment Status */}
           <div className="mt-4">
-            <button className={`text-white text-sm py-2 px-4 rounded-full ${courseStatus === "Paid" ? "bg-green-500" : "bg-red-500"}`}>
+            <button
+              className={`flex items-center text-white text-sm py-2 px-4 rounded-full ${
+                courseStatus === "Paid" ? "bg-green-500" : "bg-red-500"
+              }`}
+            >
+              <Gem size={16} className="mr-2" />
               {courseStatus}
             </button>
           </div>
