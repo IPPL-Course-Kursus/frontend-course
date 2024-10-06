@@ -16,7 +16,7 @@ import VerifyEmail from "./pages/auth/VerifyEmail";
 import TopikKelas from "./pages/TopikKelas/topikKelas";
 import MulaiKelas from "./pages/MulaiKelas/MulaiKelas";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminDataKelas from "./pages/admin/DataKelas";
+import AdminDataKelas from "./pages/admin/AdminDataKelas";
 import AdminDataInstuktur from "./pages/admin/AdminDataInstruktur";
 import AdminDataModule from "./pages/admin/AdminDataModule";
 

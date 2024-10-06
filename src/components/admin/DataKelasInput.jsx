@@ -1,29 +1,56 @@
 import PropTypes from "prop-types";
+import { useState } from "react";
 
 const DataKelasInput = ({ show, onClose }) => {
-  if (!show) return null; // Jika `show` false, jangan render apapun (sembunyikan pop-up)
+  const [formData, setFormData] = useState({
+    file: null,
+    kategori: "",
+    judulKelas: "",
+    tipeKelas: "",
+    level: "",
+    harga: "",
+    pengajar: "",
+    ditujukanUntuk: "",
+    deskripsi: "",
+  });
+
+  if (!show) return null;
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Tambah Kelas:", formData);
+  };
 
   return (
-    <div
-      className="fixed inset-0 flex justify-center items-center z-50"
-      style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
-    >
+    <div className="fixed inset-0 flex justify-center items-center z-50" style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}>
       <div className="bg-white w-full max-w-lg h-[80vh] p-6 rounded-lg shadow-lg relative overflow-y-auto">
         <button className="absolute top-2 right-2 text-xl font-bold" onClick={onClose}>
           &times;
         </button>
         <h2 className="text-xl font-bold text-[#0a61aa] mb-4 text-center">Tambah Kelas</h2>
 
-        {/* input */}
-        <form>
-          <div className="mb-4">
+        <form onSubmit={handleSubmit}>
+        <div className="mb-4">
             <label className="block mb-1 font-semibold">Upload File</label>
             <input type="file" className="w-full p-2 border rounded-xl" />
           </div>
 
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Kategori</label>
-            <select className="w-full p-2 border rounded-xl">
+            <select
+              name="kategori"
+              value={formData.kategori}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-xl"
+            >
               <option>Pilih</option>
               <option>UI/UX Design</option>
               <option>Data Science</option>
@@ -34,6 +61,9 @@ const DataKelasInput = ({ show, onClose }) => {
             <label className="block mb-1 font-semibold">Judul Kelas</label>
             <input
               type="text"
+              name="judulKelas"
+              value={formData.judulKelas}
+              onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
               placeholder="Masukkan judul kelas"
             />
@@ -41,7 +71,12 @@ const DataKelasInput = ({ show, onClose }) => {
 
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Tipe Kelas</label>
-            <select className="w-full p-2 border rounded-xl">
+            <select
+              name="tipeKelas"
+              value={formData.tipeKelas}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-xl"
+            >
               <option>Pilih</option>
               <option>Free</option>
               <option>Premium</option>
@@ -50,7 +85,12 @@ const DataKelasInput = ({ show, onClose }) => {
 
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Level Kelas</label>
-            <select className="w-full p-2 border rounded-xl">
+            <select
+              name="level"
+              value={formData.level}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-xl"
+            >
               <option>Pilih</option>
               <option>Beginner</option>
               <option>Intermediate</option>
@@ -61,7 +101,10 @@ const DataKelasInput = ({ show, onClose }) => {
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Harga Kelas</label>
             <input
-              type="integer"
+              type="number"
+              name="harga"
+              value={formData.harga}
+              onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
               placeholder="Masukkan harga kelas"
             />
@@ -69,7 +112,12 @@ const DataKelasInput = ({ show, onClose }) => {
 
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Pengajar</label>
-            <select className="w-full p-2 border rounded-xl">
+            <select
+              name="pengajar"
+              value={formData.pengajar}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-xl"
+            >
               <option>Pilih</option>
               <option>John Doe</option>
               <option>Jane Smith</option>
@@ -79,6 +127,9 @@ const DataKelasInput = ({ show, onClose }) => {
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Ditujukan Untuk</label>
             <textarea
+              name="ditujukanUntuk"
+              value={formData.ditujukanUntuk}
+              onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
               placeholder="Masukkan peserta yang dituju"
             />
@@ -87,15 +138,16 @@ const DataKelasInput = ({ show, onClose }) => {
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Deskripsi</label>
             <textarea
+              name="deskripsi"
+              value={formData.deskripsi}
+              onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
               placeholder="Masukkan deskripsi kelas"
             />
           </div>
 
           <div className="flex justify-center">
-            <button type="submit" className="py-2 px-6 bg-[#0a61aa] text-white rounded-xl">
-              Simpan
-            </button>
+            <button type="submit" className="py-2 px-6 bg-[#0a61aa] text-white rounded-xl">Tambah</button>
           </div>
         </form>
       </div>
