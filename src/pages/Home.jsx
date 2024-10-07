@@ -1,9 +1,9 @@
 import { Link, NavLink } from "react-router-dom";
-import CardCategory from "../components/HomeComponent/CardCategory";
+import Navbar from "../components/Navbar";
+import CardCategory from "../components/HomeComponent/cardCategory";
 import CardCourse from "../components/HomeComponent/CardCourse";
 import CardFree from "../components/HomeComponent/CardFree";
 import imgSection from "../assets/bernadya.jpg";
-import Navbar from "../components/Navbar";
 import profilePic from "../assets/profil.png";
 import { IoIosArrowForward } from "react-icons/io";
 import "swiper/css";

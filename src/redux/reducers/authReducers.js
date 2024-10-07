@@ -32,24 +32,13 @@ const loginSlice = createSlice({
   name: "login",
   initialState: initialLoginState,
   reducers: {
-    setCredentials: (state, action) => {
-      state.uid = action.payload.uid; // Simpan UID
-      state.token = action.payload.token; // Simpan token
-      state.user = action.payload.user; // Simpan data user
-      state.role = action.payload.role; // Simpan role
-      state.loading = false;
-      state.error = null;
-    },
-
-    setUser: (state, action) => {
-      state.user = action.payload; // Simpan data user
-    },
     loginStart: (state) => {
       state.loading = true;
       state.error = null;
     },
     loginSuccess: (state, action) => {
       state.loading = false;
+      // Simpan data user, uid, token, dan role
       state.user = action.payload.user; // Simpan data user
       state.uid = action.payload.uid; // Simpan UID
       state.token = action.payload.token; // Simpan token
@@ -60,7 +49,11 @@ const loginSlice = createSlice({
       state.loading = false;
       state.error = action.payload; // Simpan error jika terjadi
     },
+    setUser: (state, action) => {
+      state.user = action.payload; // Simpan data user
+    },
     logout: (state) => {
+      // Reset semua nilai saat logout
       state.user = null;
       state.uid = null; // Reset UID saat logout
       state.token = null; // Reset token saat logout
@@ -70,6 +63,49 @@ const loginSlice = createSlice({
     },
   },
 });
+
+// const loginSlice = createSlice({
+//   name: "login",
+//   initialState: initialLoginState,
+//   reducers: {
+//     setCredentials: (state, action) => {
+//       state.uid = action.payload.uid; // Simpan UID
+//       state.token = action.payload.token; // Simpan token
+//       state.user = action.payload.user; // Simpan data user
+//       state.role = action.payload.role; // Simpan role
+//       state.loading = false;
+//       state.error = null;
+//     },
+
+//     setUser: (state, action) => {
+//       state.user = action.payload; // Simpan data user
+//     },
+//     loginStart: (state) => {
+//       state.loading = true;
+//       state.error = null;
+//     },
+//     loginSuccess: (state, action) => {
+//       state.loading = false;
+//       state.user = action.payload.user; // Simpan data user
+//       state.uid = action.payload.uid; // Simpan UID
+//       state.token = action.payload.token; // Simpan token
+//       state.role = action.payload.role; // Simpan role
+//       state.error = null;
+//     },
+//     loginFailure: (state, action) => {
+//       state.loading = false;
+//       state.error = action.payload; // Simpan error jika terjadi
+//     },
+//     logout: (state) => {
+//       state.user = null;
+//       state.uid = null; // Reset UID saat logout
+//       state.token = null; // Reset token saat logout
+//       state.role = null; // Reset role saat logout
+//       state.loading = false;
+//       state.error = null;
+//     },
+//   },
+// });
 
 const registerSlice = createSlice({
   name: "register",
@@ -171,9 +207,10 @@ const verifyEmailSlice = createSlice({
 });
 
 // Auth Login
-export const { setCredentials, setUser, loginStart, loginSuccess, loginFailure, logout } =
-  loginSlice.actions;
+// export const { setCredentials, setUser, loginStart, loginSuccess, loginFailure, logout } =
+//   loginSlice.actions;
 
+export const { loginStart, loginSuccess, loginFailure, setUser, logout } = loginSlice.actions;
 // Auth Register
 export const { registerStart, registerSuccess, registerFailure, resetRegister } =
   registerSlice.actions;
@@ -193,6 +230,7 @@ export const { verifyEmailStart, verifyEmailSuccess, verifyEmailFailure } =
 
 // Export reducer untuk digunakan di store
 export const loginReducer = loginSlice.reducer;
+
 export const registerReducer = registerSlice.reducer;
 export const emailReducer = emailSlice.reducer;
 export const resetPasswordReducer = resetPasswordSlice.reducer;
