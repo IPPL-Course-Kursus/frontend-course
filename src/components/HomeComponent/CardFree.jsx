@@ -68,6 +68,30 @@ const CardCourse = () => {
       img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjg9e0Catb89J5lz6qcpVGmISSa-3ITiJKaA&s",
     },
     {
+      id: 5,
+      name: "iOS Development",
+      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
+      instruktur: "Ricky",
+      price: "Gratis",
+      img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjg9e0Catb89J5lz6qcpVGmISSa-3ITiJKaA&s",
+    },
+    {
+      id: 5,
+      name: "iOS Development",
+      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
+      instruktur: "Ricky",
+      price: "Gratis",
+      img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjg9e0Catb89J5lz6qcpVGmISSa-3ITiJKaA&s",
+    },
+    {
+      id: 5,
+      name: "iOS Development",
+      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
+      instruktur: "Ricky",
+      price: "Gratis",
+      img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjg9e0Catb89J5lz6qcpVGmISSa-3ITiJKaA&s",
+    },
+    {
       id: 6,
       name: "Data Science",
       overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
@@ -266,6 +290,89 @@ const CardCourse = () => {
               </div>
             ))}
           </Slider>
+          ) : filteredCourses.length > 3 ? ( // Menggunakan slider jika lebih dari 3 course
+            <Slider {...courseSliderSettings}>
+              {filteredCourses.map((val) => (
+              <div key={val.id} className="p-2">
+              <div className="w-full bg-white shadow-xl rounded-xl overflow-hidden pb-3">
+                <div className="flex flex-col">
+                  <img src={val.img} alt={val.name} className="w-full h-28 object-cover" />
+                  <div className="mx-2 md:mx-4 flex flex-col mt-1 md:mt-2">
+                    <div className="flex justify-between items-center">
+                      <h1 className="text-color-primary font-bold text-sm lg:text-base -tracking-wide">
+                        {val.name}
+                      </h1>
+                      <p className="flex items-center font-semibold">
+                        <FaStar color="#F9CC00" className="w-4 h-4 lg:w-5 lg:h-5" /> 4.8
+                      </p>
+                    </div>
+                    <h3 className="text-black font-semibold text-sm lg:text-base">
+                      {val.overview}
+                    </h3>
+                    <p className="text-black text-sm font-semibold">
+                      Instruktor {val.instruktur}
+                    </p>
+                    <div className="mt-3 flex justify-between flex-wrap">
+                      <p className="flex items-center text-xs font-semibold text-color-primary">
+                        <Shield size={18} className="mr-1" /> Intermediate Level
+                      </p>
+                      <p className="flex items-center text-xs font-semibold text-color-primary">
+                        <Book size={18} className="mr-1" /> 10 Modul
+                      </p>
+                      <p className="flex items-center text-xs font-semibold text-color-primary">
+                        <Clock size={18} className="mr-1" /> 90 Menit
+                      </p>
+                    </div>
+                    <div className="my-2">
+                      <ProgressBar />
+                    </div>
+                    <div className="my-2">
+                      <Link
+                        to="/detail-kelas"
+                        className="py-1 px-4 bg-black  text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
+                      >
+                        Mulai Kelas
+                      </Link>
+                    </div>
+                    {/* ini button ketika premium dan belum beli */}
+                    <div className="my-2">
+                      <button className="py-1 px-4 bg-blue-400  text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
+                        <span className="mr-2">
+                          <Gem size={16} />
+                        </span>{" "}
+                        Premium
+                      </button>
+                    </div>
+                    {/* button ketika mau beli (ada harganya) */}
+                    <div className="my-2">
+                      <button className="py-1 px-4 bg-blue-400  text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
+                        {val.price}
+                      </button>
+                    </div>
+                    {/* Ini untuk riwayat dan status bayarnya belum bayar */}
+                    <div className="my-2">
+                      <button className="py-1 px-4 bg-red-500  text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
+                        <span className="mr-2">
+                          <Gem size={16} />
+                        </span>{" "}
+                        Waiting for payment
+                      </button>
+                    </div>
+                    {/* Ini untuk riwayat dan status bayarnya udah bayar */}
+                    <div className="my-2">
+                      <button className="py-1 px-4 bg-green-400  text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
+                        <span className="mr-2">
+                          <Gem size={16} />
+                        </span>{" "}
+                        Paid
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+              ))}
+            </Slider>
         ) : (
           <div className="grid mt-2 gap-2 grid-cols-1 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:mt-4">
             {filteredCourses.map((val) => (

@@ -14,11 +14,11 @@ const Home = () => {
   return (
     <>
       <Navbar />
-      <div className="w-full h-full  relative">
+      <div className="w-full h-full relative ">
         <img
           src="/people_dasboard.png"
           alt="picture"
-          className="w-full h-full object-cover absolute"
+          className="w-full h-full object-cover absolute -z-50"
         />
         <div className="absolute w-full h-full bg-gradient-to-r from-primary via-primary to-transparent opacity-75" />
 
