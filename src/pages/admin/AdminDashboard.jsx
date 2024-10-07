@@ -184,7 +184,7 @@ const AdminDashboard = () => {
                 <option value="SUDAH BAYAR">Sudah Bayar</option>
                 <option value="BELUM BAYAR">Belum Bayar</option>
               </select>
-              <FaFilter className="absolute right-4 top3-2 text-[#173D94] text-sm" />
+              <FaFilter className="absolute right-4 top-2 text-[#173D94] text-sm" />
             </div>
 
             {/* Search Icon untuk Status Pembayaran */}
