@@ -22,7 +22,7 @@ const Home = () => {
         />
         <div className="absolute w-full h-full bg-gradient-to-r from-primary via-primary to-transparent opacity-75" />
 
-        <div className="flex flex-col lg:flex-row lg:items-start lg:pt-24 lg:justify-between pt-16 pl-10 h-80 lg:px-40 relative z-10">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:pt-24 lg:justify-between pt-16 pl-10 h-80 lg:px-40 relative -z-50">
           <div className="flex flex-col">
             <div>
               <h1 className="font-semibold text-white sm:text-xl lg:text-3xl">
