@@ -142,7 +142,7 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
               >
                 All
               </button>
-
+              {/* mapping */}
               {category.map((kategori) => (
                 <div key={kategori.id} className="ml-4">
                   <div
