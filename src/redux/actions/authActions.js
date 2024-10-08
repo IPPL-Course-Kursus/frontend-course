@@ -9,8 +9,8 @@ import {
   registerStart,
   registerSuccess,
   registerFailure,
-  logout,
-  setUser,
+  // logout,
+  // setUser,
   // setCredentials,
 } from "../reducers/authReducers";
 import { verifyEmailStart, verifyEmailSuccess, verifyEmailFailure } from "../reducers/authReducers";
@@ -18,6 +18,17 @@ import {
   resetPasswordStart,
   resetPasswordSuccess,
   resetPasswordFailure,
+} from "../reducers/authReducers";
+import {
+  getMeStart,
+  getMeSuccess,
+  getMeFailure,
+  updateProfileStart,
+  updateProfileSuccess,
+  updateProfileFailure,
+  changePasswordStart,
+  changePasswordSuccess,
+  changePasswordFailure,
 } from "../reducers/authReducers";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
@@ -210,39 +221,39 @@ export const register =
     }
   };
 
-export const getMe = () => async (dispatch, getState) => {
-  const { auth } = getState(); // Pastikan ini mengakses state auth dengan benar
-  const { token } = auth || {}; // Pastikan token adalah null jika auth tidak ada
+// export const getMe = () => async (dispatch, getState) => {
+//   const { auth } = getState(); // Pastikan ini mengakses state auth dengan benar
+//   const { token } = auth || {}; // Pastikan token adalah null jika auth tidak ada
 
-  if (!token) {
-    // console.error("Token tidak tersedia");
-    return; // Hentikan jika token tidak ada
-  }
-  try {
-    const { token, uid } = getState().auth;
+//   if (!token) {
+//     // console.error("Token tidak tersedia");
+//     return; // Hentikan jika token tidak ada
+//   }
+//   try {
+//     const { token, uid } = getState().auth;
 
-    if (!token || !uid) {
-      throw new Error("Token atau UID tidak tersedia.");
-    }
+//     if (!token || !uid) {
+//       throw new Error("Token atau UID tidak tersedia.");
+//     }
 
-    const response = await axios.get(`${api_url}auth/profile/${uid}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+//     const response = await axios.get(`${api_url}auth/profile/${uid}`, {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     });
 
-    const { success, data } = response.data;
+//     const { success, data } = response.data;
 
-    if (success) {
-      dispatch(setUser(data)); // Dispatch untuk menyimpan data user
-    } else {
-      dispatch(logout()); // Logout jika tidak berhasil
-    }
-  } catch (error) {
-    console.error("Error fetching user data:", error);
-    dispatch(logout()); // Logout jika terjadi kesalahan
-  }
-};
+//     if (success) {
+//       dispatch(setUser(data)); // Dispatch untuk menyimpan data user
+//     } else {
+//       dispatch(logout()); // Logout jika tidak berhasil
+//     }
+//   } catch (error) {
+//     console.error("Error fetching user data:", error);
+//     dispatch(logout()); // Logout jika terjadi kesalahan
+//   }
+// };
 
 // export const register =
 //   (email, password, fullName, phoneNumber, country, city, tanggalLahir, navigate) => async () => {
@@ -384,5 +395,89 @@ export const verifyEmail = () => async (dispatch) => {
     }
   } catch (error) {
     dispatch(verifyEmailFailure(error.message)); // Dispatch jika verifikasi gagal
+  }
+};
+
+export const getMe = () => async (dispatch) => {
+  try {
+    dispatch(getMeStart());
+
+    // Ambil token dari cookie
+    const token = Cookies.get("token");
+
+    if (!token) {
+      throw new Error("Token tidak ditemukan. Silakan login kembali.");
+    }
+
+    // Lakukan permintaan untuk mendapatkan data pengguna dari API
+    const response = await axios.get(`${api_url}auth/profile`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const { data } = response.data;
+
+    // Dispatch hasil success dengan data pengguna
+    dispatch(getMeSuccess(data));
+  } catch (error) {
+    dispatch(getMeFailure(error.response?.data?.message || "Gagal mengambil data pengguna."));
+    toast.error(error.message || "Terjadi kesalahan saat mengambil data pengguna.");
+  }
+};
+
+export const updateProfile = (userData, navigate) => async (dispatch) => {
+  try {
+    dispatch(updateProfileStart()); // Mulai proses update
+
+    // Ambil token dari cookie
+    const token = Cookies.get("token");
+
+    const response = await axios.put(`${api_url}auth/update-profile`, userData, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const { data } = response.data;
+
+    // Dispatch hasil success dengan data pengguna yang diperbarui
+    dispatch(updateProfileSuccess(data));
+    toast.success("Profil berhasil diperbarui!"); // Notifikasi berhasil
+
+    // Navigasi ke halaman profil atau halaman lain jika diperlukan
+    navigate("/profile"); 
+  } catch (error) {
+    dispatch(updateProfileFailure(error.response?.data?.message || "Gagal memperbarui profil."));
+    toast.error(error.message || "Terjadi kesalahan saat memperbarui profil."); // Notifikasi gagal
+  }
+};
+
+export const changePassword = (currentPassword, newPassword, confirmPassword) => async (dispatch) => {
+  try {
+    dispatch(changePasswordStart());
+
+    const token = Cookies.get("token");
+
+    // Mengirim permintaan untuk mengubah password dengan token di header
+    const response = await axios.post(
+      `${api_url}auth/change-password`, 
+      {
+        currentPassword,
+        newPassword,
+        confirmPassword,
+      },
+      {
+        headers: {
+          'Authorization': `Bearer ${token}`, // Sertakan token dalam header Authorization
+        },
+      }
+    );
+
+    if (response.status === 200) {
+      dispatch(changePasswordSuccess());
+      toast.success("Password berhasil diubah!");
+    } else {
+      throw new Error(response.data.message || "Gagal mengubah password.");
+    }
+  } catch (error) {
+    dispatch(changePasswordFailure(error.message || "Terjadi kesalahan saat mengubah password."));
+    toast.error(error.message || "Terjadi kesalahan saat mengubah password.");
   }
 };

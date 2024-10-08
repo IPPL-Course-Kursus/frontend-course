@@ -28,6 +28,24 @@ const initialVerifyEmailState = {
   error: null,
 };
 
+const initialGetMeState = {
+  profile: null, // Menyimpan data profil pengguna
+  profileLoading: false, // Menyimpan status loading untuk profile
+  profileError: null, // Menyimpan error saat fetch profile
+};
+
+const initialUpdateProfileState = {
+  loading: false,
+  success: false,
+  error: null,
+};
+
+const initialChangePasswordState = {
+  loading: false,
+  success: false,
+  error: null,
+};
+
 const loginSlice = createSlice({
   name: "login",
   initialState: initialLoginState,
@@ -206,6 +224,72 @@ const verifyEmailSlice = createSlice({
   },
 });
 
+const getMeSlice = createSlice({
+  name: "getMe",
+  initialState: initialGetMeState,
+  reducers: {
+    getMeStart: (state) => {
+      state.profileLoading = true;
+      state.profileError = null;
+    },
+    getMeSuccess: (state, action) => {
+      state.profileLoading = false;
+      state.profile = action.payload; // Simpan data profile di state
+      state.profileError = null;
+    },
+    getMeFailure: (state, action) => {
+      state.profileLoading = false;
+      state.profileError = action.payload;
+    },
+  },
+});
+
+const updateProfileSlice = createSlice({
+  name: "updateProfile",
+  initialState: initialUpdateProfileState,
+  reducers: {
+    updateProfileStart: (state) => {
+      state.loading = true;
+      state.success = false;
+      state.error = null;
+    },
+    updateProfileSuccess: (state, action) => {
+      state.loading = false;
+      state.success = true; // Set status berhasil
+      state.error = null;
+      state.user = action.payload;
+      // Anda bisa menyimpan data pengguna yang diperbarui di sini jika perlu
+    },
+    updateProfileFailure: (state, action) => {
+      state.loading = false;
+      state.success = false;
+      state.error = action.payload; // Simpan error jika terjadi
+    },
+  },
+});
+
+const changePasswordSlice = createSlice({
+  name: "changePassword",
+  initialState: initialChangePasswordState,
+  reducers: {
+    changePasswordStart: (state) => {
+      state.loading = true;
+      state.success = false;
+      state.error = null;
+    },
+    changePasswordSuccess: (state) => {
+      state.loading = false;
+      state.success = true;
+      state.error = null;
+    },
+    changePasswordFailure: (state, action) => {
+      state.loading = false;
+      state.success = false;
+      state.error = action.payload;
+    },
+  },
+});
+
 // Auth Login
 // export const { setCredentials, setUser, loginStart, loginSuccess, loginFailure, logout } =
 //   loginSlice.actions;
@@ -227,6 +311,13 @@ export const { verifyEmailStart, verifyEmailSuccess, verifyEmailFailure } =
   verifyEmailSlice.actions;
 
 // Profile
+export const { getMeStart, getMeSuccess, getMeFailure } = getMeSlice.actions;
+
+// Update Profile
+export const { updateProfileStart, updateProfileSuccess, updateProfileFailure } = updateProfileSlice.actions;
+
+//Change password
+export const { changePasswordStart, changePasswordSuccess, changePasswordFailure } = changePasswordSlice.actions;
 
 // Export reducer untuk digunakan di store
 export const loginReducer = loginSlice.reducer;
@@ -235,6 +326,9 @@ export const registerReducer = registerSlice.reducer;
 export const emailReducer = emailSlice.reducer;
 export const resetPasswordReducer = resetPasswordSlice.reducer;
 export const verifyEmailReducer = verifyEmailSlice.reducer;
+export const getMeReducer = getMeSlice.reducer;
+export const updateProfileReducer = updateProfileSlice.reducer;
+export const changePasswordReducer = changePasswordSlice.reducer;
 
 // // Selektor untuk mendapatkan UID, Token, dan Role
 // export const selectUid = (state) => state.login.uid;
@@ -243,3 +337,6 @@ export const verifyEmailReducer = verifyEmailSlice.reducer;
 export const selectUid = (state) => state.auth.uid;
 export const selectToken = (state) => state.auth.token;
 export const selectRole = (state) => state.auth.role;
+export const selectProfile = (state) => state.getMe.profile;
+export const selectProfileLoading = (state) => state.getMe.profileLoading;
+export const selectProfileError = (state) => state.getMe.profileError;

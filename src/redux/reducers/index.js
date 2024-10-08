@@ -5,6 +5,9 @@ import {
   registerReducer,
   resetPasswordReducer,
   verifyEmailReducer,
+  getMeReducer,
+  updateProfileReducer,
+  changePasswordReducer,
 } from "./authReducers";
 
 export default combineReducers({
@@ -13,4 +16,7 @@ export default combineReducers({
   email: emailReducer,
   resetPassword: resetPasswordReducer,
   verifyEmail: verifyEmailReducer,
+  getMe: getMeReducer,
+  updateProfile: updateProfileReducer,
+  changePassword: changePasswordReducer,
 });
