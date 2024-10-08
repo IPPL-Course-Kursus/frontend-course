@@ -27,6 +27,9 @@ import {
   emailReducer,
   resetPasswordReducer,
   verifyEmailReducer,
+  getMeReducer,
+  updateProfileReducer,
+  changePasswordReducer,
 } from "./authReducers"; // Sesuaikan dengan ekspor dari authReducers
 import courseReducer from "./courseReducers"; // Ganti dari courseReducers ke courseReducer untuk konsistensi
 import categoryReducer from "./categoryReducers";
@@ -36,6 +39,7 @@ export default combineReducers({
   auth: authReducer, // Gunakan authReducer yang benar
   email: emailReducer,
   resetPassword: resetPasswordReducer,
+
   // verifyEmail: verifyEmailReducer,
   veryEmail: verifyEmailReducer,
 
@@ -44,4 +48,9 @@ export default combineReducers({
   course: courseReducer,
 
   category: categoryReducer,
+
+  verifyEmail: verifyEmailReducer,
+  getMe: getMeReducer,
+  updateProfile: updateProfileReducer,
+  changePassword: changePasswordReducer,
 });

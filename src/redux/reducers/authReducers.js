@@ -23,9 +23,76 @@
 //   error: null,
 // };
 
+
 // const authSlice = createSlice({
 //   name: "auth",
 //   initialState: initialAuthState,
+
+// const initialVerifyEmailState = {
+//   sending: false,
+//   success: false,
+//   error: null,
+// };
+
+// const initialGetMeState = {
+//   profile: null, // Menyimpan data profil pengguna
+//   profileLoading: false, // Menyimpan status loading untuk profile
+//   profileError: null, // Menyimpan error saat fetch profile
+// };
+
+// const initialUpdateProfileState = {
+//   loading: false,
+//   success: false,
+//   error: null,
+// };
+
+// const initialChangePasswordState = {
+//   loading: false,
+//   success: false,
+//   error: null,
+// };
+
+// const loginSlice = createSlice({
+//   name: "login",
+//   initialState: initialLoginState,
+//   reducers: {
+//     loginStart: (state) => {
+//       state.loading = true;
+//       state.error = null;
+//     },
+//     loginSuccess: (state, action) => {
+//       state.loading = false;
+//       // Simpan data user, uid, token, dan role
+//       state.user = action.payload.user; // Simpan data user
+//       state.uid = action.payload.uid; // Simpan UID
+//       state.token = action.payload.token; // Simpan token
+//       state.role = action.payload.role; // Simpan role
+//       state.error = null;
+//     },
+//     loginFailure: (state, action) => {
+//       state.loading = false;
+//       state.error = action.payload; // Simpan error jika terjadi
+//     },
+//     setUser: (state, action) => {
+//       state.user = action.payload; // Simpan data user
+//     },
+//     logout: (state) => {
+//       // Reset semua nilai saat logout
+//       state.user = null;
+//       state.uid = null; // Reset UID saat logout
+//       state.token = null; // Reset token saat logout
+//       state.role = null; // Reset role saat logout
+//       state.loading = false;
+//       state.error = null;
+//     },
+//   },
+// });
+
+// const loginSlice = createSlice({
+//   name: "login",
+//   initialState: initialLoginState,
+
+
 //   reducers: {
 //     // Reducers untuk login
 //     loginStart: (state) => {
@@ -240,7 +307,7 @@
 
 import { createSlice } from "@reduxjs/toolkit";
 
-// Inisialisasi state awal
+// Inisialisasi state awal untuk auth
 const initialAuthState = {
   user: null,
   uid: null, // Menyimpan UID
@@ -259,6 +326,31 @@ const initialEmailState = {
 
 const initialVerifyEmailState = {
   sending: false,
+  success: false,
+  error: null,
+};
+
+const initialResetPasswordState = {
+  resetting: false,
+  success: false,
+  error: null,
+};
+
+const initialGetMeState = {
+  profile: null,
+  profileLoading: false,
+  profileError: null,
+};
+
+const initialUpdateProfileState = {
+  loading: false,
+  success: false,
+  error: null,
+  user: null,
+};
+
+const initialChangePasswordState = {
+  loading: false,
   success: false,
   error: null,
 };
@@ -296,7 +388,6 @@ const authSlice = createSlice({
       state.error = null;
       state.success = false; // Reset status registrasi saat logout
     },
-
     registerStart: (state) => {
       state.loading = true;
       state.success = false;
@@ -344,12 +435,6 @@ const emailSlice = createSlice({
 });
 
 // Slice untuk reset password
-const initialResetPasswordState = {
-  resetting: false,
-  success: false,
-  error: null,
-};
-
 const resetPasswordSlice = createSlice({
   name: "resetPassword",
   initialState: initialResetPasswordState,
@@ -395,6 +480,75 @@ const verifyEmailSlice = createSlice({
   },
 });
 
+// Slice untuk mendapatkan profil user
+const getMeSlice = createSlice({
+  name: "getMe",
+  initialState: initialGetMeState,
+  reducers: {
+    getMeStart: (state) => {
+      state.profileLoading = true;
+      state.profileError = null;
+    },
+    getMeSuccess: (state, action) => {
+      state.profileLoading = false;
+      state.profile = action.payload; // Simpan data profile di state
+      state.profileError = null;
+    },
+    getMeFailure: (state, action) => {
+      state.profileLoading = false;
+      state.profileError = action.payload;
+    },
+  },
+});
+
+// Slice untuk memperbarui profil user
+const updateProfileSlice = createSlice({
+  name: "updateProfile",
+  initialState: initialUpdateProfileState,
+  reducers: {
+    updateProfileStart: (state) => {
+      state.loading = true;
+      state.success = false;
+      state.error = null;
+    },
+    updateProfileSuccess: (state, action) => {
+      state.loading = false;
+      state.success = true; // Set status berhasil
+      state.error = null;
+      state.user = action.payload;
+      // Anda bisa menyimpan data pengguna yang diperbarui di sini jika perlu
+    },
+    updateProfileFailure: (state, action) => {
+      state.loading = false;
+      state.success = false;
+      state.error = action.payload; // Simpan error jika terjadi
+    },
+  },
+});
+
+// Slice untuk mengganti password
+const changePasswordSlice = createSlice({
+  name: "changePassword",
+  initialState: initialChangePasswordState,
+  reducers: {
+    changePasswordStart: (state) => {
+      state.loading = true;
+      state.success = false;
+      state.error = null;
+    },
+    changePasswordSuccess: (state) => {
+      state.loading = false;
+      state.success = true;
+      state.error = null;
+    },
+    changePasswordFailure: (state, action) => {
+      state.loading = false;
+      state.success = false;
+      state.error = action.payload;
+    },
+  },
+});
+
 // Ekspor actions
 export const {
   loginStart,
@@ -416,13 +570,27 @@ export const { sendEmailStart, sendEmailSuccess, sendEmailFailure } = emailSlice
 export const { verifyEmailStart, verifyEmailSuccess, verifyEmailFailure } =
   verifyEmailSlice.actions;
 
+export const { getMeStart, getMeSuccess, getMeFailure } = getMeSlice.actions;
+
+export const { updateProfileStart, updateProfileSuccess, updateProfileFailure } =
+  updateProfileSlice.actions;
+
+export const { changePasswordStart, changePasswordSuccess, changePasswordFailure } =
+  changePasswordSlice.actions;
+
 // Ekspor reducer untuk digunakan di store
 export const authReducer = authSlice.reducer;
 export const emailReducer = emailSlice.reducer;
 export const resetPasswordReducer = resetPasswordSlice.reducer;
 export const verifyEmailReducer = verifyEmailSlice.reducer;
+export const getMeReducer = getMeSlice.reducer;
+export const updateProfileReducer = updateProfileSlice.reducer;
+export const changePasswordReducer = changePasswordSlice.reducer;
 
 // Selektor untuk UID, Token, dan Role
 export const selectUid = (state) => state.auth.uid;
 export const selectToken = (state) => state.auth.token;
 export const selectRole = (state) => state.auth.role;
+export const selectProfile = (state) => state.getMe.profile;
+export const selectProfileLoading = (state) => state.getMe.profileLoading;
+export const selectProfileError = (state) => state.getMe.profileError;
