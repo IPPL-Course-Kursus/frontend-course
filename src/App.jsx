@@ -19,10 +19,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminDataKelas from "./pages/admin/AdminDataKelas";
 import AdminDataInstuktur from "./pages/admin/AdminDataInstruktur";
 import AdminDataModule from "./pages/admin/AdminDataModule";
-<<<<<<< HEAD
-=======
 import AdminDataKonten from "./pages/admin/AdminDataKonten";
->>>>>>> 93da4b0d4f3e4e1264463ffc65ad4ebe03441c98
 import AdminDataKategori from "./pages/admin/AdminDataKategori";
 // import NoAccessToken from "./security/NoAccessToken";
 // import Protected from "./security/Protected";
@@ -99,10 +96,7 @@ function AppRoutes() {
       <Route path="/admin/data-kelas" element={<AdminDataKelas />} />
       <Route path="/admin/data-instruktur" element={<AdminDataInstuktur />} />
       <Route path="/admin/data-module" element={<AdminDataModule />} />
-<<<<<<< HEAD
-=======
       <Route path="/admin/data-konten" element={<AdminDataKonten />} />
->>>>>>> 93da4b0d4f3e4e1264463ffc65ad4ebe03441c98
       <Route path="/admin/data-kategori" element={<AdminDataKategori />} />
 
       {/* NotFound */}
