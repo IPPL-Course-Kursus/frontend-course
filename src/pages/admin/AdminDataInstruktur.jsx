@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useState } from 'react';
-
+import SideBar from "../../components/Sidebar/SidebarAdmin";
 const AdminDataInstruktur = () => {
   // Data instruktur
   const [instructors, setInstructors] = useState([
@@ -74,6 +74,9 @@ const AdminDataInstruktur = () => {
   };
 
   return (
+    <>
+    <div className='flex'>
+    <SideBar/>
     <div className="container mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">Hi, Admin!</h1>
 
@@ -170,6 +173,8 @@ const AdminDataInstruktur = () => {
         </div>
       )}
     </div>
+    </div>
+    </>
   );
 };
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FaUsers, FaSearch, FaFilter } from "react-icons/fa";
-// import SideBar from "../../components/Sidebar/SidebarAdmin"
+import SideBar from "../../components/Sidebar/SidebarAdmin";
 // import Sidebar from "../../components/Sidebar/SidebarAdmin";
 
 const AdminDashboard = () => {
@@ -99,6 +99,8 @@ const AdminDashboard = () => {
   return (
     <>
     {/* <Sidebar/> */}
+    <div className="flex">
+      <SideBar />
       <div className="p-6 bg-secondary min-h-screen font-poppins">
         {/* Header - Hi Admin */}
         <div className="bg-[#F3F7FB] p-4 flex justify-between items-center mb-4 shadow-sm">
@@ -245,6 +247,7 @@ const AdminDashboard = () => {
           </table>
         </div>
       </div>
+    </div>
     </>
   );
 };

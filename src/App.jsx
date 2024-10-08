@@ -16,10 +16,11 @@ import VerifyEmail from "./pages/auth/VerifyEmail";
 import TopikKelas from "./pages/TopikKelas/TopikKelas";
 import MulaiKelas from "./pages/MulaiKelas/MulaiKelas";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminDataKelas from "./pages/admin/DataKelas";
+import AdminDataKelas from "./pages/admin/AdminDataKelas";
 import AdminDataInstuktur from "./pages/admin/AdminDataInstruktur";
 import AdminDataModule from "./pages/admin/AdminDataModule";
-
+import AdminDataKonten from "./pages/admin/AdminDataKonten";
+import AdminDataKategori from "./pages/admin/AdminDataKategori";
 // import NoAccessToken from "./security/NoAccessToken";
 // import Protected from "./security/Protected";
 
@@ -78,7 +79,8 @@ function AppRoutes() {
       <Route path="/profile" element={<MainProfile />} />
 
       {/* Course */}
-      <Route path="/detail-kelas" element={<DetailKelas />} />
+      {/* <Route path="/course-detail/:courseId" element={<DetailKelas />} /> */}
+      <Route path="/course-detail/:id" element={<DetailKelas />} />
       <Route path="/mycourse" element={<MyCourse />} />
       <Route path="/topik-kelas" element={<TopikKelas />} />
       <Route path="/mulai-kelas" element={<MulaiKelas />} />
@@ -94,9 +96,11 @@ function AppRoutes() {
       <Route path="/admin/data-kelas" element={<AdminDataKelas />} />
       <Route path="/admin/data-instruktur" element={<AdminDataInstuktur />} />
       <Route path="/admin/data-module" element={<AdminDataModule />} />
+      <Route path="/admin/data-konten" element={<AdminDataKonten />} />
+      <Route path="/admin/data-kategori" element={<AdminDataKategori />} />
 
       {/* NotFound */}
-      <Route path="/*" element={<NotFound />} />  
+      <Route path="/*" element={<NotFound />} />
 
       {/* <Route
         path="/"

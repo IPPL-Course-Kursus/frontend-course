@@ -14,6 +14,7 @@ const SendEmail = () => {
   useEffect(() => {
     if (success) {
       navigate("/login"); // Navigasi hanya setelah render dan jika sukses
+      console.log(success);
     }
   }, [success, navigate]);
 

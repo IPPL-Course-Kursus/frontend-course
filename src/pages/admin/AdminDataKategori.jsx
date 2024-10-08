@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-
+import { useState } from 'react';
+import SideBar from "../../components/Sidebar/SidebarAdmin";
 const AdminDataKategori = () => {
   const categories = [
     { id: 1, name: 'Web Development', photo: "https://blog.tempoinstitute.com/wp-content/uploads/2019/07/aperture-black-blur-274973-800x600.jpg", published: true, pengajar: 'John Doe' },
@@ -59,7 +59,10 @@ const AdminDataKategori = () => {
   };
 
   return (
-    <div className="admin-data-kategori">
+    <>
+    <div className='flex'>
+    <SideBar />
+    <div className="admin-data-kategori w-screen">
       <h2 className="text-4xl font-bold text-gray-900">
         Data Kategori Kelas
         <button
@@ -193,6 +196,8 @@ const AdminDataKategori = () => {
         </div>
       ) : null}
     </div>
+    </div>
+    </>
   );
 };
 
