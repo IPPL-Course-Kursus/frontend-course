@@ -91,7 +91,7 @@ const Navbar = () => {
   // const dispatch = useDispatch(); // Inisialisasi useDispatch
 
   // // Ambil token dari Redux store untuk mengecek status login
-  const { token } = useSelector((state) => state.login);
+  const { token } = useSelector((state) => state.auth);
 
   // // Fungsi logout
   // const handleLogout = () => {
@@ -123,7 +123,7 @@ const Navbar = () => {
         {token ? (
           // Tampilkan profile jika sudah login
 
-          <div className="dropdown dropdown-end">
+          <div className="dropdown dropdown-end z-50">
             <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">
                 <img alt="Profile" src={imgProfile} />
@@ -135,7 +135,7 @@ const Navbar = () => {
               className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
               onClick={(e) => e.stopPropagation()} // Menjaga dropdown tetap terbuka saat mengklik
             >
-              <Link>
+              <Link to="/profile">
                 <li>
                   <span className="justify-between font-medium cursor-pointer">Profile</span>{" "}
                   {/* Ganti <a> dengan <span> */}

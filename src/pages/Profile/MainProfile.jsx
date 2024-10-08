@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Profile from "./Profile";
 import UbahPassword from "./UbahPassword";
-import RiwayatPembayaran from "./RiwayatPembayaran";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
+import RiwayatPembayaran from "./RiwayatPembayaran";
 
 const MainProfile = () => {
   const [activeMenu, setActiveMenu] = useState("");

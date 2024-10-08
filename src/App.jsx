@@ -13,7 +13,7 @@ import DetailKelas from "./pages/Detail/DetailKelas";
 import MainProfile from "./pages/Profile/MainProfile";
 import MyCourse from "./pages/Course/MyCourse";
 import VerifyEmail from "./pages/auth/VerifyEmail";
-import TopikKelas from "./pages/TopikKelas/topikKelas";
+import TopikKelas from "./pages/TopikKelas/TopikKelas";
 import MulaiKelas from "./pages/MulaiKelas/MulaiKelas";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminDataKelas from "./pages/admin/AdminDataKelas";
@@ -82,7 +82,8 @@ function AppRoutes() {
       <Route path="/profile" element={<MainProfile />} />
 
       {/* Course */}
-      <Route path="/detail-kelas" element={<DetailKelas />} />
+      {/* <Route path="/course-detail/:courseId" element={<DetailKelas />} /> */}
+      <Route path="/course-detail/:id" element={<DetailKelas />} />
       <Route path="/mycourse" element={<MyCourse />} />
       <Route path="/topik-kelas" element={<TopikKelas />} />
       <Route path="/mulai-kelas" element={<MulaiKelas />} />
@@ -105,7 +106,7 @@ function AppRoutes() {
       <Route path="/admin/data-kategori" element={<AdminDataKategori />} />
 
       {/* NotFound */}
-      <Route path="/*" element={<NotFound />} />  
+      <Route path="/*" element={<NotFound />} />
 
       {/* <Route
         path="/"

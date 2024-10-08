@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -9,94 +9,34 @@ import ProgressBar from "../MyCourse/ProgressBar";
 import PropTypes from "prop-types";
 import { IoIosArrowDroprightCircle } from "react-icons/io";
 import { IoIosArrowDropleftCircle } from "react-icons/io";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllCourse } from "../../redux/actions/courseActions";
+import { getCategory } from "../../redux/actions/categoryActions";
 
 const CardCourse = ({ title = "Kelas Populer" }) => {
   const [selectCategoryId, setSelectCategoryId] = useState(null);
   const sliderRef = useRef(null);
+  const dispatch = useDispatch();
 
-  const dataKategoriPopularName = [
-    { id: null, name: "All" },
-    { id: 1, name: "UI/UX Design" },
-    { id: 2, name: "Product Manager" },
-    { id: 3, name: "Web Development" },
-    { id: 4, name: "Android Development" },
-    { id: 5, name: "iOS Development" },
-    { id: 6, name: "Data Science" },
-    { id: 7, name: "Machine Learning" },
-    { id: 8, name: "Cybersecurity" },
-  ];
+  const { courses } = useSelector((state) => state.course);
+  // const { category } = useSelector((state) => state.category);
 
-  const dataKategoriPopular = [
-    {
-      id: 1,
-      name: "UI/UX Design",
-      overview: "Belajar Web Designer dengan Figma",
-      instruktur: "Saman",
-      price: "Rp. 200.000",
-      img: "https://indi.tech/wp-content/uploads/2022/03/Screenshot-2022-03-24-223956.png",
-    },
-    {
-      id: 2,
-      name: "Product Manager",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: "Rajab",
-      price: "Rp. 200.000",
-      img: "https://media.licdn.com/dms/image/C5612AQEuWqyxzjrVYw/article-cover_image-shrink_720_1280/0/1588225642197?e=2147483647&v=beta&t=C_GHDsCbI-fy7-ishvy9FGJGHHqX-vfeZZm7Xe6DQgs",
-    },
-    {
-      id: 3,
-      name: "Web Development",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: " Lana",
-      price: "Rp. 200.000",
-      img: "https://niagaspace.sgp1.digitaloceanspaces.com/blog/wp-content/uploads/2023/04/03075503/salah-satu-langkah-dalam-cara-menjadi-web-developer-adalah-mempelajari-bahasa-untuk-coding-1024x792.webp",
-    },
-    {
-      id: 4,
-      name: "Android Development",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: "Alim",
-      price: "Rp. 200.000",
-      img: "https://developer.android.com/static/images/social/android-developers.png?hl=id",
-    },
-    {
-      id: 5,
-      name: "iOS Development",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: "Ricky",
-      price: "Rp. 200.000",
-      img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjg9e0Catb89J5lz6qcpVGmISSa-3ITiJKaA&s",
-    },
-    {
-      id: 6,
-      name: "Data Science",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: "Alex",
-      price: "Rp. 200.000",
-      img: "https://www.solulab.com/wp-content/uploads/2024/09/Data-Science-Development-Company.jpg",
-    },
-    {
-      id: 7,
-      name: "Machine Learning",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: "Helmi",
-      price: "Free",
-      img: "https://itbox.id/wp-content/uploads/2023/03/Machine-Learning.jpeg",
-    },
-    {
-      id: 8,
-      name: "Cybersecurity",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: "Arwin",
-      price: "Rp. 200.000",
-      img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsh3n29Iw5iVmWbLRoDJPkilEDOlJks8JNMg&s",
-    },
-  ];
+  const { category } = useSelector((state) => state.category);
 
-  // Filter courses by selected category
+  const handleFilterClick = (categoryId) => {
+    setSelectCategoryId(categoryId);
+  };
+
+  // const { category } = useSelector((state) => state.category);
+
+  useEffect(() => {
+    dispatch(getAllCourse()); // Fetch all courses when component mounts
+    dispatch(getCategory());
+  }, [dispatch]);
+
   const filteredCourses = selectCategoryId
-    ? dataKategoriPopular.filter((course) => course.id === selectCategoryId)
-    : dataKategoriPopular;
+    ? courses.filter((course) => course.id === selectCategoryId)
+    : courses;
 
   const NextArrow = ({ onClick }) => {
     return (
@@ -192,17 +132,30 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
           {/* Category Carousel Section */}
           <div className="relative w-full">
             <Slider ref={sliderRef} {...categorySliderSettings}>
-              {dataKategoriPopularName.map((kategori) => (
-                <div key={kategori.id}>
+              <button
+                onClick={() => handleFilterClick("")} // Set categoryId to an empty string for "All"
+                className={` flex justify-center items-center border-2 rounded-lg text-sm font-semibold p-3 transition-colors duration-300 mx-2 whitespace-nowrap ${
+                  selectCategoryId === "" // Check if the categoryId is empty for "All"
+                    ? "mr-4 bg-color-primary text-white bg-primary"
+                    : "bg-white text-gray-700 border-gray-300"
+                } hover:bg-primary hover:text-white cursor-pointer`}
+              >
+                All
+              </button>
+              {/* mapping */}
+              {category.map((kategori) => (
+                <div key={kategori.id} className="ml-4">
                   <div
                     className={`flex justify-center items-center border-2 rounded-lg text-sm font-semibold p-3 transition-colors duration-300 mx-2 whitespace-nowrap ${
                       selectCategoryId === kategori.id
                         ? "bg-color-primary text-white bg-primary"
                         : "bg-white text-gray-700 border-gray-300"
                     } hover:bg-primary hover:text-white cursor-pointer`}
-                    onClick={() => setSelectCategoryId(kategori.id)}
+                    onClick={() => handleFilterClick(kategori.id)}
                   >
-                    {kategori.name}
+                    <span className="block max-w-[120px] overflow-hidden text-ellipsis whitespace-nowrap">
+                      {kategori.categoryName}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -210,40 +163,61 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
           </div>
         </div>
       </div>
-
+      {/* <div className="relative w-full">
+            <Slider ref={sliderRef} {...categorySliderSettings}>
+              {category.map(
+                (
+                  kategori // Menggunakan data kategori dari Redux
+                ) => (
+                  <div key={kategori.id}>
+                    <div
+                      className={`flex justify-center items-center border-2 rounded-lg text-sm font-semibold p-3 transition-colors duration-300 mx-2 whitespace-nowrap ${
+                        selectCategoryId === kategori.id
+                          ? "bg-color-primary text-white"
+                          : "bg-white text-gray-700 border-gray-300"
+                      } hover:bg-primary hover:text-white cursor-pointer`}
+                      onClick={() => setSelectCategoryId(kategori.id)}
+                    >
+                      {kategori.categoryName}
+                    </div>
+                  </div>
+                )
+              )}
+            </Slider>
+          </div>
+        </div>
+      </div> */}
       {/* Card Course Section */}
       <div className="max-w-screen-lg mx-auto px-6 lg:p-0">
-        {selectCategoryId === null ? (
-          <Slider {...courseSliderSettings}>
+        {Array.isArray(filteredCourses) && filteredCourses.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredCourses.map((val) => (
               <div key={val.id} className="p-2">
                 <div className="w-full bg-white shadow-xl rounded-xl overflow-hidden pb-3">
                   <div className="flex flex-col">
-                    <img src={val.img} alt={val.name} className="w-full h-28 object-cover" />
+                    <img src={val.image} alt={val.name} className="w-full h-32 object-cover" />
                     <div className="mx-2 md:mx-4 flex flex-col mt-1 md:mt-2">
                       <div className="flex justify-between items-center">
                         <h1 className="text-color-primary font-bold text-sm lg:text-base -tracking-wide">
-                          {val.name}
+                          {val.courseName}
                         </h1>
-                        <p className="flex items-center font-semibold">
-                          <FaStar color="#F9CC00" className="w-4 h-4 lg:w-5 lg:h-5" /> 4.8
-                        </p>
                       </div>
                       <h3 className="text-black font-semibold text-sm lg:text-base">
-                        {val.overview}
+                        {/* {val.aboutCourse} */}
                       </h3>
                       <p className="text-black text-sm font-semibold">
-                        Instruktor {val.instruktur}
+                        Instruktor {val.user.fullName}
                       </p>
                       <div className="mt-3 flex justify-between flex-wrap">
                         <p className="flex items-center text-xs font-semibold text-color-primary">
-                          <Shield size={18} className="mr-1" /> Intermediate Level
+                          <Shield size={18} className="mr-1" />
+                          {val.courseLevel.levelName}
                         </p>
                         <p className="flex items-center text-xs font-semibold text-color-primary">
-                          <Book size={18} className="mr-1" /> 10 Modul
+                          <Book size={18} className="mr-1" /> {val._count.chapters}
                         </p>
                         <p className="flex items-center text-xs font-semibold text-color-primary">
-                          <Clock size={18} className="mr-1" /> 90 Menit
+                          <Clock size={18} className="mr-1" /> {val.totalDuration} menit
                         </p>
                       </div>
                       <div className="my-2">
@@ -251,15 +225,15 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
                       </div>
                       <div className="my-2">
                         <Link
-                          to="/detail-kelas"
-                          className="py-1 px-4 bg-black  text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
+                          to={`/course-detail/${val.id}`}
+                          className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
                         >
                           Mulai Kelas
                         </Link>
                       </div>
                       {/* ini button ketika premium dan belum beli */}
                       <div className="my-2">
-                        <button className="py-1 px-4 bg-blue-400  text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
+                        <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
                           <span className="mr-2">
                             <Gem size={16} />
                           </span>{" "}
@@ -268,114 +242,17 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
                       </div>
                       {/* button ketika mau beli (ada harganya) */}
                       <div className="my-2">
-                        <button className="py-1 px-4 bg-blue-400  text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
-                          {val.price}
+                        <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
+                          {val.courseDiscountPrice || val.coursePrice}
                         </button>
                       </div>
-                      {/* Ini untuk riwayat dan status bayarnya belum bayar */}
-                      <div className="my-2">
-                        <button className="py-1 px-4 bg-red-500  text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
-                          <span className="mr-2">
-                            <Gem size={16} />
-                          </span>{" "}
-                          Waiting for payment
-                        </button>
-                      </div>
-                      {/* Ini untuk riwayat dan status bayarnya udah bayar */}
-                      <div className="my-2">
-                        <button className="py-1 px-4 bg-green-400  text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
-                          <span className="mr-2">
-                            <Gem size={16} />
-                          </span>{" "}
-                          Paid
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </Slider>
-        ) : (
-          <div className="grid mt-2 gap-2 grid-cols-1 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:mt-4">
-            {filteredCourses.map((val) => (
-              <div
-                key={val.id}
-                className="w-full mt-3 my-2 bg-white shadow-xl rounded-xl overflow-hidden pb-3"
-              >
-                <div className="flex flex-col">
-                  <img src={val.img} alt={val.name} className="w-full h-28 object-cover" />
-                  <div className="mx-2 md:mx-4 flex flex-col mt-1 md:mt-2">
-                    <div className="flex justify-between items-center">
-                      <h1 className="text-color-primary font-bold text-sm lg:text-base -tracking-wide">
-                        {val.name}
-                      </h1>
-                      <p className="flex items-center font-semibold">
-                        <FaStar color="#F9CC00" className="w-4 h-4 lg:w-5 lg:h-5" /> 4.8
-                      </p>
-                    </div>
-                    <h3 className="text-black font-semibold text-sm lg:text-base">
-                      {val.overview}
-                    </h3>
-                    <p className="text-black text-sm font-semibold">Instruktor {val.instruktur}</p>
-                    <div className="mt-3 flex justify-between flex-wrap">
-                      <p className="flex items-center text-xs font-semibold text-color-primary">
-                        <Shield size={18} className="mr-1" /> Intermediate Level
-                      </p>
-                      <p className="flex items-center text-xs font-semibold text-color-primary">
-                        <Book size={18} className="mr-1" /> 10 Modul
-                      </p>
-                      <p className="flex items-center text-xs font-semibold text-color-primary">
-                        <Clock size={18} className="mr-1" /> 90 Menit
-                      </p>
-                    </div>
-                    <div className="my-2">
-                      <ProgressBar />
-                    </div>
-                    <div className="my-2">
-                      <button className="py-1 px-4 bg-black  text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105">
-                        Mulai Kelas
-                      </button>
-                    </div>
-                    {/* ini button ketika premium dan belum beli */}
-                    <div className="my-2">
-                      <button className="py-1 px-4 bg-blue-400  text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
-                        <span className="mr-2">
-                          <Gem size={16} />
-                        </span>{" "}
-                        Premium
-                      </button>
-                    </div>
-                    {/* button ketika mau beli (ada harganya) */}
-                    <div className="my-2">
-                      <button className="py-1 px-4 bg-blue-400  text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
-                        {val.price}
-                      </button>
-                    </div>
-                    {/* Ini untuk riwayat dan status bayarnya belum bayar */}
-                    <div className="my-2">
-                      <button className="py-1 px-4 bg-red-500  text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
-                        <span className="mr-2">
-                          <Gem size={16} />
-                        </span>{" "}
-                        Waiting for payment
-                      </button>
-                    </div>
-                    {/* Ini untuk riwayat dan status bayarnya udah bayar */}
-                    <div className="my-2">
-                      <button className="py-1 px-4 bg-green-400  text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
-                        <span className="mr-2">
-                          <Gem size={16} />
-                        </span>{" "}
-                        Paid
-                      </button>
                     </div>
                   </div>
                 </div>
               </div>
             ))}
           </div>
-        )}
+        ) : null}
       </div>
     </>
   );
