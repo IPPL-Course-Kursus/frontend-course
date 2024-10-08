@@ -1,6 +1,6 @@
 import { Link, NavLink } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import CardCategory from "../components/HomeComponent/cardCategory";
+// import CardCategory from "../components/HomeComponent/cardCategory";
 import CardCourse from "../components/HomeComponent/CardCourse";
 import CardFree from "../components/HomeComponent/CardFree";
 import imgSection from "../assets/bernadya.jpg";
@@ -9,8 +9,18 @@ import { IoIosArrowForward } from "react-icons/io";
 import "swiper/css";
 import "swiper/css/navigation";
 import Footer from "../components/Footer";
+import CardCategory from "../components/HomeComponent/CardCategory";
+import { getAllCourse } from "../redux/actions/courseActions";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 
 const Home = () => {
+  const dispatch = useDispatch();
+  const { courses } = useSelector((state) => state.course); // Ambil data course dari Redux
+
+  useEffect(() => {
+    dispatch(getAllCourse()); // Mengambil data course saat komponen di-mount
+  }, [dispatch]);
   return (
     <>
       <Navbar />
@@ -18,7 +28,7 @@ const Home = () => {
         <img
           src="/people_dasboard.png"
           alt="picture"
-          className="w-full h-full object-cover absolute"
+          className="w-full h-full object-cover absolute -z-50"
         />
         <div className="absolute w-full h-full bg-gradient-to-r from-primary via-primary to-transparent opacity-75" />
 
@@ -40,7 +50,8 @@ const Home = () => {
         </div>
       </div>
       <CardCategory />
-      <CardCourse />
+      <CardCourse title="Kelas Populer" course={courses} />
+
       <div className="w-full h-auto bg-primary flex justify-center items-center py-12 mt-20">
         <div className="flex flex-col lg:flex-row items-center max-w-6xl px-6 lg:px-12">
           <div className="lg:w-1/2">
