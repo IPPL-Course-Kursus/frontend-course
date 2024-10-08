@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast"; // Import react-hot-toast
-import Home from "./pages/Home";
+// import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/auth/Login";
 import ResetPassword from "./pages/auth/ResetPassword";
@@ -66,7 +66,7 @@ function AppRoutes() {
 
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<MainProfile />} />
 
       {/* Auth */}
       <Route path="/login" element={<Login />} />

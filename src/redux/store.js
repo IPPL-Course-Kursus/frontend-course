@@ -5,6 +5,9 @@ import {
   registerReducer,
   resetPasswordReducer,
   verifyEmailReducer,
+  getMeReducer,
+  updateProfileReducer,
+  changePasswordReducer,
 } from "./reducers/authReducers";
 
 const store = configureStore({
@@ -14,6 +17,9 @@ const store = configureStore({
     email: emailReducer,
     resetPassword: resetPasswordReducer,
     verifyEmail: verifyEmailReducer,
+    getMe: getMeReducer,
+    updateProfile: updateProfileReducer,
+    changePassword: changePasswordReducer,
   },
 });
 
