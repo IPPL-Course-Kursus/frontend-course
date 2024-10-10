@@ -34,6 +34,7 @@ const Sidebar = () => {
             <span>{isDataMenuOpenKelas ? "▲" : "▼"}</span>
           </button>
           {isDataMenuOpenKelas && (
+            
             <div className="pl-4">
               <a
                 href="/admin/data-kategori"
