@@ -91,7 +91,7 @@ const Navbar = () => {
   // const dispatch = useDispatch(); // Inisialisasi useDispatch
 
   // // Ambil token dari Redux store untuk mengecek status login
-  const { token } = useSelector((state) => state.login);
+  const { token } = useSelector((state) => state.auth);
 
   // // Fungsi logout
   // const handleLogout = () => {
