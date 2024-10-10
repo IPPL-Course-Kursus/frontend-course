@@ -91,7 +91,7 @@ export const login = (email, password, navigate) => async (dispatch) => {
 
     // Navigasi ke halaman utama dengan delay
     setTimeout(() => {
-      navigate("/");
+      navigate("/profile");
     }, 1000); // Durasi delay 1 detik
   } catch (error) {
     // Penanganan error yang lebih spesifik
@@ -415,6 +415,8 @@ export const getMe = () => async (dispatch) => {
     });
 
     const { data } = response.data;
+    console.log("ini data profile:", response.data);
+    
 
     // Dispatch hasil success dengan data pengguna
     dispatch(getMeSuccess(data));

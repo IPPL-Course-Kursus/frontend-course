@@ -1,23 +1,18 @@
 import { useState } from "react";
-import { FaSearch, FaFilter, FaBars } from "react-icons/fa";
+import { FaBars } from "react-icons/fa";
 import { IoAddCircleOutline } from "react-icons/io5";
-import SideBar from "../../components/Sidebar/SidebarAdmin";
-import TambahModule from "../../components/DataModuleComponent/TambahModule";
-import UbahModule from "../../components/DataModuleComponent/UbahModule";
+import SideBar from "../../components/Sidebar/SidebarInstruktur";
+import TambahModule from "../../components/InstrukturComponents/DataModuleComponent/TambahModule";
+import UbahModule from "../../components/InstrukturComponents/DataModuleComponent/UbahModule";
+import { Link } from "react-router-dom";
 
-const AdminDataModule = () => {
-  const [courseTypeSearch, setCourseTypeSearch] = useState("");
-  const [searchVisible, setSearchVisible] = useState(false);
+const InstruktorDataModule = () => {
   const [showTambahPopup, setShowTambahPopup] = useState(false);
   const [showUbahPopup, setShowUbahPopup] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
 
   // New state for sidebar visibility
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const toggleSearch = () => {
-    setSearchVisible(!searchVisible);
-  };
 
   const handleAddClick = () => {
     setSelectedCourse(null);
@@ -57,7 +52,6 @@ const AdminDataModule = () => {
       konten: 4,
     },
   ]);
-
   return (
     <>
       <div className="flex">
@@ -89,13 +83,11 @@ const AdminDataModule = () => {
               <FaBars className="text-2xl" />
             </button>
 
-            <h1 className="text-2xl font-bold text-[#0a61aa]">Hi, Admin!</h1>
+            <h1 className="text-2xl font-bold text-[#0a61aa]">Hi, Instruktur!</h1>
           </div>
 
           <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
-            <h2 className="text-lg md:text-xl font-bold text-[#0a61aa]">
-              Data Module Kelas
-            </h2>
+            <h2 className="text-lg md:text-xl font-bold text-[#0a61aa]">Data Module Kelas</h2>
 
             <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
               {/* Tombol tambah module */}
@@ -130,12 +122,14 @@ const AdminDataModule = () => {
                     <td className="px-2 md:px-4 py-2">{course.konten}</td>
                     <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
                       {/* Action Buttons */}
-                      <button
-                        className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
-                        onClick={() => console.log("Kelola", course)}
-                      >
-                        Kelola
-                      </button>
+                      <Link to="/inst/data-konten">
+                        <button
+                          className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                          //   onClick={() => console.log("Kelola", course)}
+                        >
+                          Kelola
+                        </button>
+                      </Link>
                       <button
                         className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
                         onClick={() => handleEditClick(course)}
@@ -156,10 +150,7 @@ const AdminDataModule = () => {
           </div>
 
           {/* Pop-up untuk tambah module */}
-          <TambahModule
-            show={showTambahPopup}
-            onClose={() => setShowTambahPopup(false)}
-          />
+          <TambahModule show={showTambahPopup} onClose={() => setShowTambahPopup(false)} />
 
           {/* Pop-up untuk ubah module */}
           <UbahModule
@@ -173,4 +164,4 @@ const AdminDataModule = () => {
   );
 };
 
-export default AdminDataModule;
+export default InstruktorDataModule;

@@ -1,9 +1,8 @@
+import Sidebar from "../../components/Sidebar/SidebarInstruktur";
 import { useState } from "react";
 import { FaUsers, FaSearch, FaFilter } from "react-icons/fa";
-import SideBar from "../../components/Sidebar/SidebarAdmin";
-// import Sidebar from "../../components/Sidebar/SidebarAdmin";
 
-const AdminDashboard = () => {
+const InstruktorDashboard = () => {
   const [stats] = useState({
     users: 450,
     instruktor: 25,
@@ -95,16 +94,15 @@ const AdminDashboard = () => {
   const toggleSearch = () => {
     setSearchVisible(!searchVisible);
   };
-
   return (
     <>
       {/* <Sidebar/> */}
       <div className="flex">
-        <SideBar />
+        <Sidebar />
         <div className="p-6 bg-secondary min-h-screen w-screen font-poppins">
           {/* Header - Hi Admin */}
           <div className="bg-[#F3F7FB] p-4 flex justify-between items-center mb-4 shadow-sm">
-            <h1 className="text-2xl font-bold text-[#173D94]">Hi, Admin!</h1>
+            <h1 className="text-2xl font-bold text-[#173D94]">Hi, Instruktor</h1>
             {/* Search Bar Global */}
             <div className="relative flex items-center bg-white rounded-full shadow-sm">
               <input
@@ -169,7 +167,7 @@ const AdminDashboard = () => {
           {/* Section untuk Status Pembayaran */}
           <div className="flex justify-between items-center mb-4">
             {/* Judul Status Pembayaran */}
-            <h2 className="text-xl font-bold">Status Pembayaran</h2>
+            <h2 className="text-xl font-bold">Instruktor Active</h2>
 
             {/* Filter Dropdown dan Search Icon */}
             <div className="flex items-center">
@@ -218,7 +216,7 @@ const AdminDashboard = () => {
                   <th className="px-4 py-2">Tanggal Bayar</th>
                 </tr>
               </thead>
-              <tbody>
+              {/* <tbody>
                 {filteredPayments.length === 0 ? (
                   <tr>
                     <td colSpan="6" className="px-4 py-2 text-center">
@@ -243,7 +241,7 @@ const AdminDashboard = () => {
                     </tr>
                   ))
                 )}
-              </tbody>
+              </tbody> */}
             </table>
           </div>
         </div>
@@ -252,4 +250,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default InstruktorDashboard;

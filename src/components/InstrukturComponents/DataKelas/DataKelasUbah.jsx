@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const DataKelasInput = ({ show, onClose }) => {
+const DataKelasUbah = ({ show, onClose, existingData }) => {
   const [formData, setFormData] = useState({
     file: null,
     kategori: "",
@@ -13,6 +13,24 @@ const DataKelasInput = ({ show, onClose }) => {
     ditujukanUntuk: "",
     deskripsi: "",
   });
+
+  useEffect(() => {
+    if (existingData) {
+      setFormData({
+        file: null,
+        kategori: existingData.kategori,
+        judulKelas: existingData.namaKelas,
+        tipeKelas: existingData.tipeKelas,
+        level: existingData.level,
+        harga: existingData.harga,
+        pengajar: existingData.pengajar || "Nuralim",
+        ditujukanUntuk: existingData.ditujukanUntuk || "Pelajar",
+        deskripsi:
+          existingData.deskripsi ||
+          "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+      });
+    }
+  }, [existingData]);
 
   if (!show) return null;
 
@@ -26,19 +44,22 @@ const DataKelasInput = ({ show, onClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Tambah Kelas:", formData);
+    console.log("Ubah Kelas:", formData);
   };
 
   return (
-    <div className="fixed inset-0 flex justify-center items-center z-50" style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}>
+    <div
+      className="fixed inset-0 flex justify-center items-center z-50"
+      style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
+    >
       <div className="bg-white w-full max-w-lg h-[80vh] p-6 rounded-lg shadow-lg relative overflow-y-auto">
         <button className="absolute top-2 right-2 text-xl font-bold" onClick={onClose}>
           &times;
         </button>
-        <h2 className="text-xl font-bold text-[#0a61aa] mb-4 text-center">Tambah Kelas</h2>
+        <h2 className="text-xl font-bold text-[#0a61aa] mb-4 text-center">Ubah Kelas</h2>
 
         <form onSubmit={handleSubmit}>
-        <div className="mb-4">
+          <div className="mb-4">
             <label className="block mb-1 font-semibold">Upload File</label>
             <input type="file" className="w-full p-2 border rounded-xl" />
           </div>
@@ -147,7 +168,9 @@ const DataKelasInput = ({ show, onClose }) => {
           </div>
 
           <div className="flex justify-center">
-            <button type="submit" className="py-2 px-6 bg-[#0a61aa] text-white rounded-xl">Tambah</button>
+            <button type="submit" className="py-2 px-6 bg-[#0a61aa] text-white rounded-xl">
+              Ubah
+            </button>
           </div>
         </form>
       </div>
@@ -155,9 +178,10 @@ const DataKelasInput = ({ show, onClose }) => {
   );
 };
 
-DataKelasInput.propTypes = {
+DataKelasUbah.propTypes = {
   show: PropTypes.bool,
   onClose: PropTypes.func,
+  existingData: PropTypes.object, // Data kelas yang sudah ada
 };
 
-export default DataKelasInput;
+export default DataKelasUbah;

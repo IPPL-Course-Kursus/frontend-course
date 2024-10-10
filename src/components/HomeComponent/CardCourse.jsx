@@ -143,7 +143,6 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
               >
                 All
               </button>
-
               {/* mapping */}
               {category.map((kategori) => (
                 <div key={kategori.id} className="ml-4">
@@ -165,7 +164,30 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
           </div>
         </div>
       </div>
-
+      {/* <div className="relative w-full">
+            <Slider ref={sliderRef} {...categorySliderSettings}>
+              {category.map(
+                (
+                  kategori // Menggunakan data kategori dari Redux
+                ) => (
+                  <div key={kategori.id}>
+                    <div
+                      className={`flex justify-center items-center border-2 rounded-lg text-sm font-semibold p-3 transition-colors duration-300 mx-2 whitespace-nowrap ${
+                        selectCategoryId === kategori.id
+                          ? "bg-color-primary text-white"
+                          : "bg-white text-gray-700 border-gray-300"
+                      } hover:bg-primary hover:text-white cursor-pointer`}
+                      onClick={() => setSelectCategoryId(kategori.id)}
+                    >
+                      {kategori.categoryName}
+                    </div>
+                  </div>
+                )
+              )}
+            </Slider>
+          </div>
+        </div>
+      </div> */}
       {/* Card Course Section */}
       <div className="max-w-screen-lg mx-auto px-6 lg:p-0">
         {Array.isArray(filteredCourses) && filteredCourses.length > 0 ? (
@@ -237,65 +259,120 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
             // Grid view for selected category
             <div className="grid mt-2 gap-2 grid-cols-1 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:mt-4">
               {filteredCourses.map((val) => (
-                <div
-                  key={val.id}
-                  className="w-full mt-3 my-2 bg-white shadow-xl rounded-xl overflow-hidden pb-3"
-                >
-                  <div className="flex flex-col">
-                    <img src={val.image} alt={val.name} className="w-full h-32 object-cover" />
-                    <div className="mx-2 md:mx-4 flex flex-col mt-1 md:mt-2">
-                      <div className="flex justify-between items-center">
-                        <h1 className="text-color-primary font-bold text-sm lg:text-base">
-                          {val.courseName}
-                        </h1>
-                        <p className="flex items-center font-semibold">
-                          <FaStar color="#F9CC00" className="w-4 h-4 lg:w-5 lg:h-5" /> 4.8
-                        </p>
-                      </div>
-                      <p className="text-black text-sm font-semibold">
-                        Instruktor {val.user.fullName}
-                      </p>
-                      <div className="mt-3 flex justify-between flex-wrap">
-                        <p className="flex items-center text-xs font-semibold text-color-primary">
-                          <Shield size={18} className="mr-1" /> {val.courseLevel.levelName}
-                        </p>
-                        <p className="flex items-center text-xs font-semibold text-color-primary">
-                          <Book size={18} className="mr-1" /> {val._count.chapters}
-                        </p>
-                        <p className="flex items-center text-xs font-semibold text-color-primary">
-                          <Clock size={18} className="mr-1" /> {val.totalDuration} menit
-                        </p>
-                      </div>
-                      <div className="my-2">
-                        <ProgressBar />
-                      </div>
-                      <div className="my-2">
-                        <Link
-                          to={`/course-detail/${val.id}`}
-                          className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
-                        >
-                          Mulai Kelas
-                        </Link>
-                      </div>
-                      {val.courseDiscountPrice || val.coursePrice ? (
-                        <div className="my-2">
-                          <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
-                            {val.courseDiscountPrice || val.coursePrice}
-                          </button>
+                <div key={val.id} className="p-2">
+                  <div className="w-full bg-white shadow-xl rounded-xl overflow-hidden pb-3">
+                    <div className="flex flex-col">
+                      <img src={val.image} alt={val.name} className="w-full h-32 object-cover" />
+                      <div className="mx-2 md:mx-4 flex flex-col mt-1 md:mt-2">
+                        <div className="flex justify-between items-center">
+                          <h1 className="text-color-primary font-bold text-sm lg:text-base">
+                            {val.courseName}
+                          </h1>
+                          <p className="flex items-center font-semibold">
+                            <FaStar color="#F9CC00" className="w-4 h-4 lg:w-5 lg:h-5" /> 4.8
+                          </p>
                         </div>
-                      ) : (
-                        <div className="my-2">
-                          <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
-                            <span className="mr-2">
-                              <Gem size={16} />
-                            </span>
-                            Premium
-                          </button>
+                        <p className="text-black text-sm font-semibold">
+                          Instruktor {val.user.fullName}
+                        </p>
+                        <div className="mt-3 flex justify-between flex-wrap">
+                          <p className="flex items-center text-xs font-semibold text-color-primary">
+                            <Shield size={18} className="mr-1" /> {val.courseLevel.levelName}
+                          </p>
+                          <p className="flex items-center text-xs font-semibold text-color-primary">
+                            <Book size={18} className="mr-1" /> {val._count.chapters}
+                          </p>
+                          <p className="flex items-center text-xs font-semibold text-color-primary">
+                            <Clock size={18} className="mr-1" /> {val.totalDuration} menit
+                          </p>
                         </div>
-                      )}
+                        <div className="my-2">
+                          <ProgressBar />
+                        </div>
+                        <div className="my-2">
+                          <Link
+                            to={`/course-detail/${val.id}`}
+                            className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
+                          >
+                            Mulai Kelas
+                          </Link>
+                        </div>
+                        {val.courseDiscountPrice || val.coursePrice ? (
+                          <div className="my-2">
+                            <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
+                              {val.courseDiscountPrice || val.coursePrice}
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="my-2">
+                            <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
+                              <span className="mr-2">
+                                <Gem size={16} />
+                              </span>
+                              Premium
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
+                // <div
+                //   key={val.id}
+                //   className="w-full mt-3 my-2 bg-white shadow-xl rounded-xl overflow-hidden pb-3"
+                // >
+                //   <div className="flex flex-col">
+                //     <img src={val.image} alt={val.name} className="w-full h-32 object-cover" />
+                //     <div className="mx-2 md:mx-4 flex flex-col mt-1 md:mt-2">
+                //       <div className="flex justify-between items-center">
+                //         <h1 className="text-color-primary font-bold text-sm lg:text-base">
+                //           {val.courseName}
+                //         </h1>
+                //       </div>
+                //       <p className="text-black text-sm font-semibold">
+                //         Instruktor {val.user.fullName}
+                //       </p>
+                //       <div className="mt-3 flex justify-between flex-wrap">
+                //         <p className="flex items-center text-xs font-semibold text-color-primary">
+                //           <Shield size={18} className="mr-1" /> {val.courseLevel.levelName}
+                //         </p>
+                //         <p className="flex items-center text-xs font-semibold text-color-primary">
+                //           <Book size={18} className="mr-1" /> {val._count.chapters}
+                //         </p>
+                //         <p className="flex items-center text-xs font-semibold text-color-primary">
+                //           <Clock size={18} className="mr-1" /> {val.totalDuration} menit
+                //         </p>
+                //       </div>
+                //       {/* <div className="my-2">
+                //         <ProgressBar />
+                //       </div> */}
+                //       <div className="my-2">
+                //         <Link
+                //           to={`/course-detail/${val.id}`}
+                //           className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
+                //         >
+                //           Mulai Kelas
+                //         </Link>
+                //       </div>
+                //       {val.courseDiscountPrice || val.coursePrice ? (
+                //         <div className="my-2">
+                //           <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
+                //             {val.courseDiscountPrice || val.coursePrice}
+                //           </button>
+                //         </div>
+                //       ) : (
+                //         <div className="my-2">
+                //           <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
+                //             <span className="mr-2">
+                //               <Gem size={16} />
+                //             </span>
+                //             Premium
+                //           </button>
+                //         </div>
+                //       )}
+                //     </div>
+                //   </div>
+                // </div>
               ))}
             </div>
           )
