@@ -16,11 +16,13 @@ import VerifyEmail from "./pages/auth/VerifyEmail";
 import TopikKelas from "./pages/TopikKelas/TopikKelas";
 import MulaiKelas from "./pages/MulaiKelas/MulaiKelas";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminDataKelas from "./pages/admin/AdminDataKelas";
+// import AdminDataKelas from "./pages/admin/AdminDataKelas";
 import AdminDataInstuktur from "./pages/admin/AdminDataInstruktur";
-import AdminDataModule from "./pages/admin/AdminDataModule";
-import AdminDataKonten from "./pages/admin/AdminDataKonten";
 import AdminDataKategori from "./pages/admin/AdminDataKategori";
+import InstruktorDashboard from "./pages/instruktor/InstruktorDashboard";
+import InstruktorDataKelas from "./pages/instruktor/InstruktorDataKelas";
+import InstruktorDataModule from "./pages/instruktor/InstruktorDataModule";
+import InstruktorDataKonten from "./pages/instruktor/InstruktorDataKonten";
 // import NoAccessToken from "./security/NoAccessToken";
 // import Protected from "./security/Protected";
 
@@ -93,11 +95,16 @@ function AppRoutes() {
 
       {/* Admin */}
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
-      <Route path="/admin/data-kelas" element={<AdminDataKelas />} />
+      {/* <Route path="/admin/data-kelas" element={<AdminDataKelas />} /> */}
       <Route path="/admin/data-instruktur" element={<AdminDataInstuktur />} />
-      <Route path="/admin/data-module" element={<AdminDataModule />} />
-      <Route path="/admin/data-konten" element={<AdminDataKonten />} />
       <Route path="/admin/data-kategori" element={<AdminDataKategori />} />
+
+      {/* Instruktor */}
+      <Route path="/inst/dashboard" element={<InstruktorDashboard />} />
+      <Route path="/inst/data-kelas" element={<InstruktorDataKelas />} />
+      <Route path="/inst/data-module" element={<InstruktorDataModule />} />
+      <Route path="/inst/data-konten" element={<InstruktorDataKonten />} />
+      {/* <Route path="/inst/data-kelas" element={<Instruktor/>}  /> */}
 
       {/* NotFound */}
       <Route path="/*" element={<NotFound />} />
@@ -106,7 +113,7 @@ function AppRoutes() {
         path="/"
         element={
           <Protected>
-            <Home />
+            <Homce />
           </Protected>
         }
       /> */}

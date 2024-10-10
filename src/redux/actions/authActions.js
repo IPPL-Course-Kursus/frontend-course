@@ -415,6 +415,8 @@ export const getMe = () => async (dispatch) => {
     });
 
     const { data } = response.data;
+    console.log("ini data profile:", response.data);
+    
 
     // Dispatch hasil success dengan data pengguna
     dispatch(getMeSuccess(data));
