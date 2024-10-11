@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaCamera } from "react-icons/fa";
-import { getMe, updateProfile } from "../../redux/actions/authActions"; // Import action getMe dan updateProfile
-import { selectProfile, selectProfileLoading, selectProfileError } from "../../redux/reducers/authReducers"; // Import selectors
+import { getMe, updateProfile } from "../../redux/actions/authActions";
+import { selectProfile, selectProfileLoading, selectProfileError } from "../../redux/reducers/authReducers";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -15,14 +15,14 @@ const Profile = () => {
   // State lokal untuk form dan fokus input
   const [form, setForm] = useState({
     fullName: "",
-    // email: "",
     phoneNumber: "",
-    // bio: "",
     country: "",
     city: "",
-    // address: "",
+    image: "",
   });
   const [focusedField, setFocusedField] = useState("");
+  const [imagePreview, setImagePreview] = useState("/profile.jpg");
+  const [imageFile, setImageFile] = useState(null);
 
   // Mengambil data profil dari Redux saat komponen di-mount
   useEffect(() => {
@@ -36,11 +36,12 @@ const Profile = () => {
         fullName: profile.fullName || "",
         email: profile.email || "",
         phoneNumber: profile.phoneNumber || "",
-        // bio: profile.bio || "",
         country: profile.country || "",
         city: profile.city || "",
-        // address: profile.address || "",
+        image: profile.image || "",
       });
+
+      setImagePreview(profile.image || "/profile.jpg");
     }
   }, [profile]);
 
@@ -53,14 +54,19 @@ const Profile = () => {
     }));
   };
 
-  // Fungsi untuk menyimpan perubahan pada form
   const handleSave = () => {
-    // Buat salinan dari form dan hapus email
-    const updatedForm = { ...form };
-    delete updatedForm.email; // Menghapus email dari objek
-  
-    // Dispatch action untuk mengupdate profil dengan data tanpa email
-    dispatch(updateProfile(updatedForm));
+    const formData = new FormData();
+
+    formData.append("fullName", form.fullName);
+    formData.append("phoneNumber", form.phoneNumber);
+    formData.append("country", form.country);
+    formData.append("city", form.city);
+
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
+
+    dispatch(updateProfile(formData)); // Kirim form data dengan file gambar
   };
 
   // Fungsi untuk menangani fokus pada input field
@@ -73,7 +79,20 @@ const Profile = () => {
     setFocusedField("");
   };
 
-  // Menampilkan loading atau error jika ada
+  // Fungsi untuk menangani input file dan preview gambar
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+
+      setImageFile(file);
+    }
+  };
+
   if (profileLoading) {
     return <div>Loading...</div>;
   }
@@ -86,8 +105,9 @@ const Profile = () => {
     <div className="flex p-8">
       <div className="flex flex-col">
         <div className="relative items-center mr-8">
+          {/* Tampilkan preview gambar */}
           <img
-            src="/profile.jpg"
+            src={imagePreview}
             alt="Profile"
             className="w-52 h-52 rounded-full border-2 border-blue-800 shadow-lg"
           />
@@ -95,11 +115,16 @@ const Profile = () => {
           {/* Ikon untuk mengganti foto profil */}
           <div className="absolute bottom-0 right-0 w-20 h-20 bg-white border-2 border-blue-800 flex items-center justify-center shadow-md cursor-pointer">
             <FaCamera size={30} color="gray" />
+            <input
+              type="file"
+              accept="image/*"
+              className="absolute opacity-0 w-full h-full cursor-pointer"
+              onChange={handleImageUpload}
+            />
           </div>
         </div>
         <div className="flex-1 mt-5">
-          <p className="w-full text-3xl font-bold">Profile Saya</p>{" "}
-          {/* Teks di bawah foto profil */}
+          <p className="w-full text-3xl font-bold">Profile Saya</p>
           <input
             type="text"
             name="fullName"
@@ -174,34 +199,6 @@ const Profile = () => {
           }`}
           placeholder="Kota"
         />
-        {/* <input
-          type="text"
-          name="city"
-          value={form.city}
-          onChange={handleInputChange}
-          onFocus={() => handleFocus("city")}
-          onBlur={handleBlur}
-          className={`block w-full p-2 border-b ${
-            focusedField === "city" ? "border-black" : "border-gray-300"
-          } focus:outline-none ${
-            focusedField === "city" ? "text-black" : "text-gray-500"
-          }`}
-          placeholder="Kota"
-        /> */}
-        {/* <input
-          type="text"
-          name="address"
-          value={form.address}
-          onChange={handleInputChange}
-          onFocus={() => handleFocus("address")}
-          onBlur={handleBlur}
-          className={`block w-full p-2 border-b ${
-            focusedField === "address" ? "border-black" : "border-gray-300"
-          } focus:outline-none ${
-            focusedField === "address" ? "text-black" : "text-gray-500"
-          }`}
-          placeholder="Alamat"
-        /> */}
         <button onClick={handleSave} className="py-2 bg-blue-900 text-white rounded-full">
           Simpan
         </button>
