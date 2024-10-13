@@ -1,10 +1,26 @@
-// eslint-disable-next-line no-unused-vars
-import React from "react";
+import React, { useEffect } from "react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { postSuccessPayment } from "../../redux/actions/transactionActions"; // Import action yang baru
 
 const SuccessPage = () => {
+  const dispatch = useDispatch();
+  const location = useLocation();
+
+  useEffect(() => {
+    const query = new URLSearchParams(location.search);
+    const orderId = query.get("order_id"); // Mengambil order_id dari URL
+    const statusCode = query.get("status_code");
+    const transactionStatus = query.get("transaction_status");
+
+    if (orderId) {
+      // Dispatch action untuk melakukan POST request
+      dispatch(postSuccessPayment(orderId));
+    }
+  }, [dispatch, location.search]);
+
   return (
     <>
       <Navbar />
