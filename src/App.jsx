@@ -16,13 +16,15 @@ import VerifyEmail from "./pages/auth/VerifyEmail";
 import TopikKelas from "./pages/TopikKelas/TopikKelas";
 import MulaiKelas from "./pages/MulaiKelas/MulaiKelas";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-// import AdminDataKelas from "./pages/admin/AdminDataKelas";
-import AdminDataInstuktur from "./pages/admin/AdminDataInstruktur";
-import AdminDataKategori from "./pages/admin/AdminDataKategori";
+import AdminDataKategori from "./pages/admin/KelolaDataAdmin/AdminDataKategori";
 import InstruktorDashboard from "./pages/instruktor/InstruktorDashboard";
 import InstruktorDataKelas from "./pages/instruktor/InstruktorDataKelas";
 import InstruktorDataModule from "./pages/instruktor/InstruktorDataModule";
 import InstruktorDataKonten from "./pages/instruktor/InstruktorDataKonten";
+import AdminDataLevel from "./pages/admin/KelolaDataAdmin/AdminDataLevel";
+import AdminDataType from "./pages/admin/KelolaDataAdmin/AdminDataType";
+import AdminDataInstruktur from "./pages/admin/KelolaInstrukturAdmin/AdminDataInstruktur";
+import AdminRegisterInstruktur from "./pages/admin/KelolaInstrukturAdmin/AdminRegisterInstruktur";
 // import NoAccessToken from "./security/NoAccessToken";
 // import Protected from "./security/Protected";
 
@@ -95,9 +97,12 @@ function AppRoutes() {
 
       {/* Admin */}
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
-      {/* <Route path="/admin/data-kelas" element={<AdminDataKelas />} /> */}
-      <Route path="/admin/data-instruktur" element={<AdminDataInstuktur />} />
+      {/* Kelola Data Admin */}
+      <Route path="/admin/data-instruktur" element={<AdminDataInstruktur />} />
       <Route path="/admin/data-kategori" element={<AdminDataKategori />} />
+      <Route path="/admin/data-level" element={<AdminDataLevel />} />
+      <Route path="/admin/data-Type" element={<AdminDataType />} />
+      <Route path="/admin/regis-instruktur" element={<AdminRegisterInstruktur />} />
 
       {/* Instruktor */}
       <Route path="/inst/dashboard" element={<InstruktorDashboard />} />

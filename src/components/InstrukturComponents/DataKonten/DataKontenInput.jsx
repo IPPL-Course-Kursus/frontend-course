@@ -74,7 +74,7 @@ function DataKontenInput({ show, onClose, onAdd }) {
               placeholder="Masukkan durasi video"
             />
           </div>
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label className="block mb-1 font-semibold">Kategori</label>
             <select
               name="published"
@@ -86,7 +86,7 @@ function DataKontenInput({ show, onClose, onAdd }) {
               <option>True</option>
               <option>False</option>
             </select>
-          </div>
+          </div> */}
 
           <div className="flex justify-center">
             <button type="submit" className="py-2 px-6 bg-[#0a61aa] text-white rounded-xl">

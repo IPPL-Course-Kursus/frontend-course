@@ -80,6 +80,8 @@ export const login = (email, password, navigate) => async (dispatch) => {
 
     const { data } = response.data;
     const { token, user, role } = data; // Hanya menyimpan token, user, dan role
+    console.log(response.data);
+    
 
     // Menyimpan token di cookies (4 jam)
     Cookies.set("token", token, { expires: 1 / 6 });
@@ -91,7 +93,7 @@ export const login = (email, password, navigate) => async (dispatch) => {
 
     // Navigasi ke halaman utama dengan delay
     setTimeout(() => {
-      navigate("/profile");
+      navigate("/");
     }, 1000); // Durasi delay 1 detik
   } catch (error) {
     // Penanganan error yang lebih spesifik
