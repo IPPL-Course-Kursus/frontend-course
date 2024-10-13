@@ -80,6 +80,8 @@ export const login = (email, password, navigate) => async (dispatch) => {
 
     const { data } = response.data;
     const { token, user, role } = data; // Hanya menyimpan token, user, dan role
+    console.log(response.data);
+    
 
     // Menyimpan token di cookies (4 jam)
     Cookies.set("token", token, { expires: 1 / 6 });
