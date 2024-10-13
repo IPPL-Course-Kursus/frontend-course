@@ -33,6 +33,7 @@ import {
 } from "./authReducers"; // Sesuaikan dengan ekspor dari authReducers
 import courseReducer from "./courseReducers"; // Ganti dari courseReducers ke courseReducer untuk konsistensi
 import categoryReducer from "./categoryReducers";
+import transactionReducer from "./transactionReducers"; // Menggunakan reducer transaksi
 
 export default combineReducers({
   // Auth
@@ -53,4 +54,7 @@ export default combineReducers({
   getMe: getMeReducer,
   updateProfile: updateProfileReducer,
   changePassword: changePasswordReducer,
+
+  // Transaction
+  transaction: transactionReducer,
 });
