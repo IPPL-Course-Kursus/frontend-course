@@ -20,7 +20,7 @@ const Navbar = () => {
     };
 
     return (
-        <div className="navbar bg-base-100 shadow-lg">
+        <div className="navbar bg-base-100 shadow-md  shadow-slate-300 z-50">
             <div className="flex-none">
                 <a
                     className="btn btn-ghost lg:pl-10 text-xl text-primary"
@@ -59,10 +59,10 @@ const Navbar = () => {
                             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-40 p-2 shadow"
                         >
                             <li>
-                                <span className="justify-between font-medium text-primary hover:bg-primary hover:text-white">Katalog Kelas</span>
+                                <span className="justify-between font-medium text-primary  hover:text-primary">Katalog Kelas</span>
                             </li>
                             <li>
-                                <span className="justify-between font-medium text-primary hover:bg-primary hover:text-white">Kelas Saya</span>
+                                <span className="justify-between font-medium text-primary  hover:text-primary">Kelas Saya</span>
                             </li>
                         </ul>
                     )}
@@ -82,14 +82,18 @@ const Navbar = () => {
                             </summary>
                             <ul className="menu menu-sm ">
                                 <li>
-                                    <span className="whitespace-nowrap font-medium text-primary cursor-pointer hover:bg-primary hover:text-white">
+                                    <Link to="/topik-kelas">
+                                    <span className="whitespace-nowrap font-medium text-primary cursor-pointer  hover:text-primary">
                                         Katalog Kelas
                                     </span>
+                                    </Link>
                                 </li>
                                 <li>
-                                    <span className="whitespace-nowrap font-medium text-primary cursor-pointer hover:bg-primary hover:text-white">
+                                    <Link to="/mycourse">
+                                    <span className="whitespace-nowrap font-medium text-primary cursor-pointer  hover:text-primary">
                                         Kelas Saya
                                     </span>
+                                    </Link>
                                 </li>
                             </ul>
                         </details>
