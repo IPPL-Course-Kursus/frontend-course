@@ -38,7 +38,7 @@ const SuccessPage = () => {
           <p className="text-gray-600 mb-4">Transaksi pembayaran kelas premium berhasil!</p>
           <p className="text-gray-600 mb-14">E-receipt telah dikirimkan ke email.</p>
           <div className="flex flex-col items-center space-y-4">
-            <Link to="/mulai-kelas">
+            <Link to="/mycourse">
               <a className="bg-blue-600 text-white py-2 px-32 rounded-full font-bold inline-block">
                 Mulai Belajar
               </a>
