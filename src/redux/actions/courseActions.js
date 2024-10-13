@@ -1,5 +1,9 @@
 import axios from "axios";
-import { setCourse, setDetail, setPageCourse } from "../reducers/courseReducers";
+import {
+  setCourse,
+  //  setDetail,
+  setPageCourse,
+} from "../reducers/courseReducers";
 // import { setCourse } from "../reducers/courseReducers";
 
 const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
@@ -25,7 +29,7 @@ export const getPagesCourse = (page) => async (dispatch) => {
 
     dispatch(setPageCourse(pagination));
   } catch (error) {
-    swal("error", "ERROR", error.message);
+    alert("error", "ERROR", error.message);
   }
 };
 
@@ -39,4 +43,3 @@ export const getPagesCourse = (page) => async (dispatch) => {
 //     swal("error", "ERROR", error.message);
 //   }
 // };
-
