@@ -38,7 +38,7 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
   }, [category]);
 
   const filteredCourses = selectCategoryId
-    ? courses.filter((course) => course.id === selectCategoryId)
+    ? courses.filter((course) => course.category.id === selectCategoryId)
     : courses;
 
   const NextArrow = ({ onClick }) => {

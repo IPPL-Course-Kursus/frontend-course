@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2"; // Import SweetAlert
 import CardRecommended from "../../components/DetailComponent/CardRecommended";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
@@ -13,6 +14,7 @@ import { createTransaction } from "../../redux/actions/transactionActions";
 export const DetailKelas = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
+  const navigate = useNavigate();
   const detail = useSelector((state) => state.course.detail);
   const [isModalOpen, setModalOpen] = useState(false);
   const [transactionMessage, setTransactionMessage] = useState('');
@@ -42,31 +44,41 @@ export const DetailKelas = () => {
   const handleModalClose = () => {
     setModalOpen(false);
   };
+
   const handleProceedToPayment = () => {
     dispatch(createTransaction(id))
       .then((res) => {
         const { data } = res;
         console.log("Response from API:", data);
-    
+
         if (data.success) {
-          // Pastikan window.snap sudah ada
-          if (window.snap) {
+          if (data.message === "CourseUser created for free course") {
+            // Tampilkan SweetAlert dan navigasi ke halaman /mycourse
+            Swal.fire({
+              icon: "success",
+              title: "Berhasil!",
+              text: "Anda telah terdaftar di kursus gratis ini.",
+              confirmButtonText: "OK"
+            }).then(() => {
+              navigate("/mycourse");
+            });
+          } else if (window.snap) {
             // Menggunakan token dari respons untuk memicu popup Midtrans
             window.snap.pay(data.data.token, {
               onSuccess: function (result) {
-                alert("Pembayaran berhasil!");
+                Swal.fire("Berhasil!", "Pembayaran berhasil!", "success");
                 console.log(result);
               },
               onPending: function (result) {
-                alert("Menunggu pembayaran!");
+                Swal.fire("Menunggu Pembayaran!", "Pembayaran sedang diproses.", "info");
                 console.log(result);
               },
               onError: function (result) {
-                alert("Pembayaran gagal!");
+                Swal.fire("Gagal!", "Pembayaran gagal.", "error");
                 console.log(result);
               },
               onClose: function () {
-                alert("Anda menutup popup tanpa menyelesaikan pembayaran.");
+                Swal.fire("Dibatalkan!", "Anda menutup popup tanpa menyelesaikan pembayaran.", "warning");
               },
             });
           } else {
@@ -80,11 +92,9 @@ export const DetailKelas = () => {
         console.error(err);
         setTransactionMessage("Terjadi kesalahan, silakan coba lagi.");
       });
-    
+
     setModalOpen(false);
   };
-  
-  
 
   return (
     <>
