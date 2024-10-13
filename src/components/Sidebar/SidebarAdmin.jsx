@@ -84,6 +84,55 @@ const Sidebar = () => {
               >
                 Register Instruktur
               </a>
+              <a
+                href="/admin/data-instruktur"
+                className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700"
+              >
+                Data Level
+              </a>
+              <a
+                href="/admin/data-instruktur"
+                className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700"
+              >
+                Data Type
+              </a>
+            </div>
+          )}
+        </div>
+        <div className="relative">
+          <button
+            onClick={toggleDataInstruktur}
+            className="w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700 flex justify-between items-center"
+          >
+            Kelola Instruktur
+            <span>{isDataMenuOpenInstruktur ? "▲" : "▼"}</span>
+          </button>
+          {isDataMenuOpenInstruktur && (
+            <div className="pl-4">
+              <a
+                href="/admin/data-kategori"
+                className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700"
+              >
+                Data Instruktur
+              </a>
+              <a
+                href="/admin/data-instruktur"
+                className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700"
+              >
+                Register Instruktur
+              </a>
+              <a
+                href="/admin/data-instruktur"
+                className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700"
+              >
+                Data Level
+              </a>
+              <a
+                href="/admin/data-instruktur"
+                className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700"
+              >
+                Data Type
+              </a>
             </div>
           )}
         </div>

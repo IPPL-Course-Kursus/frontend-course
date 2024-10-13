@@ -2,6 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   category: [],
+  // loading: false,
+  // error: null,
 };
 
 const categorySlice = createSlice({

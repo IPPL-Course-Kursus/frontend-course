@@ -28,11 +28,12 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
   useEffect(() => {
     dispatch(getAllCourse()); // Fetch all courses when component mounts
     dispatch(getCategory());
+    setSelectCategoryId("");
   }, [dispatch]);
 
   useEffect(() => {
     if (category.length > 0) {
-      setSelectCategoryId(category[0].id); // Automatically select the first category
+      setSelectCategoryId(""); // Automatically select the first category
     }
   }, [category]);
 
@@ -135,7 +136,7 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
             <Slider ref={sliderRef} {...categorySliderSettings}>
               <button
                 onClick={() => handleFilterClick("")} // Set categoryId to an empty string for "All"
-                className={` flex justify-center items-center border-2 rounded-lg text-sm font-semibold p-3 transition-colors duration-300 mx-2 whitespace-nowrap ${
+                className={` flex justify-center items-center border-2 rounded-lg text-sm font-semibold p-3 transition-colors duration-300  whitespace-nowrap ${
                   selectCategoryId === "" // Check if the categoryId is empty for "All"
                     ? "mr-4 bg-color-primary text-white bg-primary"
                     : "bg-white text-gray-700 border-gray-300"
@@ -145,7 +146,7 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
               </button>
               {/* mapping */}
               {category.map((kategori) => (
-                <div key={kategori.id} className="ml-4">
+                <div key={kategori.id} className="ml-0">
                   <div
                     className={`flex justify-center items-center border-2 rounded-lg text-sm font-semibold p-3 transition-colors duration-300 mx-2 whitespace-nowrap ${
                       selectCategoryId === kategori.id
