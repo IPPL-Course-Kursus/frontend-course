@@ -34,7 +34,8 @@ import {
 import courseReducer from "./courseReducers"; // Ganti dari courseReducers ke courseReducer untuk konsistensi
 // import popularReducer from "./popularReducers";
 import categoryReducer from "./categoryReducers";
-// import { getPopularCourse } from "../actions/courseActions";
+
+import transactionReducer from "./transactionReducers"; // Menggunakan reducer transaksi
 
 export default combineReducers({
   // Auth
@@ -56,4 +57,7 @@ export default combineReducers({
   getMe: getMeReducer,
   updateProfile: updateProfileReducer,
   changePassword: changePasswordReducer,
+
+  // Transaction
+  transaction: transactionReducer,
 });

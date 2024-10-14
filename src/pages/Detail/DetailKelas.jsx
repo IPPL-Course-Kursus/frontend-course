@@ -1,24 +1,104 @@
-import { Link, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import CardRecommended from "../../components/DetailComponent/CardRecommended";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import { FaBook } from "react-icons/fa";
 import { GrCertificate } from "react-icons/gr";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import { useDispatch, useSelector } from "react-redux";
 import { getDetailCourse } from "../../redux/actions/detailActions";
+import { createTransaction } from "../../redux/actions/transactionActions";
 
 export const DetailKelas = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
+  const navigate = useNavigate();
   const detail = useSelector((state) => state.course.detail);
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [transactionMessage, setTransactionMessage] = useState("");
 
   useEffect(() => {
     if (id) {
       dispatch(getDetailCourse(id));
     }
   }, [id, dispatch]);
+
+  useEffect(() => {
+    // Memuat skrip Midtrans
+    const script = document.createElement("script");
+    script.src = "https://app.sandbox.midtrans.com/snap/snap.js";
+    script.setAttribute("data-client-key", import.meta.env.VITE_PRIVATE_CLIENT_KEY);
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script); // Bersihkan skrip saat komponen di-unmount
+    };
+  }, []);
+
+  const handleModalOpen = () => {
+    setModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+  };
+
+  const handleProceedToPayment = () => {
+    dispatch(createTransaction(id))
+      .then((res) => {
+        const { data } = res;
+        console.log("Response from API:", data);
+
+        if (data.success) {
+          if (data.message === "CourseUser created for free course") {
+            // Tampilkan SweetAlert dan navigasi ke halaman /mycourse
+            Swal.fire({
+              icon: "success",
+              title: "Berhasil!",
+              text: "Anda telah terdaftar di kursus gratis ini.",
+              confirmButtonText: "OK",
+            }).then(() => {
+              navigate("/mycourse");
+            });
+          } else if (window.snap) {
+            // Menggunakan token dari respons untuk memicu popup Midtrans
+            window.snap.pay(data.data.token, {
+              onSuccess: function (result) {
+                Swal.fire("Berhasil!", "Pembayaran berhasil!", "success");
+                console.log(result);
+              },
+              onPending: function (result) {
+                Swal.fire("Menunggu Pembayaran!", "Pembayaran sedang diproses.", "info");
+                console.log(result);
+              },
+              onError: function (result) {
+                Swal.fire("Gagal!", "Pembayaran gagal.", "error");
+                console.log(result);
+              },
+              onClose: function () {
+                Swal.fire(
+                  "Dibatalkan!",
+                  "Anda menutup popup tanpa menyelesaikan pembayaran.",
+                  "warning"
+                );
+              },
+            });
+          } else {
+            console.error("Midtrans Snap is not loaded.");
+          }
+        } else {
+          setTransactionMessage("Transaksi gagal, silakan coba lagi.");
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        setTransactionMessage("Terjadi kesalahan, silakan coba lagi.");
+      });
+
+    setModalOpen(false);
+  };
 
   return (
     <>
@@ -44,17 +124,44 @@ export const DetailKelas = () => {
               <p className="text-[#151515] text-[12px] sm:text-[15px] leading-tight mt-4">
                 {detail.intendedFor || "Deskripsi belum tersedia"}
               </p>
-              <Link to="/mulai-kelas">
-                <button className="mt-6 px-4 py-2 bg-[#0a61aa] text-white text-xs font-bold rounded-md">
-                  Ikuti Kelas Ini
-                </button>
-              </Link>
+              <button
+                onClick={handleModalOpen}
+                className="mt-6 px-4 py-2 bg-[#0a61aa] text-white text-xs font-bold rounded-md"
+              >
+                Ikuti Kelas Ini
+              </button>
             </div>
             <div className="w-full sm:w-[512px] pt-16 pb-16">
               <img className="w-full h-auto" src={detail.image} alt="Gambar Kelas" />
             </div>
           </div>
         </div>
+
+        {/* Modal Popup */}
+        {isModalOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50">
+            <div className="bg-white p-8 rounded-lg shadow-lg">
+              <h2 className="text-lg font-semibold">Konfirmasi Pembayaran</h2>
+              <p className="mt-4">
+                Apakah Anda yakin ingin melanjutkan ke pembayaran untuk mengikuti kelas ini?
+              </p>
+              <div className="mt-6 flex justify-end gap-4">
+                <button
+                  onClick={handleModalClose}
+                  className="px-4 py-2 bg-gray-300 text-black rounded-md"
+                >
+                  Batal
+                </button>
+                <button
+                  onClick={handleProceedToPayment}
+                  className="px-4 py-2 bg-[#0a61aa] text-white rounded-md"
+                >
+                  Lanjutkan Pembayaran
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Bagian Tentang Kelas dan Detail Kelas */}
         <div className="max-w-screen-lg mx-auto px-4 mt-8">
@@ -114,6 +221,7 @@ export const DetailKelas = () => {
         </div>
       </div>
       <Footer />
+      {transactionMessage && <div className="text-red-500">{transactionMessage}</div>}
     </>
   );
 };
