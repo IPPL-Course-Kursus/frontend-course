@@ -10,16 +10,21 @@ import "swiper/css";
 import "swiper/css/navigation";
 import Footer from "../components/Footer";
 import CardCategory from "../components/HomeComponent/CardCategory";
-import { getAllCourse } from "../redux/actions/courseActions";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
+import { getFreeCourse, getPopularCourse } from "../redux/actions/courseActions";
+import { getCategory } from "../redux/actions/categoryActions";
 
 const Home = () => {
   const dispatch = useDispatch();
-  const { courses } = useSelector((state) => state.course); // Ambil data course dari Redux
+  const { popular } = useSelector((state) => state.course);
+  const { free } = useSelector((state) => state.course);
+  const { category } = useSelector((state) => state.category);
 
   useEffect(() => {
-    dispatch(getAllCourse()); // Mengambil data course saat komponen di-mount
+    dispatch(getPopularCourse());
+    dispatch(getFreeCourse());
+    dispatch(getCategory());
   }, [dispatch]);
   return (
     <>
@@ -49,8 +54,8 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <CardCategory />
-      <CardCourse title="Kelas Populer" course={courses} />
+      <CardCategory category={category} />
+      <CardCourse title="Kelas Populer" popular={popular} />
 
       <div className="w-full h-auto bg-primary flex justify-center items-center py-12 mt-20">
         <div className="flex flex-col lg:flex-row items-center max-w-6xl px-6 lg:px-12">
@@ -73,7 +78,7 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <CardFree />
+      <CardFree title="Kursus Gratis" free={free} />
       <div className="w-full h-auto bg-gray-100 py-16 mt-10">
         <div className="max-w-3xl mx-auto bg-white px-6 lg:px-12 relative">
           <div className="flex flex-col  items-center lg:flex-row lg:items-center">

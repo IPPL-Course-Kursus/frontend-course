@@ -32,7 +32,9 @@ import {
   changePasswordReducer,
 } from "./authReducers"; // Sesuaikan dengan ekspor dari authReducers
 import courseReducer from "./courseReducers"; // Ganti dari courseReducers ke courseReducer untuk konsistensi
+// import popularReducer from "./popularReducers";
 import categoryReducer from "./categoryReducers";
+
 import transactionReducer from "./transactionReducers"; // Menggunakan reducer transaksi
 
 export default combineReducers({
@@ -47,6 +49,7 @@ export default combineReducers({
   // Course
   // course: courseReducer, // Gunakan courseReducer yang benar
   course: courseReducer,
+  // popular: popularReducer,
 
   category: categoryReducer,
 

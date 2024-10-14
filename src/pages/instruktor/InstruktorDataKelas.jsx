@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FaSearch, FaFilter, FaBars } from "react-icons/fa";
-import { IoAddCircleOutline } from "react-icons/io5";
+import { IoAddCircleOutline, IoArrowBackCircle, IoArrowForwardCircle } from "react-icons/io5";
 import DataKelasInput from "../../components/InstrukturComponents/DataKelas/DataKelasInput";
 import DataKelasUbah from "../../components/InstrukturComponents/DataKelas/DataKelasUbah";
 import DataKelasDetail from "../../components/InstrukturComponents/DataKelas/DataKelasDetail";
@@ -12,16 +12,18 @@ const InstruktorDataKelas = () => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [showTambahPopup, setShowTambahPopup] = useState(false);
   const [showUbahPopup, setShowUbahPopup] = useState(false);
-  const [showDetailPopup, setShowDetailPopup] = useState(false); // State untuk modal detail
+  const [showDetailPopup, setShowDetailPopup] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
 
-  // sidebar state for mobile
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [filter, setFilter] = useState("");
+
+  const [currentPage, setCurrentPage] = useState(1); // Halaman saat ini
+  const itemsPerPage = 10; // Jumlah data yang ditampilkan per halaman
 
   const toggleSearch = () => {
     setSearchVisible(!searchVisible);
   };
-
   const handleAddClick = () => {
     setSelectedCourse(null);
     setShowTambahPopup(true);
@@ -37,9 +39,87 @@ const InstruktorDataKelas = () => {
     setSelectedCourse(course);
     setShowDetailPopup(true);
   };
-  // Filter
-  const [filter, setFilter] = useState("");
   const [courseType] = useState([
+    {
+      id: "johndoe123",
+      kategori: "UI/UX Design",
+      namaKelas: "Belajar Web Designer dengan Figma",
+      tipeKelas: "Free",
+      level: "Intermediate",
+      harga: 0,
+    },
+    {
+      id: "supermanxx",
+      kategori: "UI/UX Design",
+      namaKelas: "Belajar Web Designer dengan Figma",
+      tipeKelas: "Premium",
+      level: "Beginner",
+      harga: 190000,
+    },
+    {
+      id: "johndoe123",
+      kategori: "UI/UX Design",
+      namaKelas: "Belajar Web Designer dengan Figma",
+      tipeKelas: "Free",
+      level: "Intermediate",
+      harga: 0,
+    },
+    {
+      id: "supermanxx",
+      kategori: "UI/UX Design",
+      namaKelas: "Belajar Web Designer dengan Figma",
+      tipeKelas: "Premium",
+      level: "Beginner",
+      harga: 190000,
+    },
+    {
+      id: "lokiMaster",
+      kategori: "Data Science",
+      namaKelas: "Data Cleaning untuk pemula",
+      tipeKelas: "Free",
+      level: "Advance",
+      harga: 0,
+    },
+    {
+      id: "siapaAjaani",
+      kategori: "Data Science",
+      namaKelas: "Data Cleaning untuk pemula",
+      tipeKelas: "Premium",
+      level: "Intermediate",
+      harga: 190000,
+    },
+    {
+      id: "johndoe123",
+      kategori: "UI/UX Design",
+      namaKelas: "Belajar Web Designer dengan Figma",
+      tipeKelas: "Free",
+      level: "Intermediate",
+      harga: 0,
+    },
+    {
+      id: "supermanxx",
+      kategori: "UI/UX Design",
+      namaKelas: "Belajar Web Designer dengan Figma",
+      tipeKelas: "Premium",
+      level: "Beginner",
+      harga: 190000,
+    },
+    {
+      id: "lokiMaster",
+      kategori: "Data Science",
+      namaKelas: "Data Cleaning untuk pemula",
+      tipeKelas: "Free",
+      level: "Advance",
+      harga: 0,
+    },
+    {
+      id: "siapaAjaani",
+      kategori: "Data Science",
+      namaKelas: "Data Cleaning untuk pemula",
+      tipeKelas: "Premium",
+      level: "Intermediate",
+      harga: 190000,
+    },
     {
       id: "johndoe123",
       kategori: "UI/UX Design",
@@ -80,8 +160,17 @@ const InstruktorDataKelas = () => {
       (filter === "" || courseType.tipeKelas === filter)
   );
 
+  // Menghitung total halaman
+  const totalPages = Math.ceil(filteredCourseType.length / itemsPerPage);
+
+  // Menentukan data yang akan ditampilkan pada halaman saat ini
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredCourseType.slice(indexOfFirstItem, indexOfLastItem);
+
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
+    setCurrentPage(1); // Reset halaman saat filter berubah
   };
 
   return (
@@ -182,7 +271,7 @@ const InstruktorDataKelas = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredCourseType.map((courseType, index) => (
+                {currentItems.map((courseType, index) => (
                   <tr key={index} className="border-t text-xs md:text-sm">
                     <td className="px-2 md:px-4 py-2">{courseType.id}</td>
                     <td className="px-2 md:px-4 py-2">{courseType.kategori}</td>
@@ -222,6 +311,37 @@ const InstruktorDataKelas = () => {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Pagination */}
+          <div className="flex justify-between items-center mt-4">
+            <button
+              className={`flex items-center py-2 px-4 rounded-lg ${
+                currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-[#0a61aa] text-white"
+              } transition-all duration-300 hover:scale-105`}
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              <IoArrowBackCircle className="mr-2 text-xl" />
+              Previous
+            </button>
+
+            <span className="text-lg font-semibold">
+              Page {currentPage} of {totalPages}
+            </span>
+
+            <button
+              className={`flex items-center py-2 px-4 rounded-lg ${
+                currentPage === totalPages
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-[#0a61aa] text-white"
+              } transition-all duration-300 hover:scale-105`}
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next
+              <IoArrowForwardCircle className="ml-2 text-xl" />
+            </button>
           </div>
 
           {/* Pop-up untuk tambah kelas */}

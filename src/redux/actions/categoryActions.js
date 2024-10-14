@@ -8,7 +8,7 @@ export const getCategory = () => async (dispatch) => {
     const response = await axios.get(`${api_url}category/`);
 
     const data = response.data;
-    console.log("ini kategori : ", response.data);
+    // console.log("ini kategori : ", response.data);
 
     dispatch(setCategory(data));
   } catch (error) {
