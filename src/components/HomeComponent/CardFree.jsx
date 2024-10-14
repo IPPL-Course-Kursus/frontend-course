@@ -1,125 +1,61 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { FaStar } from "react-icons/fa";
 import { Book, Clock, Gem, Shield } from "lucide-react";
 import ProgressBar from "../MyCourse/ProgressBar";
 import PropTypes from "prop-types";
-import { IoIosArrowDroprightCircle } from "react-icons/io";
-import { IoIosArrowDropleftCircle } from "react-icons/io";
+import { IoIosArrowDroprightCircle, IoIosArrowDropleftCircle } from "react-icons/io";
+import { useDispatch, useSelector } from "react-redux";
+import { getFreeCourse } from "../../redux/actions/courseActions";
+import { getCategory } from "../../redux/actions/categoryActions";
 
-const CardCourse = () => {
+const CardFree = ({ title = "Kelas Free" }) => {
   const [selectCategoryId, setSelectCategoryId] = useState(null);
   const sliderRef = useRef(null);
+  const dispatch = useDispatch();
 
-  const dataKategoriPopularName = [
-    { id: null, name: "All" },
-    { id: 1, name: "UI/UX Design" },
-    { id: 2, name: "Product Manager" },
-    { id: 3, name: "Web Development" },
-    { id: 4, name: "Android Development" },
-    { id: 5, name: "iOS Development" },
-    { id: 6, name: "Data Science" },
-    { id: 7, name: "Machine Learning" },
-    { id: 8, name: "Cybersecurity" },
-  ];
+  const { free } = useSelector((state) => state.course);
+  // console.log("free", free);
 
-  const dataKategoriPopular = [
-    {
-      id: 1,
-      name: "UI/UX Design",
-      overview: "Belajar Web Designer dengan Figma",
-      instruktur: "Saman",
-      price: "Gratis",
-      img: "https://indi.tech/wp-content/uploads/2022/03/Screenshot-2022-03-24-223956.png",
-    },
-    {
-      id: 2,
-      name: "Product Manager",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: "Rajab",
-      price: "Gratis",
-      img: "https://media.licdn.com/dms/image/C5612AQEuWqyxzjrVYw/article-cover_image-shrink_720_1280/0/1588225642197?e=2147483647&v=beta&t=C_GHDsCbI-fy7-ishvy9FGJGHHqX-vfeZZm7Xe6DQgs",
-    },
-    {
-      id: 3,
-      name: "Web Development",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: " Lana",
-      price: "Gratis",
-      img: "https://niagaspace.sgp1.digitaloceanspaces.com/blog/wp-content/uploads/2023/04/03075503/salah-satu-langkah-dalam-cara-menjadi-web-developer-adalah-mempelajari-bahasa-untuk-coding-1024x792.webp",
-    },
-    {
-      id: 4,
-      name: "Android Development",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: "Alim",
-      price: "Gratis",
-      img: "https://developer.android.com/static/images/social/android-developers.png?hl=id",
-    },
-    {
-      id: 5,
-      name: "iOS Development",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: "Ricky",
-      price: "Gratis",
-      img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjg9e0Catb89J5lz6qcpVGmISSa-3ITiJKaA&s",
-    },
-    {
-      id: 6,
-      name: "Data Science",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: "Alex",
-      price: "Gratis",
-      img: "https://www.solulab.com/wp-content/uploads/2024/09/Data-Science-Development-Company.jpg",
-    },
-    {
-      id: 7,
-      name: "Machine Learning",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: "Helmi",
-      price: "Gratis",
-      img: "https://itbox.id/wp-content/uploads/2023/03/Machine-Learning.jpeg",
-    },
-    {
-      id: 8,
-      name: "Cybersecurity",
-      overview: "Lorem Ipsum Lorem Ipsum Lorem Ipsum",
-      instruktur: "Arwin",
-      price: "Gratis",
-      img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsh3n29Iw5iVmWbLRoDJPkilEDOlJks8JNMg&s",
-    },
-  ];
+  const { category } = useSelector((state) => state.category);
+  // console.log("cat", category);
 
-  // Filter courses by selected category
-  const filteredCourses = selectCategoryId
-    ? dataKategoriPopular.filter((course) => course.id === selectCategoryId)
-    : dataKategoriPopular;
-
-  const NextArrow = ({ onClick }) => {
-    return (
-      <div
-        className="absolute lg:-right-8 hidden lg:block top-1/2 transform -translate-y-1/2 cursor-pointer z-10"
-        onClick={onClick}
-      >
-        <IoIosArrowDroprightCircle size={30} className="text-color-primary" />
-      </div>
-    );
+  const handleFilterClick = (categoryId) => {
+    setSelectCategoryId(categoryId);
   };
 
-  // Custom Prev Arrow
-  const PrevArrow = ({ onClick }) => {
-    return (
-      <div
-        className="absolute  lg:-left-8 -left-4 hidden lg:block top-1/2 transform -translate-y-1/2 cursor-pointer z-10 rounded-full bg-white "
-        onClick={onClick}
-      >
-        <IoIosArrowDropleftCircle size={30} className="text-color-primary" />
-      </div>
-    );
-  };
+  useEffect(() => {
+    dispatch(getFreeCourse());
+    dispatch(getCategory());
+  }, [dispatch]);
+
+  // useEffect(() => {
+  //   console.log("Data kursus gratis:", free);
+  // }, [free]);
+
+  const filteredCoursePopular = selectCategoryId
+    ? free.filter((course) => course.categoryId === selectCategoryId)
+    : free;
+
+  const NextArrow = ({ onClick }) => (
+    <div
+      className="absolute lg:-right-8 hidden lg:block top-1/2 transform -translate-y-1/2 cursor-pointer z-10"
+      onClick={onClick}
+    >
+      <IoIosArrowDroprightCircle size={30} className="text-color-primary" />
+    </div>
+  );
+
+  const PrevArrow = ({ onClick }) => (
+    <div
+      className="absolute lg:-left-8 -left-4 hidden lg:block top-1/2 transform -translate-y-1/2 cursor-pointer z-10"
+      onClick={onClick}
+    >
+      <IoIosArrowDropleftCircle size={30} className="text-color-primary" />
+    </div>
+  );
 
   const categorySliderSettings = {
     dots: false,
@@ -130,24 +66,9 @@ const CardCourse = () => {
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     responsive: [
-      {
-        breakpoint: 1200,
-        settings: {
-          slidesToShow: 4,
-        },
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 3,
-        },
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 2,
-        },
-      },
+      { breakpoint: 1200, settings: { slidesToShow: 4 } },
+      { breakpoint: 768, settings: { slidesToShow: 3 } },
+      { breakpoint: 480, settings: { slidesToShow: 2 } },
     ],
   };
 
@@ -160,20 +81,8 @@ const CardCourse = () => {
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-        },
-      },
+      { breakpoint: 1024, settings: { slidesToShow: 2, slidesToScroll: 1 } },
+      { breakpoint: 600, settings: { slidesToShow: 1, slidesToScroll: 1 } },
     ],
   };
 
@@ -183,7 +92,7 @@ const CardCourse = () => {
         <div className="flex flex-col items-center max-w-[1060px] container gap-5 pt-[26px] pb-[53px]">
           {/* Header Section */}
           <div className="flex justify-between w-full px-6">
-            <h2 className="text-2xl font-bold text-gray-800">Kursus Gratis</h2>
+            <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
             <Link to="/class" className="text-sm font-semibold text-blue-600 hover:underline">
               Lihat Semua
             </Link>
@@ -192,17 +101,29 @@ const CardCourse = () => {
           {/* Category Carousel Section */}
           <div className="relative w-full">
             <Slider ref={sliderRef} {...categorySliderSettings}>
-              {dataKategoriPopularName.map((kategori) => (
-                <div key={kategori.id}>
+              <button
+                onClick={() => handleFilterClick(null)} // Change to null for "All"
+                className={`flex justify-center items-center border-2 rounded-lg text-sm font-semibold p-3 transition-colors duration-300 whitespace-nowrap ${
+                  selectCategoryId === null
+                    ? "mr-4 bg-blue-600 text-white"
+                    : "bg-white text-gray-700 border-gray-300"
+                } hover:bg-blue-500 hover:text-white cursor-pointer`}
+              >
+                All
+              </button>
+              {category.map((kategori) => (
+                <div key={kategori.id} className="ml-0">
                   <div
                     className={`flex justify-center items-center border-2 rounded-lg text-sm font-semibold p-3 transition-colors duration-300 mx-2 whitespace-nowrap ${
                       selectCategoryId === kategori.id
-                        ? "bg-color-primary text-white bg-primary"
+                        ? "bg-blue-600 text-white"
                         : "bg-white text-gray-700 border-gray-300"
-                    } hover:bg-primary hover:text-white cursor-pointer`}
-                    onClick={() => setSelectCategoryId(kategori.id)}
+                    } hover:bg-blue-500 hover:text-white cursor-pointer`}
+                    onClick={() => handleFilterClick(kategori.id)}
                   >
-                    {kategori.name}
+                    <span className="block max-w-[120px] overflow-hidden text-ellipsis whitespace-nowrap">
+                      {kategori.categoryName}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -213,147 +134,137 @@ const CardCourse = () => {
 
       {/* Card Course Section */}
       <div className="max-w-screen-lg mx-auto px-6 lg:p-0">
-        {selectCategoryId === null ? (
-          <Slider {...courseSliderSettings}>
-            {filteredCourses.map((val) => (
-              <div key={val.id} className="p-2">
-                <div className="w-full bg-white shadow-xl rounded-xl overflow-hidden pb-3">
-                  <div className="flex flex-col">
-                    <img src={val.img} alt={val.name} className="w-full h-28 object-cover" />
-                    <div className="mx-2 md:mx-4 flex flex-col mt-1 md:mt-2">
-                      <div className="flex justify-between items-center">
-                        <h1 className="text-color-primary font-bold text-sm lg:text-base -tracking-wide">
-                          {val.name}
+        {Array.isArray(filteredCoursePopular) && filteredCoursePopular.length > 0 ? (
+          selectCategoryId === null ? ( // Menampilkan slider jika "All" dipilih
+            <Slider {...courseSliderSettings}>
+              {filteredCoursePopular.map((val) => (
+                <div key={val.id} className="p-2">
+                  <div className="w-full bg-white shadow-xl rounded-xl overflow-hidden pb-3 transition-transform transform hover:scale-105 duration-300 h-full flex flex-col">
+                    <img
+                      src={val.image}
+                      alt={val.name}
+                      className="w-full h-32 object-cover rounded-t-xl"
+                    />
+                    <div className="mx-2 md:mx-4 flex flex-col mt-2 md:mt-3 h-full">
+                      <div className="flex justify-between items-center mb-2 flex-grow">
+                        <h1 className="text-color-primary font-bold text-sm lg:text-base truncate">
+                          {val.courseName}
                         </h1>
-                        <p className="flex items-center font-semibold">
-                          <FaStar color="#F9CC00" className="w-4 h-4 lg:w-5 lg:h-5" /> 4.8
-                        </p>
                       </div>
-                      <h3 className="text-black font-semibold text-sm lg:text-base">
-                        {val.overview}
-                      </h3>
-                      <p className="text-black text-sm font-semibold">
-                        Instruktor {val.instruktur}
+                      <p className="text-gray-600 text-sm font-semibold flex-shrink-0">
+                        Instruktor {val.user.fullName}
                       </p>
-                      <div className="mt-3 flex justify-between flex-wrap">
-                        <p className="flex items-center text-xs font-semibold text-color-primary">
-                          <Shield size={18} className="mr-1" /> Intermediate Level
+                      <div className="mt-3 flex justify-between flex-wrap text-xs font-semibold text-color-primary">
+                        <p className="flex items-center">
+                          <Shield size={18} className="mr-1" /> {val.courseLevel.levelName}
                         </p>
-                        <p className="flex items-center text-xs font-semibold text-color-primary">
-                          <Book size={18} className="mr-1" /> 10 Modul
+                        <p className="flex items-center">
+                          <Book size={18} className="mr-1" /> {val.chapters}
                         </p>
-                        <p className="flex items-center text-xs font-semibold text-color-primary">
-                          <Clock size={18} className="mr-1" /> 90 Menit
+                        <p className="flex items-center">
+                          <Clock size={18} className="mr-1" /> {val.totalDuration} menit
                         </p>
                       </div>
-                      <div className="my-2">
+                      <div className="my-2 flex-grow">
                         <ProgressBar />
                       </div>
                       <div className="my-2">
-                        <button className="py-1 px-4 bg-black  text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105">
+                        <Link
+                          to={`/course-detail/${val.id}`}
+                          className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
+                        >
                           Mulai Kelas
-                        </button>
+                        </Link>
                       </div>
-                      {/* button ketika mau beli (ada harganya) */}
+                      {val.courseDiscountPrice || val.coursePrice ? (
+                        <div className="my-2">
+                          <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105">
+                            {val.courseDiscountPrice || val.coursePrice}
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="my-2">
+                          <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center">
+                            <Gem size={16} className="mr-2" /> Free
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </Slider>
+          ) : (
+            // Tampilan grid untuk kategori yang dipilih
+            <div className="grid mt-2 gap-2 grid-cols-1 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:mt-4">
+              {filteredCoursePopular.map((val) => (
+                <div key={val.id} className="p-2">
+                  <div className="w-full bg-white shadow-xl rounded-xl overflow-hidden pb-3 h-full flex flex-col">
+                    <img src={val.image} alt={val.name} className="w-full h-32 object-cover" />
+                    <div className="mx-2 md:mx-4 flex flex-col mt-1 md:mt-2 h-full">
+                      <div className="flex justify-between items-center flex-grow">
+                        <h1 className="text-color-primary font-bold text-sm lg:text-base truncate">
+                          {val.courseName}
+                        </h1>
+                      </div>
+                      <p className="text-black text-sm font-semibold flex-shrink-0">
+                        Instruktor {val.user.fullName}
+                      </p>
+                      <div className="mt-3 flex justify-between flex-wrap text-xs font-semibold text-color-primary">
+                        <p className="flex items-center">
+                          <Shield size={18} className="mr-1" /> {val.courseLevel.levelName}
+                        </p>
+                        <p className="flex items-center">
+                          <Book size={18} className="mr-1" /> {val.chapters}
+                        </p>
+                        <p className="flex items-center">
+                          <Clock size={18} className="mr-1" /> {val.totalDuration} menit
+                        </p>
+                      </div>
+                      <div className="my-2 flex-grow">
+                        <ProgressBar />
+                      </div>
                       <div className="my-2">
-                        <button className="py-1 px-4 bg-blue-400  text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
-                          {val.price}
-                        </button>
+                        <Link
+                          to={`/course-detail/${val.id}`}
+                          className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
+                        >
+                          Mulai Kelas
+                        </Link>
                       </div>
+                      {val.courseDiscountPrice || val.coursePrice ? (
+                        <div className="my-2">
+                          <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
+                            {val.courseDiscountPrice || val.coursePrice}
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="my-2">
+                          <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
+                            <span className="mr-2">
+                              <Gem size={16} />
+                            </span>
+                            Free
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </Slider>
+              ))}
+            </div>
+          )
         ) : (
-          <div className="grid mt-2 gap-2 grid-cols-1 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:mt-4">
-            {filteredCourses.map((val) => (
-              <div
-                key={val.id}
-                className="w-full mt-3 my-2 bg-white shadow-xl rounded-xl overflow-hidden pb-3"
-              >
-                <div className="flex flex-col">
-                  <img src={val.img} alt={val.name} className="w-full h-28 object-cover" />
-                  <div className="mx-2 md:mx-4 flex flex-col mt-1 md:mt-2">
-                    <div className="flex justify-between items-center">
-                      <h1 className="text-color-primary font-bold text-sm lg:text-base -tracking-wide">
-                        {val.name}
-                      </h1>
-                      <p className="flex items-center font-semibold">
-                        <FaStar color="#F9CC00" className="w-4 h-4 lg:w-5 lg:h-5" /> 4.8
-                      </p>
-                    </div>
-                    <h3 className="text-black font-semibold text-sm lg:text-base">
-                      {val.overview}
-                    </h3>
-                    <p className="text-black text-sm font-semibold">Instruktor {val.instruktur}</p>
-                    <div className="mt-3 flex justify-between flex-wrap">
-                      <p className="flex items-center text-xs font-semibold text-color-primary">
-                        <Shield size={18} className="mr-1" /> Intermediate Level
-                      </p>
-                      <p className="flex items-center text-xs font-semibold text-color-primary">
-                        <Book size={18} className="mr-1" /> 10 Modul
-                      </p>
-                      <p className="flex items-center text-xs font-semibold text-color-primary">
-                        <Clock size={18} className="mr-1" /> 90 Menit
-                      </p>
-                    </div>
-                    <div className="my-2">
-                      <ProgressBar />
-                    </div>
-                    <div className="my-2">
-                      <button className="py-1 px-4 bg-black  text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105">
-                        Mulai Kelas
-                      </button>
-                    </div>
-                    {/* ini button ketika premium dan belum beli */}
-                    <div className="my-2">
-                      <button className="py-1 px-4 bg-blue-400  text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
-                        <span className="mr-2">
-                          <Gem size={16} />
-                        </span>{" "}
-                        Premium
-                      </button>
-                    </div>
-                    {/* button ketika mau beli (ada harganya) */}
-                    <div className="my-2">
-                      <button className="py-1 px-4 bg-blue-400  text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
-                        {val.price}
-                      </button>
-                    </div>
-                    {/* Ini untuk riwayat dan status bayarnya belum bayar */}
-                    <div className="my-2">
-                      <button className="py-1 px-4 bg-red-500  text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
-                        <span className="mr-2">
-                          <Gem size={16} />
-                        </span>{" "}
-                        Waiting for payment
-                      </button>
-                    </div>
-                    {/* Ini untuk riwayat dan status bayarnya udah bayar */}
-                    <div className="my-2">
-                      <button className="py-1 px-4 bg-green-400  text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
-                        <span className="mr-2">
-                          <Gem size={16} />
-                        </span>{" "}
-                        Paid
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <div className="text-center text-gray-500 mt-10">Tidak ada kursus tersedia.</div>
         )}
       </div>
     </>
   );
 };
 
-CardCourse.propTypes = {
+CardFree.propTypes = {
   title: PropTypes.string,
   onClick: PropTypes.func,
 };
 
-export default CardCourse;
+export default CardFree;

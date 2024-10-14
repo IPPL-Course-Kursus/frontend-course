@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import Swal from "sweetalert2"; // Import SweetAlert
+import Swal from "sweetalert2";
 import CardRecommended from "../../components/DetailComponent/CardRecommended";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
@@ -17,7 +17,7 @@ export const DetailKelas = () => {
   const navigate = useNavigate();
   const detail = useSelector((state) => state.course.detail);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [transactionMessage, setTransactionMessage] = useState('');
+  const [transactionMessage, setTransactionMessage] = useState("");
 
   useEffect(() => {
     if (id) {
@@ -58,7 +58,7 @@ export const DetailKelas = () => {
               icon: "success",
               title: "Berhasil!",
               text: "Anda telah terdaftar di kursus gratis ini.",
-              confirmButtonText: "OK"
+              confirmButtonText: "OK",
             }).then(() => {
               navigate("/mycourse");
             });
@@ -78,7 +78,11 @@ export const DetailKelas = () => {
                 console.log(result);
               },
               onClose: function () {
-                Swal.fire("Dibatalkan!", "Anda menutup popup tanpa menyelesaikan pembayaran.", "warning");
+                Swal.fire(
+                  "Dibatalkan!",
+                  "Anda menutup popup tanpa menyelesaikan pembayaran.",
+                  "warning"
+                );
               },
             });
           } else {
@@ -101,7 +105,10 @@ export const DetailKelas = () => {
       <Navbar />
       <div className="w-full h-full">
         <div className="flex flex-row-reverse justify-between mx-3 lg:flex lg:flex-col lg:gap-4">
-          <Link to="/" className="flex items-center gap-2 mx-2 hover:text-color-primary lg:text-lg ">
+          <Link
+            to="/"
+            className="flex items-center gap-2 mx-2 hover:text-color-primary lg:text-lg "
+          >
             <IoMdArrowRoundBack />
             <p>Kembali Ke Beranda</p>
           </Link>
@@ -135,7 +142,9 @@ export const DetailKelas = () => {
           <div className="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50">
             <div className="bg-white p-8 rounded-lg shadow-lg">
               <h2 className="text-lg font-semibold">Konfirmasi Pembayaran</h2>
-              <p className="mt-4">Apakah Anda yakin ingin melanjutkan ke pembayaran untuk mengikuti kelas ini?</p>
+              <p className="mt-4">
+                Apakah Anda yakin ingin melanjutkan ke pembayaran untuk mengikuti kelas ini?
+              </p>
               <div className="mt-6 flex justify-end gap-4">
                 <button
                   onClick={handleModalClose}
