@@ -20,7 +20,7 @@ const DataKelasDetail = ({ show, onClose, existingData }) => {
         judulKelas: existingData.namaKelas || "Tidak ada data",
         tipeKelas: existingData.tipeKelas || "Tidak ada data",
         level: existingData.level || "Tidak ada data",
-        harga: existingData.harga || "Tidak ada data",
+        harga: existingData.harga || "Tidak ada Data",
         pengajar: existingData.pengajar || "Tidak ada data",
         ditujukanUntuk: existingData.ditujukanUntuk || "Tidak ada data",
         deskripsi: existingData.deskripsi || "Tidak ada data",

@@ -1,17 +1,37 @@
 import { useState } from "react";
 import { FaSearch, FaBars } from "react-icons/fa";
 import { IoAddCircleOutline } from "react-icons/io5";
-import SideBar from "../../components/Sidebar/SidebarAdmin";
-import TambahInstruktur from "../../components/InstrukturComponents/TambahInstruktur";
-import UbahInstruktur from "../../components/InstrukturComponents/UbahInstruktur";
+import SideBar from "../../../components/Sidebar/SidebarAdmin";
+import TambahInstruktur from "../../../components/InstrukturComponents/TambahInstruktur";
+import UbahInstruktur from "../../../components/InstrukturComponents/UbahInstruktur";
 
 const AdminDataInstruktur = () => {
   // Data instruktur
   const [instructors, setInstructors] = useState([
-    { id: 1, name: 'Benedicta', photoUrl: 'https://blog.tempoinstitute.com/wp-content/uploads/2019/07/aperture-black-blur-274973-800x600.jpg' },
-    { id: 2, name: 'John', photoUrl: 'https://blog.tempoinstitute.com/wp-content/uploads/2019/07/aperture-black-blur-274973-800x600.jpg' },
-    { id: 3, name: 'Sarah', photoUrl: 'https://blog.tempoinstitute.com/wp-content/uploads/2019/07/aperture-black-blur-274973-800x600.jpg' },
-    { id: 4, name: 'Michael', photoUrl: 'https://blog.tempoinstitute.com/wp-content/uploads/2019/07/aperture-black-blur-274973-800x600.jpg' }
+    {
+      id: 1,
+      name: "Benedicta",
+      photoUrl:
+        "https://blog.tempoinstitute.com/wp-content/uploads/2019/07/aperture-black-blur-274973-800x600.jpg",
+    },
+    {
+      id: 2,
+      name: "John",
+      photoUrl:
+        "https://blog.tempoinstitute.com/wp-content/uploads/2019/07/aperture-black-blur-274973-800x600.jpg",
+    },
+    {
+      id: 3,
+      name: "Sarah",
+      photoUrl:
+        "https://blog.tempoinstitute.com/wp-content/uploads/2019/07/aperture-black-blur-274973-800x600.jpg",
+    },
+    {
+      id: 4,
+      name: "Michael",
+      photoUrl:
+        "https://blog.tempoinstitute.com/wp-content/uploads/2019/07/aperture-black-blur-274973-800x600.jpg",
+    },
   ]);
 
   // State for popups
@@ -87,9 +107,7 @@ const AdminDataInstruktur = () => {
 
           {/* Section Data Instruktur */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
-            <h2 className="text-lg md:text-xl font-bold text-[#0a61aa]">
-              Data Instruktur
-            </h2>
+            <h2 className="text-lg md:text-xl font-bold text-[#0a61aa]">Data Instruktur</h2>
 
             <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
               {/* Tombol tambah instruktur */}
@@ -114,9 +132,7 @@ const AdminDataInstruktur = () => {
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
                   className={`transition-all duration-300 ease-in-out border border-[#173D94] rounded-full ml-2 p-1 ${
-                    searchVisible
-                      ? "w-40 opacity-100"
-                      : "w-0 opacity-0 pointer-events-none"
+                    searchVisible ? "w-40 opacity-100" : "w-0 opacity-0 pointer-events-none"
                   }`}
                   placeholder="Cari Nama..."
                 />
@@ -129,39 +145,41 @@ const AdminDataInstruktur = () => {
             <table className="min-w-full table-auto">
               <thead>
                 <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
-                  <th className="px-2 md:px-4 py-2">ID</th>
-                  <th className="px-2 md:px-4 py-2">Nama</th>
-                  <th className="px-2 md:px-4 py-2">Foto</th>
-                  <th className="px-2 md:px-4 py-2">Aksi</th>
+                  <th className="px-4 py-2 text-center">ID</th>
+                  <th className="px-4 py-2 text-center">Nama</th>
+                  <th className="px-4 py-2 text-center">Foto</th>
+                  <th className="px-4 py-2 text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredInstructors.map((instructor, index) => (
                   <tr key={index} className="border-t text-xs md:text-sm">
-                    <td className="px-2 md:px-4 py-2 text-center">{instructor.id}</td>
-                    <td className="px-2 md:px-4 py-2 text-center">{instructor.name}</td>
-                    <td className="px-2 md:px-4 py-2 text-center">
+                    <td className="px-4 py-2 text-center">{instructor.id}</td>
+                    <td className="px-4 py-2 text-center">{instructor.name}</td>
+                    <td className="px-4 py-2 text-center">
                       <img
                         src={instructor.photoUrl}
                         alt={instructor.name}
                         className="w-16 h-16 object-cover rounded-full mx-auto"
                       />
                     </td>
-                    <td className="px-2 md:px-4 py-2 flex flex-wrap justify-center space-x-2">
-                      {/* Tombol Ubah */}
-                      <button
-                        className="py-1 px-2 md:px-4 bg-green-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
-                        onClick={() => handleEditClick(instructor)}
-                      >
-                        Ubah
-                      </button>
-                      {/* Tombol Hapus */}
-                      <button
-                        className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
-                        onClick={() => handleDeleteInstructor(instructor.id)}
-                      >
-                        Hapus
-                      </button>
+                    <td className="px-4 py-2 text-center">
+                      <div className="flex flex-wrap justify-center space-x-2">
+                        {/* Tombol Ubah */}
+                        <button
+                          className="py-1 px-2 md:px-4 bg-green-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105"
+                          onClick={() => handleEditClick(instructor)}
+                        >
+                          Ubah
+                        </button>
+                        {/* Tombol Hapus */}
+                        <button
+                          className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105"
+                          onClick={() => handleDeleteInstructor(instructor.id)}
+                        >
+                          Hapus
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

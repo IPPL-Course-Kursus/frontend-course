@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { FaSearch, FaBars } from "react-icons/fa";
 import { IoAddCircleOutline } from "react-icons/io5";
-import SideBar from "../../components/Sidebar/SidebarAdmin";
-import TambahKategori from "../../components/KategoriComponents/TambahKategori";
-import UbahKategori from "../../components/KategoriComponents/UbahKategori";
+import SideBar from "../../../components/Sidebar/SidebarAdmin";
+import TambahKategori from "../../../components/KategoriComponents/TambahKategori";
+import UbahKategori from "../../../components/KategoriComponents/UbahKategori";
 
 const AdminDataKategori = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -120,9 +120,7 @@ const AdminDataKategori = () => {
 
           {/* Section Data Kategori */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
-            <h2 className="text-lg md:text-xl font-bold text-[#0a61aa]">
-              Data Kategori Kelas
-            </h2>
+            <h2 className="text-lg md:text-xl font-bold text-[#0a61aa]">Data Kategori Kelas</h2>
 
             <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
               {/* Tombol tambah kategori */}
@@ -147,9 +145,7 @@ const AdminDataKategori = () => {
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
                   className={`transition-all duration-300 ease-in-out border border-[#173D94] rounded-full ml-2 p-1 ${
-                    searchVisible
-                      ? "w-40 opacity-100"
-                      : "w-0 opacity-0 pointer-events-none"
+                    searchVisible ? "w-40 opacity-100" : "w-0 opacity-0 pointer-events-none"
                   }`}
                   placeholder="Cari Nama..."
                 />
@@ -182,9 +178,7 @@ const AdminDataKategori = () => {
                         className="w-16 h-16 object-cover rounded-md"
                       />
                     </td>
-                    <td className="px-2 md:px-4 py-2">
-                      {category.published ? "True" : "False"}
-                    </td>
+                    <td className="px-2 md:px-4 py-2">{category.published ? "True" : "False"}</td>
                     <td className="px-2 md:px-4 py-2">{category.pengajar}</td>
                     <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
                       {/* Tombol Ubah */}
@@ -209,10 +203,7 @@ const AdminDataKategori = () => {
           </div>
 
           {/* Pop-up untuk tambah kategori */}
-          <TambahKategori
-            show={showTambahPopup}
-            onClose={() => setShowTambahPopup(false)}
-          />
+          <TambahKategori show={showTambahPopup} onClose={() => setShowTambahPopup(false)} />
 
           {/* Pop-up untuk ubah kategori */}
           <UbahKategori
@@ -225,9 +216,7 @@ const AdminDataKategori = () => {
           {showDeleteModal && (
             <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
               <div className="bg-white p-6 rounded-3xl shadow-lg relative w-80">
-                <h2 className="text-xl font-bold text-center mb-4">
-                  Yakin hapus data?
-                </h2>
+                <h2 className="text-xl font-bold text-center mb-4">Yakin hapus data?</h2>
                 <div className="flex justify-around mt-6">
                   <button
                     className="bg-red-600 text-white px-6 py-2 rounded-full font-bold"

@@ -1,5 +1,11 @@
 import axios from "axios";
-import { setCourse, setDetail, setPageCourse } from "../reducers/courseReducers";
+import {
+  setCourse,
+  setFree,
+  //  setDetail,
+  setPageCourse,
+  setPopular,
+} from "../reducers/courseReducers";
 // import { setCourse } from "../reducers/courseReducers";
 
 const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
@@ -25,9 +31,48 @@ export const getPagesCourse = (page) => async (dispatch) => {
 
     dispatch(setPageCourse(pagination));
   } catch (error) {
-    swal("error", "ERROR", error.message);
+    alert("error", "ERROR", error.message);
   }
 };
+
+export const getPopularCourse = () => async (dispatch) => {
+  try {
+    const response = await axios.get(`${api_url}course/popular`);
+    const coursePopular = response.data;
+
+    console.log("Data kursus populer:", coursePopular); // Debugging
+    dispatch(setPopular(coursePopular));
+  } catch (error) {
+    console.error("Error fetching popular courses:", error.message);
+  }
+};
+
+export const getFreeCourse = () => async (dispatch) => {
+  try {
+    // Mengambil semua kursus gratis
+    const response = await axios.get(`${api_url}course/type/1`); // Endpoint yang sesuai
+    const courseFree = response.data;
+
+    console.log("Data kursus gratis:", courseFree); // Debugging
+    dispatch(setFree(courseFree));
+  } catch (error) {
+    console.error("Error fetching free courses:", error.message);
+  }
+};
+
+
+// export const getPopularCourse = () => async (dispatch) => {
+//   try {
+//     const response = await axios.get(`${api_url}course/popular`);
+
+//     const coursePopular = response.data;
+//     console.log(response.data);
+
+//     dispatch(setPopular(coursePopular));
+//   } catch (error) {
+//     console.error("Error fetching all courses:", error.message);
+//   }
+// };
 
 // export const getDetaiId = (courseId) => async (dispatch) => {
 //   try {
@@ -39,4 +84,3 @@ export const getPagesCourse = (page) => async (dispatch) => {
 //     swal("error", "ERROR", error.message);
 //   }
 // };
-
