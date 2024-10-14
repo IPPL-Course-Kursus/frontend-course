@@ -4,7 +4,7 @@ const initialState = {
   courses: [],
   detail: {}, // Ubah menjadi objek
   mycourse: [],
-  // rating: [],
+  free: [],
   pageCourse: [],
 };
 
@@ -21,9 +21,12 @@ const coursesSlice = createSlice({
     setMyCourse: (state, action) => {
       state.mycourse = action.payload;
     },
-    // setRating: (state, action) => {
-    //   state.rating = action.payload;
-    // },
+    setPopular: (state, action) => {
+      state.popular = action.payload;
+    },
+    setFree: (state, action) => {
+      state.free = action.payload;
+    },
     setPageCourse: (state, action) => {
       state.pageCourse = action.payload;
     },
@@ -38,7 +41,8 @@ export const {
   setDetail,
   removeDetail,
   setMyCourse,
-  // setRating,
+  setPopular,
+  setFree,
   setPageCourse,
 } = coursesSlice.actions;
 

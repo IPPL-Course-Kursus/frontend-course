@@ -79,16 +79,14 @@
 // export default Navbar;
 
 import { IoIosSearch } from "react-icons/io";
-import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import default_image from "../assets/profil.png";
-// import { Link, useNavigate } from "react-router-dom"; // Mengimpor useNavigate
-// import { useSelector, useDispatch } from "react-redux";
-// import { logout } from "../redux/slices/authSlice"; // Import logout action
+import { logout } from "../redux/reducers/authReducers";
 
 const Navbar = () => {
-  // const navigate = useNavigate(); // Inisialisasi useNavigate
-  // const dispatch = useDispatch(); // Inisialisasi useDispatch
+  const navigate = useNavigate(); // Inisialisasi useNavigate
+  const dispatch = useDispatch(); // Inisialisasi useDispatch
 
   // // Ambil token dari Redux store untuk mengecek status login
   const { token } = useSelector((state) => state.auth);
@@ -97,10 +95,10 @@ const Navbar = () => {
   const imgProfile = profile?.image || default_image;
 
   // // Fungsi logout
-  // const handleLogout = () => {
-  //   dispatch(logout());
-  //   navigate("/"); // Mengarahkan pengguna ke halaman utama setelah logout
-  // };
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/"); // Mengarahkan pengguna ke halaman utama setelah logout
+  };
 
   return (
     <div className="navbar bg-base-100 shadow-lg">
@@ -147,7 +145,7 @@ const Navbar = () => {
 
               <li>
                 <button
-                  // onClick={handleLogout}
+                  onClick={handleLogout}
                   className="justify-between font-medium w-full text-left"
                 >
                   Logout

@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaCamera } from "react-icons/fa";
 import { getMe, updateProfile } from "../../redux/actions/authActions";
-import { selectProfile, selectProfileLoading, selectProfileError } from "../../redux/reducers/authReducers";
+import {
+  selectProfile,
+  selectProfileLoading,
+  selectProfileError,
+} from "../../redux/reducers/authReducers";
+import Cookies from "js-cookie";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -25,10 +30,16 @@ const Profile = () => {
   const [imageFile, setImageFile] = useState(null);
 
   // Mengambil data profil dari Redux saat komponen di-mount
+  // useEffect(() => {
+  //   dispatch(getMe());
+  // }, [dispatch]);
   useEffect(() => {
-    dispatch(getMe());
-  }, [dispatch]);
+    const token = Cookies.get("token");
 
+    if (token) {
+      dispatch(getMe());
+    }
+  }, [dispatch]);
   // Mengatur form state berdasarkan data profil dari Redux
   useEffect(() => {
     if (profile) {
@@ -134,9 +145,7 @@ const Profile = () => {
             onBlur={handleBlur}
             className={`block w-full py-2 border-b ${
               focusedField === "fullName" ? "border-black" : "border-gray-300"
-            } focus:outline-none ${
-              focusedField === "fullName" ? "text-black" : "text-gray-500"
-            }`}
+            } focus:outline-none ${focusedField === "fullName" ? "text-black" : "text-gray-500"}`}
             placeholder="Nama"
           />
         </div>
@@ -152,9 +161,7 @@ const Profile = () => {
           onBlur={handleBlur}
           className={`block w-full p-2 border-b ${
             focusedField === "email" ? "border-black" : "border-gray-300"
-          } focus:outline-none ${
-            focusedField === "email" ? "text-black" : "text-gray-500"
-          }`}
+          } focus:outline-none ${focusedField === "email" ? "text-black" : "text-gray-500"}`}
           placeholder="Email"
         />
         <input
@@ -166,9 +173,7 @@ const Profile = () => {
           onBlur={handleBlur}
           className={`block w-full p-2 border-b ${
             focusedField === "phoneNumber" ? "border-black" : "border-gray-300"
-          } focus:outline-none ${
-            focusedField === "phoneNumber" ? "text-black" : "text-gray-500"
-          }`}
+          } focus:outline-none ${focusedField === "phoneNumber" ? "text-black" : "text-gray-500"}`}
           placeholder="Nomor Telepon"
         />
         <input
@@ -180,9 +185,7 @@ const Profile = () => {
           onBlur={handleBlur}
           className={`block w-full p-2 border-b ${
             focusedField === "country" ? "border-black" : "border-gray-300"
-          } focus:outline-none ${
-            focusedField === "country" ? "text-black" : "text-gray-500"
-          }`}
+          } focus:outline-none ${focusedField === "country" ? "text-black" : "text-gray-500"}`}
           placeholder="Negara"
         />
         <input
@@ -194,9 +197,7 @@ const Profile = () => {
           onBlur={handleBlur}
           className={`block w-full p-2 border-b ${
             focusedField === "city" ? "border-black" : "border-gray-300"
-          } focus:outline-none ${
-            focusedField === "city" ? "text-black" : "text-gray-500"
-          }`}
+          } focus:outline-none ${focusedField === "city" ? "text-black" : "text-gray-500"}`}
           placeholder="Kota"
         />
         <button onClick={handleSave} className="py-2 bg-blue-900 text-white rounded-full">
