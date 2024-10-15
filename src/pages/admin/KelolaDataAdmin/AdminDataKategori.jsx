@@ -247,10 +247,9 @@
 
 // export default AdminDataKategori;
 
-// AdminDataKategori.jsx
 import { useState, useEffect } from "react";
 import { FaSearch, FaBars } from "react-icons/fa";
-import { IoAddCircleOutline } from "react-icons/io5";
+import { IoAddCircleOutline, IoArrowBackCircle, IoArrowForwardCircle } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -272,6 +271,10 @@ const AdminDataKategori = () => {
   // State for delete confirmation modal
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
+
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 7;
 
   // Sidebar state for mobile
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -295,8 +298,6 @@ const AdminDataKategori = () => {
     setShowDeleteModal(true);
   };
 
-
-
   const dispatch = useDispatch();
 
   // Fetch categories from Redux store
@@ -308,18 +309,19 @@ const AdminDataKategori = () => {
     dispatch(fetchAdminCategories());
   }, [dispatch]);
 
-  // Log the categories data for inspection
-  useEffect(() => {
-    console.log("Categories data:", categories);
-  }, [categories]);
+  // Pagination logic: slicing categories for the current page
+  const totalPages = Math.ceil(categories?.length / itemsPerPage);
+  const currentItems = categories?.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const confirmDelete = () => {
-    console.log("Deleting category:", categoryToDelete);
     dispatch(deleteCategory(categoryToDelete.id));
     setShowDeleteModal(false);
   };
 
-  const filteredCategories = categories?.filter((category) =>
+  const filteredCategories = currentItems?.filter((category) =>
     category.categoryName.toLowerCase().includes(searchValue.toLowerCase())
   );
 
@@ -414,7 +416,7 @@ const AdminDataKategori = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredCategories.map((category, index) => (
+                  {filteredCategories?.map((category, index) => (
                     <tr key={index} className="border-t text-xs md:text-sm">
                       <td className="px-2 md:px-4 py-2">{category.id}</td>
                       <td className="px-2 md:px-4 py-2">{category.categoryName}</td>
@@ -431,7 +433,7 @@ const AdminDataKategori = () => {
                       <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
                         {/* Tombol Ubah */}
                         <button
-                          className="py-1 px-2 md:px-4 bg-blue-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                          className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
                           onClick={() => handleEditClick(category)}
                         >
                           Ubah
@@ -449,6 +451,35 @@ const AdminDataKategori = () => {
                 </tbody>
               </table>
             )}
+          </div>
+
+          {/* Pagination Controls */}
+          <div className="flex justify-between items-center mt-4">
+            <button
+              className={`flex items-center py-2 px-4 rounded-lg ${
+                currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-[#0a61aa] text-white"
+              } transition-all duration-300 hover:scale-105`}
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              <IoArrowBackCircle className="mr-2 text-xl" />
+              Previous
+            </button>
+
+            <span className="text-lg font-semibold">
+              Page {currentPage} of {totalPages}
+            </span>
+
+            <button
+              className={`flex items-center py-2 px-4 rounded-lg ${
+                currentPage === totalPages ? "bg-gray-300 cursor-not-allowed" : "bg-[#0a61aa] text-white"
+              } transition-all duration-300 hover:scale-105`}
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next
+              <IoArrowForwardCircle className="ml-2 text-xl" />
+            </button>
           </div>
 
           {/* Pop-up untuk tambah kategori */}
