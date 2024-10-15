@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FaArrowLeft, FaCheckCircle } from "react-icons/fa";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-
+import ProgressBar from "../../components/MyCourse/ProgressBar";
 const MulaiKelas = () => {
   const [code, setCode] = useState("");
   const [output, setOutput] = useState("");
@@ -69,14 +69,7 @@ const MulaiKelas = () => {
             <p className="text-gray-600 mt-2">
               Learn JavaScript, the world’s most popular programming language, with our
               beginner-friendly class. This course is perfect for those looking to build
-              foundational knowledge in JavaScript. Youll learn variables, functions, loops, and
-              more, with practical examples to strengthen your skills. Learn JavaScript, the world’s
-              most popular programming language, with our beginner-friendly class. This course is
-              perfect for those looking to build foundational knowledge in JavaScript. Youll learn
-              variables, functions, loops, and more, with practical examples to strengthen your
-              skills.Learn JavaScript, the world’s most popular programming language, with our
-              beginner-friendly class. This course is perfect for those looking to build
-              foundational knowledge in JavaScript. Youll learn variables, functions, loops, and
+              foundational knowledge in JavaScript. You'll learn variables, functions, loops, and
               more, with practical examples to strengthen your skills.
             </p>
           </section>
@@ -113,89 +106,72 @@ const MulaiKelas = () => {
 
         {/* Sidebar */}
         <aside className="col-span-1 bg-white p-6 rounded-lg shadow-lg">
-          <h3 className="text-gray-700 text-2xl font-semibold mb-4">Materi Belajar</h3>
+  <h3 className="text-gray-700 text-2xl font-semibold mb-4">Materi Belajar</h3>
 
-          {/* Progress bar */}
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs text-gray-600">10% complete</span>
-            <div className="bg-gray-200 rounded-full h-2 w-full mx-2">
-              <div className="bg-blue-600 h-2 rounded-full w-2/12"></div>
-            </div>
-          </div>
+  {/* Progress bar menggunakan komponen ProgressBar */}
+  <div className="mb-6">
+    <div className="flex justify-between items-center">
+      <h4 className="text-blue-600 font-bold">Progres Belajar</h4>
+      <span className="text-sm text-gray-500">10%</span> {/* Persentase progress */}
+    </div>
+    <ProgressBar percentage={10} /> {/* Contoh untuk progress 10% */}
+  </div>
 
-          {/* Chapter List */}
-          <div className="mb-6">
-            <div className="flex justify-between items-center">
-              <h4 className="text-blue-600 font-bold">Chapter 1 - Pendahuluan</h4>
-              <span className="text-sm text-gray-500">60 Menit</span>
-            </div>
-            <ul className="space-y-2 mt-4">
-              <li className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <span className="bg-blue-200 text-blue-800 rounded-full h-8 w-8 flex items-center justify-center">
-                    1
-                  </span>
-                  <span className="text-gray-700">Lorem Ipsum</span>
-                </div>
-                <span className="text-green-500">▶</span>
-              </li>
-              <li className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <span className="bg-blue-200 text-blue-800 rounded-full h-8 w-8 flex items-center justify-center">
-                    2
-                  </span>
-                  <span className="text-gray-700">Lorem Ipsum</span>
-                </div>
-                <span className="text-green-500">▶</span>
-              </li>
-              <li className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <span className="bg-blue-200 text-blue-800 rounded-full h-8 w-8 flex items-center justify-center">
-                    3
-                  </span>
-                  <span className="text-gray-700">Lorem Ipsum</span>
-                </div>
-                <span className="text-blue-500">⏵</span>
-              </li>
-            </ul>
-          </div>
+  {/* Chapter List */}
+  <div className="mb-6">
+    <div className="flex justify-between items-center">
+      <h4 className="text-blue-600 font-bold">Chapter 1 - Pendahuluan</h4>
+      <span className="text-sm text-gray-500">60 Menit</span>
+    </div>
+    <ul className="space-y-2 mt-4">
+      <li className="flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <span className="bg-blue-200 text-blue-800 rounded-full h-8 w-8 flex items-center justify-center">1</span>
+          <span className="text-gray-700">Lorem Ipsum</span>
+        </div>
+        <span className="text-green-500">▶</span>
+      </li>
+      <li className="flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <span className="bg-blue-200 text-blue-800 rounded-full h-8 w-8 flex items-center justify-center">2</span>
+          <span className="text-gray-700">Lorem Ipsum</span>
+        </div>
+        <span className="text-green-500">▶</span>
+      </li>
+      <li className="flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <span className="bg-blue-200 text-blue-800 rounded-full h-8 w-8 flex items-center justify-center">3</span>
+          <span className="text-gray-700">Lorem Ipsum</span>
+        </div>
+        <span className="text-blue-500">⏵</span>
+      </li>
+    </ul>
+  </div>
 
-          <div className="mb-6">
-            <div className="flex justify-between items-center">
-              <h4 className="text-blue-600 font-bold">Chapter 2 - Memulai Desain</h4>
-              <span className="text-sm text-gray-500">120 Menit</span>
-            </div>
-            <ul className="space-y-2 mt-4">
-              <li className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <span className="bg-gray-200 text-gray-400 rounded-full h-8 w-8 flex items-center justify-center">
-                    4
-                  </span>
-                  <span className="text-gray-400">Lorem Ipsum</span>
-                </div>
-                <span className="text-gray-400">🔒</span>
-              </li>
-              <li className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <span className="bg-gray-200 text-gray-400 rounded-full h-8 w-8 flex items-center justify-center">
-                    5
-                  </span>
-                  <span className="text-gray-400">Lorem Ipsum</span>
-                </div>
-                <span className="text-gray-400">🔒</span>
-              </li>
-              <li className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <span className="bg-gray-200 text-gray-400 rounded-full h-8 w-8 flex items-center justify-center">
-                    6
-                  </span>
-                  <span className="text-gray-400">Lorem Ipsum</span>
-                </div>
-                <span className="text-gray-400">🔒</span>
-              </li>
-            </ul>
-          </div>
-        </aside>
+  <div className="mb-6">
+    <div className="flex justify-between items-center">
+      <h4 className="text-blue-600 font-bold">Chapter 2 - Memulai Desain</h4>
+      <span className="text-sm text-gray-500">120 Menit</span>
+    </div>
+    <ul className="space-y-2 mt-4">
+      <li className="flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <span className="bg-gray-200 text-gray-400 rounded-full h-8 w-8 flex items-center justify-center">4</span>
+          <span className="text-gray-400">Lorem Ipsum</span>
+        </div>
+        <span className="text-gray-400">🔒</span>
+      </li>
+      <li className="flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <span className="bg-gray-200 text-gray-400 rounded-full h-8 w-8 flex items-center justify-center">5</span>
+          <span className="text-gray-400">Lorem Ipsum</span>
+        </div>
+        <span className="text-gray-400">🔒</span>
+      </li>
+    </ul>
+  </div>
+</aside>
+
       </div>
       <Footer />
     </>
