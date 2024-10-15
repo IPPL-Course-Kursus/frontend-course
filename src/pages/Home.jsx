@@ -1,16 +1,31 @@
 import { Link, NavLink } from "react-router-dom";
-import CardCategory from "../components/HomeComponent/CardCategory";
+import Navbar from "../components/Navbar";
+// import CardCategory from "../components/HomeComponent/cardCategory";
 import CardCourse from "../components/HomeComponent/CardCourse";
 import CardFree from "../components/HomeComponent/CardFree";
 import imgSection from "../assets/bernadya.jpg";
-import Navbar from "../components/Navbar";
 import profilePic from "../assets/profil.png";
 import { IoIosArrowForward } from "react-icons/io";
 import "swiper/css";
 import "swiper/css/navigation";
 import Footer from "../components/Footer";
+import CardCategory from "../components/HomeComponent/CardCategory";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getFreeCourse, getPopularCourse } from "../redux/actions/courseActions";
+import { getCategory } from "../redux/actions/categoryActions";
 
 const Home = () => {
+  const dispatch = useDispatch();
+  const { popular } = useSelector((state) => state.course);
+  const { free } = useSelector((state) => state.course);
+  const { category } = useSelector((state) => state.category);
+
+  useEffect(() => {
+    dispatch(getPopularCourse());
+    dispatch(getFreeCourse());
+    dispatch(getCategory());
+  }, [dispatch]);
   return (
     <>
       <Navbar />
@@ -18,7 +33,7 @@ const Home = () => {
         <img
           src="/people_dasboard.png"
           alt="picture"
-          className="w-full h-full object-cover absolute"
+          className="w-full h-full object-cover absolute -z-50"
         />
         <div className="absolute w-full h-full bg-gradient-to-r from-primary via-primary to-transparent opacity-75" />
 
@@ -39,8 +54,9 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <CardCategory />
-      <CardCourse />
+      <CardCategory category={category} />
+      <CardCourse title="Kelas Populer" popular={popular} />
+
       <div className="w-full h-auto bg-primary flex justify-center items-center py-12 mt-20">
         <div className="flex flex-col lg:flex-row items-center max-w-6xl px-6 lg:px-12">
           <div className="lg:w-1/2">
@@ -54,7 +70,7 @@ const Home = () => {
               Kuasai strategi menjadi freelancer profesional untuk meningkatkan pendapatan secara
               langsung bersama para ahli berpengalaman.
             </p>
-            <NavLink as={Link} to={"/freelance"} className="z-10">
+            <NavLink as={Link} to={"/register"} className="z-10">
               <button className="bg-white text-primary text-base font-semibold px-4 py-2 rounded-lg hover:bg-gray-200 hover:text-primary-dark transition duration-300">
                 Daftar Sekarang
               </button>
@@ -62,7 +78,7 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <CardFree />
+      <CardFree title="Kursus Gratis" free={free} />
       <div className="w-full h-auto bg-gray-100 py-16 mt-10">
         <div className="max-w-3xl mx-auto bg-white px-6 lg:px-12 relative">
           <div className="flex flex-col  items-center lg:flex-row lg:items-center">

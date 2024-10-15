@@ -1,91 +1,105 @@
-// import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-// import Slider from "react-slick";
+import { getCategory } from "../../redux/actions/categoryActions";
+import { useEffect, useRef } from "react";
+import Slider from "react-slick";
+import PropTypes from "prop-types";
+import { IoIosArrowDroprightCircle, IoIosArrowDropleftCircle } from "react-icons/io";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const CardCategory = () => {
-  const dataKategori = [
-    {
-      img: "https://images.unsplash.com/photo-1522542550221-31fd19575a2d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "UI/UX Design",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Product Manager",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Web Development",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1612442443556-09b5b309e637?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Andorid Development",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "IOS Development",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Data Science",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1522542550221-31fd19575a2d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "UI/UX Design",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Product Manager",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Web Development",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1612442443556-09b5b309e637?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Andorid Development",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "IOS Development",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2015&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      title: "Data Science",
-    },
-  ];
+  const dispatch = useDispatch();
+  const { category, loading, error } = useSelector((state) => state.category);
+  const sliderRef = useRef(null);
+
+  useEffect(() => {
+    dispatch(getCategory());
+  }, [dispatch]);
+
+  // Custom Next Arrow
+  const NextArrow = ({ onClick }) => (
+    <div className="absolute -right-10 top-1/2 transform -translate-y-1/2 cursor-pointer z-10">
+      <IoIosArrowDroprightCircle size={30} className="text-color-primary" onClick={onClick} />
+    </div>
+  );
+
+  // Custom Prev Arrow
+  const PrevArrow = ({ onClick }) => (
+    <div className="absolute -left-10 top-1/2 transform -translate-y-1/2 cursor-pointer z-10">
+      <IoIosArrowDropleftCircle size={30} className="text-color-primary" onClick={onClick} />
+    </div>
+  );
+
+  // Slider settings
+  const sliderSettings = {
+    dots: false,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 6,
+    slidesToScroll: 1,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
+    responsive: [
+      {
+        breakpoint: 1200,
+        settings: {
+          slidesToShow: 4,
+        },
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 3,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 2,
+        },
+      },
+    ],
+  };
+
   return (
-    <>
-      <div className="flex justify-center  mt-20 ">
-        <div className="flex w-full justify-center items-center max-w-[1060px] flex-col pt-[26px] pb-[14px] gap-5 container">
-          <div className="flex justify-between container px-6">
-            <h2 className="text-xl font-bold">Kategori Belajar</h2>
-            <Link to="/class" className=" font-extrabold text-xs max-w-fit text-darkblue">
+    <div className="flex justify-center mt-20">
+      <div className="flex w-full justify-center items-center max-w-[1060px] flex-col pt-[26px] pb-[14px] gap-5 container">
+      <div className="flex justify-between w-full px-6">
+            <h2 className="text-2xl font-bold text-gray-800">Kategori Belajar</h2>
+            <Link to="/class" className="text-sm font-semibold text-blue-600 hover:underline">
               Lihat Semua
             </Link>
           </div>
-          <div className="flex flex-col max-w-[1200px] px-6">
-            <div className="flex justify-start flex-wrap grow gap-2.5">
-              {dataKategori.map((kategori, i) => (
-                <div
-                  key={i}
-                  className="justify-center items-center flex grow flex-col pl-1.5 pr-2.5 hover:transform hover:-translate-y-1 transition-transform duration-300 ease-in-out"
-                >
+
+        <div className="relative w-full px-6">
+          {loading ? (
+            <p>Loading...</p>
+          ) : error ? (
+            <p>Error: {error}</p>
+          ) : (
+            <Slider ref={sliderRef} {...sliderSettings}>
+              {category.map((kategori, i) => (
+                <div key={i} className="justify-center items-center flex flex-col pl-1.5 pr-2.5">
                   <img
-                    src={kategori.img}
-                    // title={kategori.title}
+                    src={kategori.image}
                     className="aspect-[1.6] object-cover object-center w-[140px] rounded-xl shadow-md hover:cursor-pointer"
                   />
                   <div className="text-black text-center text-xs font-semibold leading-9 whitespace-nowrap">
-                    {kategori.title}
+                    {kategori.categoryName}
                   </div>
                 </div>
               ))}
-            </div>
-          </div>
+            </Slider>
+          )}
         </div>
       </div>
-    </>
+    </div>
   );
+};
+
+CardCategory.propTypes = {
+  onClick: PropTypes.func,
 };
 
 export default CardCategory;

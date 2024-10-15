@@ -64,13 +64,16 @@ const MyCourse = () => {
 
   const filteredCourses = () => {
     if (selectedFilter === "belum") {
-      return courses.filter((course) => course.progress === "0%");
+      return courses.filter((course) => parseInt(course.progress) === 0);
     } else if (selectedFilter === "selesai") {
-      return courses.filter((course) => course.progress === "100%");
+      return courses.filter((course) => parseInt(course.progress) === 100);
+    } else if (selectedFilter === "sedang dipelajari") {
+      return courses.filter((course) => parseInt(course.progress) > 0 && parseInt(course.progress) < 100);
     }
-    return courses; // Show all courses for other filters
+    return courses; // Tampilkan semua kursus untuk filter lainnya
   };
-
+  
+  
   return (
     <>
     <Navbar/>
@@ -124,11 +127,11 @@ const MyCourse = () => {
             </button>
             <button
               className={`w-40 font-bold text-sm md:text-base mx-1 mt-2 px-3 py-1 rounded-md ${
-                selectedFilter === "sedang"
+                selectedFilter === "sedang dipelajari"
                   ? "bg-blue-500 text-white"
                   : "bg-white text-gray-800 hover:bg-gray-400"
               }`}
-              onClick={() => handleFilterClick("sedang")}
+              onClick={() => handleFilterClick("sedang dipelajari")}
             >
               Sedang Dipelajari
             </button>
