@@ -146,7 +146,7 @@ const InstruktorDataModule = () => {
                         </button>
                       </Link>
                       <button
-                        className="py-1 px-2 bg-blue-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                        className="py-1 px-2 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
                         onClick={() => handleEditClick(course)}
                       >
                         Ubah
