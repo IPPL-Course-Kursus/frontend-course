@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Shield, Book, Clock } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllCourse } from "../../redux/actions/courseActions";
+import { IoIosSearch } from "react-icons/io";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 
@@ -102,6 +103,19 @@ const TopikKelas = () => {
               meningkatkan keterampilan digital kamu.
             </p>
           </div>
+          <div className="flex gap-2 flex-grow lg:relative justify-center">
+              <div className="form-control relative hidden lg:block w-full mt-10 lg:w-[30rem]">
+                <input
+                  type="text"
+                  placeholder="Find a Course"
+                  className="input w-full text-sm rounded-2xl border-black pr-12"
+                />
+                <button className="absolute top-1/2 right-4 -translate-y-1/2">
+                  <IoIosSearch className="absolute top-1/2 right-2 -translate-y-1/2 w-5 h-5 lg:w-6 lg:h-6 bg-primary text-white rounded lg:mr-2 hover:scale-110 hover:bg-primary hover:text-white duration-300 lg:hover:border-white hidden lg:block" />
+                </button>
+              </div>
+
+            </div>
         </section>
 
         <div className="container mx-auto px-4">
