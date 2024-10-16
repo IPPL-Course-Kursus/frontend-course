@@ -7,8 +7,8 @@ const initialState = {
   totalPremiumClasses: 0,
 };
 
-const instructorSlice = createSlice({
-  name: "instructor",
+const instrukturSlice = createSlice({
+  name: "instruktur",
   initialState,
   reducers: {
     setTotalUsers: (state, action) => {
@@ -31,6 +31,6 @@ export const {
   setTotalInstructors,
   setTotalFreeClasses,
   setTotalPremiumClasses,
-} = instructorSlice.actions;
+} = instrukturSlice.actions;
 
-export default instructorSlice.reducer;
+export default instrukturSlice.reducer;

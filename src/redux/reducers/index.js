@@ -35,7 +35,7 @@ import courseReducer from "./courseReducers"; // Ganti dari courseReducers ke co
 import categoryReducer from "./categoryReducers";
 import transactionReducer from "./transactionReducers"; // Menggunakan reducer transaksi
 import adminDataKategoriReducer from "./adminDataKategoriReducers";
-import instructorReducer from "./instructorReducers"; // Import instructor reducer
+import InstrukturReducer from "./InstrukturReducers"
 
 export default combineReducers({
   // Auth
@@ -60,5 +60,5 @@ export default combineReducers({
   transaction: transactionReducer,
 
   // Instruktur
-  instructor: instructorReducer, // Tambahkan instructor reducer di sini
+  instructor: InstrukturReducer, // Tambahkan instructor reducer di sini
 });

@@ -1,10 +1,5 @@
 import axios from "axios";
-import {
-  setTotalUsers,
-  setTotalInstructors,
-  setTotalFreeClasses,
-  setTotalPremiumClasses,
-} from "../reducers/instructorReducers"; // Pastikan file reducer sudah ada
+import { setTotalFreeClasses, setTotalInstructors, setTotalPremiumClasses, setTotalUsers } from "../reducers/InstrukturReducers";
 
 const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
 

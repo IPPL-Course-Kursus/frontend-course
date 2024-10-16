@@ -2,12 +2,11 @@ import Sidebar from "../../components/Sidebar/SidebarInstruktur";
 import { useEffect, useState } from "react";
 import { FaUsers, FaSearch, FaFilter } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchTotalUsers,
-  fetchTotalInstructors,
-  fetchTotalFreeClasses,
-  fetchTotalPremiumClasses,
-} from "../../redux/actions/instructorActions"; // Sesuaikan path
+import { fetchTotalFreeClasses, 
+         fetchTotalInstructors, 
+         fetchTotalPremiumClasses, 
+         fetchTotalUsers 
+} from "../../redux/actions/InstrukturActions"; 
 
 const InstruktorDashboard = () => {
   const dispatch = useDispatch();
