@@ -1,24 +1,35 @@
 import Sidebar from "../../components/Sidebar/SidebarInstruktur";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaUsers, FaSearch, FaFilter } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchTotalUsers,
+  fetchTotalInstructors,
+  fetchTotalFreeClasses,
+  fetchTotalPremiumClasses,
+} from "../../redux/actions/instructorActions"; // Sesuaikan path
 
 const InstruktorDashboard = () => {
-  const [stats] = useState({
-    users: 450,
-    instruktor: 25,
-    freeClass: 20,
-    premiumClass: 20,
-  });
+  const dispatch = useDispatch();
+
+  // Ambil data dari Redux
+  const { totalUsers, totalInstructors, totalFreeClasses, totalPremiumClasses } = useSelector((state) => state.instructor);
 
   // State untuk search input
   const [globalSearch, setGlobalSearch] = useState("");
   const [paymentSearch, setPaymentSearch] = useState("");
   const [searchVisible, setSearchVisible] = useState(false); // State untuk visibilitas input pencarian
-
-  // State untuk filter status pembayaran
   const [filter, setFilter] = useState("");
 
-  // State untuk status pembayaran
+  // Fetch data saat komponen di-mount
+  useEffect(() => {
+    dispatch(fetchTotalUsers());
+    dispatch(fetchTotalInstructors());
+    dispatch(fetchTotalFreeClasses());
+    dispatch(fetchTotalPremiumClasses());
+  }, [dispatch]);
+
+  // State untuk status pembayaran (ini bisa diganti dengan fetch dari API jika diperlukan)
   const [paymentStatus] = useState([
     {
       id: "johndoe123",
@@ -28,46 +39,7 @@ const InstruktorDashboard = () => {
       metodePembayaran: "Credit Card",
       tanggalBayar: "21 Sep, 2023 at 2:00 AM",
     },
-    {
-      id: "supermanxx",
-      kategori: "UI/UX Design",
-      kelasPremium: "Belajar Web Designer dengan Figma",
-      status: "BELUM BAYAR",
-      metodePembayaran: "-",
-      tanggalBayar: "-",
-    },
-    {
-      id: "ironman99",
-      kategori: "Web Development",
-      kelasPremium: "CSS dan HTML dalam seminggu",
-      status: "SUDAH BAYAR",
-      metodePembayaran: "Credit Card",
-      tanggalBayar: "20 Sep, 2023 at 2:00 AM",
-    },
-    {
-      id: "lokiMaster",
-      kategori: "Data Science",
-      kelasPremium: "Data Cleaning untuk pemula",
-      status: "SUDAH BAYAR",
-      metodePembayaran: "Credit Card",
-      tanggalBayar: "19 Sep, 2023 at 2:00 AM",
-    },
-    {
-      id: "siapaAjaani",
-      kategori: "Data Science",
-      kelasPremium: "Data Cleaning untuk pemula",
-      status: "BELUM BAYAR",
-      metodePembayaran: "-",
-      tanggalBayar: "-",
-    },
-    {
-      id: "visionOKE",
-      kategori: "Data Science",
-      kelasPremium: "Data Cleaning untuk pemula",
-      status: "SUDAH BAYAR",
-      metodePembayaran: "Credit Card",
-      tanggalBayar: "10 Sep, 2023 at 2:00 AM",
-    },
+    // Tambahkan data lainnya...
   ]);
 
   // Filter berdasarkan global search, search payment, dan filter status pembayaran, tanggal
@@ -94,9 +66,9 @@ const InstruktorDashboard = () => {
   const toggleSearch = () => {
     setSearchVisible(!searchVisible);
   };
+
   return (
     <>
-      {/* <Sidebar/> */}
       <div className="flex">
         <Sidebar />
         <div className="p-6 bg-secondary min-h-screen w-screen font-poppins">
@@ -125,7 +97,7 @@ const InstruktorDashboard = () => {
                 <FaUsers className="text-2xl text-primary" />
               </div>
               <div className="ml-4">
-                <div className="text-2xl">{stats.users}</div>
+                <div className="text-2xl">{totalUsers}</div>
                 <div className="text-sm">Users</div>
               </div>
             </div>
@@ -136,7 +108,7 @@ const InstruktorDashboard = () => {
                 <FaUsers className="text-2xl text-primary" />
               </div>
               <div className="ml-4">
-                <div className="text-2xl">{stats.instruktor}</div>
+                <div className="text-2xl">{totalInstructors}</div>
                 <div className="text-sm">Instruktor</div>
               </div>
             </div>
@@ -147,7 +119,7 @@ const InstruktorDashboard = () => {
                 <FaUsers className="text-2xl text-primary" />
               </div>
               <div className="ml-4">
-                <div className="text-2xl">{stats.freeClass}</div>
+                <div className="text-2xl">{totalFreeClasses}</div>
                 <div className="text-sm">Free Class</div>
               </div>
             </div>
@@ -158,7 +130,7 @@ const InstruktorDashboard = () => {
                 <FaUsers className="text-2xl text-primary" />
               </div>
               <div className="ml-4">
-                <div className="text-2xl">{stats.premiumClass}</div>
+                <div className="text-2xl">{totalPremiumClasses}</div>
                 <div className="text-sm">Premium Class</div>
               </div>
             </div>
@@ -166,10 +138,8 @@ const InstruktorDashboard = () => {
 
           {/* Section untuk Status Pembayaran */}
           <div className="flex justify-between items-center mb-4">
-            {/* Judul Status Pembayaran */}
             <h2 className="text-xl font-bold">Instruktor Active</h2>
 
-            {/* Filter Dropdown dan Search Icon */}
             <div className="flex items-center">
               {/* Filter Dropdown */}
               <div className="relative mr-2">
@@ -216,32 +186,19 @@ const InstruktorDashboard = () => {
                   <th className="px-4 py-2">Tanggal Bayar</th>
                 </tr>
               </thead>
-              {/* <tbody>
-                {filteredPayments.length === 0 ? (
-                  <tr>
-                    <td colSpan="6" className="px-4 py-2 text-center">
-                      Tidak ada pembayaran yang ditemukan
-                    </td>
+              {/* Tambahkan body tabel di sini */}
+              <tbody>
+                {filteredPayments.map((payment) => (
+                  <tr key={payment.id}>
+                    <td className="px-4 py-2">{payment.id}</td>
+                    <td className="px-4 py-2">{payment.kategori}</td>
+                    <td className="px-4 py-2">{payment.kelasPremium}</td>
+                    <td className="px-4 py-2">{payment.status}</td>
+                    <td className="px-4 py-2">{payment.metodePembayaran}</td>
+                    <td className="px-4 py-2">{payment.tanggalBayar}</td>
                   </tr>
-                ) : (
-                  filteredPayments.map((payment, index) => (
-                    <tr key={index} className="border-t">
-                      <td className="px-4 py-2 font-semibold">{payment.id}</td>
-                      <td className="px-4 py-2 font-semibold">{payment.kategori}</td>
-                      <td className="px-4 py-2 font-semibold">{payment.kelasPremium}</td>
-                      <td
-                        className={`px-4 py-2 font-semibold ${
-                          payment.status === "SUDAH BAYAR" ? "text-green-500" : "text-red-500"
-                        }`}
-                      >
-                        {payment.status}
-                      </td>
-                      <td className="px-4 py-2 font-semibold">{payment.metodePembayaran}</td>
-                      <td className="px-4 py-2 font-semibold">{payment.tanggalBayar}</td>
-                    </tr>
-                  ))
-                )}
-              </tbody> */}
+                ))}
+              </tbody>
             </table>
           </div>
         </div>
