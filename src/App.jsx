@@ -107,11 +107,10 @@ function AppRoutes() {
 
       {/* Admin */}
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
-      {/* Kelola Data ADMIN */}
       <Route path="/admin/data-kategori" element={<AdminDataKategori />} />
       <Route path="/admin/data-level" element={<AdminDataLevel />} />
       <Route path="/admin/data-Type" element={<AdminDataType />} />
-
+      
       {/* Kelola Instruktur ADMIN */}
       <Route path="/admin/data-instruktur" element={<AdminDataInstruktur />} />
       <Route path="/admin/regis-instruktur" element={<AdminRegisterInstruktur />} />
