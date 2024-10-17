@@ -12,8 +12,11 @@ import courseReducer from "./courseReducers"; // Ganti dari courseReducers ke co
 // import popularReducer from "./popularReducers";
 import categoryReducer from "./categoryReducers";
 import transactionReducer from "./transactionReducers"; // Menggunakan reducer transaksi
+
 import chapterReducer from "./chapterReducers";
 import contentReducer from "./contentReducers";
+
+import adminDataKategoriReducer from "./adminDataKategoriReducers";
 
 export default combineReducers({
   // Auth
@@ -30,6 +33,9 @@ export default combineReducers({
 
   // Category
   category: categoryReducer,
+
+  // Admin
+  adminDataKategori: adminDataKategoriReducer,
 
   // Transaction
   transaction: transactionReducer,

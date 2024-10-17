@@ -229,10 +229,9 @@
 
 // export default DetailKelas;
 
-import { Link, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2"; // Import SweetAlert
 import CardRecommended from "../../components/DetailComponent/CardRecommended";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
