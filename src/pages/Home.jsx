@@ -29,7 +29,7 @@ const Home = () => {
   return (
     <>
       <Navbar />
-      <div className="w-full h-full  relative">
+      <div className="w-full h-full pt-20 relative">
         <img
           src="/people_dasboard.png"
           alt="picture"
@@ -70,7 +70,7 @@ const Home = () => {
               Kuasai strategi menjadi freelancer profesional untuk meningkatkan pendapatan secara
               langsung bersama para ahli berpengalaman.
             </p>
-            <NavLink as={Link} to={"/freelance"} className="z-10">
+            <NavLink as={Link} to={"/login"} className="z-10">
               <button className="bg-white text-primary text-base font-semibold px-4 py-2 rounded-lg hover:bg-gray-200 hover:text-primary-dark transition duration-300">
                 Daftar Sekarang
               </button>
