@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FaArrowLeft, FaCheckCircle } from "react-icons/fa";
-import { fetchCourses, addCourse } from "../../redux/actions/mulaiKelasActions"; // Pastikan import path benar
+import { FaArrowLeft, FaCheckCircle } from "react-icons/fa"; // Pastikan import path benar
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import ProgressBar from "../../components/MyCourse/ProgressBar";

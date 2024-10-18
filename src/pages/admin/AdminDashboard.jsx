@@ -1,4 +1,3 @@
-// eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaUsers, FaSearch, FaFilter, FaBars } from "react-icons/fa";
@@ -7,7 +6,6 @@ import { fetchStats, fetchPayments, fetchuser } from "../../redux/actions/adminD
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
-  // eslint-disable-next-line no-unused-vars
   const { stats, paymentStatus, loading, user } = useSelector((state) => state.adminDashboard);
 
   const [globalSearch, setGlobalSearch] = useState("");
@@ -178,10 +176,10 @@ const AdminDashboard = () => {
                   <tr key={payment.id} className="border-b">
                     <td className="px-2 md:px-4 py-2">{payment.id}</td>
                     <td className="px-2 md:px-4 py-2">{payment.courseName}</td>
-                    <td className="px-2 md:px-4 py-2">{payment.amount}</td>
+                    <td className="px-2 md:px-4 py-2">Rp.{payment.totalPrice}00,00</td>
                     <td className="px-2 md:px-4 py-2">{payment.paymentStatus}</td>
                     <td className="px-2 md:px-4 py-2">{payment.paymentMethod}</td>
-                    <td className="px-2 md:px-4 py-2">{payment.tanggalBayar}</td>
+                    <td className="px-2 md:px-4 py-2">{payment.createdAt}</td>
                   </tr>
                 ))
               ) : (

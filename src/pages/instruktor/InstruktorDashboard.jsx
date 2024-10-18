@@ -2,17 +2,12 @@ import Sidebar from "../../components/Sidebar/SidebarInstruktur";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaUsers, FaSearch, FaFilter } from "react-icons/fa";
-import { fetchStats, fetchPayments, fetchuser } from "../../redux/actions/instrukturDashboardActions"; // Pastikan menggunakan action yang sama
+import { fetchStats, fetchPayments, fetchuser } from "../../redux/actions/instrukturDashboardActions";
 
 const InstruktorDashboard = () => {
   const dispatch = useDispatch();
-
-  // Periksa apakah instrukturDashboard ada di state dan beri default value
-  const { stats = {}, paymentStatus = [], user = [], loading = false } = useSelector(
-    (state) => state.instrukturDashboard || {}
-  );
-
-  console.log("Current state (instrukturDashboard):", { stats, paymentStatus, user, loading });
+  // eslint-disable-next-line no-unused-vars
+  const { stats, paymentStatus, loading, user } = useSelector((state) => state.instruktorDashboard); // Pastikan nama state sesuai
 
   // State untuk search input
   const [globalSearch, setGlobalSearch] = useState("");
@@ -27,21 +22,32 @@ const InstruktorDashboard = () => {
     dispatch(fetchuser());
   }, [dispatch]);
 
-  // Filter berdasarkan global search, search payment, dan filter status pembayaran
-  const filteredPayments = paymentStatus.filter(
-    (payment) =>
-      (globalSearch === "" ||
-        payment.id.toLowerCase().includes(globalSearch.toLowerCase()) ||
-        payment.kategori.toLowerCase().includes(globalSearch.toLowerCase()) ||
-        payment.kelasPremium.toLowerCase().includes(globalSearch.toLowerCase())) &&
-      (paymentSearch === "" ||
-        payment.id.toLowerCase().includes(paymentSearch.toLowerCase()) ||
-        payment.kategori.toLowerCase().includes(paymentSearch.toLowerCase()) ||
-        payment.kelasPremium.toLowerCase().includes(paymentSearch.toLowerCase()) ||
-        payment.tanggalBayar.toLowerCase().includes(paymentSearch.toLowerCase())) &&
-      (filter === "" || payment.status === filter)
-  );
+  const freeClassesCount = paymentStatus.filter(payment => payment.paymentMethod === "Free").length;
+  const premiumClassesCount = paymentStatus.filter(payment => payment.paymentMethod !== "Free").length;
 
+  // Filter berdasarkan global search, search payment, dan filter status pembayaran
+  const filteredPayments = paymentStatus.filter((payment) => {
+    const isGlobalSearchMatch =
+      globalSearch === "" ||
+      payment.id.toString().includes(globalSearch.toLowerCase()) ||
+      payment.kategori.toLowerCase().includes(globalSearch.toLowerCase()) ||
+      payment.kelasPremium.toLowerCase().includes(globalSearch.toLowerCase());
+
+    const isPaymentSearchMatch =
+      paymentSearch === "" ||
+      payment.id.toString().includes(paymentSearch.toLowerCase()) ||
+      payment.kategori.toLowerCase().includes(paymentSearch.toLowerCase()) ||
+      payment.kelasPremium.toLowerCase().includes(paymentSearch.toLowerCase()) ||
+      payment.tanggalBayar.toLowerCase().includes(paymentSearch.toLowerCase());
+
+    const isFilterMatch = filter === "" || payment.paymentStatus === filter;
+
+    return isGlobalSearchMatch && isPaymentSearchMatch && isFilterMatch;
+  });
+
+  // Sort payments by ID in ascending order (from 1 upwards)
+  const sortedPayments = filteredPayments.sort((a, b) => a.id - b.id);
+  
   const handleFilterChange = (e) => setFilter(e.target.value);
   const toggleSearch = () => setSearchVisible(!searchVisible);
 
@@ -91,7 +97,7 @@ const InstruktorDashboard = () => {
               <FaUsers className="text-2xl text-primary" />
             </div>
             <div className="ml-4">
-              <div className="text-2xl">{stats.freeClass || 0}</div>
+              <div className="text-2xl">{freeClassesCount}</div>
               <div className="text-sm">Free Class</div>
             </div>
           </div>
@@ -100,7 +106,7 @@ const InstruktorDashboard = () => {
               <FaUsers className="text-2xl text-primary" />
             </div>
             <div className="ml-4">
-              <div className="text-2xl">{stats.premiumClass || 0}</div>
+              <div className="text-2xl">{premiumClassesCount}</div>
               <div className="text-sm">Premium Class</div>
             </div>
           </div>
@@ -131,8 +137,8 @@ const InstruktorDashboard = () => {
                 type="text"
                 value={paymentSearch}
                 onChange={(e) => setPaymentSearch(e.target.value)}
-                className={`transition-all duration-300 ease-in-out border border-[#173D94] rounded-full ml-2 p-1 ${searchVisible ? "w-40 opacity-100" : "w-0 opacity-0 pointer-events-none"
-                  }`}
+                className={`transition-all duration-300 ease-in-out border border-[#173D94] rounded-full ml-2 p-1 ${searchVisible ? "w-40 opacity-100" : "w-0 opacity-0 pointer-events-none"}`}
+                placeholder="Cari..."
               />
             </div>
           </div>
@@ -142,38 +148,31 @@ const InstruktorDashboard = () => {
         <div className="overflow-x-auto bg-white p-4">
           <table className="min-w-full table-auto">
             <thead>
-              <tr className="bg-gray-100 text-left text-sm font-semibold">
-                <th className="px-4 py-2">ID</th>
-                <th className="px-4 py-2">Kategori</th>
-                <th className="px-4 py-2">Kelas Premium</th>
-                <th className="px-4 py-2">Status</th>
-                <th className="px-4 py-2">Metode Pembayaran</th>
-                <th className="px-4 py-2">Tanggal Bayar</th>
+              <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
+                <th className="px-2 md:px-4 py-2">ID</th>
+                <th className="px-2 md:px-4 py-2">Nama Kursus</th>
+                <th className="px-2 md:px-4 py-2">Harga</th>
+                <th className="px-2 md:px-4 py-2">Status</th>
+                <th className="px-2 md:px-4 py-2">Metode Pembayaran</th>
+                <th className="px-2 md:px-4 py-2">Tanggal Bayar</th>
               </tr>
             </thead>
             <tbody>
-              {filteredPayments.length === 0 ? (
-                <tr>
-                  <td colSpan="6" className="px-4 py-2 text-center">
-                    Tidak ada pembayaran yang ditemukan
-                  </td>
-                </tr>
-              ) : (
-                filteredPayments.map((payment, index) => (
-                  <tr key={index} className="border-t">
-                    <td className="px-4 py-2 font-semibold">{payment.id}</td>
-                    <td className="px-4 py-2 font-semibold">{payment.kategori}</td>
-                    <td className="px-4 py-2 font-semibold">{payment.kelasPremium}</td>
-                    <td
-                      className={`px-4 py-2 font-semibold ${payment.status === "SUDAH BAYAR" ? "text-green-500" : "text-red-500"
-                        }`}
-                    >
-                      {payment.status}
-                    </td>
-                    <td className="px-4 py-2 font-semibold">{payment.metodePembayaran}</td>
-                    <td className="px-4 py-2 font-semibold">{payment.tanggalBayar}</td>
+              {!loading && sortedPayments && sortedPayments.length > 0 ? (
+                sortedPayments.map((payment) => (
+                  <tr key={payment.id} className="border-b">
+                    <td className="px-2 md:px-4 py-2">{payment.id}</td>
+                    <td className="px-2 md:px-4 py-2">{payment.courseName}</td>
+                    <td className="px-2 md:px-4 py-2">Rp.{payment.totalPrice}00,00</td>
+                    <td className="px-2 md:px-4 py-2">{payment.paymentStatus}</td>
+                    <td className="px-2 md:px-4 py-2">{payment.paymentMethod}</td>
+                    <td className="px-2 md:px-4 py-2">{payment.tanggalBayar}</td>
                   </tr>
                 ))
+              ) : (
+                <tr>
+                  <td colSpan="6" className="text-center py-4">No Data Available</td>
+                </tr>
               )}
             </tbody>
           </table>
