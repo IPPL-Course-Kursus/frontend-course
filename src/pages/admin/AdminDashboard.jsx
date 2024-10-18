@@ -176,10 +176,10 @@ const AdminDashboard = () => {
                   <tr key={payment.id} className="border-b">
                     <td className="px-2 md:px-4 py-2">{payment.id}</td>
                     <td className="px-2 md:px-4 py-2">{payment.courseName}</td>
-                    <td className="px-2 md:px-4 py-2">{payment.amount}</td>
+                    <td className="px-2 md:px-4 py-2">Rp.{payment.totalPrice}</td>
                     <td className="px-2 md:px-4 py-2">{payment.paymentStatus}</td>
                     <td className="px-2 md:px-4 py-2">{payment.paymentMethod}</td>
-                    <td className="px-2 md:px-4 py-2">{payment.tanggalBayar}</td>
+                    <td className="px-2 md:px-4 py-2">{payment.createdAt}</td>
                   </tr>
                 ))
               ) : (
