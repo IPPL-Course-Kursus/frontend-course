@@ -33,6 +33,7 @@ export default combineReducers({
 
   // Admin
   adminDataKategori: adminDataKategoriReducer,
+  adminDashboard: adminDashboardReducer,
 
   // Transaction
   transaction: transactionReducer,
