@@ -10,6 +10,8 @@ import {
 } from "./authReducers"; 
 import courseReducer from "./courseReducers"; 
 import categoryReducer from "./categoryReducers";
+
+import transactionReducer from "./transactionReducers"; // Menggunakan reducer transaksi
 import adminDataKategoriReducer from "./adminDataKategoriReducers";
 import adminDashboardReducer from "./admindashboardreducer"; // Pastikan ini sudah benar
 
@@ -32,6 +34,6 @@ export default combineReducers({
   // Admin
   adminDataKategori: adminDataKategoriReducer,
 
-  // Admin Dashboard
-  adminDashboard: adminDashboardReducer, // Sesuaikan dengan nama
+  // Transaction
+  transaction: transactionReducer,
 });

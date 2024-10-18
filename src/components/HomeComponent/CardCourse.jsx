@@ -22,6 +22,22 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
   const { category } = useSelector((state) => state.category);
   // console.log("cat", category);
 
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    }).format(amount);
+  };
+
+  // const formatCurrency = (value) => {
+  //   return new Intl.NumberFormat("id-ID", {
+  //     style: "currency",
+  //     currency: "IDR",
+  //     minimumFractionDigits: 0, // No decimal places
+  //     maximumFractionDigits: 0,
+  //   }).format(value);
+  // };
+
   const handleFilterClick = (categoryId) => {
     setSelectCategoryId(categoryId);
   };
@@ -81,60 +97,6 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
       { breakpoint: 600, settings: { slidesToShow: 1, slidesToScroll: 1 } },
     ],
   };
-  // const categorySliderSettings = {
-  //   dots: false,
-  //   infinite: false,
-  //   speed: 500,
-  //   slidesToShow: 6,
-  //   slidesToScroll: 1,
-  //   nextArrow: <NextArrow />,
-  //   prevArrow: <PrevArrow />,
-  //   responsive: [
-  //     {
-  //       breakpoint: 1200,
-  //       settings: {
-  //         slidesToShow: 4,
-  //       },
-  //     },
-  //     {
-  //       breakpoint: 768,
-  //       settings: {
-  //         slidesToShow: 3,
-  //       },
-  //     },
-  //     {
-  //       breakpoint: 480,
-  //       settings: {
-  //         slidesToShow: 2,
-  //       },
-  //     },
-  //   ],
-  // };
-  // const courseSliderSettings = {
-  //   dots: true,
-  //   infinite: true,
-  //   speed: 500,
-  //   slidesToShow: 3,
-  //   slidesToScroll: 1,
-  //   nextArrow: <NextArrow />,
-  //   prevArrow: <PrevArrow />,
-  //   responsive: [
-  //     {
-  //       breakpoint: 1024,
-  //       settings: {
-  //         slidesToShow: 2,
-  //         slidesToScroll: 1,
-  //       },
-  //     },
-  //     {
-  //       breakpoint: 600,
-  //       settings: {
-  //         slidesToShow: 1,
-  //         slidesToScroll: 1,
-  //       },
-  //     },
-  //   ],
-  // };
 
   return (
     <>
@@ -185,11 +147,15 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
       {/* Card Course Section */}
       <div className="max-w-screen-lg mx-auto px-6 lg:p-0">
         {Array.isArray(filteredCoursePopular) && filteredCoursePopular.length > 0 ? (
-          selectCategoryId === null ? ( // Menampilkan slider jika "All" dipilih
+          selectCategoryId === null ? (
             <Slider {...courseSliderSettings}>
               {filteredCoursePopular.map((val) => (
                 <div key={val.id} className="p-2">
-                  <div className="w-full bg-white shadow-xl rounded-xl overflow-hidden pb-3 transition-transform transform hover:scale-105 duration-300 h-full flex flex-col">
+                  <div
+                    className={`w-full bg-white shadow-xl rounded-xl overflow-hidden pb-3 h-full flex flex-col ${
+                      val.isPurchased ? "bg-green-50" : ""
+                    }`}
+                  >
                     <img
                       src={val.image}
                       alt={val.name}
@@ -197,7 +163,11 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
                     />
                     <div className="mx-2 md:mx-4 flex flex-col mt-2 md:mt-3 h-full">
                       <div className="flex justify-between items-center mb-2 flex-grow">
-                        <h1 className="text-color-primary font-bold text-sm lg:text-base truncate">
+                        <h1
+                          className={`font-bold text-sm lg:text-base truncate ${
+                            val.isPurchased ? "text-gray-700" : "text-color-primary"
+                          }`}
+                        >
                           {val.courseName}
                         </h1>
                       </div>
@@ -209,34 +179,76 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
                           <Shield size={18} className="mr-1" /> {val.courseLevel.levelName}
                         </p>
                         <p className="flex items-center">
-                          <Book size={18} className="mr-1" /> {val.chapters}
+                          <Book size={18} className="mr-1" /> {val.chapter}
                         </p>
                         <p className="flex items-center">
                           <Clock size={18} className="mr-1" /> {val.totalDuration} menit
                         </p>
                       </div>
-                      <div className="my-2 flex-grow">
-                        <ProgressBar />
-                      </div>
-                      <div className="my-2">
-                        <Link
-                          to={`/course-detail/${val.id}`}
-                          className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
-                        >
-                          Mulai Kelas
-                        </Link>
-                      </div>
-                      {val.courseDiscountPrice || val.coursePrice ? (
-                        <div className="my-2">
-                          <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105">
-                            {val.courseDiscountPrice || val.coursePrice}
-                          </button>
+
+                      {/* Tampilkan progress bar dan tombol untuk kelas yang sudah dibeli */}
+                      {val.isPurchased ? (
+                        <div className="my-2 flex-grow">
+                          <ProgressBar />
+                          <div className="my-2">
+                            <Link
+                              to={`/course-detail/${val.id}`} // Link to course detail page
+                              className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
+                            >
+                              Mulai Kelas
+                            </Link>
+                          </div>
                         </div>
                       ) : (
+                        // <div className="my-2">
+                        //   <div className="flex items-center">
+                        //     <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
+                        //       {formatCurrency(val.coursePrice)}{" "}
+                        //     </button>
+                        //     {val.coursePrice > 0 ? (
+                        //       <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
+                        //         <Gem size={16} className="mr-2" /> Premium
+                        //       </button>
+                        //     ) : (
+                        //       <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
+                        //         <Gem size={16} className="mr-2" /> Free
+                        //       </button>
+                        //     )}
+                        //   </div>
+                        //   <div className="my-2">
+                        //     <Link
+                        //       to={`/course-detail/${val.id}`} // Link to course detail page
+                        //       className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
+                        //     >
+                        //       Ambil Kelas
+                        //     </Link>
+                        //   </div>
+                        // </div>
                         <div className="my-2">
-                          <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center">
-                            <Gem size={16} className="mr-2" /> Premium
-                          </button>
+                          <div className="flex items-center">
+                            {val.coursePrice > 0 ? (
+                              <>
+                                <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
+                                  {formatCurrency(val.coursePrice)}{" "}
+                                </button>
+                                <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
+                                  <Gem size={16} className="mr-2" /> Premium
+                                </button>
+                              </>
+                            ) : (
+                              <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
+                                <Gem size={16} className="mr-2" /> Free
+                              </button>
+                            )}
+                          </div>
+                          <div className="my-2">
+                            <Link
+                              to={`/course-detail/${val.id}`} // Link to course detail page
+                              className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
+                            >
+                              Lihat Kelas
+                            </Link>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -271,31 +283,40 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
                           <Clock size={18} className="mr-1" /> {val.totalDuration} menit
                         </p>
                       </div>
-                      <div className="my-2 flex-grow">
-                        <ProgressBar />
-                      </div>
-                      <div className="my-2">
-                        <Link
-                          to={`/course-detail/${val.id}`}
-                          className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
-                        >
-                          Mulai Kelas
-                        </Link>
-                      </div>
-                      {val.courseDiscountPrice || val.coursePrice ? (
-                        <div className="my-2">
-                          <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
-                            {val.courseDiscountPrice || val.coursePrice}
-                          </button>
-                        </div>
+
+                      {/* Kondisi untuk menampilkan progress bar dan link mulai kelas */}
+                      {val.isPurchased ? (
+                        <>
+                          <div className="my-2 flex-grow">
+                            <ProgressBar />
+                          </div>
+                          <div className="my-2">
+                            <Link
+                              to={`/course-detail/${val.id}`} // Perbaiki sintaksis pada path
+                              className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
+                            >
+                              Mulai Kelas
+                            </Link>
+                          </div>
+                        </>
                       ) : (
                         <div className="my-2">
-                          <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
-                            <span className="mr-2">
-                              <Gem size={16} />
-                            </span>
-                            Premium
+                          <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center">
+                            {formatCurrency(val.coursePrice)}{" "}
+                            {/* Display the course price in rupiah */}
                           </button>
+                          <div className="my-2">
+                            {val.coursePrice > 0 ? ( // Check if the course price is greater than 0
+                              <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center">
+                                <Gem size={16} className="mr-2" /> Premium{" "}
+                                {/* Indicate that the course is premium */}
+                              </button>
+                            ) : (
+                              <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center">
+                                Free {/* Indicate that the course is free */}
+                              </button>
+                            )}
+                          </div>
                         </div>
                       )}
                     </div>
@@ -305,7 +326,7 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
             </div>
           )
         ) : (
-          <div className="text-center text-gray-500 mt-10">Tidak ada kursus Popular tersedia.</div>
+          <div className="text-center text-gray-500 mt-10">Tidak ada kursus Populer tersedia.</div>
         )}
       </div>
     </>

@@ -7,10 +7,17 @@ export const getDetailCourse = (courseId, setErrors, errors) => async (dispatch)
   try {
     const response = await axios.get(`${api_url}course/detail-course/${courseId}`);
 
-    const data = response.data.course; // Hanya ambil objek course
-    console.log("ini detail : ", data);
+    const data = response.data.course; // Ambil data course
+    const recommendedCourses = response.data.recommendedCourses || []; // Ambil recommendedCourses jika ada
 
-    dispatch(setDetail(data)); // Dispatch data course
+    const courseWithRecommendations = {
+      ...data,
+      recommendedCourses, // Tambahkan recommendedCourses ke course detail
+    };
+
+    console.log("ini detail : ", courseWithRecommendations);
+
+    dispatch(setDetail(courseWithRecommendations)); // Dispatch detail termasuk recommendedCourses
   } catch (error) {
     if (axios.isAxiosError(error)) {
       setErrors({
