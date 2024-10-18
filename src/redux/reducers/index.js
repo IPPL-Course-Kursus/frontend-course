@@ -1,26 +1,23 @@
 import { combineReducers } from "redux";
 import {
-  authReducer, // Ganti ke authReducer
+  authReducer, 
   emailReducer,
   resetPasswordReducer,
   verifyEmailReducer,
   getMeReducer,
   updateProfileReducer,
   changePasswordReducer,
-} from "./authReducers"; // Sesuaikan dengan ekspor dari authReducers
-import courseReducer from "./courseReducers"; // Ganti dari courseReducers ke courseReducer untuk konsistensi
-// import popularReducer from "./popularReducers";
+} from "./authReducers"; 
+import courseReducer from "./courseReducers"; 
 import categoryReducer from "./categoryReducers";
+
 import transactionReducer from "./transactionReducers"; // Menggunakan reducer transaksi
-
-import chapterReducer from "./chapterReducers";
-import contentReducer from "./contentReducers";
-
 import adminDataKategoriReducer from "./adminDataKategoriReducers";
+import adminDashboardReducer from "./admindashboardreducer"; // Pastikan ini sudah benar
 
 export default combineReducers({
   // Auth
-  auth: authReducer, // Gunakan authReducer yang benar
+  auth: authReducer, 
   email: emailReducer,
   resetPassword: resetPasswordReducer,
   verifyEmail: verifyEmailReducer,
@@ -36,13 +33,8 @@ export default combineReducers({
 
   // Admin
   adminDataKategori: adminDataKategoriReducer,
+  adminDashboard: adminDashboardReducer,
 
   // Transaction
   transaction: transactionReducer,
-
-  //chapter
-  chapter: chapterReducer,
-
-  //content
-  content: contentReducer,
 });
