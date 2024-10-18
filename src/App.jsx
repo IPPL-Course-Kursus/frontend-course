@@ -118,8 +118,8 @@ function AppRoutes() {
       {/* Instruktor */}
       <Route path="/inst/dashboard" element={<InstruktorDashboard />} />
       <Route path="/inst/data-kelas" element={<InstruktorDataKelas />} />
-      <Route path="/inst/data-konten" element={<InstruktorDataKonten />} />
-      <Route path="/inst/data-module" element={<InstruktorDataModule />} />
+      <Route path="/inst/data-konten/:id" element={<InstruktorDataKonten />} />
+      <Route path="/inst/data-module/:id" element={<InstruktorDataModule />} />
 
       {/* NotFound */}
       <Route path="/*" element={<NotFound />} />

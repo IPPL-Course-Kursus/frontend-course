@@ -1,26 +1,3 @@
-// import { combineReducers } from "redux";
-// import {
-//   authReducer,
-//   emailReducer,
-//   loginReducer,
-//   registerReducer,
-//   resetPasswordReducer,
-//   verifyEmailReducer,
-// } from "./authReducers";
-// import courseReducers from "./courseReducers";
-
-// export default combineReducers({
-//   // Auth
-//   // auth: authReducer,
-//   auth: authReducers,
-//   email: emailReducer,
-//   resetPassword: resetPasswordReducer,
-//   verifyEmail: verifyEmailReducer,
-
-//   // Course
-//   course: courseReducers,
-// });
-
 import { combineReducers } from "redux";
 import {
   authReducer,
@@ -34,8 +11,11 @@ import {
 import courseReducer from "./courseReducers"; // Ganti dari courseReducers ke courseReducer untuk konsistensi
 import categoryReducer from "./categoryReducers";
 import transactionReducer from "./transactionReducers"; // Menggunakan reducer transaksi
+
+import chapterReducer from "./chapterReducers";
+import contentReducer from "./contentReducers";
+
 import adminDataKategoriReducer from "./adminDataKategoriReducers";
-import InstrukturReducer from "./InstrukturReducers";
 
 export default combineReducers({
   // Auth
@@ -48,7 +28,7 @@ export default combineReducers({
   changePassword: changePasswordReducer,
 
   // Course
-  course: courseReducer, // Gunakan courseReducer yang benar
+  course: courseReducer,
 
   // Category
   category: categoryReducer,
@@ -59,6 +39,9 @@ export default combineReducers({
   // Transaction
   transaction: transactionReducer,
 
-  // Instruktur
-  instructor: InstrukturReducer, // Tambahkan instructor reducer di sini
+  //chapter
+  chapter: chapterReducer,
+
+  //content
+  content: contentReducer,
 });

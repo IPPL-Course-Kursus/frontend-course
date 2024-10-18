@@ -1,3 +1,5 @@
+
+
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2"; // Import SweetAlert
@@ -17,7 +19,7 @@ export const DetailKelas = () => {
   const navigate = useNavigate();
   const detail = useSelector((state) => state.course.detail);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [transactionMessage, setTransactionMessage] = useState('');
+  const [transactionMessage, setTransactionMessage] = useState("");
 
   useEffect(() => {
     if (id) {
@@ -26,14 +28,13 @@ export const DetailKelas = () => {
   }, [id, dispatch]);
 
   useEffect(() => {
-    // Memuat skrip Midtrans
     const script = document.createElement("script");
     script.src = "https://app.sandbox.midtrans.com/snap/snap.js";
     script.setAttribute("data-client-key", import.meta.env.VITE_PRIVATE_CLIENT_KEY);
     document.body.appendChild(script);
 
     return () => {
-      document.body.removeChild(script); // Bersihkan skrip saat komponen di-unmount
+      document.body.removeChild(script);
     };
   }, []);
 
@@ -53,17 +54,15 @@ export const DetailKelas = () => {
 
         if (data.success) {
           if (data.message === "CourseUser created for free course") {
-            // Tampilkan SweetAlert dan navigasi ke halaman /mycourse
             Swal.fire({
               icon: "success",
               title: "Berhasil!",
               text: "Anda telah terdaftar di kursus gratis ini.",
-              confirmButtonText: "OK"
+              confirmButtonText: "OK",
             }).then(() => {
               navigate("/mycourse");
             });
           } else if (window.snap) {
-            // Menggunakan token dari respons untuk memicu popup Midtrans
             window.snap.pay(data.data.token, {
               onSuccess: function (result) {
                 Swal.fire("Berhasil!", "Pembayaran berhasil!", "success");
@@ -78,7 +77,11 @@ export const DetailKelas = () => {
                 console.log(result);
               },
               onClose: function () {
-                Swal.fire("Dibatalkan!", "Anda menutup popup tanpa menyelesaikan pembayaran.", "warning");
+                Swal.fire(
+                  "Dibatalkan!",
+                  "Anda menutup popup tanpa menyelesaikan pembayaran.",
+                  "warning"
+                );
               },
             });
           } else {
@@ -96,12 +99,25 @@ export const DetailKelas = () => {
     setModalOpen(false);
   };
 
+  const handleButtonClick = () => {
+    if (detail.isEnrolled) {
+      // Navigasi ke halaman kelas jika sudah diambil
+      navigate(`/course/${id}/chapter`);
+    } else {
+      // Tampilkan modal untuk pembayaran jika belum diambil
+      handleModalOpen();
+    }
+  };
+
   return (
     <>
       <Navbar />
       <div className="w-full h-full">
         <div className="flex flex-row-reverse justify-between mx-3 lg:flex lg:flex-col lg:gap-4">
-          <Link to="/" className="flex items-center gap-2 mx-2 hover:text-color-primary lg:text-lg ">
+          <Link
+            to="/"
+            className="flex items-center gap-2 mx-2 hover:text-color-primary lg:text-lg "
+          >
             <IoMdArrowRoundBack />
             <p>Kembali Ke Beranda</p>
           </Link>
@@ -118,10 +134,10 @@ export const DetailKelas = () => {
                 {detail.intendedFor || "Deskripsi belum tersedia"}
               </p>
               <button
-                onClick={handleModalOpen}
+                onClick={handleButtonClick}
                 className="mt-6 px-4 py-2 bg-[#0a61aa] text-white text-xs font-bold rounded-md"
               >
-                Ikuti Kelas Ini
+                {detail.isEnrolled ? "Mulai Kelas" : "Beli Kelas"}
               </button>
             </div>
             <div className="w-full sm:w-[512px] pt-16 pb-16">
@@ -135,7 +151,9 @@ export const DetailKelas = () => {
           <div className="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50">
             <div className="bg-white p-8 rounded-lg shadow-lg">
               <h2 className="text-lg font-semibold">Konfirmasi Pembayaran</h2>
-              <p className="mt-4">Apakah Anda yakin ingin melanjutkan ke pembayaran untuk mengikuti kelas ini?</p>
+              <p className="mt-4">
+                Apakah Anda yakin ingin melanjutkan ke pembayaran untuk mengikuti kelas ini?
+              </p>
               <div className="mt-6 flex justify-end gap-4">
                 <button
                   onClick={handleModalClose}
@@ -195,23 +213,26 @@ export const DetailKelas = () => {
                   <Link
                     to={`/course/${id}/chapter/${chapter.id}`}
                     key={chapter.id}
-                    className="block p-4 bg-[#ebebeb] rounded-md mb-4 hover:bg-grey-dark"
+                    className="block p-2 mb-2 rounded-md bg-gray-200 hover:bg-gray-300"
                   >
-                    {index + 1}. {chapter.chapterTitle}
+                    Chapter {index + 1}: {chapter.chapterTitle}
                   </Link>
                 ))
               ) : (
-                <div className="p-4 bg-grey rounded-md">Data chapter belum tersedia</div>
+                <p>Tidak ada chapter yang tersedia.</p>
               )}
             </div>
           </div>
         </div>
 
-        <div className="mt-12">
+        {/* Rekomendasi Kelas */}
+        <div className="mt-8">
           <CardRecommended />
         </div>
       </div>
+
       <Footer />
+
       {transactionMessage && <div className="text-red-500">{transactionMessage}</div>}
     </>
   );
