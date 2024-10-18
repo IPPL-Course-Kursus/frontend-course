@@ -345,7 +345,7 @@ const TopikKelas = () => {
                   </div>
                   <div className="flex left-0 mt-2 my-2">
                     <Link
-                      to="/detail-kelas"
+                      to={`/course-detail/${course.id}`}
                       className="py-1 px-4 bg-blue-600 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
                     >
                       {course.coursePrice === 0 ? "Mulai Kelas" : `Beli Rp ${course.coursePrice}`}
