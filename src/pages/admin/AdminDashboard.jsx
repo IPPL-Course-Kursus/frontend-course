@@ -7,6 +7,7 @@ import { fetchStats, fetchPayments, fetchuser } from "../../redux/actions/adminD
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
+  // eslint-disable-next-line no-unused-vars
   const { stats, paymentStatus, loading, user } = useSelector((state) => state.adminDashboard);
 
   const [globalSearch, setGlobalSearch] = useState("");

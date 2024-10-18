@@ -3,6 +3,9 @@ import { FaArrowLeft, FaCheckCircle } from "react-icons/fa";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import ProgressBar from "../../components/MyCourse/ProgressBar";
+import { 
+  fetchAllTypes, fetchTypeById, fetchAllCourses, fetchCourseByType, fetchCourseBySearch, fetchCourseById, fetchAllTypesByLevel, fetchCourseByCategory, fetchCourseByUserId, fetchCourseByFilter, fetchAllCoursesByUserId, 
+fetchAllCourseLevels, fetchAllCourseLevelsById, fetchAll, fetchById, fetchChapterByCourseId, fetchChapterById,fetchContentByChapterId, fetchContentById, fetchCourseUser, fetchDetailCourseUser, fetchNewRequests, updateNewRequest, deleteNewRequest, createNewRequest} from "../../redux/actions/mulaiKelasActions";
 const MulaiKelas = () => {
   const [code, setCode] = useState("");
   const [output, setOutput] = useState("");
@@ -112,9 +115,9 @@ const MulaiKelas = () => {
   <div className="mb-6">
     <div className="flex justify-between items-center">
       <h4 className="text-blue-600 font-bold">Progres Belajar</h4>
-      <span className="text-sm text-gray-500">10%</span> {/* Persentase progress */}
+      <span className="text-sm text-gray-500">90%</span> {/* Persentase progress */}
     </div>
-    <ProgressBar percentage={10} /> {/* Contoh untuk progress 10% */}
+    <ProgressBar percentage={90} /> {/* Contoh untuk progress 10% */}
   </div>
 
   {/* Chapter List */}
