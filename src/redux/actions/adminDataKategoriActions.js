@@ -71,7 +71,7 @@ export const deleteCategory = (categoryId) => async (dispatch) => {
         dispatch(deleteCategorySuccess(response.data));
         return response.data;
     } catch (error) {
-        dispatch(deleteCategoryFail(error.response?.data || "Delete failed"));
+        dispatch(deleteCategoryFailure(error.response?.data || "Delete failed"));
         throw error;
     }
 };
