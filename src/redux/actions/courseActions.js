@@ -40,6 +40,9 @@ export const getPopularCourse = () => async (dispatch) => {
     const response = await axios.get(`${api_url}course/popular`);
     const coursePopular = response.data;
 
+    console.log("ada data popilar",response.data);
+    
+
     console.log("Data kursus populer:", coursePopular); // Debugging
     dispatch(setPopular(coursePopular));
   } catch (error) {

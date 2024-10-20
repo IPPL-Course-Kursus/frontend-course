@@ -167,7 +167,7 @@ const InstruktorDashboard = () => {
           {/* Section untuk Status Pembayaran */}
           <div className="flex justify-between items-center mb-4">
             {/* Judul Status Pembayaran */}
-            <h2 className="text-xl font-bold">Instruktor Active</h2>
+            <h2 className="text-xl font-bold">Instruktor Active note user yang beli kelas instruktur</h2>
 
             {/* Filter Dropdown dan Search Icon */}
             <div className="flex items-center">
@@ -216,7 +216,7 @@ const InstruktorDashboard = () => {
                   <th className="px-4 py-2">Tanggal Bayar</th>
                 </tr>
               </thead>
-              {/* <tbody>
+              <tbody>
                 {filteredPayments.length === 0 ? (
                   <tr>
                     <td colSpan="6" className="px-4 py-2 text-center">
@@ -241,7 +241,7 @@ const InstruktorDashboard = () => {
                     </tr>
                   ))
                 )}
-              </tbody> */}
+              </tbody>
             </table>
           </div>
         </div>

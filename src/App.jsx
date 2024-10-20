@@ -1,10 +1,4 @@
-import {
-  BrowserRouter,
-  Route,
-  Routes,
-  useNavigate,
-  useLocation,
-} from "react-router-dom";
+import { BrowserRouter, Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import Home from "./pages/Home";
@@ -36,6 +30,7 @@ import InstruktorDashboard from "./pages/instruktor/InstruktorDashboard";
 import InstruktorDataKelas from "./pages/instruktor/InstruktorDataKelas";
 import InstruktorDataModule from "./pages/instruktor/InstruktorDataModule";
 import InstruktorDataKonten from "./pages/instruktor/InstruktorDataKonten";
+import InstrukturPorofile from "./pages/instruktor/InstrukturPorofile";
 
 // import NoAccessToken from "./security/NoAccessToken";
 // import Protected from "./security/Protected";
@@ -110,7 +105,7 @@ function AppRoutes() {
       <Route path="/admin/data-kategori" element={<AdminDataKategori />} />
       <Route path="/admin/data-level" element={<AdminDataLevel />} />
       <Route path="/admin/data-Type" element={<AdminDataType />} />
-      
+
       {/* Kelola Instruktur ADMIN */}
       <Route path="/admin/data-instruktur" element={<AdminDataInstruktur />} />
       <Route path="/admin/regis-instruktur" element={<AdminRegisterInstruktur />} />
@@ -120,6 +115,7 @@ function AppRoutes() {
       <Route path="/inst/data-kelas" element={<InstruktorDataKelas />} />
       <Route path="/inst/data-konten/:id" element={<InstruktorDataKonten />} />
       <Route path="/inst/data-module/:id" element={<InstruktorDataModule />} />
+      <Route path="/inst/profile" element={<InstrukturPorofile />} />
 
       {/* NotFound */}
       <Route path="/*" element={<NotFound />} />

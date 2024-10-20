@@ -10,6 +10,10 @@ const contentSlice = createSlice({
   name: "content",
   initialState,
   reducers: {
+    fetchContentesRequest: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
     fetchContentStart: (state) => {
       state.loading = true;
       state.error = null;
@@ -28,15 +32,21 @@ const contentSlice = createSlice({
     deleteContent: (state, action) => {
       state.content = state.content.filter((content) => content.id !== action.payload);
     },
+    deleteContentFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
 });
 
 export const {
+  fetchContentesRequest,
   fetchContentStart,
   fetchContentSuccess,
   fetchContentFailure,
   addContent,
   deleteContent,
+  deleteContentFailure,
 } = contentSlice.actions;
 
 export default contentSlice.reducer;

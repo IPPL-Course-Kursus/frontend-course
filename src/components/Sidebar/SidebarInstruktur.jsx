@@ -49,16 +49,15 @@ const SidebarInstruktur = () => {
                   Data Kategori
                 </span>
               </Link>
-              <Link to="">
-                <span
-                  // href="/admin/data-instruktur"
-                  className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700"
-                >
-                  Data Instruktur
-                </span>
-              </Link>
             </div>
           )}
+        </div>
+        <div className="relative">
+          <Link to="/inst/profile">
+            <span className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
+              Profile Instruktur
+            </span>
+          </Link>
         </div>
         <a href="#" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
           Keluar

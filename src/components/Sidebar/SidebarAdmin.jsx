@@ -4,7 +4,7 @@ import { useState } from "react";
 const Sidebar = () => {
   const [isDataMenuOpenKelas, setIsDataMenuOpenKelas] = useState(false);
   const [isDataMenuOpenInstruktur, setIsDataMenuOpenInstruktur] = useState(false);
-
+  
   const toggleDataKelas = () => {
     setIsDataMenuOpenKelas(!isDataMenuOpenKelas);
   };
@@ -101,13 +101,13 @@ const Sidebar = () => {
         </div>
         <div className="relative">
           <button
-            onClick={toggleDataInstruktur}
+            // onClick={toggleDataInstruktur}
             className="w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700 flex justify-between items-center"
           >
             Kelola Instruktur
             <span>{isDataMenuOpenInstruktur ? "▲" : "▼"}</span>
           </button>
-          {isDataMenuOpenInstruktur && (
+          {/* {isDataMenuOpenInstruktur && ( */}
             <div className="pl-4">
               <a
                 href="/admin/data-kategori"
@@ -134,7 +134,7 @@ const Sidebar = () => {
                 Data Type
               </a>
             </div>
-          )}
+          {/* )} */}
         </div>
         <a href="#" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
           {/* <AiOutlineLogout className='w-20 h-20'/> */}

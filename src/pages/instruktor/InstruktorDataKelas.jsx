@@ -22,7 +22,7 @@ const InstruktorDataKelas = () => {
   const [filter, setFilter] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1); // Halaman saat ini
-  const itemsPerPage = 10; // Jumlah data yang ditampilkan per halaman
+  const itemsPerPage = 9; // Jumlah data yang ditampilkan per halaman
   const dispatch = useDispatch();
   const courses = useSelector((state) => state.course.courses);
 

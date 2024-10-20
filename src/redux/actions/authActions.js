@@ -39,18 +39,47 @@ const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
 
 // export const login = (email, password, navigate) => async (dispatch) => {
 //   try {
-//     const response = await axios.post(`${api_url}/auth/login`, {
+//     if (!email || !password) {
+//       toast.error("Email dan Password harus diisi.");
+//       return;
+//     }
+
+//     // Melakukan permintaan login
+//     const response = await axios.post(`${api_url}auth/login`, {
 //       email,
 //       password,
 //     });
-//     const { data } = response.data;
-//     const { token } = data;
 
-//     dispatch(setToken(token));
+//     const { data } = response.data;
+//     const { token, user, role } = data;
+
+//     // Log respons dari backend
+//     console.log("Data login dari backend:", response.data);
+
+//     // Log role yang diterima dari backend
+//     console.log("Role pengguna setelah login:", role);
+
+//     // Simpan token di cookies
+//     Cookies.set("token", token, { expires: 1 / 6 });
+
+//     // Dispatch login success dan log role di redux
+//     dispatch(loginSuccess({ token, user, role }));
+//     console.log("Role yang di-dispatch ke Redux:", role);
+
 //     toast.success("Login Berhasil");
-//     setTimeout(() => {
+
+//     // Arahkan pengguna sesuai role-nya
+//     if (role === "admin") {
+//       console.log("Navigasi ke admin dashboard");
+//       navigate("/admin/dashboard");
+//     } else if (role === "instructor") {
+//       console.log("Navigasi ke instructor dashboard");
+//       navigate("/inst/dashboard");
+//     } else {
+//       console.log("Navigasi ke user dashboard");
 //       navigate("/");
-//     }, 1000); // Ganti nilai 1000 dengan durasi yang diinginkan (dalam milidetik)
+//     }
+//     // Arahkan pengguna sesuai role-nya
 //   } catch (error) {
 //     if (error.response) {
 //       if (error.response.status === 403) {
@@ -66,6 +95,49 @@ const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
 //   }
 // };
 
+// export const login = (email, password, navigate) => async (dispatch) => {
+//   try {
+//     if (!email || !password) {
+//       toast.error("Email dan Password harus diisi.");
+//       return;
+//     }
+
+//     const response = await axios.post(`${api_url}auth/login`, {
+//       email,
+//       password,
+//     });
+
+//     const { data } = response.data;
+//     const { token, user, role } = data;
+
+//     Cookies.set("token", token, { expires: 1 / 6 });
+
+//     dispatch(loginSuccess({ token, user, role }));
+
+//     toast.success("Login Berhasil");
+
+// // Arahkan pengguna sesuai role-nya
+// if (role === "admin") {
+//   navigate("/admin/dashboard");
+// } else if (role === "instructor") {
+//   navigate("/inst/dashboard");
+// } else {
+//   navigate("/");
+// }
+//   } catch (error) {
+//     if (error.response) {
+//       if (error.response.status === 403) {
+//         toast.error("Email atau Password Anda salah. Silahkan coba lagi.");
+//       } else if (error.response.status === 404) {
+//         toast.error("Email tidak terdaftar. Silakan cek kembali email Anda.");
+//       } else {
+//         toast.error("Login gagal. Silakan coba lagi nanti.");
+//       }
+//     } else {
+//       toast.error("Terjadi kesalahan pada server. Silakan coba lagi nanti.");
+//     }
+//   }
+// };
 export const login = (email, password, navigate) => async (dispatch) => {
   try {
     // Memvalidasi input
@@ -83,6 +155,7 @@ export const login = (email, password, navigate) => async (dispatch) => {
     const { data } = response.data;
     const { token, user, role } = data; // Hanya menyimpan token, user, dan role
     console.log(response.data);
+    console.log("ini data login:", response.data);
 
     // Menyimpan token di cookies (4 jam)
     Cookies.set("token", token, { expires: 1 / 6 });
@@ -90,13 +163,12 @@ export const login = (email, password, navigate) => async (dispatch) => {
     // Dispatch tindakan untuk menyimpan token dan user di Redux
     dispatch(loginSuccess({ token, user, role }));
     console.log(role);
-    
 
     toast.success("Login Berhasil");
 
     // Navigasi ke halaman utama dengan delay
     setTimeout(() => {
-      navigate("/");
+      navigate("/inst/dashboard");
     }, 1000); // Durasi delay 1 detik
   } catch (error) {
     // Penanganan error yang lebih spesifik
@@ -205,7 +277,6 @@ export const logout = () => (dispatch) => {
   dispatch(selectToken(null));
   dispatch(setUser(null));
 };
-
 
 export const sendEmail = (email) => async (dispatch) => {
   try {
