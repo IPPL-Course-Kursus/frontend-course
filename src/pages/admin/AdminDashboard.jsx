@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaUsers, FaSearch, FaFilter, FaBars } from "react-icons/fa";
 import SideBar from "../../components/Sidebar/SidebarAdmin";
-import { fetchStats, fetchPayments, fetchuser } from "../../redux/actions/adminDashboardActions";
+import { fetchStats, fetchPayments, fetchuser } from "../../redux/actions/admindashboardaction";
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
