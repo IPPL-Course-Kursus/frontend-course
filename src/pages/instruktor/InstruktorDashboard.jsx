@@ -6,10 +6,9 @@ import { fetchStats, fetchPayments, fetchuser } from "../../redux/actions/instru
 
 const InstruktorDashboard = () => {
   const dispatch = useDispatch();
-  // eslint-disable-next-line no-unused-vars
-  const { stats, paymentStatus, loading, user } = useSelector((state) => state.instruktorDashboard); // Pastikan nama state sesuai
+  const { stats, paymentStatus, loading, user } = useSelector((state) => state.instruktorDashboard);
 
-  // State untuk search input
+  // State for search input
   const [globalSearch, setGlobalSearch] = useState("");
   const [paymentSearch, setPaymentSearch] = useState("");
   const [searchVisible, setSearchVisible] = useState(false);
@@ -25,7 +24,15 @@ const InstruktorDashboard = () => {
   const freeClassesCount = paymentStatus.filter(payment => payment.paymentMethod === "Free").length;
   const premiumClassesCount = paymentStatus.filter(payment => payment.paymentMethod !== "Free").length;
 
-  // Filter berdasarkan global search, search payment, dan filter status pembayaran
+  // Create an array for card data
+  const cardData = [
+    { count: user?.userCount || 0, label: "Users", color: "bg-primary" },
+    { count: user?.instrukturCount || 0, label: "Instruktor", color: "bg-success" },
+    { count: freeClassesCount, label: "Free Class", color: "bg-[#173D94]" },
+    { count: premiumClassesCount, label: "Premium Class", color: "bg-[#0a61aa]" }
+  ];
+
+  // Filter payments based on searches and filters
   const filteredPayments = paymentStatus.filter((payment) => {
     const isGlobalSearchMatch =
       globalSearch === "" ||
@@ -45,11 +52,17 @@ const InstruktorDashboard = () => {
     return isGlobalSearchMatch && isPaymentSearchMatch && isFilterMatch;
   });
 
-  // Sort payments by ID in ascending order (from 1 upwards)
+  // Sort payments by ID in ascending order
   const sortedPayments = filteredPayments.sort((a, b) => a.id - b.id);
   
   const handleFilterChange = (e) => setFilter(e.target.value);
   const toggleSearch = () => setSearchVisible(!searchVisible);
+
+  // Debugging output
+  console.log("Stats:", stats);
+  console.log("Payment Status:", paymentStatus);
+  console.log("Loading:", loading);
+  console.log("User:", user);
 
   return (
     <div className="flex">
@@ -74,42 +87,17 @@ const InstruktorDashboard = () => {
 
         {/* Cards */}
         <div className="grid grid-cols-4 gap-6 mb-8">
-          <div className="bg-primary text-white font-semibold p-4 rounded-lg shadow-sm flex items-center justify-center">
-            <div className="bg-white rounded-full p-2">
-              <FaUsers className="text-2xl text-primary" />
+          {cardData.map((card, index) => (
+            <div key={index} className={`${card.color} text-white font-semibold p-4 rounded-lg shadow-sm flex items-center justify-center`}>
+              <div className="bg-white rounded-full p-2">
+                <FaUsers className="text-2xl text-primary" />
+              </div>
+              <div className="ml-4">
+                <div className="text-2xl">{card.count}</div>
+                <div className="text-sm">{card.label}</div>
+              </div>
             </div>
-            <div className="ml-4">
-              <div className="text-2xl">{stats.users || 0}</div>
-              <div className="text-sm">Users</div>
-            </div>
-          </div>
-          <div className="bg-success text-white font-semibold p-4 rounded-lg shadow-sm flex items-center justify-center">
-            <div className="bg-white rounded-full p-2">
-              <FaUsers className="text-2xl text-primary" />
-            </div>
-            <div className="ml-4">
-              <div className="text-2xl">{stats.instruktur || 0}</div>
-              <div className="text-sm">Instruktor</div>
-            </div>
-          </div>
-          <div className="bg-[#173D94] text-white font-semibold p-4 rounded-lg shadow-sm flex items-center justify-center">
-            <div className="bg-white rounded-full p-2">
-              <FaUsers className="text-2xl text-primary" />
-            </div>
-            <div className="ml-4">
-              <div className="text-2xl">{freeClassesCount}</div>
-              <div className="text-sm">Free Class</div>
-            </div>
-          </div>
-          <div className="bg-[#173D94] text-white font-semibold p-4 rounded-lg shadow-sm flex items-center justify-center">
-            <div className="bg-white rounded-full p-2">
-              <FaUsers className="text-2xl text-primary" />
-            </div>
-            <div className="ml-4">
-              <div className="text-2xl">{premiumClassesCount}</div>
-              <div className="text-sm">Premium Class</div>
-            </div>
-          </div>
+          ))}
         </div>
 
         {/* Payment Table */}

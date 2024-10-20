@@ -1,6 +1,6 @@
 const apiUrl = import.meta.env.VITE_REACT_API_ADDRESS;
 
-export const fetchStats = () => async (dispatch) => {
+export const fetchStatsinst = () => async (dispatch) => {
   dispatch({ type: "FETCH_STATS_REQUEST" });
   try {
     const response = await fetch(`${apiUrl}transaction/`); // Menggunakan apiUrl untuk mendapatkan stats
@@ -15,7 +15,7 @@ export const fetchStats = () => async (dispatch) => {
 };
 
 
-export const fetchuser = () => async (dispatch) => {
+export const fetchuserinst = () => async (dispatch) => {
     dispatch({ type: "FETCH_user_REQUEST" });
     try {
       const response = await fetch(`${apiUrl}auth/count-by-role/`);
@@ -31,7 +31,7 @@ export const fetchuser = () => async (dispatch) => {
   };
   
 
-  export const fetchkategori = () => async (dispatch) => {
+  export const fetchkategoriinst = () => async (dispatch) => {
     dispatch({ type: "FETCH_kategori_REQUEST" });
     try {
       const response = await fetch(`${apiUrl}category/`);
@@ -46,7 +46,7 @@ export const fetchuser = () => async (dispatch) => {
     }
   };
 
-export const fetchPayments = () => async (dispatch) => {
+export const fetchPaymentsinst = () => async (dispatch) => {
   dispatch({ type: "FETCH_PAYMENTS_REQUEST" });
   try {
     const response = await fetch(`${apiUrl}transaction/`); // Menggunakan apiUrl untuk mendapatkan payment status

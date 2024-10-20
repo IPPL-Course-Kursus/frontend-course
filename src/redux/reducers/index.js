@@ -12,6 +12,7 @@ import courseReducer from "./courseReducers";
 import categoryReducer from "./categoryReducers";
 import adminDataKategoriReducer from "./adminDataKategoriReducers";
 import adminDashboardReducers from "./adminDashboardReducers"; // Pastikan ini sudah benar
+import instrukturDashboardReducers from "./instrukturDashboardReducers";
 
 export default combineReducers({
   // Auth
@@ -34,4 +35,8 @@ export default combineReducers({
 
   // Admin Dashboard
   adminDashboard: adminDashboardReducers, // Sesuaikan dengan nama
+
+  // Dashboard Instruktur
+  instrukturDashboard: instrukturDashboardReducers,
+
 });
