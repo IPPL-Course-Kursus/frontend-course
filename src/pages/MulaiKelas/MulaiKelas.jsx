@@ -1,23 +1,34 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FaArrowLeft, FaCheckCircle } from "react-icons/fa"; // Pastikan import path benar
+import {
+  fetchAllCourses,
+  fetchCourseById,
+  fetchChapterByCourseId,
+  fetchContentByChapterId,
+} from "../../redux/actions/mulaiKelasActions";  // Import hanya action yang digunakan
+
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import ProgressBar from "../../components/MyCourse/ProgressBar";
+import { FaArrowLeft, FaCheckCircle } from "react-icons/fa";
 
 const MulaiKelas = () => {
   const dispatch = useDispatch();
-  const { courses, loading, error } = useSelector((state) => state.mulaiKelas); // Pastikan state sesuai dengan reducer
+  
   const [code, setCode] = useState("");
   const [output, setOutput] = useState("");
 
   useEffect(() => {
-    dispatch(fetchCourses());
+    // Memanggil aksi untuk mendapatkan data kursus, chapter, dan konten yang dibutuhkan
+    dispatch(fetchAllCourses());
+    dispatch(fetchCourseById(1));  // Berikan ID kursus yang sesuai
+    dispatch(fetchChapterByCourseId(1));  // Berikan ID kursus yang sesuai
+    dispatch(fetchContentByChapterId(1));  // Berikan ID chapter yang sesuai
   }, [dispatch]);
 
   const runCode = () => {
     try {
-      const result = eval(code); // Gunakan eval dengan hati-hati
+      const result = eval(code);
       setOutput(result || "Code ran successfully");
     } catch (error) {
       setOutput("Error: " + error.message);
@@ -33,21 +44,6 @@ const MulaiKelas = () => {
     setCode("");
   };
 
-  const handleAddCourse = () => {
-    const newCourse = {
-      categoryId: 1,
-      courseLevelId: 1,
-      typeCourseId: 1,
-      courseName: "New Course",
-      coursePrice: 100,
-      courseDiscountPercent: 0,
-      certificateStatus: true,
-      publish: "Published",
-      totalDuration: 120,
-    };
-    dispatch(addCourse(newCourse));
-  };
-
   return (
     <>
       <Navbar />
@@ -56,13 +52,17 @@ const MulaiKelas = () => {
         <div className="col-span-3">
           {/* Header Section */}
           <header className="bg-blue-50 p-6 rounded-lg shadow-sm mb-6">
+            {/* Back button */}
             <div className="flex items-center gap-4">
               <FaArrowLeft className="text-gray-500 cursor-pointer" />
               <h1 className="text-xl font-bold text-gray-800">Kelas Lainnya</h1>
             </div>
+
+            {/* Main class information */}
             <div className="mt-4">
               <h1 className="text-3xl font-bold text-gray-800 mb-2">Java Script</h1>
               <h2 className="text-xl text-gray-600">Intro to Basic Java Script</h2>
+
               <div className="flex items-center gap-4 mt-4">
                 <span className="text-green-600 flex items-center gap-2">
                   <FaCheckCircle />
@@ -121,40 +121,76 @@ const MulaiKelas = () => {
               <p className="text-gray-600 mt-2">{output}</p>
             </div>
           </section>
-
-          {/* Redux Actions Section */}
-          <section className="bg-white p-6 rounded-lg shadow-lg mb-10">
-            <h3 className="text-gray-700 text-2xl font-semibold mb-4">Redux Actions</h3>
-            <button onClick={handleAddCourse} className="bg-blue-500 text-white py-2 px-4 rounded-lg">
-              Add Course
-            </button>
-            {loading ? (
-              <p>Loading...</p>
-            ) : error ? (
-              <p>Error: {error}</p>
-            ) : (
-              <p>{JSON.stringify(courses)}</p>
-            )}
-          </section>
         </div>
 
         {/* Sidebar */}
         <aside className="col-span-1 bg-white p-6 rounded-lg shadow-lg">
           <h3 className="text-gray-700 text-2xl font-semibold mb-4">Materi Belajar</h3>
+
+          {/* Progress bar menggunakan komponen ProgressBar */}
           <div className="mb-6">
-            <h4 className="text-blue-600 font-bold">Progres Belajar</h4>
-            <ProgressBar percentage={10} />
+            <div className="flex justify-between items-center">
+              <h4 className="text-blue-600 font-bold">Progres Belajar</h4>
+              <span className="text-sm text-gray-500">90%</span>
+            </div>
+            <ProgressBar percentage={90} />
           </div>
-          {/* Daftar Chapter */}
+
+          {/* Chapter List */}
           <div className="mb-6">
-            <h4 className="text-blue-600 font-bold">Chapter 1 - Pendahuluan</h4>
+            <div className="flex justify-between items-center">
+              <h4 className="text-blue-600 font-bold">Chapter 1 - Pendahuluan</h4>
+              <span className="text-sm text-gray-500">60 Menit</span>
+            </div>
             <ul className="space-y-2 mt-4">
-              <li className="text-gray-700">Lorem Ipsum</li>
-              <li className="text-gray-700">Lorem Ipsum</li>
-              <li className="text-gray-700">Lorem Ipsum</li>
+              <li className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <span className="bg-blue-200 text-blue-800 rounded-full h-8 w-8 flex items-center justify-center">1</span>
+                  <span className="text-gray-700">Lorem Ipsum</span>
+                </div>
+                <span className="text-green-500">▶</span>
+              </li>
+              <li className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <span className="bg-blue-200 text-blue-800 rounded-full h-8 w-8 flex items-center justify-center">2</span>
+                  <span className="text-gray-700">Lorem Ipsum</span>
+                </div>
+                <span className="text-green-500">▶</span>
+              </li>
+              <li className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <span className="bg-blue-200 text-blue-800 rounded-full h-8 w-8 flex items-center justify-center">3</span>
+                  <span className="text-gray-700">Lorem Ipsum</span>
+                </div>
+                <span className="text-blue-500">⏵</span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="mb-6">
+            <div className="flex justify-between items-center">
+              <h4 className="text-blue-600 font-bold">Chapter 2 - Memulai Desain</h4>
+              <span className="text-sm text-gray-500">120 Menit</span>
+            </div>
+            <ul className="space-y-2 mt-4">
+              <li className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <span className="bg-gray-200 text-gray-400 rounded-full h-8 w-8 flex items-center justify-center">4</span>
+                  <span className="text-gray-400">Lorem Ipsum</span>
+                </div>
+                <span className="text-gray-400">🔒</span>
+              </li>
+              <li className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <span className="bg-gray-200 text-gray-400 rounded-full h-8 w-8 flex items-center justify-center">5</span>
+                  <span className="text-gray-400">Lorem Ipsum</span>
+                </div>
+                <span className="text-gray-400">🔒</span>
+              </li>
             </ul>
           </div>
         </aside>
+
       </div>
       <Footer />
     </>

@@ -1,312 +1,258 @@
+import axios from 'axios';
+import {
+  setTypes,
+  setLevels,
+  setCourses,
+  setFilteredCourses,
+  setCourseDetail,
+  setChapters,
+  setContent,
+  setCourseUser,
+  setDetailCourseUser,
+  setRequests,
+  setNewRequest,
+  updateNewRequest as updateRequestAction,
+  deleteRequest,
+} from '../reducers/mulaiKelasReducers';
+import { getCookie } from 'cookies-next';
 
-//   import axios from "axios";
-//   import {
-//     setTypes,
-//     setLevels,
-//     setCourses,
-//     setFilteredCourses,
-//     setCourseDetail,
-//     setChapters,
-//     setContent,
-//     setCourseUser,
-//     setDetailCourseUser,
-//     setRequests,
-//     setNewRequest,
-//     updateNewRequest as updateRequestAction,
-//     deleteRequest,
-//   } from "../reducers/mulaiKelasReducer";
+const apiUrl = import.meta.env.VITE_REACT_API_ADDRESS;
 
-//   const api_url = "https://backend-course-production-9a7a.up.railway.app/";
+// Fetch all types
+export const fetchAllTypes = () => async (dispatch) => {
+  try {
+    const token = getCookie("token");
+    if (!token) {
+      throw new Error("Token tidak ditemukan di cookies");
+    }
 
-//   // Fetch all types
-//   export const fetchAllTypes = () => async (dispatch) => {
-//     try {
-//       const response = await axios.get(${api_url}/type-course);
-//       dispatch(setTypes(response.data));
-//     } catch (error) {
-//       console.error("Error fetching all types:", error.message);
-//     }
-//   };
+    const response = await axios.get(`${apiUrl}/type-course`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    dispatch(setTypes(response.data));
+  } catch (error) {
+    console.error('Error fetching all types:', error.response ? error.response.data : error.message);
+  }
+};
 
+// Fetch course levels
+export const fetchAllCourseLevels = () => async (dispatch) => {
+  try {
+    const token = getCookie("token");
+    if (!token) {
+      throw new Error("Token tidak ditemukan di cookies");
+    }
 
-//   // Di dalam mulaikelasAction.js
-//   export const createNewRequest = (requestData) => async (dispatch) => {
-//     try {
-//       const response = await axios.post(${api_url}requests, requestData);
-//       dispatch(setNewRequest(response.data));
-//     } catch (error) {
-//       console.error("Error posting new request:", error.message);
-//     }
-//   };
+    const response = await axios.get(`${apiUrl}/course-level`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    dispatch(setLevels(response.data));
+  } catch (error) {
+    console.error('Error fetching course levels:', error.response ? error.response.data : error.message);
+  }
+};
 
+// Fetch all courses
+export const fetchAllCourses = () => async (dispatch) => {
+  try {
+    const token = getCookie("token");
+    if (!token) {
+      throw new Error("Token tidak ditemukan di cookies");
+    }
 
-//   // Di dalam mulaikelasAction.js
-//   export const deleteNewRequest = (id) => async (dispatch) => {
-//     try {
-//       await axios.delete(${api_url}requests/${id});
-//       dispatch(deleteRequest(id));
-//     } catch (error) {
-//       console.error("Error deleting request:", error.message);
-//     }
-//   };
+    const response = await axios.get(`${apiUrl}course/`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    dispatch(setCourses(response.data));
+  } catch (error) {
+    console.error('Error fetching all courses:', error.response ? error.response.data : error.message);
+  }
+};
 
+// Fetch course by ID
+export const fetchCourseById = (id) => async (dispatch) => {
+  try {
+    const token = getCookie("token");
+    if (!token) {
+      throw new Error("Token tidak ditemukan di cookies");
+    }
 
-//   // Di dalam mulaikelasAction.js
-//   export const fetchAll = () => async (dispatch) => {
-//     try {
-//       const response = await axios.get(${api_url}/all-endpoint); // Ganti dengan endpoint yang sesuai
-//       dispatch(setCourses(response.data)); // Misalnya, jika data ini terkait dengan kursus
-//     } catch (error) {
-//       console.error("Error fetching all data:", error.message);
-//     }
-//   };
+    const response = await axios.get(`${apiUrl}course/detail-course/${id}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    dispatch(setCourseDetail(response.data));
+  } catch (error) {
+    console.error('Error fetching course by ID:', error.response ? error.response.data : error.message);
+  }
+};
 
-//   // mulaikelasAction.js
-//   export const updateNewRequest = (id, requestData) => async (dispatch) => {
-//     try {
-//       const response = await axios.put(${api_url}/requests/${id}, requestData);
-//       dispatch(updateRequestAction(response.data)); // Gunakan nama baru di sini
-//     } catch (error) {
-//       console.error("Error updating request:", error.message);
-//     }
-//   };
+// Fetch course by type
+export const fetchCourseByType = (typeId) => async (dispatch) => {
+  try {
+    const token = getCookie("token");
+    if (!token) {
+      throw new Error("Token tidak ditemukan di cookies");
+    }
 
+    const response = await axios.get(`${apiUrl}course/type/${typeId}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    dispatch(setFilteredCourses(response.data));
+  } catch (error) {
+    console.error('Error fetching course by type:', error.response ? error.response.data : error.message);
+  }
+};
 
-//   // Di dalam mulaikelasAction.js
-//   export const fetchById = (id) => async (dispatch) => {
-//     try {
-//       const response = await axios.get(${api_url}/some-endpoint/${id}); // Ganti dengan endpoint yang sesuai
-//       // Misalnya, kamu ingin menyimpan data ini di reducer tertentu
-//       dispatch(setCourseDetail(response.data)); // Sesuaikan dengan action yang tepat
-//     } catch (error) {
-//       console.error("Error fetching by ID:", error.message);
-//     }
-//   };
+// Fetch course by category
+export const fetchCourseByCategory = (categoryId) => async (dispatch) => {
+  try {
+    const token = getCookie("token");
+    if (!token) {
+      throw new Error("Token tidak ditemukan di cookies");
+    }
 
+    const response = await axios.get(`${apiUrl}course/category/${categoryId}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    dispatch(setFilteredCourses(response.data));
+  } catch (error) {
+    console.error('Error fetching course by category:', error.response ? error.response.data : error.message);
+  }
+};
 
+// Fetch chapters by course ID
+export const fetchChapterByCourseId = (courseId) => async (dispatch) => {
+  try {
+    const token = getCookie("token");
+    if (!token) {
+      throw new Error("Token tidak ditemukan di cookies");
+    }
 
-//   // Fetch type by ID
-//   export const fetchTypeById = (id) => async (dispatch) => {
-//     try {
-//       const response = await axios.get(${api_url}type-course/3${id});
-//       dispatch(setTypes(response.data));
-//     } catch (error) {
-//       console.error("Error fetching type by ID:", error.message);
-//     }
-//   };
+    const response = await axios.get(`${apiUrl}chapter/course/${courseId}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    dispatch(setChapters(response.data));
+  } catch (error) {
+    console.error('Error fetching chapters by course ID:', error.response ? error.response.data : error.message);
+  }
+};
 
-//   // Fetch all courses
-//   export const fetchAllCourses = () => async (dispatch) => {
-//     try {
-//       const response = await axios.get(${api_url}/course/);
-//       dispatch(setCourses(response.data));
-//     } catch (error) {
-//       console.error("Error fetching all courses:", error.message);
-//     }
-//   };
+// Fetch content by chapter ID
+export const fetchContentByChapterId = (chapterId) => async (dispatch) => {
+  try {
+    const token = getCookie("token");
+    if (!token) {
+      throw new Error("Token tidak ditemukan di cookies");
+    }
 
+    const response = await axios.get(`${apiUrl}content/chapter/${chapterId}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    dispatch(setContent(response.data));
+  } catch (error) {
+    console.error('Error fetching content by chapter ID:', error.response ? error.response.data : error.message);
+  }
+};
 
-//   // Fetch course by type
-//   export const fetchCourseByType = (typeId) => async (dispatch) => {
-//     try {
-//       const response = await axios.get(${api_url}/course/type/1${typeId});
-//       dispatch(setFilteredCourses(response.data));
-//     } catch (error) {
-//       console.error("Error fetching course by type:", error.message);
-//     }
-//   };
+// Fetch course user by ID
+export const fetchCourseUser = (userId) => async (dispatch) => {
+  try {
+    const token = getCookie("token");
+    if (!token) {
+      throw new Error("Token tidak ditemukan di cookies");
+    }
 
+    const response = await axios.get(`${apiUrl}courseUser/${userId}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    dispatch(setCourseUser(response.data));
+  } catch (error) {
+    console.error('Error fetching course user:', error.response ? error.response.data : error.message);
+  }
+};
 
-//   // Fetch course by search
-//   export const fetchCourseBySearch = (query) => async (dispatch) => {
-//     try {
-//       const response = await axios.get(${api_url}/courses/search?query=${query});
-//       dispatch(setFilteredCourses(response.data));
-//     } catch (error) {
-//       console.error("Error fetching course by search:", error.message);
-//     }
-//   };
+// Fetch detailed course user by ID
+export const fetchDetailCourseUser = (userId) => async (dispatch) => {
+  try {
+    const token = getCookie("token");
+    if (!token) {
+      throw new Error("Token tidak ditemukan di cookies");
+    }
 
-//   // Fetch course by ID
-//   export const fetchCourseById = (id) => async (dispatch) => {
-//     try {
-//       const response = await axios.get(${api_url}/course/detail-course/3${id});
-//       dispatch(setCourseDetail(response.data));
-//     } catch (error) {
-//       console.error("Error fetching course by ID:", error.message);
-//     }
-//   };
+    const response = await axios.get(`${apiUrl}courseUser/detail/${userId}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    dispatch(setDetailCourseUser(response.data));
+  } catch (error) {
+    console.error('Error fetching detailed course user:', error.response ? error.response.data : error.message);
+  }
+};
 
-//   // Fetch all types by level
-//   export const fetchAllTypesByLevel = (levelId) => async (dispatch) => {
-//     try {
-//       const response = await axios.get(${api_url}/types/level/${levelId});
-//       dispatch(setTypes(response.data));
-//     } catch (error) {
-//       console.error("Error fetching all types by level:", error.message);
-//     }
-//   };
+// Fetch all requests
+export const fetchAllRequests = () => async (dispatch) => {
+  try {
+    const token = getCookie("token");
+    if (!token) {
+      throw new Error("Token tidak ditemukan di cookies");
+    }
 
-//   // Fetch course by category
-//   export const fetchCourseByCategory = (categoryId) => async (dispatch) => {
-//     try {
-//       const response = await axios.get(${api_url}/course/category/2${categoryId});
-//       dispatch(setFilteredCourses(response.data));
-//     } catch (error) {
-//       console.error("Error fetching course by category:", error.message);
-//     }
-//   };
+    const response = await axios.get(`${apiUrl}requests`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    dispatch(setRequests(response.data));
+  } catch (error) {
+    console.error('Error fetching all requests:', error.response ? error.response.data : error.message);
+  }
+};
 
-//   // Fetch course by user ID
-//   export const fetchCourseByUserId = (userId) => async (dispatch) => {
-//     try {
-//       const response = await axios.get(${api_url}courses/user/${userId});
-//       dispatch(setCourses(response.data));
-//     } catch (error) {
-//       console.error("Error fetching course by user ID:", error.message);
-//     }
-//   };
+// Create new request
+export const createNewRequest = (requestData) => async (dispatch) => {
+  try {
+    const token = getCookie("token");
+    if (!token) {
+      throw new Error("Token tidak ditemukan di cookies");
+    }
 
+    const response = await axios.post(`${apiUrl}requests`, requestData, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    dispatch(setNewRequest(response.data));
+  } catch (error) {
+    console.error('Error posting new request:', error.response ? error.response.data : error.message);
+  }
+};
 
-//   // Fetch course by filter
-//   export const fetchCourseByFilter = (filter) => async (dispatch) => {
-//     try {
-//       const response = await axios.get(${api_url}/courses/filter, { params: filter });
-//       dispatch(setFilteredCourses(response.data));
-//     } catch (error) {
-//       console.error("Error fetching course by filter:", error.message);
-//     }
-//   };
+// Update request by ID
+export const updateNewRequest = (id, requestData) => async (dispatch) => {
+  try {
+    const token = getCookie("token");
+    if (!token) {
+      throw new Error("Token tidak ditemukan di cookies");
+    }
 
-//   // Fetch all courses by user ID
-//   export const fetchAllCoursesByUserId = (userId) => async (dispatch) => {
-//     try {
-//       const response = await axios.get(${api_url}/course/user/${userId});
-//       dispatch(setCourses(response.data));
-//     } catch (error) {
-//       console.error("Error fetching all courses by user ID:", error.message);
-//     }
-//   };
+    const response = await axios.put(`${apiUrl}requests/${id}`, requestData, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    dispatch(updateRequestAction(response.data));
+  } catch (error) {
+    console.error('Error updating request:', error.response ? error.response.data : error.message);
+  }
+};
 
-//   // Fetch all course levels
-//   export const fetchAllCourseLevels = () => async (dispatch) => {
-//     try {
-//       const response = await axios.get(${api_url}/course-level);
-//       dispatch(setLevels(response.data));
-//     } catch (error) {
-//       console.error("Error fetching all course levels:", error.message);
-//     }
-//   };
+// Delete request by ID
+export const deleteRequestById = (id) => async (dispatch) => {
+  try {
+    const token = getCookie("token");
+    if (!token) {
+      throw new Error("Token tidak ditemukan di cookies");
+    }
 
-
-//   // Fetch course levels by ID
-//   export const fetchAllCourseLevelsById = (id) => async (dispatch) => {
-//     try {
-//       const response = await axios.get(${api_url}/courseLevels/${id});
-//       dispatch(setLevels(response.data));
-//     } catch (error) {
-//       console.error("Error fetching course levels by ID:", error.message);
-//     }
-//   };
-
-//   // Fetch chapters by course ID
-//   export const fetchChapterByCourseId = (courseId) => async (dispatch) => {
-//     try {
-//       const response = await axios.get(${api_url}chapters/course/${courseId});
-//       dispatch(setChapters(response.data));
-//     } catch (error) {
-//       console.error("Error fetching chapters by course ID:", error.message);
-//     }
-//   };
-
-
-//   // Fetch chapter by ID
-//   export const fetchChapterById = (id) => async (dispatch) => {
-//     try {
-//       const response = await axios.get(${api_url}/chapters/${id});
-//       dispatch(setChapters(response.data));
-//     } catch (error) {
-//       console.error("Error fetching chapter by ID:", error.message);
-//     }
-//   };
-
-//   // Fetch content by chapter ID
-//   export const fetchContentByChapterId = (chapterId) => async (dispatch) => {
-//     try {
-//       const response = await axios.get(${api_url}contents/chapter/${chapterId});
-//       dispatch(setContent(response.data));
-//     } catch (error) {
-//       console.error("Error fetching content by chapter ID:", error.message);
-//     }
-//   };
-
-
-//   // Fetch content by ID
-//   export const fetchContentById = (id) => async (dispatch) => {
-//     try {
-//       const response = await axios.get(${api_url}/contents/${id});
-//       dispatch(setContent(response.data));
-//     } catch (error) {
-//       console.error("Error fetching content by ID:", error.message);
-//     }
-//   };
-
-//   // Fetch course user
-//   export const fetchCourseUser = () => async (dispatch) => {
-//     try {
-//       const response = await axios.get(${api_url}/courseUser);
-//       dispatch(setCourseUser(response.data));
-//     } catch (error) {
-//       console.error("Error fetching course user:", error.message);
-//     }
-//   };
-
-//   // Fetch detailed course user
-//   export const fetchDetailCourseUser = (userId) => async (dispatch) => {
-//     try {
-//       const response = await axios.get(${api_url}/courseUser/detail/${userId});
-//       dispatch(setDetailCourseUser(response.data));
-//     } catch (error) {
-//       console.error("Error fetching detailed course user:", error.message);
-//     }
-//   };
-
-//   // Fetch new requests
-//   export const fetchNewRequests = () => async (dispatch) => {
-//     try {
-//       const response = await axios.get(${api_url}/requests/new);
-//       dispatch(setRequests(response.data));
-//     } catch (error) {
-//       console.error("Error fetching new requests:", error.message);
-//     }
-//   };
-
-//   // Post new request
-//   export const postNewRequest = (requestData) => async (dispatch) => {
-//     try {
-//       const response = await axios.post(${api_url}/requests, requestData);
-//       dispatch(setNewRequest(response.data));
-//     } catch (error) {
-//       console.error("Error posting new request:", error.message);
-//     }
-//   };
-
-//   // Update request by ID
-//   export const updateRequestById = (id, requestData) => async (dispatch) => {
-//     try {
-//       const response = await axios.put(${api_url}/requests/${id}, requestData);
-//       dispatch(updateNewRequest(response.data));
-//     } catch (error) {
-//       console.error("Error updating request:", error.message);
-//     }
-//   };
-
-//   // Delete request by ID
-//   export const deleteRequestById = (id) => async (dispatch) => {
-//     try {
-//       await axios.delete(${api_url}/requests/${id});
-//       dispatch(deleteRequest(id));
-//     } catch (error) {
-//       console.error("Error deleting request:", error.message);
-//     }
-//   };
+    await axios.delete(`${apiUrl}/requests/${id}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    dispatch(deleteRequest(id));
+  } catch (error) {
+    console.error('Error deleting request:', error.response ? error.response.data : error.message);
+    
+  }
+};
