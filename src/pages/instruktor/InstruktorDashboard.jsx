@@ -1,5 +1,5 @@
 import Sidebar from "../../components/Sidebar/SidebarInstruktur";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaUsers, FaSearch, FaFilter } from "react-icons/fa";
 import { instfetchPayments, instfetchkategori, instfetchuser } from "../../redux/actions/instrukturDashboardActions";
