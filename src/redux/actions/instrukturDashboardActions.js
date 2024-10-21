@@ -1,21 +1,21 @@
 const apiUrl = import.meta.env.VITE_REACT_API_ADDRESS;
 
-export const fetchStatsinst = () => async (dispatch) => {
-  dispatch({ type: "FETCH_STATS_REQUEST" });
+export const instfetchstats = () => async (dispatch) => {
+  dispatch({ type: "FETCH_stats_REQUEST" });
   try {
     const response = await fetch(`${apiUrl}transaction/`); // Menggunakan apiUrl untuk mendapatkan stats
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
     const data = await response.json();
-    dispatch({ type: "FETCH_STATS_SUCCESS", payload: data });
+    dispatch({ type: "FETCH_stats_SUCCESS", payload: data });
   } catch (error) {
-    dispatch({ type: "FETCH_STATS_FAILURE", payload: error.message });
+    dispatch({ type: "FETCH_stats_FAILURE", payload: error.message });
   }
 };
 
 
-export const fetchuserinst = () => async (dispatch) => {
+export const instfetchuser = () => async (dispatch) => {
     dispatch({ type: "FETCH_user_REQUEST" });
     try {
       const response = await fetch(`${apiUrl}auth/count-by-role/`);
@@ -31,7 +31,7 @@ export const fetchuserinst = () => async (dispatch) => {
   };
   
 
-  export const fetchkategoriinst = () => async (dispatch) => {
+  export const instfetchkategori = () => async (dispatch) => {
     dispatch({ type: "FETCH_kategori_REQUEST" });
     try {
       const response = await fetch(`${apiUrl}category/`);
@@ -46,8 +46,8 @@ export const fetchuserinst = () => async (dispatch) => {
     }
   };
 
-export const fetchPaymentsinst = () => async (dispatch) => {
-  dispatch({ type: "FETCH_PAYMENTS_REQUEST" });
+export const instfetchPayments = () => async (dispatch) => {
+  dispatch({ type: "FETCH_payments_REQUEST" });
   try {
     const response = await fetch(`${apiUrl}transaction/`); // Menggunakan apiUrl untuk mendapatkan payment status
     if (!response.ok) {
@@ -56,9 +56,9 @@ export const fetchPaymentsinst = () => async (dispatch) => {
     }
     const data = await response.json();
 
-    dispatch({ type: "FETCH_PAYMENTS_SUCCESS", payload: data });
+    dispatch({ type: "FETCH_payments_SUCCESS", payload: data });
   } catch (error) {
-    dispatch({ type: "FETCH_PAYMENTS_FAILURE", payload: error.message });
+    dispatch({ type: "FETCH_payments_FAILURE", payload: error.message });
   }
 };
 

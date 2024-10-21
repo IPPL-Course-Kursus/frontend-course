@@ -1,12 +1,12 @@
 import Sidebar from "../../components/Sidebar/SidebarInstruktur";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaUsers, FaSearch, FaFilter } from "react-icons/fa";
-import { fetchStats, fetchPayments, fetchuser } from "../../redux/actions/instrukturDashboardActions";
+import { instfetchPayments, instfetchkategori, instfetchuser } from "../../redux/actions/instrukturDashboardActions";
 
 const InstruktorDashboard = () => {
   const dispatch = useDispatch();
-  const { stats, paymentStatus, loading, user } = useSelector((state) => state.instruktorDashboard);
+  const { stats, paymentStatus, loading, user } = useSelector((state) => state.instrukturDashboard);
 
   // State for search input
   const [globalSearch, setGlobalSearch] = useState("");
@@ -14,11 +14,11 @@ const InstruktorDashboard = () => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [filter, setFilter] = useState("");
 
-  // Fetch stats, payment status, and user data
+  // Fetch stats, payment status, kategori status, and user data
   useEffect(() => {
-    dispatch(fetchStats());
-    dispatch(fetchPayments());
-    dispatch(fetchuser());
+    dispatch(instfetchPayments());
+    dispatch(instfetchkategori());
+    dispatch(instfetchuser());
   }, [dispatch]);
 
   const freeClassesCount = paymentStatus.filter(payment => payment.paymentMethod === "Free").length;
