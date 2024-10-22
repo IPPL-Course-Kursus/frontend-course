@@ -200,30 +200,6 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
                           </div>
                         </div>
                       ) : (
-                        // <div className="my-2">
-                        //   <div className="flex items-center">
-                        //     <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
-                        //       {formatCurrency(val.coursePrice)}{" "}
-                        //     </button>
-                        //     {val.coursePrice > 0 ? (
-                        //       <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
-                        //         <Gem size={16} className="mr-2" /> Premium
-                        //       </button>
-                        //     ) : (
-                        //       <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
-                        //         <Gem size={16} className="mr-2" /> Free
-                        //       </button>
-                        //     )}
-                        //   </div>
-                        //   <div className="my-2">
-                        //     <Link
-                        //       to={`/course-detail/${val.id}`} // Link to course detail page
-                        //       className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
-                        //     >
-                        //       Ambil Kelas
-                        //     </Link>
-                        //   </div>
-                        // </div>
                         <div className="my-2">
                           <div className="flex items-center">
                             {val.coursePrice > 0 ? (
