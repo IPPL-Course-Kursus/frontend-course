@@ -48,12 +48,34 @@ const TopikKelas = () => {
     dispatch(getAllCourse());
   }, [dispatch]);
 
+  useEffect(() => {
+    // Update the hash in the URL when selectedFilter changes
+    if (selectedFilter !== "All") {
+      window.location.hash = selectedFilter.toLowerCase().replace(/ /g, '-');
+    } else {
+      window.location.hash = ''; // Clear hash when "All" is selected
+    }
+  }, [selectedFilter]);
+
   const handleCheckboxChange = (label) => {
-    setFilterChecked((prev) => ({
-      ...prev,
-      [label]: !prev[label],
-    }));
+    setFilterChecked((prev) => {
+      const updatedChecked = { ...prev, [label]: !prev[label] };
+  
+      // Get active filters and update hash based on active filters
+      const activeFilters = Object.keys(updatedChecked).filter((key) => updatedChecked[key]);
+  
+      // If there are active filters, build hash string, else clear the hash
+      if (activeFilters.length > 0) {
+        const hashString = activeFilters.map((filter) => filter.toLowerCase().replace(/ /g, '_')).join(',');
+        window.location.hash = hashString;
+      } else {
+        window.location.hash = '';
+      }
+  
+      return updatedChecked;
+    });
   };
+  
 
   const clearFilters = () => {
     setFilterChecked({
@@ -83,8 +105,7 @@ const TopikKelas = () => {
   const filteredCourses = () => {
     const activeFilters = Object.keys(filterChecked).filter((key) => filterChecked[key]);
   
-    
-// Lakukan filter pada kursus terlebih dahulu
+    // Lakukan filter pada kursus terlebih dahulu
     let filteredCourses = courses.filter((course) => {
       // Filter berdasarkan harga (kelas berbayar/kelas gratis)
       if (selectedFilter === "kelas_berbayar" && course.coursePrice === 0) return false;
@@ -102,9 +123,13 @@ const TopikKelas = () => {
             return course.courseLevel.levelName === filter;
           }
   
-          // Filter berdasarkan kategori
+          // Filter berdasarkan kategori spesifik: UI/UX Design
+          if (filter === "UI/UX Design") {
+            return course.category.categoryName === "UI/UX Design";
+          }
+  
+          // Filter berdasarkan kategori lainnya
           if (
-            filter === "UI/UX Design" ||
             filter === "Web Development" ||
             filter === "Android Development" ||
             filter === "Data Science" ||
@@ -125,7 +150,6 @@ const TopikKelas = () => {
           if (filter === "Promo") {
             return course.promoStatus === true;
           }
-
   
           return false;
         });
@@ -141,7 +165,7 @@ const TopikKelas = () => {
     }
   
     return filteredCourses;
-  };
+  };  
   
   const filteredCourseType = filteredCourses();
   const totalPages = Math.ceil(filteredCourseType.length / itemsPerPage);
