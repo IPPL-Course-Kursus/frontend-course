@@ -41,11 +41,8 @@ const SidebarInstruktur = () => {
                   Data Kelas
                 </span>
               </Link>
-              <Link to="">
-                <span
-                  // href="/admin/data-kategori"
-                  className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700"
-                >
+              <Link to="/inst/data-kategori">
+                <span className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
                   Data Kategori
                 </span>
               </Link>

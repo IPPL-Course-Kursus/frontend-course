@@ -10,18 +10,18 @@ const chapterSlice = createSlice({
   name: "chapter",
   initialState,
   reducers: {
+    setchapter: (state, action) => {
+      state.chapter = action.payload;
+    },
+    fetchChaptersStart: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
     fetchChapterRequest: (state) => {
       state.loading = true;
       state.error = null;
     },
     deleteChapterFailure: (state) => {
-      state.loading = true;
-      state.error = null;
-    },
-    setchapter: (state, action) => {
-      state.chapter = action.payload;
-    },
-    fetchChaptersStart: (state) => {
       state.loading = true;
       state.error = null;
     },
