@@ -89,6 +89,8 @@ export const login = (email, password, navigate) => async (dispatch) => {
 
     // Dispatch tindakan untuk menyimpan token dan user di Redux
     dispatch(loginSuccess({ token, user, role }));
+    console.log(role);
+    
 
     toast.success("Login Berhasil");
 

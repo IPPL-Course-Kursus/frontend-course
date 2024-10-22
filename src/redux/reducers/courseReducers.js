@@ -16,7 +16,10 @@ const coursesSlice = createSlice({
       state.courses = action.payload;
     },
     setDetail: (state, action) => {
-      state.detail = action.payload; // Ini sudah benar
+      state.detail = {
+        ...action.payload, 
+        recommendedCourses: action.payload.recommendedCourses || [] 
+      };
     },
     setMyCourse: (state, action) => {
       state.mycourse = action.payload;
@@ -31,7 +34,7 @@ const coursesSlice = createSlice({
       state.pageCourse = action.payload;
     },
     removeDetail: (state) => {
-      state.detail = {}; // Mengosongkan detail dengan objek kosong
+      state.detail = {};
     },
   },
 });
@@ -47,3 +50,4 @@ export const {
 } = coursesSlice.actions;
 
 export default coursesSlice.reducer;
+

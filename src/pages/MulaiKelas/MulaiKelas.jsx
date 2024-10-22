@@ -1,15 +1,34 @@
-import { useState } from "react";
-import { FaArrowLeft, FaCheckCircle } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchAllCourses,
+  fetchCourseById,
+  fetchChapterByCourseId,
+  fetchContentByChapterId,
+} from "../../redux/actions/mulaiKelasActions";  // Import hanya action yang digunakan
+
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import ProgressBar from "../../components/MyCourse/ProgressBar";
+import { FaArrowLeft, FaCheckCircle } from "react-icons/fa";
+
 const MulaiKelas = () => {
+  const dispatch = useDispatch();
+  
   const [code, setCode] = useState("");
   const [output, setOutput] = useState("");
 
+  useEffect(() => {
+    // Memanggil aksi untuk mendapatkan data kursus, chapter, dan konten yang dibutuhkan
+    dispatch(fetchAllCourses());
+    dispatch(fetchCourseById(1));  // Berikan ID kursus yang sesuai
+    dispatch(fetchChapterByCourseId(1));  // Berikan ID kursus yang sesuai
+    dispatch(fetchContentByChapterId(1));  // Berikan ID chapter yang sesuai
+  }, [dispatch]);
+
   const runCode = () => {
     try {
-      const result = eval(code); // Using eval to run code
+      const result = eval(code);
       setOutput(result || "Code ran successfully");
     } catch (error) {
       setOutput("Error: " + error.message);
@@ -106,71 +125,71 @@ const MulaiKelas = () => {
 
         {/* Sidebar */}
         <aside className="col-span-1 bg-white p-6 rounded-lg shadow-lg">
-  <h3 className="text-gray-700 text-2xl font-semibold mb-4">Materi Belajar</h3>
+          <h3 className="text-gray-700 text-2xl font-semibold mb-4">Materi Belajar</h3>
 
-  {/* Progress bar menggunakan komponen ProgressBar */}
-  <div className="mb-6">
-    <div className="flex justify-between items-center">
-      <h4 className="text-blue-600 font-bold">Progres Belajar</h4>
-      <span className="text-sm text-gray-500">10%</span> {/* Persentase progress */}
-    </div>
-    <ProgressBar percentage={10} /> {/* Contoh untuk progress 10% */}
-  </div>
+          {/* Progress bar menggunakan komponen ProgressBar */}
+          <div className="mb-6">
+            <div className="flex justify-between items-center">
+              <h4 className="text-blue-600 font-bold">Progres Belajar</h4>
+              <span className="text-sm text-gray-500">90%</span>
+            </div>
+            <ProgressBar percentage={90} />
+          </div>
 
-  {/* Chapter List */}
-  <div className="mb-6">
-    <div className="flex justify-between items-center">
-      <h4 className="text-blue-600 font-bold">Chapter 1 - Pendahuluan</h4>
-      <span className="text-sm text-gray-500">60 Menit</span>
-    </div>
-    <ul className="space-y-2 mt-4">
-      <li className="flex justify-between items-center">
-        <div className="flex items-center gap-2">
-          <span className="bg-blue-200 text-blue-800 rounded-full h-8 w-8 flex items-center justify-center">1</span>
-          <span className="text-gray-700">Lorem Ipsum</span>
-        </div>
-        <span className="text-green-500">▶</span>
-      </li>
-      <li className="flex justify-between items-center">
-        <div className="flex items-center gap-2">
-          <span className="bg-blue-200 text-blue-800 rounded-full h-8 w-8 flex items-center justify-center">2</span>
-          <span className="text-gray-700">Lorem Ipsum</span>
-        </div>
-        <span className="text-green-500">▶</span>
-      </li>
-      <li className="flex justify-between items-center">
-        <div className="flex items-center gap-2">
-          <span className="bg-blue-200 text-blue-800 rounded-full h-8 w-8 flex items-center justify-center">3</span>
-          <span className="text-gray-700">Lorem Ipsum</span>
-        </div>
-        <span className="text-blue-500">⏵</span>
-      </li>
-    </ul>
-  </div>
+          {/* Chapter List */}
+          <div className="mb-6">
+            <div className="flex justify-between items-center">
+              <h4 className="text-blue-600 font-bold">Chapter 1 - Pendahuluan</h4>
+              <span className="text-sm text-gray-500">60 Menit</span>
+            </div>
+            <ul className="space-y-2 mt-4">
+              <li className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <span className="bg-blue-200 text-blue-800 rounded-full h-8 w-8 flex items-center justify-center">1</span>
+                  <span className="text-gray-700">Lorem Ipsum</span>
+                </div>
+                <span className="text-green-500">▶</span>
+              </li>
+              <li className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <span className="bg-blue-200 text-blue-800 rounded-full h-8 w-8 flex items-center justify-center">2</span>
+                  <span className="text-gray-700">Lorem Ipsum</span>
+                </div>
+                <span className="text-green-500">▶</span>
+              </li>
+              <li className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <span className="bg-blue-200 text-blue-800 rounded-full h-8 w-8 flex items-center justify-center">3</span>
+                  <span className="text-gray-700">Lorem Ipsum</span>
+                </div>
+                <span className="text-blue-500">⏵</span>
+              </li>
+            </ul>
+          </div>
 
-  <div className="mb-6">
-    <div className="flex justify-between items-center">
-      <h4 className="text-blue-600 font-bold">Chapter 2 - Memulai Desain</h4>
-      <span className="text-sm text-gray-500">120 Menit</span>
-    </div>
-    <ul className="space-y-2 mt-4">
-      <li className="flex justify-between items-center">
-        <div className="flex items-center gap-2">
-          <span className="bg-gray-200 text-gray-400 rounded-full h-8 w-8 flex items-center justify-center">4</span>
-          <span className="text-gray-400">Lorem Ipsum</span>
-        </div>
-        <span className="text-gray-400">🔒</span>
-      </li>
-      <li className="flex justify-between items-center">
-        <div className="flex items-center gap-2">
-          <span className="bg-gray-200 text-gray-400 rounded-full h-8 w-8 flex items-center justify-center">5</span>
-          <span className="text-gray-400">Lorem Ipsum</span>
-        </div>
-        <span className="text-gray-400">🔒</span>
-      </li>
-    </ul>
-  </div>
-</aside>
+          <div className="mb-6">
+            <div className="flex justify-between items-center">
+              <h4 className="text-blue-600 font-bold">Chapter 2 - Memulai Desain</h4>
+              <span className="text-sm text-gray-500">120 Menit</span>
+            </div>
+            <ul className="space-y-2 mt-4">
+              <li className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <span className="bg-gray-200 text-gray-400 rounded-full h-8 w-8 flex items-center justify-center">4</span>
+                  <span className="text-gray-400">Lorem Ipsum</span>
+                </div>
+                <span className="text-gray-400">🔒</span>
+              </li>
+              <li className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <span className="bg-gray-200 text-gray-400 rounded-full h-8 w-8 flex items-center justify-center">5</span>
+                  <span className="text-gray-400">Lorem Ipsum</span>
+                </div>
+                <span className="text-gray-400">🔒</span>
+              </li>
+            </ul>
+          </div>
+        </aside>
 
       </div>
       <Footer />

@@ -4,7 +4,10 @@ import { Shield, Book, Clock } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllCourse } from "../../redux/actions/courseActions";
 import { IoIosSearch } from "react-icons/io";
+<<<<<<< HEAD
 import { IoArrowBackCircle, IoArrowForwardCircle } from 'react-icons/io5';
+=======
+>>>>>>> 410e0093f81c3ed5331c115cdda582dac41227a0
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 
@@ -48,6 +51,11 @@ const TopikKelas = () => {
     dispatch(getAllCourse());
   }, [dispatch]);
 
+  // Fetch courses from Redux when component mounts
+  useEffect(() => {
+    dispatch(getAllCourse());
+  }, [dispatch]);
+
   const handleCheckboxChange = (label) => {
     setFilterChecked((prev) => ({
       ...prev,
@@ -82,6 +90,7 @@ const TopikKelas = () => {
 
   const filteredCourses = () => {
     const activeFilters = Object.keys(filterChecked).filter((key) => filterChecked[key]);
+<<<<<<< HEAD
   
     
 // Lakukan filter pada kursus terlebih dahulu
@@ -132,6 +141,20 @@ const TopikKelas = () => {
       }
   
       // Jika tidak ada filter yang aktif, tampilkan semua kursus
+=======
+
+    return courses.filter((course) => {
+      if (selectedFilter === "kelas_berbayar" && course.coursePrice === 0) return false;
+      if (selectedFilter === "Kelas_Gratis" && course.coursePrice !== 0) return false;
+
+      if (activeFilters.length > 0) {
+        return activeFilters.some(
+          (filter) =>
+            course.courseLevel.levelName === filter ||
+            course.courseName.includes(filter)
+        );
+      }
+>>>>>>> 410e0093f81c3ed5331c115cdda582dac41227a0
       return true;
     });
   
@@ -181,6 +204,7 @@ const TopikKelas = () => {
             </div>
         </section>
 
+<<<<<<< HEAD
         <div className="py-8 px-4 md:px-10">
         <div className="flex flex-col md:flex-row items-center w-full"> 
     {/* Heading TOPIK KELAS rata kiri */}
@@ -243,6 +267,48 @@ const TopikKelas = () => {
                 <label htmlFor={'filter-${label}'} className="text-sm md:text-base">
                   {label}
                 </label>
+=======
+        <div className="container mx-auto px-4">
+          <div className="py-8 px-4 md:px-10">
+            <div className="flex flex-col md:flex-row justify-between items-center">
+              <h3
+                className="self-center text-[32px] font-bold"
+                style={{ fontFamily: "'Red Rose', sans-serif", color: "#000000" }}
+              >
+                TOPIK KELAS
+              </h3>
+              <div className="flex flex-wrap justify-center mt-4 md:mt-0 space-x-2">
+                <button
+                  className={`filter-btn px-6 py-2 w-full md:w-auto rounded-full font-bold text-xs ${
+                    selectedFilter === "All"
+                      ? "bg-blue-600 text-white"
+                      : "bg-white text-black hover:bg-gray-200"
+                  }`}
+                  onClick={() => handleFilterClick("All")}
+                >
+                  All
+                </button>
+                <button
+                  className={`filter-btn px-6 py-2 w-full md:w-auto rounded-full font-bold text-xs ${
+                    selectedFilter === "kelas_berbayar"
+                      ? "bg-blue-600 text-white"
+                      : "bg-white text-black hover:bg-gray-200"
+                  }`}
+                  onClick={() => handleFilterClick("kelas_berbayar")}
+                >
+                  Kelas Berbayar
+                </button>
+                <button
+                  className={`filter-btn px-6 py-2 w-full md:w-auto rounded-full font-bold text-xs ${
+                    selectedFilter === "Kelas_Gratis"
+                      ? "bg-blue-600 text-white"
+                      : "bg-white text-black hover:bg-gray-200"
+                  }`}
+                  onClick={() => handleFilterClick("Kelas_Gratis")}
+                >
+                  Kelas Gratis
+                </button>
+>>>>>>> 410e0093f81c3ed5331c115cdda582dac41227a0
               </div>
             ))}
 
@@ -336,6 +402,95 @@ const TopikKelas = () => {
             <h2 className="text-2xl font-bold text-gray-900">Filter Menu</h2>
           </div>
 
+<<<<<<< HEAD
+=======
+          <div className="flex flex-col md:flex-row md:space-x-6 pr-4 md:pr-10">
+            <div className="hidden md:block md:w-1/4">
+            <div className="bg-white shadow-md rounded-md p-4">
+              <h3 className="text-xl font-bold text-gray-800 mb-4">Filter</h3>
+              {["Paling Baru", "Paling Populer", "Promo"].map((label, index) => (
+                <div className="flex items-center mb-2" key={index}>
+                  <input
+                    type="checkbox"
+                    id={`filter-${label}`}
+                    checked={filterChecked[label]}
+                    onChange={() => handleCheckboxChange(label)}
+                    className="mr-2 checkbox-custom"
+                  />
+                  <label htmlFor={`filter-${label}`} className="text-sm md:text-base">
+                    {label}
+                  </label>
+                </div>
+              ))}
+
+              <h3 className="text-xl font-bold text-gray-800 mb-4">Kategori</h3>
+              {[
+                "UI/UX Design",
+                "Web Development",
+                "Android Development",
+                "Data Science",
+                "Business Intelligence",
+              ].map((category, index) => (
+                <div className="flex items-center mb-2" key={index}>
+                  <input
+                    type="checkbox"
+                    id={`filter-${category}`}
+                    checked={filterChecked[category]}
+                    onChange={() => handleCheckboxChange(category)}
+                    className="mr-2 checkbox-custom"
+                  />
+                  <label htmlFor={`filter-${category}`} className="text-sm md:text-base">
+                    {category}
+                  </label>
+                </div>
+              ))}
+
+              <h3 className="text-xl font-bold text-gray-800 mb-4">Level Kesulitan</h3>
+              {["Beginner Level", "Intermediate Level", "Advanced Level"].map((level, index) => (
+                <div className="flex items-center mb-2" key={index}>
+                  <input
+                    type="checkbox"
+                    id={`filter-${level}`}
+                    checked={filterChecked[level]}
+                    onChange={() => handleCheckboxChange(level)}
+                    className="mr-2 checkbox-custom"
+                  />
+                  <label htmlFor={`filter-${level}`} className="text-sm md:text-base">
+                    {level}
+                  </label>
+                </div>
+              ))}
+              <button onClick={clearFilters} className="bg-red-600 text-white px-4 py-2 rounded mt-4">
+                Clear Filters
+              </button>
+            </div>
+          </div>
+
+          {/* mobile filter menu button */}
+          <div className="md:hidden mb-4 flex justify-between items-center">
+            <button
+              onClick={toggleMobileDropdown}
+              className="md:hidden bg-blue-600 text-white px-2 py-2 rounded"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16m-7 6h7"
+                />
+              </svg>
+            </button>
+            <h2 className="text-2xl font-bold text-gray-900">Filter Menu</h2>
+          </div>
+
+>>>>>>> 410e0093f81c3ed5331c115cdda582dac41227a0
           {/* mobile filter menu */}
           {isMobileDropdownVisible && (
             <div className="md:hidden mb-4">
@@ -345,12 +500,20 @@ const TopikKelas = () => {
                   <div className="flex items-center mb-2" key={index}>
                     <input
                       type="checkbox"
+<<<<<<< HEAD
                       id={'mobile-filter-${label}'}
+=======
+                      id={`mobile-filter-${label}`}
+>>>>>>> 410e0093f81c3ed5331c115cdda582dac41227a0
                       checked={filterChecked[label]}
                       onChange={() => handleCheckboxChange(label)}
                       className="mr-2 checkbox-custom"
                     />
+<<<<<<< HEAD
                     <label htmlFor={'mobile-filter-${label}'} className="text-sm">
+=======
+                    <label htmlFor={`mobile-filter-${label}`} className="text-sm">
+>>>>>>> 410e0093f81c3ed5331c115cdda582dac41227a0
                       {label}
                     </label>
                   </div>
@@ -366,12 +529,20 @@ const TopikKelas = () => {
                   <div className="flex items-center mb-2" key={index}>
                     <input
                       type="checkbox"
+<<<<<<< HEAD
                       id={'mobile-filter-${category}'}
+=======
+                      id={`mobile-filter-${category}`}
+>>>>>>> 410e0093f81c3ed5331c115cdda582dac41227a0
                       checked={filterChecked[category]}
                       onChange={() => handleCheckboxChange(category)}
                       className="mr-2 checkbox-custom"
                     />
+<<<<<<< HEAD
                     <label htmlFor={'mobile-filter-${category}'} className="text-sm">
+=======
+                    <label htmlFor={`mobile-filter-${category}`} className="text-sm">
+>>>>>>> 410e0093f81c3ed5331c115cdda582dac41227a0
                       {category}
                     </label>
                   </div>
@@ -381,12 +552,20 @@ const TopikKelas = () => {
                   <div className="flex items-center mb-2" key={index}>
                     <input
                       type="checkbox"
+<<<<<<< HEAD
                       id={'mobile-filter-${level}'}
+=======
+                      id={`mobile-filter-${level}`}
+>>>>>>> 410e0093f81c3ed5331c115cdda582dac41227a0
                       checked={filterChecked[level]}
                       onChange={() => handleCheckboxChange(level)}
                       className="mr-2 checkbox-custom"
                     />
+<<<<<<< HEAD
                     <label htmlFor={'mobile-filter-${level}'} className="text-sm">
+=======
+                    <label htmlFor={`mobile-filter-${level}`} className="text-sm">
+>>>>>>> 410e0093f81c3ed5331c115cdda582dac41227a0
                       {level}
                     </label>
                   </div>
@@ -400,6 +579,7 @@ const TopikKelas = () => {
               </div>
             </div>
           )}
+<<<<<<< HEAD
             <div className="md:w-3/4">
             <div className="grid mt-2 gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {currentItems.map((course) => (
@@ -407,6 +587,16 @@ const TopikKelas = () => {
                 <img
                   src={course.image}
                   alt={course.courseName} 
+=======
+
+            <div className="md:w-3/4">
+            <div className="grid mt-2 gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            {filteredCourses().map((course) => (
+              <div key={course.id} className="bg-white shadow-xl rounded-xl overflow-hidden">
+                <img
+                  src={course.image}
+                  alt={course.courseName}
+>>>>>>> 410e0093f81c3ed5331c115cdda582dac41227a0
                   className="w-full h-28 object-cover"
                 />
                 <div className="mx-2 md:mx-4 flex flex-col mt-1 md:mt-2">
@@ -416,9 +606,13 @@ const TopikKelas = () => {
                   <p className="text-sm text-gray-600">{course.courseName}</p>
                   <div className="flex justify-between items-center my-2">
                     <p className="text-black text-sm font-semibold">
+<<<<<<< HEAD
                     <p className="text-black text-sm font-semibold">
                     Instructor: {instructors[Math.floor(Math.random() * instructors.length)]}
                     </p>
+=======
+                      Instruktor {course.user.fullName}
+>>>>>>> 410e0093f81c3ed5331c115cdda582dac41227a0
                     </p>
                   </div>
                   <div className="mt-3 flex justify-between flex-wrap">
@@ -433,17 +627,27 @@ const TopikKelas = () => {
                     </p>
                   </div>
                   <div className="flex left-0 mt-2 my-2">
+<<<<<<< HEAD
                   <Link
                     to="/detail-kelas"
                     className="py-1 px-4 bg-blue-600 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
                   >
                     {course.coursePrice === 0 ? "Mulai Kelas" : `Beli Rp ${course.coursePrice}.000`}
                   </Link>
+=======
+                    <Link
+                      to={`/course-detail/${course.id}`}
+                      className="py-1 px-4 bg-blue-600 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
+                    >
+                      {course.coursePrice === 0 ? "Mulai Kelas" : `Beli Rp ${course.coursePrice}`}
+                    </Link>
+>>>>>>> 410e0093f81c3ed5331c115cdda582dac41227a0
                   </div>
                 </div>
               </div>
             ))}
           </div>
+<<<<<<< HEAD
 
           {/*Pagination */}
           <div className="flex justify-between items-center mt-8">
@@ -474,6 +678,8 @@ const TopikKelas = () => {
                 Next
                 <IoArrowForwardCircle className="ml-2 text-xl" />
               </button>
+=======
+>>>>>>> 410e0093f81c3ed5331c115cdda582dac41227a0
             </div>
           </div>
         </div>
