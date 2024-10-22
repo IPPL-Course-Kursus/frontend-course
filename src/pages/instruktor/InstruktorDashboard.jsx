@@ -2,6 +2,7 @@ import Sidebar from "../../components/Sidebar/SidebarInstruktur";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaUsers, FaSearch, FaFilter } from "react-icons/fa";
+import { IoArrowBackCircle, IoArrowForwardCircle } from "react-icons/io5";
 import { instfetchPayments, instfetchkategori, instfetchuser } from "../../redux/actions/instrukturDashboardActions";
 
 const InstruktorDashboard = () => {
@@ -13,6 +14,10 @@ const InstruktorDashboard = () => {
   const [paymentSearch, setPaymentSearch] = useState("");
   const [searchVisible, setSearchVisible] = useState(false);
   const [filter, setFilter] = useState("");
+
+  // State for pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5); // You can change this value to adjust items per page
 
   // Fetch stats, payment status, kategori status, and user data
   useEffect(() => {
@@ -54,9 +59,17 @@ const InstruktorDashboard = () => {
 
   // Sort payments by ID in ascending order
   const sortedPayments = filteredPayments.sort((a, b) => a.id - b.id);
-  
+
+  // Get current payments based on pagination
+  const indexOfLastPayment = currentPage * itemsPerPage;
+  const indexOfFirstPayment = indexOfLastPayment - itemsPerPage;
+  const currentPayments = sortedPayments.slice(indexOfFirstPayment, indexOfLastPayment);
+
   const handleFilterChange = (e) => setFilter(e.target.value);
   const toggleSearch = () => setSearchVisible(!searchVisible);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   // Debugging output
   console.log("Stats:", stats);
@@ -111,8 +124,8 @@ const InstruktorDashboard = () => {
                 className="p-1 border border-[#173D94] rounded-full text-sm text-[#173D94]"
               >
                 <option value="">Filter</option>
-                <option value="SUDAH BAYAR">Sudah Bayar</option>
-                <option value="BELUM BAYAR">Belum Bayar</option>
+                <option value="settlement">Sudah Bayar</option>
+                <option value="pending">Belum Bayar</option>
               </select>
               <FaFilter className="absolute right-4 top-2 text-[#173D94] text-sm" />
             </div>
@@ -146,15 +159,21 @@ const InstruktorDashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {!loading && sortedPayments && sortedPayments.length > 0 ? (
-                sortedPayments.map((payment) => (
+              {!loading && currentPayments.length > 0 ? (
+                currentPayments.map((payment) => (
                   <tr key={payment.id} className="border-b">
                     <td className="px-2 md:px-4 py-2">{payment.id}</td>
                     <td className="px-2 md:px-4 py-2">{payment.courseName}</td>
-                    <td className="px-2 md:px-4 py-2">Rp.{payment.totalPrice}00,00</td>
+                    <td className="px-2 md:px-4 py-2">Rp.{payment.totalPrice},00</td>
                     <td className="px-2 md:px-4 py-2">{payment.paymentStatus}</td>
                     <td className="px-2 md:px-4 py-2">{payment.paymentMethod}</td>
-                    <td className="px-2 md:px-4 py-2">{payment.tanggalBayar}</td>
+                    <td className="px-2 md:px-4 py-2">
+                      {new Date(payment.createdAt).toLocaleDateString('id-ID', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })}
+                    </td>
                   </tr>
                 ))
               ) : (
@@ -164,6 +183,38 @@ const InstruktorDashboard = () => {
               )}
             </tbody>
           </table>
+
+          {/* Pagination Controls */}
+          <div className="flex justify-between items-center mt-4">
+            <button
+              className={`flex items-center py-2 px-4 rounded-lg ${
+                currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-[#0a61aa] text-white"
+              } transition-all duration-300 hover:scale-105`}
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              <IoArrowBackCircle className="mr-2 text-xl" />
+              Previous
+            </button>
+
+            <span className="text-lg font-semibold">
+              Page {currentPage} of {Math.ceil(sortedPayments.length / itemsPerPage)}
+            </span>
+
+            <button
+              className={`flex items-center py-2 px-4 rounded-lg ${
+                currentPage === Math.ceil(sortedPayments.length / itemsPerPage)
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-[#0a61aa] text-white"
+              } transition-all duration-300 hover:scale-105`}
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === Math.ceil(sortedPayments.length / itemsPerPage)}
+            >
+              Next
+              <IoArrowForwardCircle className="ml-2 text-xl" />
+            </button>
+          </div>
+
         </div>
       </div>
     </div>
