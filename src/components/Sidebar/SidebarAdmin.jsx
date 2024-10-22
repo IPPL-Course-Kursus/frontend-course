@@ -99,7 +99,7 @@ const Sidebar = () => {
             </div>
           )}
         </div>
-        <div className="relative">
+        {/* <div className="relative">
           <button
             onClick={toggleDataInstruktur}
             className="w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700 flex justify-between items-center"
@@ -135,7 +135,7 @@ const Sidebar = () => {
               </a>
             </div>
           )}
-        </div>
+        </div> */}
         <a href="#" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
           {/* <AiOutlineLogout className='w-20 h-20'/> */}
           keluar
