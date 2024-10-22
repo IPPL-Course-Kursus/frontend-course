@@ -18,7 +18,7 @@ const coursesSlice = createSlice({
     setDetail: (state, action) => {
       state.detail = {
         ...action.payload, 
-        recommendedCourses: action.payload.recommendedCourses || [] // Simpan recommendedCourses
+        recommendedCourses: action.payload.recommendedCourses || [] 
       };
     },
     setMyCourse: (state, action) => {
