@@ -1,29 +1,24 @@
-// File: ../../components/InstrukturComponents/UbahInstruktur.jsx
-
+import React from "react";
 import PropTypes from "prop-types";
 import InstrukturForm from "./InstrukturForm";
 
-const UbahInstruktur = ({ show, onClose, existingData, updateInstructor }) => {
-  const handleSubmit = (formData) => {
-    updateInstructor(formData);
-  };
-
+const UbahInstruktur = ({ show, onClose, instructor, onSave }) => {
   return (
     <InstrukturForm
       show={show}
       onClose={onClose}
-      existingData={existingData}
+      existingData={instructor}  // Data instruktur yang ingin diubah
       isEditMode={true}
-      onSubmit={handleSubmit}
+      onSubmit={onSave}  // Panggil fungsi onSave saat form disubmit
     />
   );
 };
 
 UbahInstruktur.propTypes = {
-  show: PropTypes.bool,
-  onClose: PropTypes.func,
-  existingData: PropTypes.object,
-  updateInstructor: PropTypes.func,
+  show: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  instructor: PropTypes.object.isRequired,
+  onSave: PropTypes.func.isRequired,
 };
 
 export default UbahInstruktur;

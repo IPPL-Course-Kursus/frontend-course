@@ -1,28 +1,23 @@
-// File: ../../components/InstrukturComponents/TambahInstruktur.jsx
-
+import React from "react";
 import PropTypes from "prop-types";
 import InstrukturForm from "./InstrukturForm";
 
-const TambahInstruktur = ({ show, onClose, addInstructor }) => {
-  const handleSubmit = (formData) => {
-    addInstructor(formData);
-  };
-
+const TambahInstruktur = ({ show, onClose, onSave }) => {
   return (
     <InstrukturForm
       show={show}
       onClose={onClose}
-      existingData={null}
+      existingData={null}  // Karena menambah, tidak ada data yang diisi sebelumnya
       isEditMode={false}
-      onSubmit={handleSubmit}
+      onSubmit={onSave}  // Panggil fungsi onSave saat form disubmit
     />
   );
 };
 
 TambahInstruktur.propTypes = {
-  show: PropTypes.bool,
-  onClose: PropTypes.func,
-  addInstructor: PropTypes.func,
+  show: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSave: PropTypes.func.isRequired,
 };
 
 export default TambahInstruktur;

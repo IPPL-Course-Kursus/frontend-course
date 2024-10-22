@@ -10,7 +10,6 @@ import {
 } from "./authReducers"; 
 import courseReducer from "./courseReducers"; 
 import categoryReducer from "./categoryReducers";
-
 import transactionReducer from "./transactionReducers"; // Menggunakan reducer transaksi
 import adminDataKategoriReducer from "./adminDataKategoriReducers";
 import adminDashboardReducer from "./admindashboardreducer";
@@ -18,6 +17,9 @@ import typeCourseReducer from "./typeCourseReducers";
 import instrukturDashboardReducers from "./instrukturDashboardReducers"; 
 import mulaiKelasReducers from "./mulaiKelasReducers";
 import levelCourseReducer from "./levelCourseReducers";
+
+// Import reducer instruktur
+import instructorReducer  from "./datainstructorReducer"; // Pastikan path benar
 
 export default combineReducers({
   // Auth
@@ -46,8 +48,8 @@ export default combineReducers({
 
   // Instruktur
   instrukturDashboard: instrukturDashboardReducers,
+  instructors: instructorReducer,  // Tambahkan reducer instruktur di sini
 
   // Mulai Kelas
   mulaikelas: mulaiKelasReducers,
-
 });
