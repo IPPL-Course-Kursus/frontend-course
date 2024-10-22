@@ -1,23 +1,34 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FaArrowLeft, FaCheckCircle } from "react-icons/fa"; // Pastikan import path benar
+import {
+  fetchStartCourse,  // Gunakan fetch action yang sudah diperbarui
+} from "../../redux/actions/mulaiKelasActions"; 
+
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import ProgressBar from "../../components/MyCourse/ProgressBar";
+import { FaArrowLeft, FaCheckCircle } from "react-icons/fa";
 
 const MulaiKelas = () => {
   const dispatch = useDispatch();
-  const { courses, loading, error } = useSelector((state) => state.mulaiKelas); // Pastikan state sesuai dengan reducer
+  
   const [code, setCode] = useState("");
   const [output, setOutput] = useState("");
 
+  const startCourseData = useSelector((state) => state.mulaiKelas.startCourseData);
+
   useEffect(() => {
-    dispatch(fetchCourses());
+    // Memanggil fetchStartCourse dengan courseUserId, chapterSort, dan contentSort yang sesuai
+    const courseUserId = 1;  // Ganti dengan ID course yang sesuai
+    const chapterSort = 1;   // Ganti dengan urutan chapter yang sesuai
+    const contentSort = 1;   // Ganti dengan urutan konten yang sesuai
+
+    dispatch(fetchStartCourse(courseUserId, chapterSort, contentSort));
   }, [dispatch]);
 
   const runCode = () => {
     try {
-      const result = eval(code); // Gunakan eval dengan hati-hati
+      const result = eval(code);
       setOutput(result || "Code ran successfully");
     } catch (error) {
       setOutput("Error: " + error.message);
@@ -33,21 +44,6 @@ const MulaiKelas = () => {
     setCode("");
   };
 
-  const handleAddCourse = () => {
-    const newCourse = {
-      categoryId: 1,
-      courseLevelId: 1,
-      typeCourseId: 1,
-      courseName: "New Course",
-      coursePrice: 100,
-      courseDiscountPercent: 0,
-      certificateStatus: true,
-      publish: "Published",
-      totalDuration: 120,
-    };
-    dispatch(addCourse(newCourse));
-  };
-
   return (
     <>
       <Navbar />
@@ -56,19 +52,23 @@ const MulaiKelas = () => {
         <div className="col-span-3">
           {/* Header Section */}
           <header className="bg-blue-50 p-6 rounded-lg shadow-sm mb-6">
+            {/* Back button */}
             <div className="flex items-center gap-4">
               <FaArrowLeft className="text-gray-500 cursor-pointer" />
               <h1 className="text-xl font-bold text-gray-800">Kelas Lainnya</h1>
             </div>
+
+            {/* Main class information */}
             <div className="mt-4">
-              <h1 className="text-3xl font-bold text-gray-800 mb-2">Java Script</h1>
-              <h2 className="text-xl text-gray-600">Intro to Basic Java Script</h2>
+              <h1 className="text-3xl font-bold text-gray-800 mb-2">{startCourseData.course?.title || "Java Script"}</h1>
+              <h2 className="text-xl text-gray-600">{startCourseData.course?.description || "Intro to Basic Java Script"}</h2>
+
               <div className="flex items-center gap-4 mt-4">
                 <span className="text-green-600 flex items-center gap-2">
                   <FaCheckCircle />
-                  Beginner Level
+                  {startCourseData.course?.level || "Beginner Level"}
                 </span>
-                <span className="text-gray-500">5 Modul</span>
+                <span className="text-gray-500">{startCourseData.chapters?.length || 0} Modul</span>
                 <span className="text-gray-500">45 Menit</span>
               </div>
             </div>
@@ -86,10 +86,7 @@ const MulaiKelas = () => {
           <section className="bg-white p-6 rounded-lg shadow-lg mb-10">
             <h3 className="text-gray-700 text-2xl font-semibold">Tentang Kelas</h3>
             <p className="text-gray-600 mt-2">
-              Learn JavaScript, the world’s most popular programming language, with our
-              beginner-friendly class. This course is perfect for those looking to build
-              foundational knowledge in JavaScript. You'll learn variables, functions, loops, and
-              more, with practical examples to strengthen your skills.
+              {startCourseData.course?.description || "Learn JavaScript, the world’s most popular programming language, with our beginner-friendly class."}
             </p>
           </section>
 
@@ -121,38 +118,29 @@ const MulaiKelas = () => {
               <p className="text-gray-600 mt-2">{output}</p>
             </div>
           </section>
-
-          {/* Redux Actions Section */}
-          <section className="bg-white p-6 rounded-lg shadow-lg mb-10">
-            <h3 className="text-gray-700 text-2xl font-semibold mb-4">Redux Actions</h3>
-            <button onClick={handleAddCourse} className="bg-blue-500 text-white py-2 px-4 rounded-lg">
-              Add Course
-            </button>
-            {loading ? (
-              <p>Loading...</p>
-            ) : error ? (
-              <p>Error: {error}</p>
-            ) : (
-              <p>{JSON.stringify(courses)}</p>
-            )}
-          </section>
         </div>
 
         {/* Sidebar */}
         <aside className="col-span-1 bg-white p-6 rounded-lg shadow-lg">
           <h3 className="text-gray-700 text-2xl font-semibold mb-4">Materi Belajar</h3>
+
+          {/* Progress bar menggunakan komponen ProgressBar */}
           <div className="mb-6">
-            <h4 className="text-blue-600 font-bold">Progres Belajar</h4>
-            <ProgressBar percentage={10} />
+            <div className="flex justify-between items-center">
+              <h4 className="text-blue-600 font-bold">Progres Belajar</h4>
+              <span className="text-sm text-gray-500">90%</span>
+            </div>
+            <ProgressBar percentage={90} />
           </div>
-          {/* Daftar Chapter */}
+
+          {/* Chapter List */}
           <div className="mb-6">
-            <h4 className="text-blue-600 font-bold">Chapter 1 - Pendahuluan</h4>
-            <ul className="space-y-2 mt-4">
-              <li className="text-gray-700">Lorem Ipsum</li>
-              <li className="text-gray-700">Lorem Ipsum</li>
-              <li className="text-gray-700">Lorem Ipsum</li>
-            </ul>
+            {startCourseData.chapters?.map((chapter, index) => (
+              <div key={index} className="flex justify-between items-center mb-4">
+                <span>{chapter.title}</span>
+                <span className="text-gray-500">{chapter.duration}</span>
+              </div>
+            ))}
           </div>
         </aside>
       </div>
