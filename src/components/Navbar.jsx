@@ -23,7 +23,7 @@ const Navbar = () => {
         <div className="navbar bg-base-100 shadow-md shadow-slate-300 z-50">
             <div className="flex-none">
                 <a
-                    className="btn btn-ghost lg:pl-10 text-xl text-primary"
+                    className="btn btn-ghost lg:ml-10 text-xl text-primary"
                     href="/"
                 >
                     EtamCourse

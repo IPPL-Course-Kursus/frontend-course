@@ -29,7 +29,7 @@ const Home = () => {
   return (
     <>
       <Navbar />
-      <div className="w-full h-full pt-20 relative">
+      <div className="w-full h-full relative">
         <img
           src="/people_dasboard.png"
           alt="picture"
