@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchStartCourse,  // Gunakan fetch action yang sudah diperbarui
-} from "../../redux/actions/mulaiKelasActions"; 
+  fetchAllCourses,
+  fetchCourseById,
+  fetchChapterByCourseId,
+  fetchContentByChapterId,
+} from "../../redux/actions/mulaiKelasActions";  // Import hanya action yang digunakan
 
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
@@ -15,17 +18,12 @@ const MulaiKelas = () => {
   const [code, setCode] = useState("");
   const [output, setOutput] = useState("");
 
-  const startCourseData = useSelector((state) => state.mulaiKelas.startCourseData);
-
   useEffect(() => {
-    // Memanggil fetchStartCourse dengan courseUserId, chapterSort, dan contentSort yang sesuai
-    const courseUserId = 1;  // Ganti dengan ID course yang sesuai
-    const chapterSort = 1;   // Ganti dengan urutan chapter yang sesuai
-    const contentSort = 1;   // Ganti dengan urutan konten yang sesuai
-
-    
-
-    dispatch(fetchStartCourse(courseUserId, chapterSort, contentSort));
+    // Memanggil aksi untuk mendapatkan data kursus, chapter, dan konten yang dibutuhkan
+    dispatch(fetchAllCourses());
+    dispatch(fetchCourseById(1));  // Berikan ID kursus yang sesuai
+    dispatch(fetchChapterByCourseId(1));  // Berikan ID kursus yang sesuai
+    dispatch(fetchContentByChapterId(1));  // Berikan ID chapter yang sesuai
   }, [dispatch]);
 
   const runCode = () => {
@@ -137,14 +135,59 @@ const MulaiKelas = () => {
 
           {/* Chapter List */}
           <div className="mb-6">
-            {startCourseData.chapters?.map((chapter, index) => (
-              <div key={index} className="flex justify-between items-center mb-4">
-                <span>{chapter.title}</span>
-                <span className="text-gray-500">{chapter.duration}</span>
-              </div>
-            ))}
+            <div className="flex justify-between items-center">
+              <h4 className="text-blue-600 font-bold">Chapter 1 - Pendahuluan</h4>
+              <span className="text-sm text-gray-500">60 Menit</span>
+            </div>
+            <ul className="space-y-2 mt-4">
+              <li className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <span className="bg-blue-200 text-blue-800 rounded-full h-8 w-8 flex items-center justify-center">1</span>
+                  <span className="text-gray-700">Lorem Ipsum</span>
+                </div>
+                <span className="text-green-500">▶</span>
+              </li>
+              <li className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <span className="bg-blue-200 text-blue-800 rounded-full h-8 w-8 flex items-center justify-center">2</span>
+                  <span className="text-gray-700">Lorem Ipsum</span>
+                </div>
+                <span className="text-green-500">▶</span>
+              </li>
+              <li className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <span className="bg-blue-200 text-blue-800 rounded-full h-8 w-8 flex items-center justify-center">3</span>
+                  <span className="text-gray-700">Lorem Ipsum</span>
+                </div>
+                <span className="text-blue-500">⏵</span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="mb-6">
+            <div className="flex justify-between items-center">
+              <h4 className="text-blue-600 font-bold">Chapter 2 - Memulai Desain</h4>
+              <span className="text-sm text-gray-500">120 Menit</span>
+            </div>
+            <ul className="space-y-2 mt-4">
+              <li className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <span className="bg-gray-200 text-gray-400 rounded-full h-8 w-8 flex items-center justify-center">4</span>
+                  <span className="text-gray-400">Lorem Ipsum</span>
+                </div>
+                <span className="text-gray-400">🔒</span>
+              </li>
+              <li className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <span className="bg-gray-200 text-gray-400 rounded-full h-8 w-8 flex items-center justify-center">5</span>
+                  <span className="text-gray-400">Lorem Ipsum</span>
+                </div>
+                <span className="text-gray-400">🔒</span>
+              </li>
+            </ul>
           </div>
         </aside>
+
       </div>
       <Footer />
     </>
