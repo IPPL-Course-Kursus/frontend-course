@@ -14,7 +14,9 @@ import categoryReducer from "./categoryReducers";
 import transactionReducer from "./transactionReducers"; // Menggunakan reducer transaksi
 import adminDataKategoriReducer from "./adminDataKategoriReducers";
 import adminDashboardReducer from "./admindashboardreducer";
-import typeCourseReducer from "./typeCourseReducers"
+import typeCourseReducer from "./typeCourseReducers";
+import instrukturDashboardReducers from "./instrukturDashboardReducers"; 
+import mulaiKelasReducers from "./mulaiKelasReducers";
 
 export default combineReducers({
   // Auth
@@ -39,4 +41,11 @@ export default combineReducers({
 
   // Transaction
   transaction: transactionReducer,
+
+  // Instruktur
+  instrukturDashboard: instrukturDashboardReducers,
+
+  // Mulai Kelas
+  mulaikelas: mulaiKelasReducers,
+
 });
