@@ -23,6 +23,8 @@ const MulaiKelas = () => {
     const chapterSort = 1;   // Ganti dengan urutan chapter yang sesuai
     const contentSort = 1;   // Ganti dengan urutan konten yang sesuai
 
+    
+
     dispatch(fetchStartCourse(courseUserId, chapterSort, contentSort));
   }, [dispatch]);
 

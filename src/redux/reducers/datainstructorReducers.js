@@ -58,11 +58,6 @@ const initialState = {
     type: "SET_INSTRUCTORS",
     payload: instructors,
   });
-
-  export const addInstructor = (instructors) => ({
-    type: "ADD_INSTRUCTOR",
-    payload: instructors,
-  })
   
   export const setLoading = (isLoading) => ({
     type: "SET_LOADING",

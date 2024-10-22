@@ -51,6 +51,17 @@ const InstrukturForm = ({ show, onClose, existingData, isEditMode, onSubmit }) =
 
   const handleSubmit = (e) => {
     e.preventDefault();
+  
+    // Buat FormData untuk mengirim file
+    const formData = new FormData();
+    formData.append("name", formData.name);
+    if (formData.photoUrl) {
+      const fileInput = document.querySelector('input[type="file"]');
+      if (fileInput.files[0]) {
+        formData.append("photo", fileInput.files[0]); // Ubah nama field jika perlu
+      }
+    }
+  
     onSubmit(formData);
     onClose();
   };
