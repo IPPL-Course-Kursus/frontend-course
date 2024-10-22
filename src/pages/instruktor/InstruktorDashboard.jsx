@@ -1,252 +1,223 @@
 import Sidebar from "../../components/Sidebar/SidebarInstruktur";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { FaUsers, FaSearch, FaFilter } from "react-icons/fa";
+import { IoArrowBackCircle, IoArrowForwardCircle } from "react-icons/io5";
+import { instfetchPayments, instfetchkategori, instfetchuser } from "../../redux/actions/instrukturDashboardActions";
 
 const InstruktorDashboard = () => {
-  const [stats] = useState({
-    users: 450,
-    instruktor: 25,
-    freeClass: 20,
-    premiumClass: 20,
-  });
+  const dispatch = useDispatch();
+  const { stats, paymentStatus, loading, user } = useSelector((state) => state.instrukturDashboard);
 
-  // State untuk search input
+  // State for search input
   const [globalSearch, setGlobalSearch] = useState("");
   const [paymentSearch, setPaymentSearch] = useState("");
-  const [searchVisible, setSearchVisible] = useState(false); // State untuk visibilitas input pencarian
-
-  // State untuk filter status pembayaran
+  const [searchVisible, setSearchVisible] = useState(false);
   const [filter, setFilter] = useState("");
 
-  // State untuk status pembayaran
-  const [paymentStatus] = useState([
-    {
-      id: "johndoe123",
-      kategori: "UI/UX Design",
-      kelasPremium: "Belajar Web Designer dengan Figma",
-      status: "SUDAH BAYAR",
-      metodePembayaran: "Credit Card",
-      tanggalBayar: "21 Sep, 2023 at 2:00 AM",
-    },
-    {
-      id: "supermanxx",
-      kategori: "UI/UX Design",
-      kelasPremium: "Belajar Web Designer dengan Figma",
-      status: "BELUM BAYAR",
-      metodePembayaran: "-",
-      tanggalBayar: "-",
-    },
-    {
-      id: "ironman99",
-      kategori: "Web Development",
-      kelasPremium: "CSS dan HTML dalam seminggu",
-      status: "SUDAH BAYAR",
-      metodePembayaran: "Credit Card",
-      tanggalBayar: "20 Sep, 2023 at 2:00 AM",
-    },
-    {
-      id: "lokiMaster",
-      kategori: "Data Science",
-      kelasPremium: "Data Cleaning untuk pemula",
-      status: "SUDAH BAYAR",
-      metodePembayaran: "Credit Card",
-      tanggalBayar: "19 Sep, 2023 at 2:00 AM",
-    },
-    {
-      id: "siapaAjaani",
-      kategori: "Data Science",
-      kelasPremium: "Data Cleaning untuk pemula",
-      status: "BELUM BAYAR",
-      metodePembayaran: "-",
-      tanggalBayar: "-",
-    },
-    {
-      id: "visionOKE",
-      kategori: "Data Science",
-      kelasPremium: "Data Cleaning untuk pemula",
-      status: "SUDAH BAYAR",
-      metodePembayaran: "Credit Card",
-      tanggalBayar: "10 Sep, 2023 at 2:00 AM",
-    },
-  ]);
+  // State for pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5); // You can change this value to adjust items per page
 
-  // Filter berdasarkan global search, search payment, dan filter status pembayaran, tanggal
-  const filteredPayments = paymentStatus.filter(
-    (payment) =>
-      (globalSearch === "" ||
-        payment.id.toLowerCase().includes(globalSearch.toLowerCase()) ||
-        payment.kategori.toLowerCase().includes(globalSearch.toLowerCase()) ||
-        payment.kelasPremium.toLowerCase().includes(globalSearch.toLowerCase())) &&
-      (paymentSearch === "" ||
-        payment.id.toLowerCase().includes(paymentSearch.toLowerCase()) ||
-        payment.kategori.toLowerCase().includes(paymentSearch.toLowerCase()) ||
-        payment.kelasPremium.toLowerCase().includes(paymentSearch.toLowerCase()) ||
-        payment.tanggalBayar.toLowerCase().includes(paymentSearch.toLowerCase())) &&
-      (filter === "" || payment.status === filter)
-  );
+  // Fetch stats, payment status, kategori status, and user data
+  useEffect(() => {
+    dispatch(instfetchPayments());
+    dispatch(instfetchkategori());
+    dispatch(instfetchuser());
+  }, [dispatch]);
 
-  // Fungsi untuk menangani perubahan filter status pembayaran
-  const handleFilterChange = (e) => {
-    setFilter(e.target.value);
-  };
+  const freeClassesCount = paymentStatus.filter(payment => payment.paymentMethod === "Free").length;
+  const premiumClassesCount = paymentStatus.filter(payment => payment.paymentMethod !== "Free").length;
 
-  // Fungsi untuk toggle visibilitas input pencarian
-  const toggleSearch = () => {
-    setSearchVisible(!searchVisible);
-  };
+  // Create an array for card data
+  const cardData = [
+    { count: user?.userCount || 0, label: "Users", color: "bg-primary" },
+    { count: user?.instrukturCount || 0, label: "Instruktor", color: "bg-success" },
+    { count: freeClassesCount, label: "Free Class", color: "bg-[#173D94]" },
+    { count: premiumClassesCount, label: "Premium Class", color: "bg-[#0a61aa]" }
+  ];
+
+  // Filter payments based on searches and filters
+  const filteredPayments = paymentStatus.filter((payment) => {
+    const isGlobalSearchMatch =
+      globalSearch === "" ||
+      payment.id.toString().includes(globalSearch.toLowerCase()) ||
+      payment.kategori.toLowerCase().includes(globalSearch.toLowerCase()) ||
+      payment.kelasPremium.toLowerCase().includes(globalSearch.toLowerCase());
+
+    const isPaymentSearchMatch =
+      paymentSearch === "" ||
+      payment.id.toString().includes(paymentSearch.toLowerCase()) ||
+      payment.kategori.toLowerCase().includes(paymentSearch.toLowerCase()) ||
+      payment.kelasPremium.toLowerCase().includes(paymentSearch.toLowerCase()) ||
+      payment.tanggalBayar.toLowerCase().includes(paymentSearch.toLowerCase());
+
+    const isFilterMatch = filter === "" || payment.paymentStatus === filter;
+
+    return isGlobalSearchMatch && isPaymentSearchMatch && isFilterMatch;
+  });
+
+  // Sort payments by ID in ascending order
+  const sortedPayments = filteredPayments.sort((a, b) => a.id - b.id);
+
+  // Get current payments based on pagination
+  const indexOfLastPayment = currentPage * itemsPerPage;
+  const indexOfFirstPayment = indexOfLastPayment - itemsPerPage;
+  const currentPayments = sortedPayments.slice(indexOfFirstPayment, indexOfLastPayment);
+
+  const handleFilterChange = (e) => setFilter(e.target.value);
+  const toggleSearch = () => setSearchVisible(!searchVisible);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Debugging output
+  console.log("Stats:", stats);
+  console.log("Payment Status:", paymentStatus);
+  console.log("Loading:", loading);
+  console.log("User:", user);
+
   return (
-    <>
-      {/* <Sidebar/> */}
-      <div className="flex">
-        <Sidebar />
-        <div className="p-6 bg-secondary min-h-screen w-screen font-poppins">
-          {/* Header - Hi Admin */}
-          <div className="bg-[#F3F7FB] p-4 flex justify-between items-center mb-4 shadow-sm">
-            <h1 className="text-2xl font-bold text-[#173D94]">Hi, Instruktor</h1>
-            {/* Search Bar Global */}
-            <div className="relative flex items-center bg-white rounded-full shadow-sm">
-              <input
-                type="text"
-                value={globalSearch}
-                onChange={(e) => setGlobalSearch(e.target.value)}
-                placeholder="Cari"
-                className="p-2 pl-4 pr-10 text-sm text-gray-700 rounded-lg outline-none"
-              />
-              <button className="absolute right-1 bg-[#173D94] p-1.5 rounded-lg">
-                <FaSearch className="text-white" />
-              </button>
-            </div>
-          </div>
-
-          {/* Cards Users */}
-          <div className="grid grid-cols-4 gap-6 mb-8">
-            <div className="bg-primary text-white font-semibold p-4 rounded-lg shadow-sm flex items-center justify-center">
-              <div className="bg-white rounded-full p-2">
-                <FaUsers className="text-2xl text-primary" />
-              </div>
-              <div className="ml-4">
-                <div className="text-2xl">{stats.users}</div>
-                <div className="text-sm">Users</div>
-              </div>
-            </div>
-
-            {/* Cards Instruktor */}
-            <div className="bg-success text-white font-semibold p-4 rounded-lg shadow-sm flex items-center justify-center">
-              <div className="bg-white rounded-full p-2">
-                <FaUsers className="text-2xl text-primary" />
-              </div>
-              <div className="ml-4">
-                <div className="text-2xl">{stats.instruktor}</div>
-                <div className="text-sm">Instruktor</div>
-              </div>
-            </div>
-
-            {/* Cards Free Class */}
-            <div className="bg-[#173D94] text-white font-semibold p-4 rounded-lg shadow-sm flex items-center justify-center">
-              <div className="bg-white rounded-full p-2">
-                <FaUsers className="text-2xl text-primary" />
-              </div>
-              <div className="ml-4">
-                <div className="text-2xl">{stats.freeClass}</div>
-                <div className="text-sm">Free Class</div>
-              </div>
-            </div>
-
-            {/* Cards Premium Class */}
-            <div className="bg-[#173D94] text-white font-semibold p-4 rounded-lg shadow-sm flex items-center justify-center">
-              <div className="bg-white rounded-full p-2">
-                <FaUsers className="text-2xl text-primary" />
-              </div>
-              <div className="ml-4">
-                <div className="text-2xl">{stats.premiumClass}</div>
-                <div className="text-sm">Premium Class</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Section untuk Status Pembayaran */}
-          <div className="flex justify-between items-center mb-4">
-            {/* Judul Status Pembayaran */}
-            <h2 className="text-xl font-bold">Instruktor Active</h2>
-
-            {/* Filter Dropdown dan Search Icon */}
-            <div className="flex items-center">
-              {/* Filter Dropdown */}
-              <div className="relative mr-2">
-                <select
-                  value={filter}
-                  onChange={handleFilterChange}
-                  className="p-1 border border-[#173D94] rounded-full text-sm text-[#173D94]"
-                >
-                  <option value="">Filter</option>
-                  <option value="SUDAH BAYAR">Sudah Bayar</option>
-                  <option value="BELUM BAYAR">Belum Bayar</option>
-                </select>
-                <FaFilter className="absolute right-4 top-2 text-[#173D94] text-sm" />
-              </div>
-
-              {/* Search Icon untuk Status Pembayaran */}
-              <div className="relative flex items-center">
-                <FaSearch
-                  className="text-[#173D94] text-lg cursor-pointer"
-                  onClick={toggleSearch} // Event handler untuk toggle search visibility
-                />
-                <input
-                  type="text"
-                  value={paymentSearch}
-                  onChange={(e) => setPaymentSearch(e.target.value)}
-                  className={`transition-all duration-300 ease-in-out border border-[#173D94] rounded-full ml-2 p-1 ${
-                    searchVisible ? "w-40 opacity-100" : "w-0 opacity-0 pointer-events-none"
-                  }`}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Tabel Status Pembayaran */}
-          <div className="overflow-x-auto bg-white p-4">
-            <table className="min-w-full table-auto">
-              <thead>
-                <tr className="bg-gray-100 text-left text-sm font-semibold">
-                  <th className="px-4 py-2">ID</th>
-                  <th className="px-4 py-2">Kategori</th>
-                  <th className="px-4 py-2">Kelas Premium</th>
-                  <th className="px-4 py-2">Status</th>
-                  <th className="px-4 py-2">Metode Pembayaran</th>
-                  <th className="px-4 py-2">Tanggal Bayar</th>
-                </tr>
-              </thead>
-              {/* <tbody>
-                {filteredPayments.length === 0 ? (
-                  <tr>
-                    <td colSpan="6" className="px-4 py-2 text-center">
-                      Tidak ada pembayaran yang ditemukan
-                    </td>
-                  </tr>
-                ) : (
-                  filteredPayments.map((payment, index) => (
-                    <tr key={index} className="border-t">
-                      <td className="px-4 py-2 font-semibold">{payment.id}</td>
-                      <td className="px-4 py-2 font-semibold">{payment.kategori}</td>
-                      <td className="px-4 py-2 font-semibold">{payment.kelasPremium}</td>
-                      <td
-                        className={`px-4 py-2 font-semibold ${
-                          payment.status === "SUDAH BAYAR" ? "text-green-500" : "text-red-500"
-                        }`}
-                      >
-                        {payment.status}
-                      </td>
-                      <td className="px-4 py-2 font-semibold">{payment.metodePembayaran}</td>
-                      <td className="px-4 py-2 font-semibold">{payment.tanggalBayar}</td>
-                    </tr>
-                  ))
-                )}
-              </tbody> */}
-            </table>
+    <div className="flex">
+      <Sidebar />
+      <div className="p-6 bg-secondary min-h-screen w-screen font-poppins">
+        {/* Header */}
+        <div className="bg-[#F3F7FB] p-4 flex justify-between items-center mb-4 shadow-sm">
+          <h1 className="text-2xl font-bold text-[#173D94]">Hi, Instruktor</h1>
+          <div className="relative flex items-center bg-white rounded-full shadow-sm">
+            <input
+              type="text"
+              value={globalSearch}
+              onChange={(e) => setGlobalSearch(e.target.value)}
+              placeholder="Cari"
+              className="p-2 pl-4 pr-10 text-sm text-gray-700 rounded-lg outline-none"
+            />
+            <button className="absolute right-1 bg-[#173D94] p-1.5 rounded-lg">
+              <FaSearch className="text-white" />
+            </button>
           </div>
         </div>
+
+        {/* Cards */}
+        <div className="grid grid-cols-4 gap-6 mb-8">
+          {cardData.map((card, index) => (
+            <div key={index} className={`${card.color} text-white font-semibold p-4 rounded-lg shadow-sm flex items-center justify-center`}>
+              <div className="bg-white rounded-full p-2">
+                <FaUsers className="text-2xl text-primary" />
+              </div>
+              <div className="ml-4">
+                <div className="text-2xl">{card.count}</div>
+                <div className="text-sm">{card.label}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Payment Table */}
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold">Instruktor Active</h2>
+          <div className="flex items-center">
+            <div className="relative mr-2">
+              <select
+                value={filter}
+                onChange={handleFilterChange}
+                className="p-1 border border-[#173D94] rounded-full text-sm text-[#173D94]"
+              >
+                <option value="">Filter</option>
+                <option value="settlement">Sudah Bayar</option>
+                <option value="pending">Belum Bayar</option>
+              </select>
+              <FaFilter className="absolute right-4 top-2 text-[#173D94] text-sm" />
+            </div>
+            <div className="relative flex items-center">
+              <FaSearch
+                className="text-[#173D94] text-lg cursor-pointer"
+                onClick={toggleSearch}
+              />
+              <input
+                type="text"
+                value={paymentSearch}
+                onChange={(e) => setPaymentSearch(e.target.value)}
+                className={`transition-all duration-300 ease-in-out border border-[#173D94] rounded-full ml-2 p-1 ${searchVisible ? "w-40 opacity-100" : "w-0 opacity-0 pointer-events-none"}`}
+                placeholder="Cari..."
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Payment Status Table */}
+        <div className="overflow-x-auto bg-white p-4">
+          <table className="min-w-full table-auto">
+            <thead>
+              <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
+                <th className="px-2 md:px-4 py-2">ID</th>
+                <th className="px-2 md:px-4 py-2">Nama Kursus</th>
+                <th className="px-2 md:px-4 py-2">Harga</th>
+                <th className="px-2 md:px-4 py-2">Status</th>
+                <th className="px-2 md:px-4 py-2">Metode Pembayaran</th>
+                <th className="px-2 md:px-4 py-2">Tanggal Bayar</th>
+              </tr>
+            </thead>
+            <tbody>
+              {!loading && currentPayments.length > 0 ? (
+                currentPayments.map((payment) => (
+                  <tr key={payment.id} className="border-b">
+                    <td className="px-2 md:px-4 py-2">{payment.id}</td>
+                    <td className="px-2 md:px-4 py-2">{payment.courseName}</td>
+                    <td className="px-2 md:px-4 py-2">Rp.{payment.totalPrice},00</td>
+                    <td className="px-2 md:px-4 py-2">{payment.paymentStatus}</td>
+                    <td className="px-2 md:px-4 py-2">{payment.paymentMethod}</td>
+                    <td className="px-2 md:px-4 py-2">
+                      {new Date(payment.createdAt).toLocaleDateString('id-ID', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" className="text-center py-4">No Data Available</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+
+          {/* Pagination Controls */}
+          <div className="flex justify-between items-center mt-4">
+            <button
+              className={`flex items-center py-2 px-4 rounded-lg ${
+                currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-[#0a61aa] text-white"
+              } transition-all duration-300 hover:scale-105`}
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              <IoArrowBackCircle className="mr-2 text-xl" />
+              Previous
+            </button>
+
+            <span className="text-lg font-semibold">
+              Page {currentPage} of {Math.ceil(sortedPayments.length / itemsPerPage)}
+            </span>
+
+            <button
+              className={`flex items-center py-2 px-4 rounded-lg ${
+                currentPage === Math.ceil(sortedPayments.length / itemsPerPage)
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-[#0a61aa] text-white"
+              } transition-all duration-300 hover:scale-105`}
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === Math.ceil(sortedPayments.length / itemsPerPage)}
+            >
+              Next
+              <IoArrowForwardCircle className="ml-2 text-xl" />
+            </button>
+          </div>
+
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 
