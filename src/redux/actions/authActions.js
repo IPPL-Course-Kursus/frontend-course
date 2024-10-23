@@ -37,6 +37,19 @@ import toast from "react-hot-toast";
 
 const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
 
+
+// Tambahkan di actions/courseActions.js
+export const getMyCourses = (userId) => async (dispatch) => {
+  try {
+    const response = await axios.get(`${api_url}user/${userId}/courses`);
+    const myCourses = response.data;
+    dispatch(setMyCourse(myCourses)); // Menggunakan reducer yang ada
+  } catch (error) {
+    console.error("Error fetching user courses:", error.message);
+  }
+};
+
+
 // export const login = (email, password, navigate) => async (dispatch) => {
 //   try {
 //     const response = await axios.post(`${api_url}/auth/login`, {

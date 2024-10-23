@@ -1,5 +1,5 @@
 import axios from "axios";
-import { setCourse } from "../reducers/courseReducers";
+import { setCourses } from "../reducers/courseReducers";
 import {
   fetchChaptersFailure,
   fetchChaptersStart,

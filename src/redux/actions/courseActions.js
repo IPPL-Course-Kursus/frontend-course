@@ -1,37 +1,25 @@
 import axios from "axios";
 import {
-  setCourse,
-  setFree,
-  //  setDetail,
-  setPageCourse,
-  setPopular,
+  setCourses,
+  setMyCourses,
+  setLoading,
+  setError,
+  clearError,
 } from "../reducers/courseReducers";
-// import { setCourse } from "../reducers/courseReducers";
+import { getCookie } from "cookies-next";
 
 const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
 
+
 export const getAllCourse = () => async (dispatch) => {
+  dispatch(setLoading(true)); // Start loading
   try {
     const response = await axios.get(`${api_url}course`);
-
-    const courses = response.data;
-    console.log(response.data);
-
-    dispatch(setCourse(courses));
+    dispatch(setCourses(response.data));
   } catch (error) {
     console.error("Error fetching all courses:", error.message);
-  }
-};
-
-export const getPagesCourse = (page) => async (dispatch) => {
-  try {
-    const response = await axios.get(`${api_url}courses?page=${page}`);
-
-    const { pagination } = response.data;
-
-    dispatch(setPageCourse(pagination));
-  } catch (error) {
-    alert("error", "ERROR", error.message);
+  } finally {
+    dispatch(setLoading(false)); // End loading
   }
 };
 
@@ -43,10 +31,11 @@ export const getPopularCourse = () => async (dispatch) => {
     console.log("Data kursus populer:", coursePopular); // Debugging
     dispatch(setPopular(coursePopular));
   } catch (error) {
-    console.error("Error fetching popular courses:", error.message);
+    console.error("Error fetching popular courses:", error.message
+  
+    );
   }
 };
-
 export const getFreeCourse = () => async (dispatch) => {
   try {
     // Mengambil semua kursus gratis
@@ -61,26 +50,48 @@ export const getFreeCourse = () => async (dispatch) => {
 };
 
 
-// export const getPopularCourse = () => async (dispatch) => {
-//   try {
-//     const response = await axios.get(`${api_url}course/popular`);
 
-//     const coursePopular = response.data;
-//     console.log(response.data);
 
-//     dispatch(setPopular(coursePopular));
-//   } catch (error) {
-//     console.error("Error fetching all courses:", error.message);
-//   }
-// };
 
-// export const getDetaiId = (courseId) => async (dispatch) => {
-//   try {
-//     const response = await axios.get(`${api_url}course/detail-course/${courseId}`);
-//     const detail = response.data;
-//     console.log("ini detail", response.data);
-//     dispatch(setDetail(detail));
-//   } catch (error) {
-//     swal("error", "ERROR", error.message);
-//   }
-// };
+
+
+
+
+export const getUserCourses = () => async (dispatch) => {
+  dispatch(setLoading(true));
+  dispatch(clearError());
+
+  const token = (getCookie("token"));
+  if (!token) {
+    dispatch(setError("User not authenticated"));
+    dispatch(setLoading(false));
+    return;
+  }
+
+
+
+
+  try {
+    const response = await axios.get(`${api_url}course-user`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const courses = response.data.data;
+    dispatch(setMyCourses(courses));
+  } catch (error) {
+    dispatch(setError(error.message || "Error fetching user courses"));
+  } finally {
+    dispatch(setLoading(false));
+  }
+
+  
+  console.log("Token:", token); // Debugging
+  console.log("Data kursus pengguna:", response.data); // Debugging
+  // console.log("State mycourse:", mycourse); // Debugging
+  // console.log("Filtered courses:", filteredCourses()); // Debugging
+
+
+
+};

@@ -25,7 +25,6 @@ export default combineReducers({
   updateProfile: updateProfileReducer,
   changePassword: changePasswordReducer,
 
-  // Course
   course: courseReducer,
 
   // Category
