@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 
 const DataKelasInput = ({ show, onClose }) => {
+  const [imagePreview, setImagePreview] = useState(null);
   const [formData, setFormData] = useState({
     file: null,
     kategori: "",
@@ -24,6 +25,22 @@ const DataKelasInput = ({ show, onClose }) => {
     }));
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFormData((prev) => ({
+      ...prev,
+      file: file,
+    }));
+
+    // Generate image preview
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setImagePreview(imageUrl);
+    } else {
+      setImagePreview(null);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Tambah Kelas:", formData);
@@ -41,25 +58,49 @@ const DataKelasInput = ({ show, onClose }) => {
         <h2 className="text-xl font-bold text-[#0a61aa] mb-4 text-center">Tambah Kelas</h2>
 
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <label className="block mb-1 font-semibold">Upload File</label>
             <input type="file" className="w-full p-2 border rounded-xl" />
+          </div> */}
+          <div className="mb-4">
+            <label className="block mb-1 font-semibold">Upload File</label>
+            <input
+              type="file"
+              name="file"
+              onChange={handleFileChange}
+              className="w-full p-2 border rounded-xl"
+              accept="image/*"
+            />
+            <small className="text-gray-500">SVG, PNG, JPG or GIF (MAX. 800x400px).</small>
+
+            {imagePreview && (
+              <div className="mt-4">
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="w-full h-40 object-cover rounded-xl"
+                />
+              </div>
+            )}
           </div>
 
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Kategori</label>
-            <select
-              name="kategori"
-              value={formData.kategori}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-xl"
-            >
-              <option>Pilih</option>
-              <option>UI/UX Design</option>
-              <option>Data Science</option>
-            </select>
+            <div className="relative">
+              <select
+                name="kategori"
+                value={formData.kategori}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded-xl max-w-full overflow-y-auto"
+                style={{ maxHeight: "200px" }} // Atur tinggi maksimum
+              >
+                <option>Pilih</option>
+                {Array.from({ length: 20 }, (_, index) => (
+                  <option key={index}>Kategori {index + 1}</option>
+                ))}
+              </select>
+            </div>
           </div>
-
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Judul Kelas</label>
             <input
@@ -114,7 +155,7 @@ const DataKelasInput = ({ show, onClose }) => {
           </div>
 
           <div className="mb-4">
-            <label className="block mb-1 font-semibold">Pengajar</label>
+            <label className="block mb-1 font-semibold">Pengajar Kelas</label>
             <select
               name="pengajar"
               value={formData.pengajar}
@@ -124,6 +165,20 @@ const DataKelasInput = ({ show, onClose }) => {
               <option>Pilih</option>
               <option>John Doe</option>
               <option>Jane Smith</option>
+            </select>
+          </div>
+
+          <div className="mb-4">
+            <label className="block mb-1 font-semibold">Published</label>
+            <select
+              name="pengajar"
+              value={formData.pengajar}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-xl"
+            >
+              <option>Pilih</option>
+              <option>True</option>
+              <option>False</option>
             </select>
           </div>
 

@@ -169,7 +169,7 @@
 // File: ../../components/KategoriComponents/KategoriForm.jsx
 
 import PropTypes from "prop-types";
-import { useState, useEffect } from "react";
+// import { useState, useEffect } from "react";
 
 const KategoriForm = ({
   show,

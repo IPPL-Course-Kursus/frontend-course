@@ -16,21 +16,20 @@ import DataModuleInput from "../../components/InstrukturComponents/DataModuleInp
 const InstruktorDataModule = () => {
   const [showTambahPopup, setShowTambahPopup] = useState(false);
   const [showUbahPopup, setShowUbahPopup] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [selectedChapter, setSelectedChapter] = useState(null);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [chapterToDelete, setChapterToDelete] = useState(null);
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 9;
+  const itemsPerPage = 10;
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { chapter, loading, error } = useSelector((state) => state.chapter);
 
   const { id } = useParams();
-  // const courseId = 1; // Ganti dengan courseId yang sesuai
 
   // Ambil data chapter dari Redux store
   useEffect(() => {
@@ -38,12 +37,12 @@ const InstruktorDataModule = () => {
   }, [dispatch, id]);
 
   const handleAddClick = () => {
-    setSelectedCourse({});
+    setSelectedChapter({});
     setShowTambahPopup(true);
   };
 
-  const handleEditClick = (course) => {
-    setSelectedCourse(course);
+  const handleEditClick = (chapter) => {
+    setSelectedChapter(chapter);
     setShowUbahPopup(true);
   };
 
@@ -53,6 +52,7 @@ const InstruktorDataModule = () => {
   };
 
   const confirmDelete = () => {
+    console.log("Menghapus chapter dengan ID:", chapterToDelete.id); // Debugging line
     dispatch(deleteDataModule(chapterToDelete.id)).then(() => {
       setShowDeleteModal(false);
       window.location.reload(); // Reload halaman setelah penghapusan berhasil
@@ -143,8 +143,8 @@ const InstruktorDataModule = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentItems.map((chapter) => (
-                    <tr key={chapter.id} className="border-b text-xs md:text-sm hover:bg-gray-50">
+                  {currentItems.map((chapter, index) => (
+                    <tr key={index} className="border-b text-xs md:text-sm hover:bg-gray-50">
                       <td className="px-4 py-2">{chapter.sort}</td>
                       <td className="px-4 py-2">{chapter.chapterTitle}</td>
                       <td className="px-4 py-2 flex space-x-2">
@@ -154,7 +154,7 @@ const InstruktorDataModule = () => {
                           </button>
                         </Link>
                         <button
-                          className="py-1 px-2 bg-blue-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                          className="py-1 px-2 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
                           onClick={() => handleEditClick(chapter)}
                         >
                           Ubah
@@ -215,7 +215,8 @@ const InstruktorDataModule = () => {
           <UbahModule
             show={showUbahPopup}
             onClose={() => setShowUbahPopup(false)}
-            existingData={selectedCourse}
+            existingData={selectedChapter}
+            // chapterId={id} // Pastikan ini valid
           />
 
           {showDeleteModal && (

@@ -15,7 +15,11 @@ import contentReducers from "./contentReducers";
 
 import transactionReducer from "./transactionReducers"; // Menggunakan reducer transaksi
 import adminDataKategoriReducer from "./adminDataKategoriReducers";
-import adminDashboardReducer from "./admindashboardreducer"; // Pastikan ini sudah benar
+import adminDashboardReducer from "./admindashboardreducer";
+import typeCourseReducer from "./typeCourseReducers";
+import instrukturDashboardReducers from "./instrukturDashboardReducers"; 
+import mulaiKelasReducers from "./mulaiKelasReducers";
+import levelCourseReducer from "./levelCourseReducers";
 
 export default combineReducers({
   // Auth
@@ -42,7 +46,16 @@ export default combineReducers({
   // Admin
   adminDataKategori: adminDataKategoriReducer,
   adminDashboard: adminDashboardReducer,
+  typeCourse: typeCourseReducer,
+  levelCourse: levelCourseReducer,
 
   // Transaction
   transaction: transactionReducer,
+
+  // Instruktur
+  instrukturDashboard: instrukturDashboardReducers,
+
+  // Mulai Kelas
+  mulaikelas: mulaiKelasReducers,
+
 });

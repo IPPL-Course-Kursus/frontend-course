@@ -27,11 +27,13 @@ import AdminDataInstruktur from "./pages/admin/KelolaInstrukturAdmin/AdminDataIn
 import AdminRegisterInstruktur from "./pages/admin/KelolaInstrukturAdmin/AdminRegisterInstruktur";
 // INSTRUKTUR
 import InstruktorDashboard from "./pages/instruktor/InstruktorDashboard";
-import InstruktorDataKelas from "./pages/instruktor/InstruktorDataKelas";
+
 import InstruktorDataModule from "./pages/instruktor/InstruktorDataModule";
-import InstruktorDataKonten from "./pages/instruktor/InstruktorDataKonten";
+
 import InstrukturPorofile from "./pages/instruktor/InstrukturPorofile";
 import InstrukturDataKategori from "./pages/instruktor/KeolaData/InstrukturDataKategori";
+import InstruktorDataKelas from "./pages/instruktor/InstruktorDataKelas";
+import InstruktorDataKonten from "./pages/instruktor/InstruktorDataKonten";
 
 // import NoAccessToken from "./security/NoAccessToken";
 // import Protected from "./security/Protected";
@@ -114,6 +116,7 @@ function AppRoutes() {
       {/* Instruktor */}
       <Route path="/inst/dashboard" element={<InstruktorDashboard />} />
       <Route path="/inst/data-kelas" element={<InstruktorDataKelas />} />
+
       <Route path="/inst/data-konten/:id" element={<InstruktorDataKonten />} />
       <Route path="/inst/data-module/:id" element={<InstruktorDataModule />} />
       <Route path="/inst/data-kategori" element={<InstrukturDataKategori />} />

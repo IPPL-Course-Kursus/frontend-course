@@ -15,10 +15,25 @@ const coursesSlice = createSlice({
     setCourse: (state, action) => {
       state.courses = action.payload;
     },
+    fetchCourseStart: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+
+    fetchCourseSuccess: (state, action) => {
+      state.content = action.payload;
+      state.loading = false;
+    },
+
+    fetchCourseFailure: (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
+
     setDetail: (state, action) => {
       state.detail = {
-        ...action.payload, 
-        recommendedCourses: action.payload.recommendedCourses || [] // Simpan recommendedCourses
+        ...action.payload,
+        recommendedCourses: action.payload.recommendedCourses || [],
       };
     },
     setMyCourse: (state, action) => {
@@ -47,7 +62,9 @@ export const {
   setPopular,
   setFree,
   setPageCourse,
+  fetchCourseStart,
+  fetchCourseSuccess,
+  fetchCourseFailure,
 } = coursesSlice.actions;
 
 export default coursesSlice.reducer;
-

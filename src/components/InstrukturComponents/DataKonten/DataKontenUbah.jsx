@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { addDataKonten } from "../../../redux/actions/instruktorActions";
+import { updateDataKonten } from "../../../redux/actions/instruktorActions";
 import { useDispatch } from "react-redux";
+
 function DataKontenUbah({ show, onClose, existingData }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -14,6 +15,18 @@ function DataKontenUbah({ show, onClose, existingData }) {
     duration: "",
   });
 
+  useEffect(() => {
+    if (existingData) {
+      setFormData({
+        sort: existingData.sort || "",
+        contentTitle: existingData.contentTitle || "",
+        teks: existingData.teks || "",
+        contentUrl: existingData.contentUrl || "",
+        duration: existingData.duration || "",
+      });
+    }
+  }, [existingData]);
+
   if (!show) return null;
 
   const handleInputChange = (e) => {
@@ -24,38 +37,36 @@ function DataKontenUbah({ show, onClose, existingData }) {
     }));
   };
 
-  const handleAdd = (e) => {
-    e.preventDefault();
-    setLoading(true);
+const handleUpdate = async (e) => {
+  e.preventDefault();
+  setLoading(true);
 
-    const { sort, contentTitle, teks, contentUrl, duration } = formData;
-    if (!sort || !contentTitle || !teks || !contentUrl || !duration) {
-      alert("Please fill in all required fields.");
-      setLoading(false);
-      return;
-    }
-
-    const requestData = {
-      sort: Number(sort),
-      contentTitle,
-      teks,
-      contentUrl,
-      duration: Number(duration),
-    };
-
-    dispatch(addDataKonten(requestData, contentId))
-      .then(() => {
-        setLoading(false);
-        onClose();
-        // Reload window after successful addition
-        window.location.reload();
-      })
-      .catch((err) => {
-        setLoading(false);
-        setError(err.response?.data?.message || "Error adding content");
-        console.error("Error detail:", err);
-      });
+  const payload = {
+    sort: formData.sort,
+    contentTitle: formData.contentTitle,
+    teks: formData.teks,
+    contentUrl: formData.contentUrl,
+    duration: formData.duration,
   };
+
+  console.log("Updating with payload:", payload);
+
+  try {
+    await dispatch(updateDataKonten(existingData.id, payload));
+    onClose();
+    window.location.reload();
+  } catch (error) {
+    console.error("Failed to update data:", error.response?.data || error.message);
+    if (error.response) {
+      setError(`Error: ${error.response.data.message || 'Failed to update data. Please try again.'}`);
+    } else {
+      setError("Failed to update data. Please try again.");
+    }
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div
@@ -66,9 +77,9 @@ function DataKontenUbah({ show, onClose, existingData }) {
         <button className="absolute top-2 right-2 text-xl font-bold" onClick={onClose}>
           &times;
         </button>
-        <h2 className="text-xl font-bold text-[#0a61aa] mb-4 text-center">Tambah Kategori</h2>
+        <h2 className="text-xl font-bold text-[#0a61aa] mb-4 text-center">Ubah Konten</h2>
 
-        <form onSubmit={handleAdd}>
+        <form onSubmit={handleUpdate}>
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Urutan</label>
             <input
@@ -80,7 +91,6 @@ function DataKontenUbah({ show, onClose, existingData }) {
               placeholder="ex 1"
             />
           </div>
-
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Judul Materi</label>
             <input
@@ -92,7 +102,6 @@ function DataKontenUbah({ show, onClose, existingData }) {
               placeholder="Masukkan judul kelas"
             />
           </div>
-
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Teks</label>
             <input
@@ -104,7 +113,6 @@ function DataKontenUbah({ show, onClose, existingData }) {
               placeholder="Masukkan teks"
             />
           </div>
-
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Video URL</label>
             <input
@@ -116,7 +124,6 @@ function DataKontenUbah({ show, onClose, existingData }) {
               placeholder="Masukkan Video URL"
             />
           </div>
-
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Durasi</label>
             <input
@@ -128,7 +135,7 @@ function DataKontenUbah({ show, onClose, existingData }) {
               placeholder="Masukkan durasi video"
             />
           </div>
-
+          {error && <p className="text-red-500 mb-4">{error}</p>} {/* Display error message */}
           <div className="flex justify-end space-x-2">
             <button
               type="button"
@@ -140,8 +147,9 @@ function DataKontenUbah({ show, onClose, existingData }) {
             <button
               type="submit"
               className="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold"
+              disabled={loading} // Disable button while loading
             >
-              Tambah
+              {loading ? "Mengupdate..." : "Ubah"} {/* Change button text based on loading state */}
             </button>
           </div>
         </form>

@@ -26,6 +26,7 @@ const contentSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
+
     addContent: (state, action) => {
       state.content.push(action.payload);
     },
@@ -33,6 +34,20 @@ const contentSlice = createSlice({
       state.content = state.content.filter((content) => content.id !== action.payload);
     },
     deleteContentFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    updateContentRequest: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+
+    updateContentSuccess: (state, action) => {
+      state.loading = false;
+      state.content = action.payload;
+      state.error = null;
+    },
+    updateContentFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },
@@ -47,6 +62,9 @@ export const {
   addContent,
   deleteContent,
   deleteContentFailure,
+  updateContentRequest,
+  updateContentSuccess,
+  updateContentFailure,
 } = contentSlice.actions;
 
 export default contentSlice.reducer;

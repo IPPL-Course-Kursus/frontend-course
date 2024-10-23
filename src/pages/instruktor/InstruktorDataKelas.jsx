@@ -5,10 +5,9 @@ import DataKelasInput from "../../components/InstrukturComponents/DataKelas/Data
 import DataKelasUbah from "../../components/InstrukturComponents/DataKelas/DataKelasUbah";
 import DataKelasDetail from "../../components/InstrukturComponents/DataKelas/DataKelasDetail";
 import { Link } from "react-router-dom";
-import Sidebar from "../../components/Sidebar/SidebarInstruktur";
 import { useDispatch, useSelector } from "react-redux";
+import SidebarInstruktur from "../../components/Sidebar/SidebarInstruktur";
 import { getAllKelas } from "../../redux/actions/instruktorActions";
-// import { getAllCourse } from "../../redux/actions/courseActions";
 
 const InstruktorDataKelas = () => {
   const [courseTypeSearch, setCourseTypeSearch] = useState("");
@@ -22,7 +21,7 @@ const InstruktorDataKelas = () => {
   const [filter, setFilter] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1); // Halaman saat ini
-  const itemsPerPage = 9; // Jumlah data yang ditampilkan per halaman
+  const itemsPerPage = 10; // Jumlah data yang ditampilkan per halaman
   const dispatch = useDispatch();
   const courses = useSelector((state) => state.course.courses);
 
@@ -77,7 +76,7 @@ const InstruktorDataKelas = () => {
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <Sidebar />
+          <SidebarInstruktur />
         </div>
 
         {/* Overlay */}
@@ -156,7 +155,7 @@ const InstruktorDataKelas = () => {
             <table className="min-w-full table-auto">
               <thead>
                 <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
-                  <th className="px-2 md:px-4 py-2">ID</th>
+                  <th className="px-2 md:px-4 py-2">Kode</th>
                   <th className="px-2 md:px-4 py-2">Kategori</th>
                   <th className="px-2 md:px-4 py-2">Nama Kelas</th>
                   <th className="px-2 md:px-4 py-2">Tipe Kelas</th>
@@ -266,118 +265,3 @@ const InstruktorDataKelas = () => {
 };
 
 export default InstruktorDataKelas;
-
-// const [courseType] = useState([
-//   {
-//     id: "johndoe123",
-//     kategori: "UI/UX Design",
-//     namaKelas: "Belajar Web Designer dengan Figma",
-//     tipeKelas: "Free",
-//     level: "Intermediate",
-//     harga: 0,
-//   },
-//   {
-//     id: "supermanxx",
-//     kategori: "UI/UX Design",
-//     namaKelas: "Belajar Web Designer dengan Figma",
-//     tipeKelas: "Premium",
-//     level: "Beginner",
-//     harga: 190000,
-//   },
-//   {
-//     id: "johndoe123",
-//     kategori: "UI/UX Design",
-//     namaKelas: "Belajar Web Designer dengan Figma",
-//     tipeKelas: "Free",
-//     level: "Intermediate",
-//     harga: 0,
-//   },
-//   {
-//     id: "supermanxx",
-//     kategori: "UI/UX Design",
-//     namaKelas: "Belajar Web Designer dengan Figma",
-//     tipeKelas: "Premium",
-//     level: "Beginner",
-//     harga: 190000,
-//   },
-//   {
-//     id: "lokiMaster",
-//     kategori: "Data Science",
-//     namaKelas: "Data Cleaning untuk pemula",
-//     tipeKelas: "Free",
-//     level: "Advance",
-//     harga: 0,
-//   },
-//   {
-//     id: "siapaAjaani",
-//     kategori: "Data Science",
-//     namaKelas: "Data Cleaning untuk pemula",
-//     tipeKelas: "Premium",
-//     level: "Intermediate",
-//     harga: 190000,
-//   },
-//   {
-//     id: "johndoe123",
-//     kategori: "UI/UX Design",
-//     namaKelas: "Belajar Web Designer dengan Figma",
-//     tipeKelas: "Free",
-//     level: "Intermediate",
-//     harga: 0,
-//   },
-//   {
-//     id: "supermanxx",
-//     kategori: "UI/UX Design",
-//     namaKelas: "Belajar Web Designer dengan Figma",
-//     tipeKelas: "Premium",
-//     level: "Beginner",
-//     harga: 190000,
-//   },
-//   {
-//     id: "lokiMaster",
-//     kategori: "Data Science",
-//     namaKelas: "Data Cleaning untuk pemula",
-//     tipeKelas: "Free",
-//     level: "Advance",
-//     harga: 0,
-//   },
-//   {
-//     id: "siapaAjaani",
-//     kategori: "Data Science",
-//     namaKelas: "Data Cleaning untuk pemula",
-//     tipeKelas: "Premium",
-//     level: "Intermediate",
-//     harga: 190000,
-//   },
-//   {
-//     id: "johndoe123",
-//     kategori: "UI/UX Design",
-//     namaKelas: "Belajar Web Designer dengan Figma",
-//     tipeKelas: "Free",
-//     level: "Intermediate",
-//     harga: 0,
-//   },
-//   {
-//     id: "supermanxx",
-//     kategori: "UI/UX Design",
-//     namaKelas: "Belajar Web Designer dengan Figma",
-//     tipeKelas: "Premium",
-//     level: "Beginner",
-//     harga: 190000,
-//   },
-//   {
-//     id: "lokiMaster",
-//     kategori: "Data Science",
-//     namaKelas: "Data Cleaning untuk pemula",
-//     tipeKelas: "Free",
-//     level: "Advance",
-//     harga: 0,
-//   },
-//   {
-//     id: "siapaAjaani",
-//     kategori: "Data Science",
-//     namaKelas: "Data Cleaning untuk pemula",
-//     tipeKelas: "Premium",
-//     level: "Intermediate",
-//     harga: 190000,
-//   },
-// ]);

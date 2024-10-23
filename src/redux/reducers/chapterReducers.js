@@ -41,6 +41,22 @@ const chapterSlice = createSlice({
     deleteChapter: (state, action) => {
       state.chapter = state.chapter.filter((chapter) => chapter.id !== action.payload);
     },
+
+    updateChapterRequest: (state) => {
+      state.loading = true;
+      state.error = null;
+
+    },
+
+    updateChapterSuccess: (state, action) => {
+      state.loading = false;
+      state.chapter = action.payload;
+      state.error = null;
+    },
+    updateChapterFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -53,6 +69,9 @@ export const {
   fetchChaptersFailure,
   addChapter,
   deleteChapter,
+  updateChapterRequest,
+  updateChapterSuccess,
+  updateChapterFailure,
 } = chapterSlice.actions;
 
 export default chapterSlice.reducer;

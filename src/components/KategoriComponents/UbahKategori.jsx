@@ -144,7 +144,6 @@ const UbahKategori = ({ show, onClose, existingData }) => {
     }
 
     // Append other fields if any
-
     dispatch(updateCategory(existingData.id, formDataToSend));
     onClose();
   };

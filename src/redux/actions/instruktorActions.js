@@ -1,5 +1,5 @@
 import axios from "axios";
-import { setCourse } from "../reducers/courseReducers";
+// import { fetchCourseFailure, fetchCourseStart, fetchCourseSuccess, setCourse } from "../reducers/courseReducers";
 import {
   deleteChapter,
   deleteChapterFailure,
@@ -7,6 +7,9 @@ import {
   fetchChaptersFailure,
   fetchChaptersStart,
   fetchChaptersSuccess,
+  updateChapterFailure,
+  updateChapterRequest,
+  updateChapterSuccess,
 } from "../reducers/chapterReducers";
 import { getCookie } from "cookies-next";
 import {
@@ -16,7 +19,16 @@ import {
   fetchContentFailure,
   fetchContentStart,
   fetchContentSuccess,
+  updateContentFailure,
+  updateContentRequest,
+  updateContentSuccess,
 } from "../reducers/contentReducers";
+import {
+  fetchCourseFailure,
+  fetchCourseStart,
+  fetchCourseSuccess,
+  setCourse,
+} from "../reducers/courseReducers";
 
 const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
 
@@ -32,6 +44,33 @@ export const getAllKelas = () => async (dispatch) => {
     dispatch(setCourse(courses));
   } catch (error) {
     console.error("Error fetching all courses:", error.message);
+  }
+};
+
+export const addDataKelas = (requesData) => async (dispatch) => {
+  dispatch(fetchCourseStart());
+  try {
+    // Get the token from cookies
+    const token = getCookie("token");
+
+    // Set up the config with headers
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data", // Set the Content-Type header
+      },
+    };
+
+    // Make the POST request with the FormData
+    const response = await axios.post(`${api_url}course/createCourse`, requesData, config);
+
+    dispatch(fetchCourseSuccess(response.data.message));
+    dispatch(getAllKelas());
+  } catch (error) {
+    console.error("Add category error:", error.response || error);
+    const errorMessage = error.response?.data?.message || error.message || "Add category failed";
+    dispatch(fetchCourseFailure(errorMessage));
+    throw error;
   }
 };
 
@@ -61,6 +100,29 @@ export const getDataModule = (chapterId) => async (dispatch) => {
   } catch (error) {
     console.error("Fetch error:", error.response ? error.response.data : error.message);
     dispatch(fetchChaptersFailure(error.message));
+  }
+};
+
+export const updateDataModule = (chapterId, updatedData) => async (dispatch) => {
+  dispatch(updateChapterRequest());
+  try {
+    const token = getCookie("token");
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json", // Pastikan tetap application/json karena tidak ada file
+      },
+    };
+
+    const response = await axios.put(`${api_url}chapter/update/${chapterId}`, updatedData, config);
+
+    dispatch(updateChapterSuccess(response.data.message));
+    dispatch(getDataModule()); // Optional: Untuk refresh data setelah update
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || error.message;
+    dispatch(updateChapterFailure(errorMessage));
+    throw new Error(errorMessage); // Untuk ditangani di komponen
   }
 };
 
@@ -105,6 +167,7 @@ export const deleteDataModule = (chapterId) => async (dispatch) => {
     dispatch(deleteChapter(response.data));
     return response.data;
   } catch (error) {
+    console.error("Delete error:", error.response ? error.response.data : error.message);
     dispatch(deleteChapterFailure(error.response?.data || "Delete failed"));
     throw error;
   }
@@ -168,34 +231,55 @@ export const addDataKonten = (requestData, chapterId) => async (dispatch) => {
   }
 };
 
-export const updateDataKonten = (requestData, contentId) => async (dispatch) => {
-  dispatch(fetchContentStart());
+export const updateDataKonten = (contentId, updatedData) => async (dispatch) => {
+  dispatch(updateContentRequest());
   try {
-    if (!contentId) {
-      const errorMessage = "Content ID is required";
-      dispatch(fetchContentFailure(errorMessage));
-      console.error(errorMessage);
-      throw new Error(errorMessage);
-    }
-
     const token = getCookie("token");
 
-    const response = await axios.put(`${api_url}content/update-content/${contentId}`, requestData, {
+    const config = {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+        "Content-Type": "application/json", // Pastikan tetap application/json karena tidak ada file
       },
-    });
+    };
 
-    dispatch(fetchContentSuccess(response.data.message));
+    const response = await axios.put(
+      `${api_url}content/update-content/${contentId}`,
+      updatedData,
+      config
+    );
+
+    dispatch(updateContentSuccess(response.data.message));
+    dispatch(getDataKonten()); // Optional: Untuk refresh data setelah update
   } catch (error) {
-    const errorMessage = error.response?.data?.message || "Update content failed";
-    dispatch(fetchContentFailure(errorMessage));
-    console.error(errorMessage);
-    throw error;
+    const errorMessage = error.response?.data?.message || error.message;
+    dispatch(updateContentFailure(errorMessage));
+    throw new Error(errorMessage); // Untuk ditangani di komponen
   }
 };
 
+// export const updateDataModule = (chapterId, updatedData) => async (dispatch) => {
+//   dispatch(updateChapterRequest());
+//   try {
+//     const token = getCookie("token");
+
+//     const config = {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         "Content-Type": "application/json", // Pastikan tetap application/json karena tidak ada file
+//       },
+//     };
+
+//     const response = await axios.put(`${api_url}chapter/update/${chapterId}`, updatedData, config);
+
+//     dispatch(updateChapterSuccess(response.data.message));
+//     dispatch(getDataModule()); // Optional: Untuk refresh data setelah update
+//   } catch (error) {
+//     const errorMessage = error.response?.data?.message || error.message;
+//     dispatch(updateChapterFailure(errorMessage));
+//     throw new Error(errorMessage); // Untuk ditangani di komponen
+//   }
+// };
 
 export const deleteDataKonten = (contentId) => async (dispatch) => {
   dispatch(fetchContentesRequest());
