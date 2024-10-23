@@ -1,7 +1,7 @@
 // File: ../../components/InstrukturComponents/UbahInstruktur.jsx
 
 import PropTypes from "prop-types";
-import InstrukturForm from "./InstrukturForm";
+import InstrukturFormEdit from "./InstrukturFormEdit";
 
 const UbahInstruktur = ({ show, onClose, existingData, updateInstructor }) => {
   const handleSubmit = (formData) => {
@@ -9,12 +9,12 @@ const UbahInstruktur = ({ show, onClose, existingData, updateInstructor }) => {
   };
 
   return (
-    <InstrukturForm
-      show={show}
-      onClose={onClose}
-      existingData={existingData}
+    <InstrukturFormEdit
+      show={isEditMode}
+      onClose={handleClose}
+      existingData={selectedInstructorData} // Pastikan data ini benar
       isEditMode={true}
-      onSubmit={handleSubmit}
+      onSubmit={handleUpdate}
     />
   );
 };

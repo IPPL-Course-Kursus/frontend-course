@@ -51,10 +51,11 @@ const AdminDataInstruktur = () => {
     setShowUbahPopup(false);
   };
 
-  // Filtered instructors based on search value
-  const filteredInstructors = instructors.filter((instructor) =>
-    instructor.fullName.toLowerCase().includes(searchValue.toLowerCase())
+  const filteredInstructors = (instructors || []).filter((instructor) =>
+    instructor && instructor.fullName && instructor.fullName.toLowerCase().includes(searchValue.toLowerCase())
   );
+  
+  
 
   return (
     <div className="flex">
