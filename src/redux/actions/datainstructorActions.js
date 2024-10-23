@@ -104,14 +104,21 @@ export const updateInstructor = (id, updatedInstructor) => async (dispatch) => {
       },
     });
 
+<<<<<<< HEAD
     const updatedInstructorData = response.data.message; // Menyesuaikan dengan struktur respons
+=======
+    const updatedInstructorData = response.data.data.data; // Menyesuaikan dengan struktur respons
+>>>>>>> 99190e9ea87771d4201db19ce7507c74310d4844
     dispatch({
       type: "UPDATE_INSTRUCTOR",
       payload: updatedInstructorData,
     });
+<<<<<<< HEAD
 
     // Optional: fetch all instructors to refresh the list
     dispatch(getAllInstructors()); // Fetching all instructors after update to get the latest data
+=======
+>>>>>>> 99190e9ea87771d4201db19ce7507c74310d4844
   } catch (error) {
     console.error("Error response:", error.response?.data); // Log error dari server
     if (error.response?.data.errors) {
@@ -125,7 +132,10 @@ export const updateInstructor = (id, updatedInstructor) => async (dispatch) => {
   }
 };
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 99190e9ea87771d4201db19ce7507c74310d4844
 
 export const deleteInstructor = (id) => async (dispatch) => {
   dispatch(setLoading(true));
@@ -149,3 +159,4 @@ export const deleteInstructor = (id) => async (dispatch) => {
     dispatch(setLoading(false));
   }
 };
+

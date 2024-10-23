@@ -1,16 +1,16 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 
-const InstrukturFormEdit = ({ show, onClose, existingData, isEditMode, handleSubmit }) => {
+const InstrukturFormEdit = ({ show, onClose, existingData, isEditMode, onSubmit }) => {
   const [formData, setFormData] = useState({
     fullName: "",
+    image: "",
     phoneNumber: "",
     role: "",
     tanggalLahir: "",
     city: "",
     country: ""
   });
-  
   const [filePreview, setFilePreview] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null); // Menyimpan file yang akan diupload
 
@@ -18,16 +18,18 @@ const InstrukturFormEdit = ({ show, onClose, existingData, isEditMode, handleSub
     if (existingData) {
       setFormData({
         fullName: existingData.fullName || "",
+        image: existingData.image || "",
         phoneNumber: existingData.phoneNumber || "",
         role: existingData.role || "",
         tanggalLahir: existingData.tanggalLahir || "",
         city: existingData.city || "",
         country: existingData.country || ""
       });
-      setFilePreview(existingData.image || null); // Menampilkan gambar yang ada
+      setFilePreview(existingData.image); // Menampilkan gambar yang ada
     } else {
       setFormData({
         fullName: "",
+        image: "",
         phoneNumber: "",
         role: "",
         tanggalLahir: "",
@@ -54,35 +56,34 @@ const InstrukturFormEdit = ({ show, onClose, existingData, isEditMode, handleSub
       const photoUrl = URL.createObjectURL(file);
       setFormData((prev) => ({
         ...prev,
-        image: file.name, // Menggunakan nama file untuk pengiriman
+        image: photoUrl, // Menyimpan URL gambar
       }));
       setFilePreview(photoUrl); // Preview gambar
       setSelectedFile(file); // Menyimpan file yang dipilih
     }
   };
 
-  const submitForm = (e) => {
-    e.preventDefault(); // Mencegah refresh halaman
+  const handleSubmit = (e) => {
+    e.preventDefault();
   
     // Membuat FormData untuk mengirim data
-    const formDataToSend = new FormData();
-    formDataToSend.append("fullName", formData.fullName);
+    const form = new FormData();
+    form.append("fullName", formData.fullName); // Mengirim nama lengkap
     if (selectedFile) {
-      formDataToSend.append("image", selectedFile); // Mengirim file gambar jika ada
-    } else if (filePreview) {
+      form.append("image", selectedFile); // Mengirim file gambar jika ada
+    } else if (formData.image) {
       // Jika tidak ada file baru, sertakan gambar yang sudah ada
-      formDataToSend.append("image", filePreview);
+      form.append("image", formData.image);
     }
-    formDataToSend.append("phoneNumber", formData.phoneNumber);
-    formDataToSend.append("tanggalLahir", formData.tanggalLahir);
-    formDataToSend.append("city", formData.city);
-    formDataToSend.append("country", formData.country);
-  
-    // Memanggil callback handleSubmit untuk mengirim data ke backend
-    handleSubmit(formData); // Panggil handleUpdate dengan FormData
+    form.append("phoneNumber", formData.phoneNumber); // Mengirim nomor telepon
+    form.append("tanggalLahir", formData.tanggalLahir); // Mengirim tanggal lahir
+    form.append("city", formData.city); // Mengirim kota
+    form.append("country", formData.country); // Mengirim negara
+
+    // Memanggil callback onSubmit untuk mengirim data ke backend
+    onSubmit(form);
     onClose();
   };
-  
 
   return (
     <div
@@ -104,7 +105,7 @@ const InstrukturFormEdit = ({ show, onClose, existingData, isEditMode, handleSub
           {isEditMode ? "Ubah Instruktur" : "Tambah Instruktur"}
         </h2>
 
-        <form onSubmit={submitForm}>
+        <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Nama Lengkap</label>
             <input
@@ -206,11 +207,11 @@ const InstrukturFormEdit = ({ show, onClose, existingData, isEditMode, handleSub
 };
 
 InstrukturFormEdit.propTypes = {
-  show: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
+  show: PropTypes.bool,
+  onClose: PropTypes.func,
   existingData: PropTypes.object,
-  isEditMode: PropTypes.bool.isRequired,
-  handleSubmit: PropTypes.func.isRequired,
+  isEditMode: PropTypes.bool,
+  onSubmit: PropTypes.func,
 };
 
 export default InstrukturFormEdit;

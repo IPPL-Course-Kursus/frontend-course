@@ -53,6 +53,8 @@ const AdminDataInstruktur = () => {
   const filteredInstructors = (instructors || []).filter((instructor) =>
     instructor && instructor.fullName && instructor.fullName.toLowerCase().includes(searchValue.toLowerCase())
   );
+  
+  
 
   const handleUpdateInstructor = async (updatedInstructor) => {
     // Lakukan update instruktur menggunakan dispatch
