@@ -104,11 +104,14 @@ export const updateInstructor = (id, updatedInstructor) => async (dispatch) => {
       },
     });
 
-    const updatedInstructorData = response.data.data.data; // Menyesuaikan dengan struktur respons
+    const updatedInstructorData = response.data.message; // Menyesuaikan dengan struktur respons
     dispatch({
       type: "UPDATE_INSTRUCTOR",
       payload: updatedInstructorData,
     });
+
+    // Optional: fetch all instructors to refresh the list
+    dispatch(getAllInstructors()); // Fetching all instructors after update to get the latest data
   } catch (error) {
     console.error("Error response:", error.response?.data); // Log error dari server
     if (error.response?.data.errors) {
@@ -121,6 +124,7 @@ export const updateInstructor = (id, updatedInstructor) => async (dispatch) => {
     dispatch(setLoading(false));
   }
 };
+
 
 
 export const deleteInstructor = (id) => async (dispatch) => {
