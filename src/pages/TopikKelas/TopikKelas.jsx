@@ -131,7 +131,7 @@ const TopikKelas = () => {
   
       // Jika ada filter checkbox yang aktif
       if (activeFilters.length > 0) {
-        return activeFilters.some((filter) => {
+        return activeFilters.every((filter) => {
           // Filter berdasarkan atribut tambahan: "Paling Baru", "Paling Populer", dan "Promo"
           if (filter === "Paling Baru") {
             return true; 
