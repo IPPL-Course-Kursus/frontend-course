@@ -3,14 +3,13 @@ import {
   sendEmailStart,
   sendEmailSuccess,
   sendEmailFailure,
-  // loginStart,
-  loginSuccess,
-  // loginFailure,
   registerStart,
   registerSuccess,
   registerFailure,
   selectToken,
   setUser,
+  setToken,
+
   // logout,
   // setUser,
   // setCredentials,
@@ -34,144 +33,44 @@ import {
 } from "../reducers/authReducers";
 import Cookies from "js-cookie";
 import toast from "react-hot-toast";
+// import { setToken } from "../reducers/LoginReducer";
 
 const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
 
-// export const login = (email, password, navigate) => async (dispatch) => {
-//   try {
-//     if (!email || !password) {
-//       toast.error("Email dan Password harus diisi.");
-//       return;
-//     }
-
-//     // Melakukan permintaan login
-//     const response = await axios.post(`${api_url}auth/login`, {
-//       email,
-//       password,
-//     });
-
-//     const { data } = response.data;
-//     const { token, user, role } = data;
-
-//     // Log respons dari backend
-//     console.log("Data login dari backend:", response.data);
-
-//     // Log role yang diterima dari backend
-//     console.log("Role pengguna setelah login:", role);
-
-//     // Simpan token di cookies
-//     Cookies.set("token", token, { expires: 1 / 6 });
-
-//     // Dispatch login success dan log role di redux
-//     dispatch(loginSuccess({ token, user, role }));
-//     console.log("Role yang di-dispatch ke Redux:", role);
-
-//     toast.success("Login Berhasil");
-
-//     // Arahkan pengguna sesuai role-nya
-//     if (role === "admin") {
-//       console.log("Navigasi ke admin dashboard");
-//       navigate("/admin/dashboard");
-//     } else if (role === "instructor") {
-//       console.log("Navigasi ke instructor dashboard");
-//       navigate("/inst/dashboard");
-//     } else {
-//       console.log("Navigasi ke user dashboard");
-//       navigate("/");
-//     }
-//     // Arahkan pengguna sesuai role-nya
-//   } catch (error) {
-//     if (error.response) {
-//       if (error.response.status === 403) {
-//         toast.error("Email atau Password Anda salah. Silahkan coba lagi.");
-//       } else if (error.response.status === 404) {
-//         toast.error("Email tidak terdaftar. Silakan cek kembali email Anda.");
-//       } else {
-//         toast.error("Login gagal. Silakan coba lagi nanti.");
-//       }
-//     } else {
-//       toast.error("Terjadi kesalahan pada server. Silakan coba lagi nanti.");
-//     }
-//   }
-// };
-
-// export const login = (email, password, navigate) => async (dispatch) => {
-//   try {
-//     if (!email || !password) {
-//       toast.error("Email dan Password harus diisi.");
-//       return;
-//     }
-
-//     const response = await axios.post(`${api_url}auth/login`, {
-//       email,
-//       password,
-//     });
-
-//     const { data } = response.data;
-//     const { token, user, role } = data;
-
-//     Cookies.set("token", token, { expires: 1 / 6 });
-
-//     dispatch(loginSuccess({ token, user, role }));
-
-//     toast.success("Login Berhasil");
-
-// // Arahkan pengguna sesuai role-nya
-// if (role === "admin") {
-//   navigate("/admin/dashboard");
-// } else if (role === "instructor") {
-//   navigate("/inst/dashboard");
-// } else {
-//   navigate("/");
-// }
-//   } catch (error) {
-//     if (error.response) {
-//       if (error.response.status === 403) {
-//         toast.error("Email atau Password Anda salah. Silahkan coba lagi.");
-//       } else if (error.response.status === 404) {
-//         toast.error("Email tidak terdaftar. Silakan cek kembali email Anda.");
-//       } else {
-//         toast.error("Login gagal. Silakan coba lagi nanti.");
-//       }
-//     } else {
-//       toast.error("Terjadi kesalahan pada server. Silakan coba lagi nanti.");
-//     }
-//   }
-// };
 export const login = (email, password, navigate) => async (dispatch) => {
   try {
-    // Memvalidasi input
     if (!email || !password) {
       toast.error("Email dan Password harus diisi.");
       return;
     }
 
-    // Melakukan permintaan login
     const response = await axios.post(`${api_url}auth/login`, {
       email,
       password,
     });
 
-    const { data } = response.data;
-    const { token, user, role } = data; // Hanya menyimpan token, user, dan role
-    console.log(response.data);
-    console.log("ini data login:", response.data);
+    // Mengakses data dari respons
+    const { data } = response.data; // Data dari response
+    const { token } = data.token; // Ambil token
+    const role = data.token.role; // Ambil role dari data.token
 
-    // Menyimpan token di cookies (4 jam)
-    Cookies.set("token", token, { expires: 1 / 6 });
-
-    // Dispatch tindakan untuk menyimpan token dan user di Redux
-    dispatch(loginSuccess({ token, user, role }));
-    console.log(role);
+    // Menyimpan token di Redux
+    dispatch(setToken(token));
 
     toast.success("Login Berhasil");
 
-    // Navigasi ke halaman utama dengan delay
-    setTimeout(() => {
+    // Navigasi berdasarkan role
+    if (role === "Admin") {
+      navigate("/admin/dashboard");
+    } else if (role === "User") {
+      navigate("/");
+    } else if (role === "Instruktur") {
+      // Pastikan role sesuai
       navigate("/inst/dashboard");
-    }, 1000); // Durasi delay 1 detik
+    } else {
+      console.error("Role tidak dikenali:", role);
+    }
   } catch (error) {
-    // Penanganan error yang lebih spesifik
     if (error.response) {
       if (error.response.status === 403) {
         toast.error("Email atau Password Anda salah. Silahkan coba lagi.");
@@ -218,33 +117,6 @@ export const register =
     }
   };
 
-// export const getMe = () => async (dispatch) => {
-//   try {
-//     dispatch(getMeStart());
-
-//     // Ambil token dari cookie
-//     const token = Cookies.get("token");
-
-//     if (!token) {
-//       throw new Error("Token tidak ditemukan. Silakan login kembali.");
-//     }
-
-//     // Lakukan permintaan untuk mendapatkan data pengguna dari API
-//     const response = await axios.get(`${api_url}auth/profile`, {
-//       headers: { Authorization: `Bearer ${token}` },
-//     });
-
-//     const { data } = response.data;
-//     console.log("ini data profile:", response.data);
-
-//     // Dispatch hasil success dengan data pengguna
-//     dispatch(getMeSuccess(data));
-//   } catch (error) {
-//     dispatch(getMeFailure(error.response?.data?.message || "Gagal mengambil data pengguna."));
-//     toast.error(error.message || "Terjadi kesalahan saat mengambil data pengguna.");
-//   }
-// };
-
 export const getMe = () => async (dispatch) => {
   try {
     dispatch(getMeStart());
@@ -284,7 +156,7 @@ export const sendEmail = (email) => async (dispatch) => {
 
     const response = await axios.post(
       `${api_url}auth/forgot-password`,
-      // "http://localhost:6969/auth/forgot-password"
+
       { email }
     );
 
@@ -304,7 +176,7 @@ export const resetPassword = (oobCode, password, confirmPassword) => async (disp
 
     const response = await axios.post(
       `${api_url}auth/reset-password`,
-      // "http://localhost:6969/auth/reset-password"
+
       {
         oobCode,
         newPassword: password,
@@ -339,7 +211,7 @@ export const verifyEmail = () => async (dispatch) => {
     // Mengirim permintaan verifikasi email ke backend
     const response = await axios.post(
       `${api_url}auth/verify-email`,
-      // "http://localhost:6969/auth/verify-email",
+
       { oobCode }
     );
 
@@ -411,3 +283,51 @@ export const changePassword =
       toast.error(error.message || "Terjadi kesalahan saat mengubah password.");
     }
   };
+
+// export const login = (email, password, navigate) => async (dispatch) => {
+//   try {
+//     // Memvalidasi input
+//     if (!email || !password) {
+//       toast.error("Email dan Password harus diisi.");
+//       return;
+//     }
+
+//     // Melakukan permintaan login
+//     const response = await axios.post(`${api_url}auth/login`, {
+//       email,
+//       password,
+//     });
+
+//     const { data } = response.data;
+//     const { token, user, role } = data; // Hanya menyimpan token, user, dan role
+//     console.log(response.data);
+//     console.log("ini data login:", response.data);
+
+//     // Menyimpan token di cookies (4 jam)
+//     Cookies.set("token", token, { expires: 1 / 6 });
+
+//     // Dispatch tindakan untuk menyimpan token dan user di Redux
+//     dispatch(loginSuccess({ token, user, role }));
+//     console.log(role);
+
+//     toast.success("Login Berhasil");
+
+//     // Navigasi ke halaman utama dengan delay
+//     setTimeout(() => {
+//       navigate("/inst/dashboard");
+//     }, 1000); // Durasi delay 1 detik
+//   } catch (error) {
+//     // Penanganan error yang lebih spesifik
+//     if (error.response) {
+//       if (error.response.status === 403) {
+//         toast.error("Email atau Password Anda salah. Silahkan coba lagi.");
+//       } else if (error.response.status === 404) {
+//         toast.error("Email tidak terdaftar. Silakan cek kembali email Anda.");
+//       } else {
+//         toast.error("Login gagal. Silakan coba lagi nanti.");
+//       }
+//     } else {
+//       toast.error("Terjadi kesalahan pada server. Silakan coba lagi nanti.");
+//     }
+//   }
+// };

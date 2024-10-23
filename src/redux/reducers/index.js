@@ -17,11 +17,16 @@ import transactionReducer from "./transactionReducers"; // Menggunakan reducer t
 import adminDataKategoriReducer from "./adminDataKategoriReducers";
 import adminDashboardReducer from "./admindashboardreducer";
 import typeCourseReducer from "./typeCourseReducers";
-import instrukturDashboardReducers from "./instrukturDashboardReducers"; 
+import instrukturDashboardReducers from "./instrukturDashboardReducers";
 import mulaiKelasReducers from "./mulaiKelasReducers";
 import levelCourseReducer from "./levelCourseReducers";
+import instrukturReducer from "./instrukturReducer";
+import LoginReducer from "./LoginReducer"
 
 export default combineReducers({
+
+  //Login
+  login: LoginReducer,
   // Auth
   auth: authReducer,
   email: emailReducer,
@@ -58,4 +63,6 @@ export default combineReducers({
   // Mulai Kelas
   mulaikelas: mulaiKelasReducers,
 
+  // Instruktur
+  instruktur: instrukturReducer,
 });

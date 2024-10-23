@@ -103,7 +103,7 @@ const Register = () => {
                 <input
                   type="text"
                   className="border shadow-sm w-full p-2 rounded-xl"
-                  placeholder="+62"
+                  placeholder="Contoh: 0895.."
                   value={phoneNumber}
                   autoComplete="tel"
                   onChange={(e) => {

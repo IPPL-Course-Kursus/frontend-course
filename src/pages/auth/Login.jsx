@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
-import { login } from "../../redux/actions/authActions";
+import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
+import { login } from "../../redux/actions/authActions";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -14,7 +14,6 @@ const Login = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const role = useSelector((state) => state.auth.role); // Ambil role dari Redux (ubah ke state.auth)
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -43,14 +42,7 @@ const Login = () => {
     }
 
     // Jika validasi lolos, lakukan login
-    dispatch(
-      login(
-        email,
-        password,
-        // role,
-        navigate
-      )
-    );
+    dispatch(login(email, password, navigate));
   };
 
   const togglePassword = () => {

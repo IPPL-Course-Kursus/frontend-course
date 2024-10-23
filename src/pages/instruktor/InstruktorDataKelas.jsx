@@ -164,6 +164,16 @@ const InstruktorDataKelas = () => {
                   <th className="px-2 md:px-4 py-2">Aksi</th>
                 </tr>
               </thead>
+                  {/* file: null,
+    courseCode: "",
+    categoryName: "",
+    courseName: "",
+    typeName: "",
+    levelName: "",
+    coursePrice: "",
+    fullName: "",
+    intendedFor: "",
+    aboutCourse: "", */}
               <tbody>
                 {currentItems.map((courseType, index) => (
                   <tr key={index} className="border-t text-xs md:text-sm">

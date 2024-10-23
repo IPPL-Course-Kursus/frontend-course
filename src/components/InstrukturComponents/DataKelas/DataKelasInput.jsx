@@ -1,19 +1,36 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getCategory } from "../../../redux/actions/categoryActions";
+import { getAllTypeCourses } from "../../../redux/actions/typeCourseActions";
+import { getAllLevelCourses } from "../../../redux/actions/levelCourseActions";
 
 const DataKelasInput = ({ show, onClose }) => {
   const [imagePreview, setImagePreview] = useState(null);
   const [formData, setFormData] = useState({
     file: null,
-    kategori: "",
-    judulKelas: "",
-    tipeKelas: "",
-    level: "",
-    harga: "",
-    pengajar: "",
-    ditujukanUntuk: "",
-    deskripsi: "",
+    categoryName: "",
+    courseName: "",
+    typeName: "",
+    levelName: "",
+    coursePrice: "",
+    fullName: "",
+    publish: "",
+    intendedFor: "",
+    aboutCourse: "",
   });
+
+  const dispatch = useDispatch();
+  const { category } = useSelector((state) => state.category);
+  const { typeCourses } = useSelector((state) => state.typeCourse);
+  const { levelCourses } = useSelector((state) => state.levelCourse);
+  
+
+  useEffect(() => {
+    dispatch(getCategory());
+    dispatch(getAllTypeCourses());
+    dispatch(getAllLevelCourses());
+  }, [dispatch]);
 
   if (!show) return null;
 
@@ -59,9 +76,9 @@ const DataKelasInput = ({ show, onClose }) => {
 
         <form onSubmit={handleSubmit}>
           {/* <div className="mb-4">
-            <label className="block mb-1 font-semibold">Upload File</label>
-            <input type="file" className="w-full p-2 border rounded-xl" />
-          </div> */}
+              <label className="block mb-1 font-semibold">Upload File</label>
+              <input type="file" className="w-full p-2 border rounded-xl" />
+            </div> */}
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Upload File</label>
             <input
@@ -88,15 +105,19 @@ const DataKelasInput = ({ show, onClose }) => {
             <label className="block mb-1 font-semibold">Kategori</label>
             <div className="relative">
               <select
-                name="kategori"
-                value={formData.kategori}
+                name="categoryName"
+                value={formData.categoryName}
                 onChange={handleInputChange}
                 className="w-full p-2 border rounded-xl max-w-full overflow-y-auto"
                 style={{ maxHeight: "200px" }} // Atur tinggi maksimum
               >
-                <option>Pilih</option>
-                {Array.from({ length: 20 }, (_, index) => (
-                  <option key={index}>Kategori {index + 1}</option>
+                <option value="" disabled hidden>
+                  Pilih
+                </option>
+                {category.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.categoryName}
+                  </option>
                 ))}
               </select>
             </div>
@@ -106,7 +127,7 @@ const DataKelasInput = ({ show, onClose }) => {
             <input
               type="text"
               name="judulKelas"
-              value={formData.judulKelas}
+              value={formData.courseName}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
               placeholder="Masukkan judul kelas"
@@ -116,29 +137,38 @@ const DataKelasInput = ({ show, onClose }) => {
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Tipe Kelas</label>
             <select
-              name="tipeKelas"
-              value={formData.tipeKelas}
+              name="typeName"
+              value={formData.typeName}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
             >
-              <option>Pilih</option>
-              <option>Free</option>
-              <option>Premium</option>
+              <option value="" disabled hidden>
+                Pilih
+              </option>
+              {typeCourses.map((typeCourse) => (
+                <option key={typeCourse.id} value={typeCourse.id}>
+                  {typeCourse.typeName}
+                </option>
+              ))}
             </select>
           </div>
 
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Level Kelas</label>
             <select
-              name="level"
-              value={formData.level}
+              name="levelName"
+              value={formData.levelName}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
             >
-              <option>Pilih</option>
-              <option>Beginner</option>
-              <option>Intermediate</option>
-              <option>Advance</option>
+              <option value="" disabled hidden>
+                Pilih
+              </option>
+              {levelCourses.map((levelCourses) => (
+                <option key={levelCourses.id} value={levelCourses.id}>
+                  {levelCourses.levelName}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -147,7 +177,7 @@ const DataKelasInput = ({ show, onClose }) => {
             <input
               type="number"
               name="harga"
-              value={formData.harga}
+              value={formData.coursePrice}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
               placeholder="Masukkan harga kelas"
@@ -156,37 +186,34 @@ const DataKelasInput = ({ show, onClose }) => {
 
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Pengajar Kelas</label>
-            <select
-              name="pengajar"
-              value={formData.pengajar}
+            <input
+              name="fullName"
+              value={formData.fullName}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
-            >
-              <option>Pilih</option>
-              <option>John Doe</option>
-              <option>Jane Smith</option>
-            </select>
+            />
           </div>
-
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Published</label>
             <select
-              name="pengajar"
-              value={formData.pengajar}
+              name="publish"
+              value={formData.publish}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
             >
-              <option>Pilih</option>
-              <option>True</option>
-              <option>False</option>
+              <option value="" disabled hidden>
+                Pilih
+              </option>
+              <option value={true}>true</option>
+              <option value={false}>false</option>
             </select>
           </div>
 
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Ditujukan Untuk</label>
             <textarea
-              name="ditujukanUntuk"
-              value={formData.ditujukanUntuk}
+              name="intendedFor"
+              value={formData.intendedFor}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
               placeholder="Masukkan peserta yang dituju"
@@ -196,8 +223,8 @@ const DataKelasInput = ({ show, onClose }) => {
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Deskripsi</label>
             <textarea
-              name="deskripsi"
-              value={formData.deskripsi}
+              name="aboutCourse"
+              value={formData.aboutCourse}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
               placeholder="Masukkan deskripsi kelas"

@@ -258,29 +258,6 @@ export const updateDataKonten = (contentId, updatedData) => async (dispatch) => 
   }
 };
 
-// export const updateDataModule = (chapterId, updatedData) => async (dispatch) => {
-//   dispatch(updateChapterRequest());
-//   try {
-//     const token = getCookie("token");
-
-//     const config = {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//         "Content-Type": "application/json", // Pastikan tetap application/json karena tidak ada file
-//       },
-//     };
-
-//     const response = await axios.put(`${api_url}chapter/update/${chapterId}`, updatedData, config);
-
-//     dispatch(updateChapterSuccess(response.data.message));
-//     dispatch(getDataModule()); // Optional: Untuk refresh data setelah update
-//   } catch (error) {
-//     const errorMessage = error.response?.data?.message || error.message;
-//     dispatch(updateChapterFailure(errorMessage));
-//     throw new Error(errorMessage); // Untuk ditangani di komponen
-//   }
-// };
-
 export const deleteDataKonten = (contentId) => async (dispatch) => {
   dispatch(fetchContentesRequest());
   try {
