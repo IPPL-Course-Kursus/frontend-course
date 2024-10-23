@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchAllCourses,
-  fetchCourseById,
+  fetchDetailCourseUser,
   fetchChapterByCourseId,
   fetchContentByChapterId,
-} from "../../redux/actions/mulaiKelasActions";  // Import hanya action yang digunakan
+  startCourse,
+  updateProgressContent,
+} from "../../redux/actions/mulaiKelasActions"; // Import action yang digunakan
 
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
@@ -14,17 +15,26 @@ import { FaArrowLeft, FaCheckCircle } from "react-icons/fa";
 
 const MulaiKelas = () => {
   const dispatch = useDispatch();
-  
+  const { detailCourseUser, chapters, content } = useSelector(state => state.mulaikelas);
+
   const [code, setCode] = useState("");
   const [output, setOutput] = useState("");
 
   useEffect(() => {
-    // Memanggil aksi untuk mendapatkan data kursus, chapter, dan konten yang dibutuhkan
-    dispatch(fetchAllCourses());
-    dispatch(fetchCourseById(1));  // Berikan ID kursus yang sesuai
-    dispatch(fetchChapterByCourseId(1));  // Berikan ID kursus yang sesuai
-    dispatch(fetchContentByChapterId(1));  // Berikan ID chapter yang sesuai
+    // Fetch detail course user dan chapters
+    dispatch(fetchDetailCourseUser(1)); // ID user yang sesuai
+    dispatch(fetchChapterByCourseId(1)); // ID course yang sesuai
+    dispatch(fetchContentByChapterId(1)); // ID chapter yang sesuai
   }, [dispatch]);
+
+  const handleStartCourse = () => {
+    dispatch(startCourse(1)); // ID user yang sesuai
+  };
+
+  const handleUpdateProgress = (contentId) => {
+    const progressData = { progress: 50 }; // Contoh data progress
+    dispatch(updateProgressContent(contentId, progressData));
+  };
 
   const runCode = () => {
     try {
@@ -60,15 +70,19 @@ const MulaiKelas = () => {
 
             {/* Main class information */}
             <div className="mt-4">
-              <h1 className="text-3xl font-bold text-gray-800 mb-2">{startCourseData.course?.title || "Java Script"}</h1>
-              <h2 className="text-xl text-gray-600">{startCourseData.course?.description || "Intro to Basic Java Script"}</h2>
+              <h1 className="text-3xl font-bold text-gray-800 mb-2">
+                {detailCourseUser?.course?.title || "Java Script"}
+              </h1>
+              <h2 className="text-xl text-gray-600">
+                {detailCourseUser?.course?.description || "Intro to Basic Java Script"}
+              </h2>
 
               <div className="flex items-center gap-4 mt-4">
                 <span className="text-green-600 flex items-center gap-2">
                   <FaCheckCircle />
-                  {startCourseData.course?.level || "Beginner Level"}
+                  {detailCourseUser?.course?.level || "Beginner Level"}
                 </span>
-                <span className="text-gray-500">{startCourseData.chapters?.length || 0} Modul</span>
+                <span className="text-gray-500">{chapters?.length || 0} Modul</span>
                 <span className="text-gray-500">45 Menit</span>
               </div>
             </div>
@@ -86,7 +100,9 @@ const MulaiKelas = () => {
           <section className="bg-white p-6 rounded-lg shadow-lg mb-10">
             <h3 className="text-gray-700 text-2xl font-semibold">Tentang Kelas</h3>
             <p className="text-gray-600 mt-2">
-              {startCourseData.course?.description || "Learn JavaScript, the world’s most popular programming language, with our beginner-friendly class."}
+              {detailCourseUser?.course?.description || 
+                "Learn JavaScript, the world’s most popular programming language, with our beginner-friendly class."
+              }
             </p>
           </section>
 
@@ -128,66 +144,36 @@ const MulaiKelas = () => {
           <div className="mb-6">
             <div className="flex justify-between items-center">
               <h4 className="text-blue-600 font-bold">Progres Belajar</h4>
-              <span className="text-sm text-gray-500">90%</span>
+              <span className="text-sm text-gray-500">{detailCourseUser?.progress || 0}%</span>
             </div>
-            <ProgressBar percentage={90} />
+            <ProgressBar percentage={detailCourseUser?.progress || 0} />
           </div>
 
           {/* Chapter List */}
-          <div className="mb-6">
-            <div className="flex justify-between items-center">
-              <h4 className="text-blue-600 font-bold">Chapter 1 - Pendahuluan</h4>
-              <span className="text-sm text-gray-500">60 Menit</span>
+          {chapters?.map((chapter, index) => (
+            <div key={chapter.id} className="mb-6">
+              <div className="flex justify-between items-center">
+                <h4 className="text-blue-600 font-bold">{`Chapter ${index + 1} - ${chapter.title}`}</h4>
+                <span className="text-sm text-gray-500">{chapter.duration} Menit</span>
+              </div>
+              <ul className="space-y-2 mt-4">
+                {content?.map((item) => (
+                  <li key={item.id} className="flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                      <span className="bg-blue-200 text-blue-800 rounded-full h-8 w-8 flex items-center justify-center">
+                        {item.order}
+                      </span>
+                      <span className="text-gray-700">{item.title}</span>
+                    </div>
+                    <span className="text-green-500 cursor-pointer" onClick={() => handleUpdateProgress(item.id)}>
+                      ▶
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <ul className="space-y-2 mt-4">
-              <li className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <span className="bg-blue-200 text-blue-800 rounded-full h-8 w-8 flex items-center justify-center">1</span>
-                  <span className="text-gray-700">Lorem Ipsum</span>
-                </div>
-                <span className="text-green-500">▶</span>
-              </li>
-              <li className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <span className="bg-blue-200 text-blue-800 rounded-full h-8 w-8 flex items-center justify-center">2</span>
-                  <span className="text-gray-700">Lorem Ipsum</span>
-                </div>
-                <span className="text-green-500">▶</span>
-              </li>
-              <li className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <span className="bg-blue-200 text-blue-800 rounded-full h-8 w-8 flex items-center justify-center">3</span>
-                  <span className="text-gray-700">Lorem Ipsum</span>
-                </div>
-                <span className="text-blue-500">⏵</span>
-              </li>
-            </ul>
-          </div>
-
-          <div className="mb-6">
-            <div className="flex justify-between items-center">
-              <h4 className="text-blue-600 font-bold">Chapter 2 - Memulai Desain</h4>
-              <span className="text-sm text-gray-500">120 Menit</span>
-            </div>
-            <ul className="space-y-2 mt-4">
-              <li className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <span className="bg-gray-200 text-gray-400 rounded-full h-8 w-8 flex items-center justify-center">4</span>
-                  <span className="text-gray-400">Lorem Ipsum</span>
-                </div>
-                <span className="text-gray-400">🔒</span>
-              </li>
-              <li className="flex justify-between items-center">
-                <div className="flex items-center gap-2">
-                  <span className="bg-gray-200 text-gray-400 rounded-full h-8 w-8 flex items-center justify-center">5</span>
-                  <span className="text-gray-400">Lorem Ipsum</span>
-                </div>
-                <span className="text-gray-400">🔒</span>
-              </li>
-            </ul>
-          </div>
+          ))}
         </aside>
-
       </div>
       <Footer />
     </>
