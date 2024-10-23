@@ -53,7 +53,7 @@ const CoursesPage = () => {
       <div className="bg-[#F3F7FB]">
         <main className="container mx-auto px-4 py-10">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-4xl font-bold text-gray-900">Kelas Saya</h2>
+          <h2 className="text-4xl font-bold text-gray-900 mt-12">Kelas Saya</h2>
             <button
               onClick={toggleMobileDropdown}
               className="md:hidden bg-blue-500 text-white px-2 py-2 rounded"
@@ -165,6 +165,9 @@ const CoursesPage = () => {
                       </label>
                     </div>
                   ))}
+                  <button className="px-10 py-2 rounded-md text-red-600 mt-10 whitespace-nowrap">
+                    Hapus Filter
+                  </button>
                 </div>
               </div>
 
@@ -200,14 +203,18 @@ const CoursesPage = () => {
                       />
                       <label htmlFor={`filter-${label}`} className="text-sm md:text-base">
                         {label}
-                      </label>
+                      </label> 
                     </div>
                   ))}
+
+<button className="px-10 py-2 rounded-md text-red-600 mt-10 whitespace-nowrap">
+                    Hapus Filter
+                  </button>
                 </div>
               </div>
             </div>
 
-            {/* Main Courses Display */}
+           {/* Main Courses Display */}
             <div className="md:w-3/4 pl-0 md:pl-4">
               {loading && <p>Loading courses...</p>}
               {error && <p>Error: {error}</p>}
@@ -224,7 +231,7 @@ const CoursesPage = () => {
                       <img
                         src={courseItem.course.image || "https://via.placeholder.com/150"}
                         alt="Course"
-                        className="w-full md:w-40 h-30 mr-8 rounded-md"
+                        className="w-full md:w-48 h-30 mr-8 rounded-md"
                       />
                       <div className="flex-1">
                         <div className="flex justify-between items-center mb-2">
