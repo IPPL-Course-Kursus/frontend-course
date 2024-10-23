@@ -30,7 +30,6 @@ const TopikKelas = () => {
     "Mobile Development": false,
     "Cloud Computing": false,
     "Artificial Intelligence": false,
-    "Android Development": false,
     "Machine Learning": false,
     "Cybersecurity": false,
     "Blockchain": false,
@@ -41,56 +40,47 @@ const TopikKelas = () => {
     "DevOps": false,
     "Internet of Things": false,
     "Data Science": false,
-    "Business Intelligence": false,
     "Beginner": false,
     "Intermediate": false,
     "Advanced": false,
   });
 
-  const [searchQuery, setSeacrhQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
-  // Define an array of instructor names
-  const instructors = [
-  "Dewa Kusuma",
-  "John Doe",
-  "Jane Smith",
-  "Alice Johnson",
-  "Bob Brown",
-  "Charlie Davis",
-  ];
   // Fetch courses from Redux when component mounts
   useEffect(() => {
     dispatch(getAllCourse());
   }, [dispatch]);
 
   useEffect(() => {
-    // Update the hash in the URL when selectedFilter changes
+    // Update the URL without scrolling the page
     if (selectedFilter !== "All") {
-      window.location.hash = selectedFilter.toLowerCase().replace(/ /g, '-');
+      const newHash = selectedFilter.toLowerCase().replace(/ /g, '-');
+      history.replaceState(null, '', `#${newHash}`);
     } else {
-      window.location.hash = ''; // Clear hash when "All" is selected
+      history.replaceState(null, '', window.location.pathname); // Clear hash without scrolling
     }
   }, [selectedFilter]);
 
   const handleCheckboxChange = (label) => {
-  setFilterChecked((prev) => {
-    const updatedChecked = { ...prev, [label]: !prev[label] };
-
-    // Get active filters and update hash based on active filters
-    const activeFilters = Object.keys(updatedChecked).filter((key) => updatedChecked[key]);
-
-    // If there are active filters, build hash string, else clear the hash
-    if (activeFilters.length > 0) {
-      const hashString = activeFilters.map((filter) => filter.toLowerCase().replace(/ /g, '_')).join(',');
-      window.location.hash = hashString;
-    } else {
-      window.location.hash = '';
-    }
-    return updatedChecked;
-  });
+    setFilterChecked((prev) => {
+      const updatedChecked = { ...prev, [label]: !prev[label] };
+  
+      const activeFilters = Object.keys(updatedChecked).filter((key) => updatedChecked[key]);
+  
+      if (activeFilters.length > 0) {
+        const hashString = activeFilters.map((filter) => filter.toLowerCase().replace(/ /g, '_')).join(',');
+        history.replaceState(null, '', `#${hashString}`); // Change hash without scrolling
+      } else {
+        history.replaceState(null, '', window.location.pathname); // Clear hash without scrolling
+      }
+      return updatedChecked;
+    });
   };
 
   const clearFilters = () => {
+    const scrollY = window.scrollY;
+
     setFilterChecked({
       "Paling Baru": false,
       "Paling Populer": false,
@@ -99,7 +89,6 @@ const TopikKelas = () => {
       "Programming Ippl": false,
       "Cloud Computing": false,
       "Artificial Intelligence": false,
-      "Android Development": false,
       "Machine Learning": false,
       "Cybersecurity": false,
       "Blockchain": false,
@@ -110,7 +99,6 @@ const TopikKelas = () => {
       "DevOps": false,
       "Internet of Things": false,
       "Data Science": false,
-      "Business Intelligence": false,
       "Beginner": false,
       "Intermediate": false,
       "Advanced": false,
@@ -119,6 +107,7 @@ const TopikKelas = () => {
     
     // Clear the URL hash
     window.location.hash = '';
+    window.scrollTo(0, scrollY);
 };
 
   const toggleMobileDropdown = () => {
@@ -134,7 +123,7 @@ const TopikKelas = () => {
   
     // Lakukan filter pada kursus terlebih dahulu
     let filteredCourses = courses.filter((course) => {
-      const matchesSearch = course.courseName.toLowerCase().includes(searchQuery) || course.category.categoryName.toLowerCase().includes(searchQuery);
+      const matchesSearch = course.category.categoryName.toLowerCase().includes(searchQuery);
 
       // Filter berdasarkan harga (kelas berbayar/kelas gratis)
       if (selectedFilter === "kelas_berbayar" && course.coursePrice === 0) return false;
@@ -147,7 +136,7 @@ const TopikKelas = () => {
           if (filter === "Paling Baru") {
             return true; 
           } else if (filter === "Paling Populer") {
-            return course.isPopular;
+            return course.isPopular === true;
           } else if (filter === "Promo") {
             return course.promoStatus === true;
           }
@@ -168,7 +157,6 @@ const TopikKelas = () => {
             filter === "Mobile Development" ||
             filter === "Cloud Computing" ||
             filter === "Artificial Intelligence" ||
-            filter == "Android Development" ||
             filter == "Machine Learning" ||
             filter == "Cybersecurity" ||
             filter == "Blockchain" ||
@@ -178,8 +166,7 @@ const TopikKelas = () => {
             filter == "Project Management" ||
             filter ==  "DevOps" ||
             filter == "Internet of Things" ||
-            filter ==  "Data Science"||
-            filter == "Business Intelligence"
+            filter ==  "Data Science"
           ) {
             return course.category.categoryName === filter;
           }
@@ -227,7 +214,7 @@ const TopikKelas = () => {
                   placeholder="Find a Course"
                   className="input w-full text-sm rounded-2xl border-black pr-12"
                   value={searchQuery}
-                  onChange={(e) => setSeacrhQuery(e.target.value.toLowerCase())}
+                  onChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
                 />
                 <button className="absolute top-1/2 right-4 -translate-y-1/2">
                   <IoIosSearch className="absolute top-1/2 right-2 -translate-y-1/2 w-5 h-5 lg:w-6 lg:h-6 bg-primary text-white rounded lg:mr-2 hover:scale-110 hover:bg-primary hover:text-white duration-300 lg:hover:border-white hidden lg:block" />
@@ -309,7 +296,6 @@ const TopikKelas = () => {
               "Mobile Development",
               "Cloud Computing",
               "Artificial Intelligence",
-              "Android Development",
               "Machine Learning",
               "Cybersecurity",
               "Blockchain",
@@ -320,7 +306,6 @@ const TopikKelas = () => {
               "DevOps",
               "Internet of Things",
               "Data Science",
-              "Business Intelligence",
             ].map((category, index) => (
               <div className="flex items-center mb-2" key={index}>
                 <input
@@ -373,9 +358,7 @@ const TopikKelas = () => {
                   <p className="text-sm text-gray-600">{course.courseName}</p>
                   <div className="flex justify-between items-center my-2">
                     <p className="text-black text-sm font-semibold">
-                    <p className="text-black text-sm font-semibold">
-                    Instructor: {instructors[Math.floor(Math.random() * instructors.length)]}
-                    </p>
+                    Instructor: {course.user.fullName}
                     </p>
                   </div>
                   <div className="mt-3 flex justify-between flex-wrap">
@@ -394,7 +377,7 @@ const TopikKelas = () => {
                     to="/detail-kelas"
                     className="py-1 px-4 bg-blue-600 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
                   >
-                    {course.coursePrice === 0 ? "Mulai Kelas" : `Beli Rp ${course.coursePrice}.000`}
+                    {course.coursePrice === 0 ? "Mulai Kelas" : `Beli Rp ${course.coursePrice}`}
                   </Link>
                   </div>
                 </div>
