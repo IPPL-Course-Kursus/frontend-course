@@ -123,12 +123,13 @@ export const updateInstructor = (id, updatedInstructor) => async (dispatch) => {
 };
 
 
-// Hapus instruktur
 export const deleteInstructor = (id) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
     const token = getCookie("token");
-    await axios.delete(`${api_url}auth/delete-instruktur/${id}`, {
+    console.log("Token:", token); // Log token untuk memeriksa
+
+    const response = await axios.delete(`${api_url}auth/delete-instruktur/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -137,9 +138,11 @@ export const deleteInstructor = (id) => async (dispatch) => {
       payload: id,
     });
   } catch (error) {
-    console.error("Error response:", error.response?.data); // Log error dari server
-    dispatch(setError(error.message || "Error deleting instructor"));
+    // Log detail error untuk debugging
+    console.error("Error response:", error.response?.data || error.message);
+    dispatch(setError(error.response?.data?.message || "Error deleting instructor"));
   } finally {
     dispatch(setLoading(false));
   }
 };
+

@@ -15,7 +15,6 @@ const InstrukturFormEdit = ({ show, onClose, existingData, isEditMode, onSubmit 
   const [selectedFile, setSelectedFile] = useState(null); // Menyimpan file yang akan diupload
 
   useEffect(() => {
-    console.log("Existing Data:", existingData); // Tambahkan log ini
     if (existingData) {
       setFormData({
         fullName: existingData.fullName || "",
@@ -40,8 +39,6 @@ const InstrukturFormEdit = ({ show, onClose, existingData, isEditMode, onSubmit 
       setFilePreview(null);
     }
   }, [existingData]);
-  
-  
 
   if (!show) return null;
 
