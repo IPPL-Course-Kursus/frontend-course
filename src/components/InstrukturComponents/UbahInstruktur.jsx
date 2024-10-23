@@ -1,7 +1,7 @@
 // File: ../../components/InstrukturComponents/UbahInstruktur.jsx
 
 import PropTypes from "prop-types";
-import InstrukturForm from "./InstrukturForm";
+import InstrukturForm from "./InstrukturFormEdit";
 
 const UbahInstruktur = ({ show, onClose, existingData, updateInstructor }) => {
   const handleSubmit = (formData) => {
