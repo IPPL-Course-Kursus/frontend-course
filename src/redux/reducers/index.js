@@ -17,6 +17,7 @@ import adminDashboardReducer from "./admindashboardreducer";
 import typeCourseReducer from "./typeCourseReducers";
 import instrukturDashboardReducers from "./instrukturDashboardReducers"; 
 import mulaiKelasReducers from "./mulaiKelasReducers";
+import levelCourseReducer from "./levelCourseReducers";
 
 export default combineReducers({
   // Auth
@@ -38,6 +39,7 @@ export default combineReducers({
   adminDataKategori: adminDataKategoriReducer,
   adminDashboard: adminDashboardReducer,
   typeCourse: typeCourseReducer,
+  levelCourse: levelCourseReducer,
 
   // Transaction
   transaction: transactionReducer,
