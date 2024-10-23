@@ -4,14 +4,11 @@ import { getUserCourses } from "../../redux/actions/courseActions";
 import { selectMyCourses } from "../../redux/reducers/courseReducers";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
-import { createSelector } from 'reselect';
 
 const CoursesPage = () => {
   const dispatch = useDispatch();
   const mycourse = useSelector(selectMyCourses);
   const { loading, error } = useSelector((state) => state.course || {});
-
-  const selectCourses = (state) => state.courses || { mycourse: [] };
   
   const [isMobileDropdownVisible, setMobileDropdownVisible] = useState(false);
   const [filterChecked, setFilterChecked] = useState({});
@@ -197,6 +194,7 @@ const CoursesPage = () => {
                     </svg>
                     <span>{courseItem.course.totalDuration} menit</span>
                   </div>
+                  
 
                   {/* Progress Bar di bawah durasi */}
                   <div className="w-full bg-gray-300 rounded-full h-6 mb-2">

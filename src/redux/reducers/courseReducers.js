@@ -6,8 +6,6 @@ const courseSlice = createSlice({
   initialState: {
     courses: [],
     mycourse: [],
-    popular: [],  // Tambahkan state untuk menyimpan kursus populer
-    free: [],     // Tambahkan state untuk menyimpan kursus gratis
     loading: false,
     detail: {},
     error: null,
@@ -18,12 +16,6 @@ const courseSlice = createSlice({
     },
     setMyCourses: (state, action) => {
       state.mycourse = action.payload;
-    },
-    setPopular: (state, action) => {  // Tambahkan reducer untuk setPopular
-      state.popular = action.payload;
-    },
-    setFree: (state, action) => {     // Tambahkan reducer untuk setFree
-      state.free = action.payload;
     },
     setLoading: (state, action) => {
       state.loading = action.payload;
@@ -40,32 +32,15 @@ const courseSlice = createSlice({
   },
 });
 
+export const { setCourses, setMyCourses, setDetail, setLoading, setError, clearError } = courseSlice.actions;
 
-const selectCourses = (state) => state.courses || { mycourse: [] };
+// Selector to get the courses state
+const selectCourses = (state) => state.course || { mycourse: [] };
 
-// Memoized selector untuk myCourses
+// Memoized selector for myCourses
 export const selectMyCourses = createSelector(
   [selectCourses],
-  (coursesState) => {
-    // Mengembalikan mycourse dengan referensi tetap
-    return coursesState.mycourse;
-  }
+  (coursesState) => coursesState.mycourse
 );
 
-
-// Ekspor semua aksi yang diperlukan
-export const { 
-  setCourses, 
-  setMyCourses, 
-  setDetail, 
-  setLoading, 
-  setError, 
-  clearError, 
-  setPopular,  // Pastikan untuk mengekspor setPopular
-  setFree,     // Pastikan untuk mengekspor setFree
-} = courseSlice.actions;
-
-
-
-// Ekspor reducer utama
 export default courseSlice.reducer;
