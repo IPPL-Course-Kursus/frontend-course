@@ -14,7 +14,6 @@ import Navbar from "../../components/Navbar";
 const TopikKelas = () => {
     const dispatch = useDispatch();
 
-    // Ambil courses dari Redux state
     const courses = useSelector((state) => state.course.courses);
     const [categories, setCategories] = useState([]);
     const [selectedFilter, setSelectedFilter] = useState("All");
@@ -62,43 +61,50 @@ const TopikKelas = () => {
     }, [filterChecked]);
 
     const handleCheckboxChange = (label) => {
-      const updatedChecked = {
-          ...filterChecked,
-          [label]: !filterChecked[label],  // Toggle the current checkbox value
-      };
-  
-      setFilterChecked(updatedChecked); // Update the state
-  
-      setCurrentPage(1); // Reset to the first page when filter changes
-  
-      let typeId = null;
-      if (label === "Kelas Berbayar") {
-          typeId = updatedChecked["Kelas Berbayar"] ? 2 : null; // type 2 untuk kelas berbayar
-      } else if (label === "Kelas Gratis") {
-          typeId = updatedChecked["Kelas Gratis"] ? 1 : null; // type 1 untuk kelas gratis
-      }
-  
-      if (["Paling Baru", "Paling Populer", "Promo"].includes(label)) {
-          setSelectedFilter(updatedChecked[label] ? label : "All");
-      }
-  
-      dispatch(
-          getFilteredCourses({
-              typeId: typeId,
-              promoStatus: updatedChecked["Promo"] || false,
-              isNewest: updatedChecked["Paling Baru"] || false,
-              isPopular: updatedChecked["Paling Populer"] || false,
-          })
-      );
-  };
-  
-  
+        const updatedChecked = {
+            ...filterChecked,
+            [label]: !filterChecked[label], // Toggle the current checkbox value
+        };
+    
+        setFilterChecked(updatedChecked); // Update the state
+        setCurrentPage(1); // Reset to the first page when filter changes
+    
+        let typeId = null;
+    
+        // if (["Paling Baru", "Paling Populer", "Promo"].includes(label)) {
+        //     if (updatedChecked[label]) {
+        //         setSelectedFilter(label); 
+        //     } else {
+        //         setSelectedFilter("All"); // Reset to "All" when filter is unchecked
+        //     }
+        // }
 
-  
-
+        const filters = {
+            isNewest: updatedChecked["Paling Baru"] || false,
+            isPopular: updatedChecked["Paling Populer"] || false,
+            promoStatus: updatedChecked["Promo"] || false,
+        };
+    
+        if (
+            typeId !== null ||
+            updatedChecked["Promo"] ||
+            updatedChecked["Paling Baru"] ||
+            updatedChecked["Paling Populer"]
+        ) if (filters.isNewest || filters.isPopular || filters.promoStatus) {
+            dispatch(getFilteredCourses(filters)); // Dispatch the filter action
+        } else {
+            dispatch(getAllCourse()); // If no filters, get all courses
+        }
+    };
+    
     const handleFilterClick = (filter) => {
         setSelectedFilter(filter);
         setCurrentPage(1);
+    
+        // Reset the filterChecked when "All" is clicked
+        if (filter === "All") {
+            clearFilters(); // Reset all filters when "All" is selected
+        }
     };
 
     const filteredCourses = () => {
@@ -123,7 +129,6 @@ const TopikKelas = () => {
             return matchesSearch;
         });
 
-
         if (activeFilters.length > 0) {
             filteredCourses = filteredCourses.filter((course) =>
                 activeFilters.some(
@@ -138,14 +143,23 @@ const TopikKelas = () => {
     };
 
     const clearFilters = () => {
-        const clearedFilterState = categories.reduce((acc, category) => {
-            acc[category.categoryName] = false;
-            return acc;
-        }, {});
-        setFilterChecked(clearedFilterState);
-        setSelectedFilter("All");
-        window.location.hash = "";
+        const clearedFilterState = {
+            "Paling Baru": false,
+            "Paling Populer": false,
+            "Promo": false,
+            ...categories.reduce((acc, category) => {
+                acc[category.categoryName] = false;
+                return acc;
+            }, {}),
+        };
+        
+        setFilterChecked(clearedFilterState); // Reset semua filter
+        setSelectedFilter("All"); // Reset filter yang dipilih
+        window.location.hash = ""; // Hapus hash URL
+    
+        dispatch(getAllCourse()); // Dispatch untuk mendapatkan semua kursus
     };
+    
 
     const filteredCourseType = filteredCourses();
     const totalPages = Math.ceil(filteredCourseType.length / itemsPerPage);
@@ -267,7 +281,7 @@ const TopikKelas = () => {
                                     >
                                         <input
                                             type="checkbox"
-                                            id={`filter-${label}`}
+                                            id={"filter-${label}"}
                                             checked={filterChecked[label]}
                                             onChange={() =>
                                                 handleCheckboxChange(label)
@@ -420,7 +434,7 @@ const TopikKelas = () => {
                                             >
                                                 {course.coursePrice === 0
                                                     ? "Mulai Kelas"
-                                                    : `Beli Rp ${course.coursePrice}.000`}
+                                                    : `Beli Rp ${course.coursePrice}`}
                                             </Link>
                                         </div>
                                     </div>

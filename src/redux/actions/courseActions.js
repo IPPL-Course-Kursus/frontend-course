@@ -23,20 +23,10 @@ export const getAllCourse = () => async (dispatch) => {
 
 export const getFilteredCourses = (filters) => async (dispatch) => {
     try {
-        const {
-            typeId,
-            categoryId,
-            levelId,
-            promoStatus,
-            isNewest,
-            isPopular,
-        } = filters;
+        const { promoStatus, isNewest, isPopular } = filters;
 
         const response = await axios.get(`${api_url}course/filter`, {
             params: {
-                typeId,
-                categoryId,
-                levelId,
                 promoStatus: promoStatus,
                 isNewest: isNewest,
                 isPopular: isPopular,
@@ -46,11 +36,12 @@ export const getFilteredCourses = (filters) => async (dispatch) => {
         const filteredCourses = response.data;
         console.log(filteredCourses);
 
-        dispatch(setCourse(filteredCourses));
+        dispatch(setCourse(filteredCourses)); // Dispatch filtered courses
     } catch (error) {
         console.error("Error fetching filtered courses:", error.message);
     }
 };
+
 
 export const getPagesCourse = (page) => async (dispatch) => {
     try {
@@ -65,9 +56,11 @@ export const getPagesCourse = (page) => async (dispatch) => {
 };
 
 export const getPopularCourse = () => async (dispatch) => {
-    try {
-        const response = await axios.get(`${api_url}course/popular`);
-        const coursePopular = response.data;
+  try {
+    const response = await axios.get(`${api_url}course/popular`);
+    const coursePopular = response.data;
+
+    console.log("ada data popilar",response.data);
 
         console.log("Data kursus populer:", coursePopular); // Debugging
         dispatch(setPopular(coursePopular));

@@ -1,20 +1,31 @@
 import { useEffect, useState } from "react";
 import { FaBars } from "react-icons/fa";
-import { IoAddCircleOutline, IoArrowBack } from "react-icons/io5";
+import {
+  IoAddCircleOutline,
+  IoArrowBack,
+  IoArrowBackCircle,
+  IoArrowForwardCircle,
+} from "react-icons/io5";
 import DataKontenInput from "../../components/InstrukturComponents/DataKonten/DataKontenInput";
 import DataKontenUbah from "../../components/InstrukturComponents/DataKonten/DataKontenUbah";
 import DataKontenDetail from "../../components/InstrukturComponents/DataKonten/DataKontenDetail";
 import Sidebar from "../../components/Sidebar/SidebarInstruktur";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getDataKonten } from "../../redux/actions/instruktorActions";
+import { deleteDataKonten, getDataKonten } from "../../redux/actions/instruktorActions";
 
 const InstruktorDataKonten = () => {
   const [showTambahPopup, setShowTambahPopup] = useState(false);
   const [showUbahPopup, setShowUbahPopup] = useState(false);
   const [showDetailPopup, setShowDetailPopup] = useState(false);
   const [selectedContent, setSelectedContent] = useState(null);
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [contentToDelete, setContentToDelete] = useState(null);
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -24,10 +35,6 @@ const InstruktorDataKonten = () => {
   useEffect(() => {
     dispatch(getDataKonten(id));
   }, [dispatch, id]);
-
-  const handleBackClick = () => {
-    navigate(-1);
-  };
 
   const handleAddClick = () => {
     setSelectedContent({}); // Reset selectedContent saat menambah konten baru
@@ -43,6 +50,32 @@ const InstruktorDataKonten = () => {
     setSelectedContent(contentItem);
     setShowDetailPopup(true);
   };
+
+  const handleDelete = (content) => {
+    setContentToDelete(content);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = () => {
+    dispatch(deleteDataKonten(contentToDelete.id)).then(() => {
+      setShowDeleteModal(false);
+      window.location.reload(); // Reload halaman setelah penghapusan berhasil
+    });
+  };
+
+  const handleBackClick = () => {
+    navigate(-1);
+  };
+
+  const truncateText = (text, maxLength) => {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + "...";
+    }
+    return text;
+  };
+
+  const totalPages = Math.ceil(content.length / itemsPerPage);
+  const currentItems = content.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <>
@@ -112,86 +145,86 @@ const InstruktorDataKonten = () => {
           ) : content.length === 0 ? (
             <p>Tidak ada konten yang ditemukan.</p>
           ) : (
-            <div className="overflow-x-auto bg-white p-4">
+            <div className="overflow-x-auto bg-white p-4 rounded-lg shadow-md">
               <table className="min-w-full table-auto">
                 <thead>
-                  <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
-                    <th className="px-2 md:px-4 py-2">Urutan</th>
-                    <th className="px-2 md:px-4 py-2">Judul Materi</th>
-                    <th className="px-2 md:px-4 py-2">Teks</th>
-                    <th className="px-2 md:px-4 py-2">Video URL</th>
-                    <th className="px-2 md:px-4 py-2">Durasi</th>
-                    <th className="px-2 md:px-4 py-2">Aksi</th>
+                  <tr className="bg-gray-200 text-left text-xs md:text-sm font-semibold border-b">
+                    <th className="px-4 py-3">Urutan</th>
+                    <th className="px-4 py-3">Judul Materi</th>
+                    <th className="px-4 py-3">Teks</th>
+                    <th className="px-4 py-3">Video URL</th>
+                    <th className="px-4 py-3">Durasi</th>
+                    <th className="px-4 py-3">Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {Array.isArray(content) && content.length > 0 ? (
-                    content.map((contentItem, index) => (
-                      <tr key={index} className="border-t text-xs md:text-sm">
-                        <td className="px-2 md:px-4 py-2">{contentItem.sort}</td>
-                        <td className="px-2 md:px-4 py-2">{contentItem.contentTitle}</td>
-                        <td className="px-2 md:px-4 py-2">{contentItem.teks}</td>
-                        <td className="px-2 md:px-4 py-2">{contentItem.contentUrl}</td>
-                        <td className="px-2 md:px-4 py-2">{contentItem.duration}</td>
-                        <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
-                          <button
-                            className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
-                            onClick={() => handleEditClick(contentItem)}
-                          >
-                            Ubah
-                          </button>
-                          <button
-                            className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
-                            onClick={() => handleDetailClick(contentItem)}
-                          >
-                            Detail
-                          </button>
-                          <button className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2">
-                            Hapus
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={6} className="text-center py-4">
-                        Tidak ada konten yang ditemukan.
+                  {currentItems.map((content) => (
+                    <tr key={content.id} className="border-t text-xs md:text-sm">
+                      <td className="px-4 py-3">{content.sort}</td>
+                      <td className="px-4 py-3">{content.contentTitle}</td>
+                      {/* <td className="px-4 py-3">{content.teks}</td> */}
+                      <td className="px-4 py-3 max-h-12 overflow-hidden text-ellipsis whitespace-nowrap">
+                        {truncateText(content.teks, 30)}
                       </td>
-                    </tr>
-                  )}
-                </tbody>
-
-                {/* <tbody>
-                  {content.map((contentItem, index) => (
-                    <tr key={index} className="border-t text-xs md:text-sm">
-                      <td className="px-2 md:px-4 py-2">{contentItem.sort}</td>
-                      <td className="px-2 md:px-4 py-2">{contentItem.contentTitle}</td>
-                      <td className="px-2 md:px-4 py-2">{contentItem.teks}</td>
-                      <td className="px-2 md:px-4 py-2">{contentItem.contentUrl}</td>
-                      <td className="px-2 md:px-4 py-2">{contentItem.duration}</td>
-                      <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
+                      <td className="px-4 py-3">{truncateText(content.contentUrl, 40)}</td>
+                      <td className="px-4 py-3">{content.duration}</td>
+                      <td className="px-4 py-3 flex flex-wrap space-x-2">
                         <button
                           className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
-                          onClick={() => handleEditClick(contentItem)}
+                          onClick={() => handleEditClick(content)}
                         >
                           Ubah
                         </button>
                         <button
                           className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
-                          onClick={() => handleDetailClick(contentItem)}
+                          onClick={() => handleDetailClick(content)}
                         >
                           Detail
                         </button>
-                        <button className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2">
+                        <button
+                          className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                          onClick={() => handleDelete(content)}
+                        >
                           Hapus
                         </button>
                       </td>
                     </tr>
                   ))}
-                </tbody> */}
+                </tbody>
               </table>
             </div>
           )}
+
+          {/* Pagination */}
+          <div className="flex justify-between items-center mt-4">
+            <button
+              className={`flex items-center py-2 px-4 rounded-lg ${
+                currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-[#0a61aa] text-white"
+              } transition-all duration-300 hover:scale-105`}
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              <IoArrowBackCircle className="mr-2 text-xl" />
+              Previous
+            </button>
+
+            <span className="text-lg font-semibold">
+              Page {currentPage} of {totalPages}
+            </span>
+
+            <button
+              className={`flex items-center py-2 px-4 rounded-lg ${
+                currentPage === totalPages
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-[#0a61aa] text-white"
+              } transition-all duration-300 hover:scale-105`}
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next
+              <IoArrowForwardCircle className="ml-2 text-xl" />
+            </button>
+          </div>
 
           {/* Modal Pop-up */}
           <DataKontenInput
@@ -209,6 +242,28 @@ const InstruktorDataKonten = () => {
             onClose={() => setShowDetailPopup(false)}
             contentId={selectedContent ? selectedContent.id : null}
           />
+
+          {showDeleteModal && (
+            <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+              <div className="bg-white p-6 rounded-3xl shadow-lg relative w-80">
+                <h2 className="text-xl font-bold text-center mb-4">Yakin hapus data?</h2>
+                <div className="flex justify-around mt-6">
+                  <button
+                    className="bg-red-600 text-white px-6 py-2 rounded-full font-bold"
+                    onClick={confirmDelete}
+                  >
+                    Hapus
+                  </button>
+                  <button
+                    className="bg-gray-300 px-6 py-2 rounded-full font-bold"
+                    onClick={() => setShowDeleteModal(false)}
+                  >
+                    Batal
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>

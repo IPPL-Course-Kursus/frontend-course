@@ -1,20 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-// Inisialisasi state awal untuk auth
-// const initialAuthState = {
-//   user: null,
-//   uid: null, // Menyimpan UID
-//   token: null, // Menyimpan token
-//   role: null, // Menyimpan role
-//   loading: false,
-//   error: null,
-//   success: false, // Menyimpan status registrasi
-// };
+import Cookies from "js-cookie"; // Import js-cookie
 
 const initialAuthState = {
   user: null,
   uid: null, // Menyimpan UID
-  token: null, // Menyimpan token
+  token: Cookies.get("token") || null, // Ambil token dari cookies
   role: null, // Menyimpan role
   loading: false,
   error: null,
@@ -77,6 +67,7 @@ const authSlice = createSlice({
       state.token = action.payload.token;
       state.role = action.payload.role;
       state.error = null;
+      Cookies.set("token", action.payload.token, { expires: 1 / 6 }); // Simpan token di cookies (4 jam)
     },
     loginFailure: (state, action) => {
       setLoadingAndError(state, false, action.payload);
@@ -88,6 +79,7 @@ const authSlice = createSlice({
       state.role = null;
       setLoadingAndError(state, false, null);
       state.success = false;
+      Cookies.remove("token"); // Hapus token dari cookies
     },
     registerStart: (state) => setLoadingAndError(state, true, null),
     registerSuccess: (state) => {
@@ -107,63 +99,30 @@ const authSlice = createSlice({
     setUser: (state, action) => {
       state.user = action.payload; // Simpan data user
     },
+    getMeStart: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    getMeSuccess: (state, action) => {
+      state.loading = false;
+      state.user = action.payload; // Simpan data profile di state
+      state.error = null;
+    },
+    getMeFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    setToken: (state, action) => {
+      if (action.payload) {
+        state.token = action.payload; // Set token in state
+        Cookies.set("token", action.payload, { expires: 1 / 6 }); // Simpan token di cookies (4 jam)
+      } else {
+        state.token = null; // Hapus token dari state
+        Cookies.remove("token"); // Hapus token dari cookies
+      }
+    },
   },
 });
-
-// const authSlice = createSlice({
-//   name: "auth",
-//   initialState: initialAuthState,
-//   reducers: {
-//     loginStart: (state) => {
-//       state.loading = true;
-//       state.error = null;
-//     },
-//     loginSuccess: (state, action) => {
-//       state.loading = false;
-//       state.user = action.payload.user; // Simpan data user
-//       state.uid = action.payload.uid; // Simpan UID
-//       state.token = action.payload.token; // Simpan token
-//       state.role = action.payload.role; // Simpan role
-//       state.error = null;
-//     },
-//     loginFailure: (state, action) => {
-//       state.loading = false;
-//       state.error = action.payload; // Simpan error jika terjadi
-//     },
-//     setUser: (state, action) => {
-//       state.user = action.payload; // Simpan data user
-//     },
-//     logout: (state) => {
-//       state.user = null;
-//       state.uid = null; // Reset UID
-//       state.token = null; // Reset token
-//       state.role = null; // Reset role
-//       state.loading = false;
-//       state.error = null;
-//       state.success = false; // Reset status registrasi saat logout
-//     },
-//     registerStart: (state) => {
-//       state.loading = true;
-//       state.success = false;
-//       state.error = null;
-//     },
-//     registerSuccess: (state) => {
-//       state.loading = false;
-//       state.success = true; // Set berhasil setelah registrasi
-//       state.error = null;
-//     },
-//     registerFailure: (state, action) => {
-//       state.loading = false;
-//       state.success = false; // Reset status berhasil
-//       state.error = action.payload; // Simpan error jika terjadi
-//     },
-//     resetRegister: (state) => {
-//       state.loading = false;
-//       state.success = false;
-//       state.error = null; // Reset state registrasi
-//     },
-//   },
-// });
 
 // Slice untuk email
 const emailSlice = createSlice({
@@ -314,6 +273,7 @@ export const {
   registerSuccess,
   registerFailure,
   resetRegister,
+  setToken,
 } = authSlice.actions;
 
 export const { resetPasswordStart, resetPasswordSuccess, resetPasswordFailure } =

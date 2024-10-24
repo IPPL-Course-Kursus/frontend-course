@@ -15,12 +15,8 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
   const [selectCategoryId, setSelectCategoryId] = useState(null);
   const sliderRef = useRef(null);
   const dispatch = useDispatch();
-
   const { popular } = useSelector((state) => state.course);
-  // console.log("dasfsaf", popular);
-
   const { category } = useSelector((state) => state.category);
-  // console.log("cat", category);
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("id-ID", {
@@ -28,15 +24,6 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
       currency: "IDR",
     }).format(amount);
   };
-
-  // const formatCurrency = (value) => {
-  //   return new Intl.NumberFormat("id-ID", {
-  //     style: "currency",
-  //     currency: "IDR",
-  //     minimumFractionDigits: 0, // No decimal places
-  //     maximumFractionDigits: 0,
-  //   }).format(value);
-  // };
 
   const handleFilterClick = (categoryId) => {
     setSelectCategoryId(categoryId);
@@ -179,7 +166,7 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
                           <Shield size={18} className="mr-1" /> {val.courseLevel.levelName}
                         </p>
                         <p className="flex items-center">
-                          <Book size={18} className="mr-1" /> {val.chapter}
+                          <Book size={18} className="mr-1" /> {val._count.chapters} Chapter
                         </p>
                         <p className="flex items-center">
                           <Clock size={18} className="mr-1" /> {val.totalDuration} menit
@@ -237,15 +224,27 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
             <div className="grid mt-2 gap-2 grid-cols-1 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:mt-4">
               {filteredCoursePopular.map((val) => (
                 <div key={val.id} className="p-2">
-                  <div className="w-full bg-white shadow-xl rounded-xl overflow-hidden pb-3 h-full flex flex-col">
-                    <img src={val.image} alt={val.name} className="w-full h-32 object-cover" />
-                    <div className="mx-2 md:mx-4 flex flex-col mt-1 md:mt-2 h-full">
-                      <div className="flex justify-between items-center flex-grow">
-                        <h1 className="text-color-primary font-bold text-sm lg:text-base truncate">
+                  <div
+                    className={`w-full bg-white shadow-xl rounded-xl overflow-hidden pb-3 h-full flex flex-col ${
+                      val.isPurchased ? "bg-green-50" : ""
+                    }`}
+                  >
+                    <img
+                      src={val.image}
+                      alt={val.name}
+                      className="w-full h-32 object-cover rounded-t-xl"
+                    />
+                    <div className="mx-2 md:mx-4 flex flex-col mt-2 md:mt-3 h-full">
+                      <div className="flex justify-between items-center mb-2 flex-grow">
+                        <h1
+                          className={`font-bold text-sm lg:text-base truncate ${
+                            val.isPurchased ? "text-gray-700" : "text-color-primary"
+                          }`}
+                        >
                           {val.courseName}
                         </h1>
                       </div>
-                      <p className="text-black text-sm font-semibold flex-shrink-0">
+                      <p className="text-gray-600 text-sm font-semibold flex-shrink-0">
                         Instruktor {val.user.fullName}
                       </p>
                       <div className="mt-3 flex justify-between flex-wrap text-xs font-semibold text-color-primary">
@@ -253,45 +252,51 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
                           <Shield size={18} className="mr-1" /> {val.courseLevel.levelName}
                         </p>
                         <p className="flex items-center">
-                          <Book size={18} className="mr-1" /> {val.chapters}
+                          <Book size={18} className="mr-1" /> {val._count.chapters} Chapter
                         </p>
                         <p className="flex items-center">
-                          <Clock size={18} className="mr-1" /> {val.totalDuration} menit
+                          <Clock size={18} className="mr-1" /> {val.totalDuration} Menit
                         </p>
                       </div>
 
-                      {/* Kondisi untuk menampilkan progress bar dan link mulai kelas */}
+                      {/* Tampilkan progress bar dan tombol untuk kelas yang sudah dibeli */}
                       {val.isPurchased ? (
-                        <>
-                          <div className="my-2 flex-grow">
-                            <ProgressBar />
-                          </div>
+                        <div className="my-2 flex-grow">
+                          <ProgressBar />
                           <div className="my-2">
                             <Link
-                              to={`/course-detail/${val.id}`} // Perbaiki sintaksis pada path
+                              to={`/course-detail/${val.id}`} // Link to course detail page
                               className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
                             >
                               Mulai Kelas
                             </Link>
                           </div>
-                        </>
+                        </div>
                       ) : (
                         <div className="my-2">
-                          <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center">
-                            {formatCurrency(val.coursePrice)}{" "}
-                            {/* Display the course price in rupiah */}
-                          </button>
-                          <div className="my-2">
-                            {val.coursePrice > 0 ? ( // Check if the course price is greater than 0
-                              <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center">
-                                <Gem size={16} className="mr-2" /> Premium{" "}
-                                {/* Indicate that the course is premium */}
-                              </button>
+                          <div className="flex items-center">
+                            {val.coursePrice > 0 ? (
+                              <>
+                                <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
+                                  {formatCurrency(val.coursePrice)}{" "}
+                                </button>
+                                <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
+                                  <Gem size={16} className="mr-2" /> Premium
+                                </button>
+                              </>
                             ) : (
-                              <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center">
-                                Free {/* Indicate that the course is free */}
+                              <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
+                                <Gem size={16} className="mr-2" /> Free
                               </button>
                             )}
+                          </div>
+                          <div className="my-2">
+                            <Link
+                              to={`/course-detail/${val.id}`} // Link to course detail page
+                              className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
+                            >
+                              Lihat Kelas
+                            </Link>
                           </div>
                         </div>
                       )}
