@@ -7,12 +7,10 @@ import {
   selectProfileLoading,
   selectProfileError,
 } from "../../redux/reducers/authReducers";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
 import Cookies from "js-cookie";
 
 const Profile = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Gunakan useNavigate untuk navigasi
 
   // Ambil state dari Redux
   const profile = useSelector(selectProfile);
@@ -23,7 +21,6 @@ const Profile = () => {
   const [form, setForm] = useState({
     fullName: "",
     phoneNumber: "",
-    country: "",
     city: "",
     image: "",
     tanggalLahir: "",
@@ -44,14 +41,16 @@ const Profile = () => {
   // Mengatur form state berdasarkan data profil dari Redux
   useEffect(() => {
     if (profile) {
+      const formattedTanggalLahir = profile.tanggalLahir
+        ? new Date(profile.tanggalLahir).toISOString().substring(0, 10)
+        : "";
       setForm({
         fullName: profile.fullName || "",
         email: profile.email || "",
         phoneNumber: profile.phoneNumber || "",
-        country: profile.country || "",
         city: profile.city || "",
         image: profile.image || "",
-        tanggalLahir: profile.tanggalLahir || "",
+        tanggalLahir: formattedTanggalLahir || "",
       });
 
       setImagePreview(profile.image || "/profile.jpg");
@@ -67,12 +66,11 @@ const Profile = () => {
     }));
   };
 
-  const handleSave = async () => {
+  const handleSave = () => {
     const formData = new FormData();
 
     formData.append("fullName", form.fullName);
     formData.append("phoneNumber", form.phoneNumber);
-    formData.append("country", form.country);
     formData.append("city", form.city);
     formData.append("tanggalLahir", form.tanggalLahir);
 
@@ -80,24 +78,17 @@ const Profile = () => {
       formData.append("image", imageFile);
     }
 
-    // Dispatch update profile
-    await dispatch(updateProfile(formData));
-
-    // Setelah update sukses, arahkan ke halaman profil
-    navigate("/");
+    dispatch(updateProfile(formData));
   };
 
-  // Fungsi untuk menangani fokus pada input field
   const handleFocus = (field) => {
     setFocusedField(field);
   };
 
-  // Fungsi untuk menangani kehilangan fokus pada input field
   const handleBlur = () => {
     setFocusedField("");
   };
 
-  // Fungsi untuk menangani input file dan preview gambar
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -120,106 +111,109 @@ const Profile = () => {
   }
 
   return (
-    <div className="flex p-8">
-      <div className="flex flex-col">
-        <div className="relative items-center mr-8">
-          {/* Tampilkan preview gambar */}
-          <img
-            src={imagePreview}
-            alt="Profile"
-            className="w-52 h-52 rounded-full border-2 border-blue-800 shadow-lg"
-          />
+    <div className="flex flex-col items-center p-8">
+      {/* Bagian paling atas untuk judul di tengah */}
+      <p className="text-4xl font-bold mb-8 text-center">Profile Saya</p>
 
-          {/* Ikon untuk mengganti foto profil */}
-          <div className="absolute bottom-0 right-0 w-20 h-20 bg-white border-2 border-blue-800 flex items-center justify-center shadow-md cursor-pointer">
-            <FaCamera size={30} color="gray" />
+      <div className="flex w-full max-w-4xl">
+        {/* Bagian kiri untuk foto profil */}
+        <div className="flex flex-col items-center mr-12">
+          <div className="relative">
+            {/* Tampilkan preview gambar, ukuran diperbesar */}
+            <img
+              src={imagePreview}
+              alt="Profile"
+              className="w-64 h-64 rounded-full border-4 border-blue-800 shadow-lg" // Foto lebih besar
+            />
+
+            {/* Ikon untuk mengganti foto profil, ukuran disesuaikan */}
+            <div className="absolute bottom-2 right-2 w-16 h-16 bg-white border-2 border-blue-800 flex items-center justify-center shadow-md cursor-pointer rounded-full">
+              <FaCamera size={24} color="gray" />
+              <input
+                type="file"
+                accept="image/*"
+                className="absolute opacity-0 w-full h-full cursor-pointer"
+                onChange={handleImageUpload}
+              />
+            </div>
+          </div>
+
+          {/* Nama di bawah foto */}
+          <div className="mt-5 w-full text-center">
             <input
-              type="file"
-              accept="image/*"
-              className="absolute opacity-0 w-full h-full cursor-pointer"
-              onChange={handleImageUpload}
+              type="text"
+              name="fullName"
+              value={form.fullName}
+              onChange={handleInputChange}
+              onFocus={() => handleFocus("fullName")}
+              onBlur={handleBlur}
+              className={`block w-full py-2 text-center border-b ${
+                focusedField === "fullName" ? "border-black" : "border-gray-300"
+              } focus:outline-none ${focusedField === "fullName" ? "text-black" : "text-gray-500"}`}
+              placeholder="Nama"
             />
           </div>
         </div>
-        <div className="flex-1 mt-5">
-          <p className="w-full text-3xl font-bold">Profile Saya</p>
+
+        {/* Bagian kanan untuk field email, telepon, dll */}
+        <div className="flex flex-col space-y-9 flex-1">
+          <input
+            type="email"
+            name="email"
+            value={form.email}
+            readOnly
+            onFocus={() => handleFocus("email")}
+            onBlur={handleBlur}
+            className={`block w-full p-2 border-b ${
+              focusedField === "email" ? "border-black" : "border-gray-300"
+            } focus:outline-none ${focusedField === "email" ? "text-black" : "text-gray-500"}`}
+            placeholder="Email"
+          />
           <input
             type="text"
-            name="fullName"
-            value={form.fullName}
+            name="phoneNumber"
+            value={form.phoneNumber}
             onChange={handleInputChange}
-            onFocus={() => handleFocus("fullName")}
+            onFocus={() => handleFocus("phoneNumber")}
             onBlur={handleBlur}
-            className={`block w-full py-2 border-b ${
-              focusedField === "fullName" ? "border-black" : "border-gray-300"
-            } focus:outline-none ${focusedField === "fullName" ? "text-black" : "text-gray-500"}`}
-            placeholder="Nama"
+            className={`block w-full p-2 border-b ${
+              focusedField === "phoneNumber" ? "border-black" : "border-gray-300"
+            } focus:outline-none ${focusedField === "phoneNumber" ? "text-black" : "text-gray-500"}`}
+            placeholder="Nomor Telepon"
+          />
+          <input
+            type="text"
+            name="city"
+            value={form.city}
+            onChange={handleInputChange}
+            onFocus={() => handleFocus("city")}
+            onBlur={handleBlur}
+            className={`block w-full p-2 border-b ${
+              focusedField === "city" ? "border-black" : "border-gray-300"
+            } focus:outline-none ${focusedField === "city" ? "text-black" : "text-gray-500"}`}
+            placeholder="Kota"
+          />
+          <input
+            type="date"
+            name="tanggalLahir"
+            value={form.tanggalLahir}
+            onChange={handleInputChange}
+            onFocus={() => handleFocus("tanggalLahir")}
+            onBlur={handleBlur}
+            className={`block w-full p-2 border-b ${
+              focusedField === "tanggalLahir" ? "border-black" : "border-gray-300"
+            } focus:outline-none ${focusedField === "tanggalLahir" ? "text-black" : "text-gray-500"}`}
+            placeholder="Tanggal Lahir"
           />
         </div>
       </div>
 
-      <div className="flex flex-col space-y-4 ml-8">
-        <input
-          type="email"
-          name="email"
-          value={form.email}
-          readOnly
-          onFocus={() => handleFocus("email")}
-          onBlur={handleBlur}
-          className={`block w-full p-2 border-b ${
-            focusedField === "email" ? "border-black" : "border-gray-300"
-          } focus:outline-none ${focusedField === "email" ? "text-black" : "text-gray-500"}`}
-          placeholder="Email"
-        />
-        <input
-          type="text"
-          name="phoneNumber"
-          value={form.phoneNumber}
-          onChange={handleInputChange}
-          onFocus={() => handleFocus("phoneNumber")}
-          onBlur={handleBlur}
-          className={`block w-full p-2 border-b ${
-            focusedField === "phoneNumber" ? "border-black" : "border-gray-300"
-          } focus:outline-none ${focusedField === "phoneNumber" ? "text-black" : "text-gray-500"}`}
-          placeholder="Nomor Telepon"
-        />
-        <input
-          type="text"
-          name="country"
-          value={form.country}
-          onChange={handleInputChange}
-          onFocus={() => handleFocus("country")}
-          onBlur={handleBlur}
-          className={`block w-full p-2 border-b ${
-            focusedField === "country" ? "border-black" : "border-gray-300"
-          } focus:outline-none ${focusedField === "country" ? "text-black" : "text-gray-500"}`}
-          placeholder="Negara"
-        />
-        <input
-          type="text"
-          name="city"
-          value={form.city}
-          onChange={handleInputChange}
-          onFocus={() => handleFocus("city")}
-          onBlur={handleBlur}
-          className={`block w-full p-2 border-b ${
-            focusedField === "city" ? "border-black" : "border-gray-300"
-          } focus:outline-none ${focusedField === "city" ? "text-black" : "text-gray-500"}`}
-          placeholder="Kota"
-        />
-        <input
-          type="date"
-          name="tanggalLahir"
-          value={form.tanggalLahir}
-          onChange={handleInputChange}
-          onFocus={() => handleFocus("tanggalLahir")}
-          onBlur={handleBlur}
-          className={`block w-full p-2 border-b ${
-            focusedField === "tanggalLahir" ? "border-black" : "border-gray-300"
-          } focus:outline-none ${focusedField === "tanggalLahir" ? "text-black" : "text-gray-500"}`}
-          placeholder="tanggalLahir"
-        />
-        <button onClick={handleSave} className="py-2 bg-blue-900 text-white rounded-full">
+      {/* Tombol Simpan di bagian bawah, memenuhi lebar antara foto profil dan field */}
+      <div className="w-full mt-12">
+        <button
+          onClick={handleSave}
+          className="w-full py-3 bg-blue-900 text-white rounded-full max-w-5xl mx-auto"
+        >
           Simpan
         </button>
       </div>

@@ -5,10 +5,9 @@ import DataKelasInput from "../../components/InstrukturComponents/DataKelas/Data
 import DataKelasUbah from "../../components/InstrukturComponents/DataKelas/DataKelasUbah";
 import DataKelasDetail from "../../components/InstrukturComponents/DataKelas/DataKelasDetail";
 import { Link } from "react-router-dom";
-import Sidebar from "../../components/Sidebar/SidebarInstruktur";
 import { useDispatch, useSelector } from "react-redux";
+import SidebarInstruktur from "../../components/Sidebar/SidebarInstruktur";
 import { getAllKelas } from "../../redux/actions/instruktorActions";
-// import { getAllCourse } from "../../redux/actions/courseActions";
 
 const InstruktorDataKelas = () => {
   const [courseTypeSearch, setCourseTypeSearch] = useState("");
@@ -33,8 +32,8 @@ const InstruktorDataKelas = () => {
   const toggleSearch = () => {
     setSearchVisible(!searchVisible);
   };
-  const handleAddClick = () => {
-    setSelectedCourse(null);
+  const handleAddClick = (course) => {
+    setSelectedCourse(course);
     setShowTambahPopup(true);
   };
 
@@ -77,7 +76,7 @@ const InstruktorDataKelas = () => {
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <Sidebar />
+          <SidebarInstruktur />
         </div>
 
         {/* Overlay */}
@@ -104,7 +103,9 @@ const InstruktorDataKelas = () => {
 
           {/* Section Data Kelas */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
-            <h2 className="text-lg md:text-xl font-bold text-[#0a61aa]">Data Kelas</h2>
+            <h2 className="flex items-center py-2 px-4 bg-gradient-to-r from-[#FF5722] to-[#FF9800] text-white font-semibold rounded-md text-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl mb-4">
+              Data Kelas
+            </h2>
 
             <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
               {/* Tombol tambah kelas */}
@@ -113,8 +114,8 @@ const InstruktorDataKelas = () => {
                   className="py-1 px-4 bg-[#0a61aa] text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center"
                   onClick={handleAddClick}
                 >
-                  <IoAddCircleOutline className="mr-2" />
-                  Tambah
+                  <IoAddCircleOutline className="mr-2 text-2xl" />
+                  <span className="font-bold">Tambah</span>
                 </button>
               </div>
 
@@ -156,7 +157,7 @@ const InstruktorDataKelas = () => {
             <table className="min-w-full table-auto">
               <thead>
                 <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
-                  <th className="px-2 md:px-4 py-2">ID</th>
+                  <th className="px-2 md:px-4 py-2">Kode</th>
                   <th className="px-2 md:px-4 py-2">Kategori</th>
                   <th className="px-2 md:px-4 py-2">Nama Kelas</th>
                   <th className="px-2 md:px-4 py-2">Tipe Kelas</th>
@@ -165,6 +166,7 @@ const InstruktorDataKelas = () => {
                   <th className="px-2 md:px-4 py-2">Aksi</th>
                 </tr>
               </thead>
+
               <tbody>
                 {currentItems.map((courseType, index) => (
                   <tr key={index} className="border-t text-xs md:text-sm">
@@ -182,27 +184,27 @@ const InstruktorDataKelas = () => {
                     <td className="px-2 md:px-4 py-2">{courseType.coursePrice}</td>
                     <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
                       <Link
-                        to={`/inst/data-module/
+                        to={`/inst/data-chapter/
                         ${courseType.id}`}
                       >
                         {/* <Link to="/inst/data-module"> */}
-                        <button className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2">
+                        <button className="py-1 px-2 md:px-4 bg-blue-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2">
                           Kelola
                         </button>
                       </Link>
                       <button
-                        className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                        className="py-1 px-2 md:px-4 bg-green-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
                         onClick={() => handleEditClick(courseType)}
                       >
                         Ubah
                       </button>
                       <button
-                        className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                        className="py-1 px-2 md:px-4 bg-yellow-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
                         onClick={() => handleDetailClick(courseType)}
                       >
                         Detail
                       </button>
-                      <button className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2">
+                      <button className="py-1 px-2 md:px-4 bg-blue-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2">
                         Promo
                       </button>
                     </td>
@@ -266,118 +268,3 @@ const InstruktorDataKelas = () => {
 };
 
 export default InstruktorDataKelas;
-
-// const [courseType] = useState([
-//   {
-//     id: "johndoe123",
-//     kategori: "UI/UX Design",
-//     namaKelas: "Belajar Web Designer dengan Figma",
-//     tipeKelas: "Free",
-//     level: "Intermediate",
-//     harga: 0,
-//   },
-//   {
-//     id: "supermanxx",
-//     kategori: "UI/UX Design",
-//     namaKelas: "Belajar Web Designer dengan Figma",
-//     tipeKelas: "Premium",
-//     level: "Beginner",
-//     harga: 190000,
-//   },
-//   {
-//     id: "johndoe123",
-//     kategori: "UI/UX Design",
-//     namaKelas: "Belajar Web Designer dengan Figma",
-//     tipeKelas: "Free",
-//     level: "Intermediate",
-//     harga: 0,
-//   },
-//   {
-//     id: "supermanxx",
-//     kategori: "UI/UX Design",
-//     namaKelas: "Belajar Web Designer dengan Figma",
-//     tipeKelas: "Premium",
-//     level: "Beginner",
-//     harga: 190000,
-//   },
-//   {
-//     id: "lokiMaster",
-//     kategori: "Data Science",
-//     namaKelas: "Data Cleaning untuk pemula",
-//     tipeKelas: "Free",
-//     level: "Advance",
-//     harga: 0,
-//   },
-//   {
-//     id: "siapaAjaani",
-//     kategori: "Data Science",
-//     namaKelas: "Data Cleaning untuk pemula",
-//     tipeKelas: "Premium",
-//     level: "Intermediate",
-//     harga: 190000,
-//   },
-//   {
-//     id: "johndoe123",
-//     kategori: "UI/UX Design",
-//     namaKelas: "Belajar Web Designer dengan Figma",
-//     tipeKelas: "Free",
-//     level: "Intermediate",
-//     harga: 0,
-//   },
-//   {
-//     id: "supermanxx",
-//     kategori: "UI/UX Design",
-//     namaKelas: "Belajar Web Designer dengan Figma",
-//     tipeKelas: "Premium",
-//     level: "Beginner",
-//     harga: 190000,
-//   },
-//   {
-//     id: "lokiMaster",
-//     kategori: "Data Science",
-//     namaKelas: "Data Cleaning untuk pemula",
-//     tipeKelas: "Free",
-//     level: "Advance",
-//     harga: 0,
-//   },
-//   {
-//     id: "siapaAjaani",
-//     kategori: "Data Science",
-//     namaKelas: "Data Cleaning untuk pemula",
-//     tipeKelas: "Premium",
-//     level: "Intermediate",
-//     harga: 190000,
-//   },
-//   {
-//     id: "johndoe123",
-//     kategori: "UI/UX Design",
-//     namaKelas: "Belajar Web Designer dengan Figma",
-//     tipeKelas: "Free",
-//     level: "Intermediate",
-//     harga: 0,
-//   },
-//   {
-//     id: "supermanxx",
-//     kategori: "UI/UX Design",
-//     namaKelas: "Belajar Web Designer dengan Figma",
-//     tipeKelas: "Premium",
-//     level: "Beginner",
-//     harga: 190000,
-//   },
-//   {
-//     id: "lokiMaster",
-//     kategori: "Data Science",
-//     namaKelas: "Data Cleaning untuk pemula",
-//     tipeKelas: "Free",
-//     level: "Advance",
-//     harga: 0,
-//   },
-//   {
-//     id: "siapaAjaani",
-//     kategori: "Data Science",
-//     namaKelas: "Data Cleaning untuk pemula",
-//     tipeKelas: "Premium",
-//     level: "Intermediate",
-//     harga: 190000,
-//   },
-// ]);

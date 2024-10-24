@@ -1,27 +1,34 @@
 import { combineReducers } from "redux";
 import {
-  authReducer, 
+  authReducer,
   emailReducer,
   resetPasswordReducer,
   verifyEmailReducer,
   getMeReducer,
   updateProfileReducer,
   changePasswordReducer,
-} from "./authReducers"; 
-import courseReducer from "./courseReducers"; 
+} from "./authReducers";
+import chapterReducers from "./chapterReducers";
+import courseReducer from "./courseReducers";
 import categoryReducer from "./categoryReducers";
+import contentReducers from "./contentReducers";
 import { transactionReducer } from "./transactionReducers";
 import adminDataKategoriReducer from "./adminDataKategoriReducers";
 import adminDashboardReducer from "./admindashboardreducer";
 import typeCourseReducer from "./typeCourseReducers";
-import instrukturDashboardReducers from "./instrukturDashboardReducers"; 
+import instrukturDashboardReducers from "./instrukturDashboardReducers";
 import mulaiKelasReducers from "./mulaiKelasReducers";
 import levelCourseReducer from "./levelCourseReducers";
 import { paymentHistoryReducer } from "./transactionReducers";
+import instrukturReducer from "./instrukturReducer";
+import LoginReducer from "./LoginReducer"
 
 export default combineReducers({
+
+  //Login
+  login: LoginReducer,
   // Auth
-  auth: authReducer, 
+  auth: authReducer,
   email: emailReducer,
   resetPassword: resetPasswordReducer,
   verifyEmail: verifyEmailReducer,
@@ -34,6 +41,12 @@ export default combineReducers({
 
   // Category
   category: categoryReducer,
+
+  // Chapter
+  chapter: chapterReducers,
+
+  //konten
+  content: contentReducers,
 
   // Admin
   adminDataKategori: adminDataKategoriReducer,
@@ -53,4 +66,6 @@ export default combineReducers({
   // Mulai Kelas
   mulaikelas: mulaiKelasReducers,
 
+  // Instruktur
+  instruktur: instrukturReducer,
 });

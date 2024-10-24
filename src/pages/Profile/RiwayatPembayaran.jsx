@@ -84,39 +84,37 @@ const RiwayatPembayaran = () => {
               className="bg-white border border-gray-300 shadow-lg rounded-2xl w-40 h-16 flex justify-center items-center cursor-pointer"
               onClick={() => filterByDate("today")}
             >
-              <span className="font-semibold text-xl">Hari Ini</span>
+              <span className="font-semibold text-xl text-center">Hari Ini</span>
             </div>
             <div
               className="bg-white border border-gray-300 shadow-lg rounded-2xl w-40 h-16 flex justify-center items-center cursor-pointer"
               onClick={() => filterByDate("week")}
             >
-              <span className="font-semibold text-xl">Minggu Ini</span>
+              <span className="font-semibold text-xl text-center">Minggu Ini</span>
             </div>
             <div
               className="bg-white border border-gray-300 shadow-lg rounded-2xl w-40 h-16 flex justify-center items-center cursor-pointer"
               onClick={() => filterByDate("month")}
             >
-              <span className="font-semibold text-xl">Bulan Ini</span>
+              <span className="font-semibold text-xl text-center">Bulan Ini</span>
             </div>
             <div
               className="bg-white border border-gray-300 shadow-lg rounded-2xl w-40 h-16 flex justify-center items-center cursor-pointer"
               onClick={() => filterByDate("year")}
             >
-              <span className="font-semibold text-xl">Tahun Ini</span>
+              <span className="font-semibold text-xl text-center">Tahun Ini</span>
             </div>
             <div
               className="bg-white border border-gray-300 shadow-lg rounded-2xl w-40 h-16 flex justify-center items-center cursor-pointer"
               onClick={() => filterByDate("waitingPayment")}
             >
-              <span className="font-semibold text-xl">
-                Menunggu pembayaran
-              </span>
+              <span className="font-semibold text-xl text-center">Menunggu <br />pembayaran</span>
             </div>
             <div
               className="bg-white border border-gray-300 shadow-lg rounded-2xl w-40 h-16 flex justify-center items-center cursor-pointer"
               onClick={() => filterByDate("paid")}
             >
-              <span className="font-semibold text-xl">Telah dibayar</span>
+              <span className="font-semibold text-xl text-center">Telah dibayar</span>
             </div>
           </div>
         </div>
