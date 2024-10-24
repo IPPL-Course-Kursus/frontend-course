@@ -15,12 +15,15 @@ const CardFree = ({ title = "Kelas Free" }) => {
   const [selectCategoryId, setSelectCategoryId] = useState(null);
   const sliderRef = useRef(null);
   const dispatch = useDispatch();
-
   const { free } = useSelector((state) => state.course);
-  // console.log("free", free);
-
   const { category } = useSelector((state) => state.category);
-  // console.log("cat", category);
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    }).format(amount);
+  };
 
   const handleFilterClick = (categoryId) => {
     setSelectCategoryId(categoryId);
@@ -139,7 +142,11 @@ const CardFree = ({ title = "Kelas Free" }) => {
             <Slider {...courseSliderSettings}>
               {filteredCoursePopular.map((val) => (
                 <div key={val.id} className="p-2">
-                  <div className="w-full bg-white shadow-xl rounded-xl overflow-hidden pb-3 transition-transform transform hover:scale-105 duration-300 h-full flex flex-col">
+                  <div
+                    className={`w-full bg-white shadow-xl rounded-xl overflow-hidden pb-3 h-full flex flex-col ${
+                      val.isPurchased ? "bg-green-50" : ""
+                    }`}
+                  >
                     <img
                       src={val.image}
                       alt={val.name}
@@ -147,7 +154,11 @@ const CardFree = ({ title = "Kelas Free" }) => {
                     />
                     <div className="mx-2 md:mx-4 flex flex-col mt-2 md:mt-3 h-full">
                       <div className="flex justify-between items-center mb-2 flex-grow">
-                        <h1 className="text-color-primary font-bold text-sm lg:text-base truncate">
+                        <h1
+                          className={`font-bold text-sm lg:text-base truncate ${
+                            val.isPurchased ? "text-gray-700" : "text-color-primary"
+                          }`}
+                        >
                           {val.courseName}
                         </h1>
                       </div>
@@ -159,34 +170,52 @@ const CardFree = ({ title = "Kelas Free" }) => {
                           <Shield size={18} className="mr-1" /> {val.courseLevel.levelName}
                         </p>
                         <p className="flex items-center">
-                          <Book size={18} className="mr-1" /> {val.chapters}
+                          <Book size={18} className="mr-1" /> {val._count.chapters} Chapter
                         </p>
                         <p className="flex items-center">
-                          <Clock size={18} className="mr-1" /> {val.totalDuration} menit
+                          <Clock size={18} className="mr-1" /> {val.totalDuration} Menit
                         </p>
                       </div>
-                      <div className="my-2 flex-grow">
-                        <ProgressBar />
-                      </div>
-                      <div className="my-2">
-                        <Link
-                          to={`/course-detail/${val.id}`}
-                          className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
-                        >
-                          Mulai Kelas
-                        </Link>
-                      </div>
-                      {val.courseDiscountPrice || val.coursePrice ? (
-                        <div className="my-2">
-                          <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105">
-                            {val.courseDiscountPrice || val.coursePrice}
-                          </button>
+
+                      {/* Tampilkan progress bar dan tombol untuk kelas yang sudah dibeli */}
+                      {val.isPurchased ? (
+                        <div className="my-2 flex-grow">
+                          <ProgressBar />
+                          <div className="my-2">
+                            <Link
+                              to={`/course-detail/${val.id}`} // Link to course detail page
+                              className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
+                            >
+                              Mulai Kelas
+                            </Link>
+                          </div>
                         </div>
                       ) : (
                         <div className="my-2">
-                          <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center">
-                            <Gem size={16} className="mr-2" /> Free
-                          </button>
+                          <div className="flex items-center">
+                            {val.coursePrice > 0 ? (
+                              <>
+                                <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
+                                  {formatCurrency(val.coursePrice)}{" "}
+                                </button>
+                                <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
+                                  <Gem size={16} className="mr-2" /> Premium
+                                </button>
+                              </>
+                            ) : (
+                              <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
+                                <Gem size={16} className="mr-2" /> Free
+                              </button>
+                            )}
+                          </div>
+                          <div className="my-2">
+                            <Link
+                              to={`/course-detail/${val.id}`} // Link to course detail page
+                              className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
+                            >
+                              Lihat Kelas
+                            </Link>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -199,15 +228,27 @@ const CardFree = ({ title = "Kelas Free" }) => {
             <div className="grid mt-2 gap-2 grid-cols-1 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:mt-4">
               {filteredCoursePopular.map((val) => (
                 <div key={val.id} className="p-2">
-                  <div className="w-full bg-white shadow-xl rounded-xl overflow-hidden pb-3 h-full flex flex-col">
-                    <img src={val.image} alt={val.name} className="w-full h-32 object-cover" />
-                    <div className="mx-2 md:mx-4 flex flex-col mt-1 md:mt-2 h-full">
-                      <div className="flex justify-between items-center flex-grow">
-                        <h1 className="text-color-primary font-bold text-sm lg:text-base truncate">
+                  <div
+                    className={`w-full bg-white shadow-xl rounded-xl overflow-hidden pb-3 h-full flex flex-col ${
+                      val.isPurchased ? "bg-green-50" : ""
+                    }`}
+                  >
+                    <img
+                      src={val.image}
+                      alt={val.name}
+                      className="w-full h-32 object-cover rounded-t-xl"
+                    />
+                    <div className="mx-2 md:mx-4 flex flex-col mt-2 md:mt-3 h-full">
+                      <div className="flex justify-between items-center mb-2 flex-grow">
+                        <h1
+                          className={`font-bold text-sm lg:text-base truncate ${
+                            val.isPurchased ? "text-gray-700" : "text-color-primary"
+                          }`}
+                        >
                           {val.courseName}
                         </h1>
                       </div>
-                      <p className="text-black text-sm font-semibold flex-shrink-0">
+                      <p className="text-gray-600 text-sm font-semibold flex-shrink-0">
                         Instruktor {val.user.fullName}
                       </p>
                       <div className="mt-3 flex justify-between flex-wrap text-xs font-semibold text-color-primary">
@@ -215,37 +256,52 @@ const CardFree = ({ title = "Kelas Free" }) => {
                           <Shield size={18} className="mr-1" /> {val.courseLevel.levelName}
                         </p>
                         <p className="flex items-center">
-                          <Book size={18} className="mr-1" /> {val.chapters}
+                          <Book size={18} className="mr-1" /> {val._count.chapters} Chapter
                         </p>
                         <p className="flex items-center">
-                          <Clock size={18} className="mr-1" /> {val.totalDuration} menit
+                          <Clock size={18} className="mr-1" /> {val.totalDuration} Menit
                         </p>
                       </div>
-                      <div className="my-2 flex-grow">
-                        <ProgressBar />
-                      </div>
-                      <div className="my-2">
-                        <Link
-                          to={`/course-detail/${val.id}`}
-                          className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
-                        >
-                          Mulai Kelas
-                        </Link>
-                      </div>
-                      {val.courseDiscountPrice || val.coursePrice ? (
-                        <div className="my-2">
-                          <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
-                            {val.courseDiscountPrice || val.coursePrice}
-                          </button>
+
+                      {/* Tampilkan progress bar dan tombol untuk kelas yang sudah dibeli */}
+                      {val.isPurchased ? (
+                        <div className="my-2 flex-grow">
+                          <ProgressBar />
+                          <div className="my-2">
+                            <Link
+                              to={`/course-detail/${val.id}`} // Link to course detail page
+                              className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
+                            >
+                              Mulai Kelas
+                            </Link>
+                          </div>
                         </div>
                       ) : (
                         <div className="my-2">
-                          <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 items-center flex justify-between">
-                            <span className="mr-2">
-                              <Gem size={16} />
-                            </span>
-                            Free
-                          </button>
+                          <div className="flex items-center">
+                            {val.coursePrice > 0 ? (
+                              <>
+                                <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
+                                  {formatCurrency(val.coursePrice)}{" "}
+                                </button>
+                                <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
+                                  <Gem size={16} className="mr-2" /> Premium
+                                </button>
+                              </>
+                            ) : (
+                              <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
+                                <Gem size={16} className="mr-2" /> Free
+                              </button>
+                            )}
+                          </div>
+                          <div className="my-2">
+                            <Link
+                              to={`/course-detail/${val.id}`} // Link to course detail page
+                              className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
+                            >
+                              Lihat Kelas
+                            </Link>
+                          </div>
                         </div>
                       )}
                     </div>

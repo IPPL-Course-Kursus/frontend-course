@@ -1,6 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
 import Navbar from "../components/Navbar";
-// import CardCategory from "../components/HomeComponent/cardCategory";
 import CardCourse from "../components/HomeComponent/CardCourse";
 import CardFree from "../components/HomeComponent/CardFree";
 import imgSection from "../assets/bernadya.jpg";

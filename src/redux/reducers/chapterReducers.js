@@ -17,6 +17,14 @@ const chapterSlice = createSlice({
       state.loading = true;
       state.error = null;
     },
+    fetchChapterRequest: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    deleteChapterFailure: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
 
     fetchChaptersSuccess: (state, action) => {
       console.log("Data received in reducer:", action.payload); // Log data yang diterima
@@ -33,16 +41,37 @@ const chapterSlice = createSlice({
     deleteChapter: (state, action) => {
       state.chapter = state.chapter.filter((chapter) => chapter.id !== action.payload);
     },
+
+    updateChapterRequest: (state) => {
+      state.loading = true;
+      state.error = null;
+
+    },
+
+    updateChapterSuccess: (state, action) => {
+      state.loading = false;
+      state.chapter = action.payload;
+      state.error = null;
+    },
+    updateChapterFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
 });
 
 export const {
+  fetchChapterRequest,
+  deleteChapterFailure,
   setchapter,
   fetchChaptersStart,
   fetchChaptersSuccess,
   fetchChaptersFailure,
   addChapter,
   deleteChapter,
+  updateChapterRequest,
+  updateChapterSuccess,
+  updateChapterFailure,
 } = chapterSlice.actions;
 
 export default chapterSlice.reducer;

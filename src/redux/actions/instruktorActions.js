@@ -1,21 +1,38 @@
 import axios from "axios";
-import { setCourse } from "../reducers/courseReducers";
+// import { fetchCourseFailure, fetchCourseStart, fetchCourseSuccess, setCourse } from "../reducers/courseReducers";
 import {
+  deleteChapter,
+  deleteChapterFailure,
+  fetchChapterRequest,
   fetchChaptersFailure,
   fetchChaptersStart,
   fetchChaptersSuccess,
-  //   setchapter,
+  updateChapterFailure,
+  updateChapterRequest,
+  updateChapterSuccess,
 } from "../reducers/chapterReducers";
 import { getCookie } from "cookies-next";
 import {
-  // addContent,
-  // addContent,
+  deleteContent,
+  deleteContentFailure,
+  fetchContentesRequest,
   fetchContentFailure,
   fetchContentStart,
   fetchContentSuccess,
+  updateContentFailure,
+  updateContentRequest,
+  updateContentSuccess,
 } from "../reducers/contentReducers";
+import {
+  fetchCourseFailure,
+  fetchCourseStart,
+  fetchCourseSuccess,
+  setCourse,
+} from "../reducers/courseReducers";
 
 const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
+
+// Data Kelas
 
 export const getAllKelas = () => async (dispatch) => {
   try {
@@ -29,8 +46,35 @@ export const getAllKelas = () => async (dispatch) => {
     console.error("Error fetching all courses:", error.message);
   }
 };
-// actions.js
-// actions.js
+
+export const addDataKelas = (requesData) => async (dispatch) => {
+  dispatch(fetchCourseStart());
+  try {
+    // Get the token from cookies
+    const token = getCookie("token");
+
+    // Set up the config with headers
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data", // Set the Content-Type header
+      },
+    };
+
+    // Make the POST request with the FormData
+    const response = await axios.post(`${api_url}course/createCourse`, requesData, config);
+
+    dispatch(fetchCourseSuccess(response.data.message));
+    dispatch(getAllKelas());
+  } catch (error) {
+    console.error("Add category error:", error.response || error);
+    const errorMessage = error.response?.data?.message || error.message || "Add category failed";
+    dispatch(fetchCourseFailure(errorMessage));
+    throw error;
+  }
+};
+
+// Data Module/Chapter
 export const getDataModule = (chapterId) => async (dispatch) => {
   try {
     dispatch(fetchChaptersStart());
@@ -49,7 +93,7 @@ export const getDataModule = (chapterId) => async (dispatch) => {
     console.log("datamodule: ", response.data.data);
 
     if (response.data && response.data.data) {
-      dispatch(fetchChaptersSuccess(response.data.data)); // Ambil data chapters
+      dispatch(fetchChaptersSuccess(response.data.data));
     } else {
       throw new Error("Data tidak ditemukan");
     }
@@ -59,6 +103,77 @@ export const getDataModule = (chapterId) => async (dispatch) => {
   }
 };
 
+export const updateDataModule = (chapterId, updatedData) => async (dispatch) => {
+  dispatch(updateChapterRequest());
+  try {
+    const token = getCookie("token");
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json", // Pastikan tetap application/json karena tidak ada file
+      },
+    };
+
+    const response = await axios.put(`${api_url}chapter/update/${chapterId}`, updatedData, config);
+
+    dispatch(updateChapterSuccess(response.data.message));
+    dispatch(getDataModule()); // Optional: Untuk refresh data setelah update
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || error.message;
+    dispatch(updateChapterFailure(errorMessage));
+    throw new Error(errorMessage); // Untuk ditangani di komponen
+  }
+};
+
+export const addDataModule = (requestData, courseId) => async (dispatch) => {
+  dispatch(fetchChaptersStart());
+
+  try {
+    if (!courseId) {
+      const errorMessage = "Chapter ID is required";
+      dispatch(fetchChaptersFailure(errorMessage));
+      console.error(errorMessage);
+      throw new Error(errorMessage);
+    }
+    const token = getCookie("token");
+
+    const response = await axios.post(`${api_url}chapter/create-chapter/${courseId}`, requestData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    dispatch(fetchChaptersSuccess(response.data.message));
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || "Add content failed";
+    dispatch(fetchChaptersFailure(errorMessage));
+    console.error(errorMessage);
+    throw error;
+  }
+};
+
+export const deleteDataModule = (chapterId) => async (dispatch) => {
+  dispatch(fetchChapterRequest());
+  try {
+    const token = getCookie("token"); // Ambil token dari cookie
+    const response = await axios.delete(`${api_url}chapter/delete/${chapterId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    dispatch(deleteChapter(response.data));
+    return response.data;
+  } catch (error) {
+    console.error("Delete error:", error.response ? error.response.data : error.message);
+    dispatch(deleteChapterFailure(error.response?.data || "Delete failed"));
+    throw error;
+  }
+};
+
+// Data Konten
 export const getDataKonten = (contentId) => async (dispatch) => {
   try {
     dispatch(fetchContentStart());
@@ -75,7 +190,6 @@ export const getDataKonten = (contentId) => async (dispatch) => {
       },
     });
 
-    // console.log(response.data); // Debug log
     if (response.data && response.data.data) {
       dispatch(fetchContentSuccess(response.data.data));
     } else {
@@ -87,47 +201,6 @@ export const getDataKonten = (contentId) => async (dispatch) => {
   }
 };
 
-// export const addDataKonten = (id, contentData) => async (dispatch) => {
-//   console.log("Received contentData:", contentData); // Tambahkan logging ini
-
-//   if (
-//     !contentData.contentTitle ||
-//     !contentData.teks ||
-//     !contentData.contentUrl ||
-//     !contentData.duration ||
-//     !contentData.sort
-//   ) {
-//     console.error("There is an empty column that must be filled in");
-//     return; // Hentikan jika ada field kosong
-//   }
-
-//   dispatch(fetchContentStart());
-//   try {
-//     const token = getCookie("token");
-
-//     const config = {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//         "Content-Type": "application/json", // If not using FormData
-//       },
-//     };
-
-//     const response = await axios.post(
-//       `${api_url}content/create-content/${id}`,
-//       contentData, // Send validated data
-//       config
-//     );
-
-//     dispatch(fetchContentSuccess(response.data.data));
-//     dispatch(addContent(response.data.data));
-//   } catch (error) {
-//     const errorMessage = error.response?.data?.message || "Add content failed";
-//     dispatch(fetchContentFailure(errorMessage));
-//     console.error(errorMessage);
-//     throw error;
-//   }
-// };
-
 export const addDataKonten = (requestData, chapterId) => async (dispatch) => {
   dispatch(fetchContentStart());
   try {
@@ -135,7 +208,7 @@ export const addDataKonten = (requestData, chapterId) => async (dispatch) => {
       const errorMessage = "Chapter ID is required";
       dispatch(fetchContentFailure(errorMessage));
       console.error(errorMessage);
-      throw new Error(errorMessage); // Throw error jika chapterId tidak valid
+      throw new Error(errorMessage);
     }
     const token = getCookie("token");
 
@@ -153,83 +226,52 @@ export const addDataKonten = (requestData, chapterId) => async (dispatch) => {
   } catch (error) {
     const errorMessage = error.response?.data?.message || "Add content failed";
     dispatch(fetchContentFailure(errorMessage));
-    console.error(errorMessage); // Log error untuk debugging
-    throw error; // Re-throw error jika diperlukan untuk penanganan lebih lanjut
+    console.error(errorMessage);
+    throw error;
   }
 };
 
-// export const addDataKonten = (formData, chapterId, contentData) => async (dispatch) => {
-//   console.log("Received contentData:", contentData); // Check the received contentData
+export const updateDataKonten = (contentId, updatedData) => async (dispatch) => {
+  dispatch(updateContentRequest());
+  try {
+    const token = getCookie("token");
 
-//   try {
-//     // Check if contentData is defined and has the necessary fields
-//     if (
-//       !contentData ||
-//       !contentData.contentTitle ||
-//       !contentData.teks ||
-//       !contentData.contentUrl ||
-//       !contentData.duration ||
-//       !contentData.sort
-//     ) {
-//       console.error("There is an empty column that must be filled in");
-//       return; // Stop if there are empty fields
-//     }
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json", // Pastikan tetap application/json karena tidak ada file
+      },
+    };
 
-//     const token = getCookie("token");
+    const response = await axios.put(
+      `${api_url}content/update-content/${contentId}`,
+      updatedData,
+      config
+    );
 
-//     // Combine formData and contentData into one object
-//     const requestData = { ...formData, ...contentData }; // Merge the two objects
+    dispatch(updateContentSuccess(response.data.message));
+    dispatch(getDataKonten()); // Optional: Untuk refresh data setelah update
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || error.message;
+    dispatch(updateContentFailure(errorMessage));
+    throw new Error(errorMessage); // Untuk ditangani di komponen
+  }
+};
 
-//     const response = await axios.post(
-//       `${api_url}/content/create-content/${chapterId}`,
-//       requestData, // Use the merged requestData
-//       {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//           "Content-Type": "application/json",
-//         },
-//       }
-//     );
+export const deleteDataKonten = (contentId) => async (dispatch) => {
+  dispatch(fetchContentesRequest());
+  try {
+    const token = getCookie("token"); // Ambil token dari cookie
+    const response = await axios.delete(`${api_url}content/delete-content/${contentId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-//     dispatch({ type: "ADD_DATA_KONTEN_SUCCESS", payload: response.data.data });
-//   } catch (error) {
-//     console.error("Error adding content:", error);
-//     dispatch({ type: "ADD_DATA_KONTEN_FAIL", payload: error.message });
-//   }
-// };
-// export const addDataKonten = (formData, chapterId, contentData) => async (dispatch) => {
-//   dispatch(fetchContentStart()); // Mengindikasikan permintaan dimulai
-//   try {
-//     const token = getCookie("token");
-
-//     const config = {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//         "Content-Type": "application/json", // Pastikan untuk mengatur Content-Type jika mengirimkan JSON
-//       },
-//     };
-
-//     const formData = new FormData();
-//     formData.append("contentTitle", contentData.contentTitle);
-//     formData.append("contentUrl", contentData.contentUrl);
-//     formData.append("duration", contentData.duration);
-//     formData.append("sort", contentData.sort);
-
-//     const response = await axios.post(
-//       `${api_url}content/create-content/${chapterId}`,
-//       formData, // Kirimkan FormData
-//       config
-//     );
-
-//     console.log("Data yang dikirim:", formData);
-
-//     // Dispatch action untuk sukses dengan data yang diterima
-//     dispatch(fetchContentSuccess(response.data.data));
-//     dispatch(addContent(response.data.data)); // Pastikan menambahkan payload yang tepat
-//   } catch (error) {
-//     const errorMessage = error.response?.data?.message || "Add content failed";
-//     dispatch(fetchContentFailure(errorMessage));
-//     console.error(errorMessage); // Log error untuk debugging
-//     throw error; // Re-throw error jika diperlukan untuk penanganan lebih lanjut
-//   }
-// };
+    dispatch(deleteContent(response.data));
+    return response.data;
+  } catch (error) {
+    dispatch(deleteContentFailure(error.response?.data || "Delete failed"));
+    throw error;
+  }
+};
