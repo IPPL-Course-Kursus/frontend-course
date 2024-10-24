@@ -14,6 +14,7 @@ const CoursesPage = () => {
   const [isMobileDropdownVisible, setMobileDropdownVisible] = useState(false);
   const [filterChecked, setFilterChecked] = useState({});
   const [courseStatusFilter, setCourseStatusFilter] = useState('all'); // State untuk status kursus
+  const [courseLevel, setCourseLevel] = useState('');
 
   useEffect(() => {
     dispatch(getUserCourses());
@@ -30,6 +31,14 @@ const CoursesPage = () => {
     }));
   };
 
+  const handleLevelChange = (level, isChecked) => {
+    if (isChecked) {
+      setCourseLevel(prevLevels => [...prevLevels, level]); // Menambahkan level ke array jika dicentang
+    } else {
+      setCourseLevel(prevLevels => prevLevels.filter(l => l !== level)); // Menghapus level dari array jika tidak dicentang
+    }
+  };
+  
   const handleStatusFilterChange = (status) => {
     setCourseStatusFilter(status);
   };
@@ -44,7 +53,15 @@ const CoursesPage = () => {
         (courseStatusFilter === 'inProgress' && course.contentFinish > 0 && course.contentFinish < course.course.totalDuration) ||
         (courseStatusFilter === 'completed' && course.contentFinish === course.course.totalDuration);
 
-      return matchesFilter && matchesStatus;
+        const matchesLevel = courseLevel.length === 0 || // Jika tidak ada level yang dicentang, tampilkan semua
+        (courseLevel.includes('Beginner Level') && course.courseLevel.levelName === 'Beginner') ||
+        (courseLevel.includes('Intermediate Level') && course.courseLevel.levelName === 'Intermediate') ||
+        (courseLevel.includes('Advanced Level') && course.courseLevel.levelName === 'Advanced');
+    
+      
+        console.log(matchesLevel)
+
+      return matchesFilter && matchesStatus && matchesLevel;
     });
   };
 
@@ -151,25 +168,31 @@ const CoursesPage = () => {
                 </div>
 
                 <h3 className="text-xl font-bold text-gray-800 mb-3 mt-6">Level Kesulitan</h3>
-                {/* Filter Konten */}
-                <div>
-                  {["Beginner Level", "Intermediate Level", "Advanced Level"].map((label, index) => (
-                    <div className="flex items-center mb-2" key={index}>
-                      <input
-                        type="checkbox"
-                        id={`filter-${label}`}
-                        className="mr-2 checkbox-custom"
-                        onChange={() => handleCheckboxChange(label)}
-                      />
-                      <label htmlFor={`filter-${label}`} className="text-sm md:text-base">
-                        {label}
-                      </label>
-                    </div>
-                  ))}
-                  <button className="px-10 py-2 rounded-md text-red-600 mt-10 whitespace-nowrap">
-                    Hapus Filter
-                  </button>
-                </div>
+{/* Filter Konten */}
+<div>
+  {["Beginner Level", "Intermediate Level", "Advanced Level"].map((label, index) => (
+    <div className="flex items-center mb-2" key={index}>
+<input
+  type="checkbox"
+  id={`filter-${label}`}
+  className="mr-2 checkbox-custom"
+  checked={courseLevel.includes(label)} // Menentukan apakah checkbox dicentang
+  onChange={(e) => handleLevelChange(label, e.target.checked)}
+/>
+
+      <label htmlFor={`filter-${label}`} className="text-sm md:text-base">
+        {label}
+      </label>
+    </div>
+  ))}
+  <button 
+    onClick={() => handleLevelChange('', false)} // Menghapus semua filter
+    className="px-10 py-2 rounded-md text-red-600 mt-10 whitespace-nowrap"
+  >
+    Hapus Filter
+  </button>
+</div>
+
               </div>
 
               {/* Filter untuk Mobile (dropdown toggle) */}
