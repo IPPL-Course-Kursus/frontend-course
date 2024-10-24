@@ -9,7 +9,8 @@ import UbahInstruktur from "../../../components/InstrukturComponents/UbahInstruk
 
 const AdminDataInstruktur = () => {
   const dispatch = useDispatch();
-  const { instructors, loading, error } = useSelector((state) => state.instructors);
+  const { instructors = [], loading, error } = useSelector((state) => state.instructors || {});
+
 
   const [showTambahPopup, setShowTambahPopup] = useState(false);
   const [showUbahPopup, setShowUbahPopup] = useState(false);

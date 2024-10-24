@@ -52,7 +52,7 @@ export const login = (email, password, navigate) => async (dispatch) => {
     // Mengakses data dari respons
     const { data } = response.data; // Data dari response
     const { token } = data.token; // Ambil token
-    const role = data.token.role; // Ambil role dari data.token
+    const role = data.role; // Ambil role dari data.token
 
     // Menyimpan token di Redux
     dispatch(setToken(token));
