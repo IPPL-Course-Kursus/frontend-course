@@ -37,3 +37,4 @@ export const {
 } = mulaikelasSlice.actions;
 
 export default mulaikelasSlice.reducer;
+

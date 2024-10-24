@@ -117,3 +117,4 @@ export const deleteInterpreter = (interpreterId) => async (dispatch) => {
     console.error('Error deleting interpreter:', error.response ? error.response.data : error.message);
   }
 };
+
