@@ -173,7 +173,7 @@ const TopikKelas = () => {
 
         setFilterChecked(clearedFilterState); // Reset semua filter
         setSelectedFilter("All"); // Reset filter yang dipilih
-        window.location.hash = ""; // Hapus hash URL
+        window.location.hash = ""; 
 
         dispatch(getAllCourse()); // Dispatch untuk mendapatkan semua kursus
     };
