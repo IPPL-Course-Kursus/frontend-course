@@ -6,6 +6,8 @@ const initialState = {
   mycourse: [],
   free: [],
   pageCourse: [],
+  loading: false,
+  error: null, // Tambahkan error dan loading ke initial state
 };
 
 const coursesSlice = createSlice({
@@ -15,6 +17,20 @@ const coursesSlice = createSlice({
     setCourse: (state, action) => {
       state.courses = action.payload;
     },
+    addCourseRequest(state) {
+      state.loading = true;
+      state.error = null;
+    },
+    addCourseSuccess(state, action) {
+      state.courses.push(action.payload);
+      state.loading = false;
+      state.error = null;
+    },
+    addCourseFailure: (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
+
     fetchCourseStart: (state) => {
       state.loading = true;
       state.error = null;
@@ -51,11 +67,29 @@ const coursesSlice = createSlice({
     removeDetail: (state) => {
       state.detail = {};
     },
+
+    // Tambahkan aksi baru untuk delete course
+    deleteCourseRequest(state) {
+      state.loading = true;
+      state.error = null;
+    },
+    deleteCourseSuccess(state, action) {
+      state.courses = state.courses.filter((course) => course.id !== action.payload); // Ubah sesuai dengan ID kursus
+      state.loading = false;
+      state.error = null;
+    },
+    deleteCourseFailure(state, action) {
+      state.error = action.payload;
+      state.loading = false;
+    },
   },
 });
 
 export const {
   setCourse,
+  addCourseSuccess,
+  addCourseRequest,
+  addCourseFailure,
   setDetail,
   removeDetail,
   setMyCourse,
@@ -65,6 +99,9 @@ export const {
   fetchCourseStart,
   fetchCourseSuccess,
   fetchCourseFailure,
+  deleteCourseRequest, // Ekspor aksi delete course
+  deleteCourseSuccess,
+  deleteCourseFailure,
 } = coursesSlice.actions;
 
 export default coursesSlice.reducer;
