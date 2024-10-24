@@ -38,6 +38,7 @@ export default combineReducers({
 
   // Course
   course: courseReducer,
+  mulaiKelas: mulaiKelasReducers,
 
   // Category
   category: categoryReducer,
