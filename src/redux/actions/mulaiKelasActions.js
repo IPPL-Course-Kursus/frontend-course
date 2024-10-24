@@ -7,94 +7,113 @@ import {
   setCourseUser
 } from '../reducers/mulaiKelasReducers';
 
-const apiUrl = import.meta.env.VITE_REACT_API_ADDRESS;
+const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
 
-// Fetch detailed course user by course user ID
-export const fetchDetailCourseUser = (courseUserId) => async (dispatch) => {
+// Export semua fungsi yang diperlukan
+export const fetchDetailCourseUser = (userId) => async (dispatch) => {
   try {
     const token = getCookie("token");
-    if (!token) {
-      throw new Error("Token tidak ditemukan di cookies");
-    }
-    console.log(`Fetching detailed course user with ID: ${courseUserId}`);
-    const response = await axios.get(`${apiUrl}/courseUser/detail/${courseUserId}`, {
+    const response = await axios.get(`${api_url}course-user/detail/${userId}`, {
       headers: { Authorization: `Bearer ${token}` },
-    });
-    console.log(`Fetched detailed course user with ID ${courseUserId}:`, response.data);
+  });
     dispatch(setDetailCourseUser(response.data));
   } catch (error) {
-    console.error('Error fetching detailed course user:', error.response ? error.response.data : error.message);
+    console.error("Failed to fetch detail course user:", error);
   }
 };
 
-// Fetch chapters by course ID
 export const fetchChapterByCourseId = (courseId) => async (dispatch) => {
   try {
-    const token = getCookie("token");
-    if (!token) {
-      throw new Error("Token tidak ditemukan di cookies");
-    }
-    console.log(`Fetching chapters for course ID: ${courseId}`);
-    const response = await axios.get(`${apiUrl}/chapter/course/${courseId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    console.log(`Fetched chapters for course ID ${courseId}:`, response.data);
+    const response = await axios.get(`${api_url}chapters/${courseId}`); // Ganti dengan endpoint yang benar
     dispatch(setChapters(response.data));
   } catch (error) {
-    console.error('Error fetching chapters:', error.response ? error.response.data : error.message);
+    console.error("Failed to fetch chapters:", error);
   }
 };
 
-// Fetch content by chapter ID
 export const fetchContentByChapterId = (chapterId) => async (dispatch) => {
   try {
-    const token = getCookie("token");
-    if (!token) {
-      throw new Error("Token tidak ditemukan di cookies");
-    }
-    console.log(`Fetching content for chapter ID: ${chapterId}`);
-    const response = await axios.get(`${apiUrl}/content/chapter/${chapterId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    console.log(`Fetched content for chapter ID ${chapterId}:`, response.data);
+    const response = await axios.get(`${api_url}content/${chapterId}`); // Ganti dengan endpoint yang benar
     dispatch(setContent(response.data));
   } catch (error) {
-    console.error('Error fetching content by chapter ID:', error.response ? error.response.data : error.message);
+    console.error("Failed to fetch content:", error);
   }
 };
 
-// Start course by course user ID
-export const startCourse = (courseUserId) => async (dispatch) => {
+// Update progress for content by courseId and contentId
+export const updateProgressContent = (courseId, contentId, progressData) => async (dispatch) => {
   try {
     const token = getCookie("token");
     if (!token) {
       throw new Error("Token tidak ditemukan di cookies");
     }
-    console.log(`Starting course with course user ID: ${courseUserId}`);
-    const response = await axios.post(`${apiUrl}/courseUser/start-course/${courseUserId}`, {}, {
+    console.log(`Updating progress for course ID: ${courseId} and content ID: ${contentId}`);
+    const response = await axios.put(`${api_url}course-user/course/${courseId}/progress/content/${contentId}`, progressData, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    console.log(`Started course with course user ID ${courseUserId}:`, response.data);
+    console.log(`Updated progress for course ID: ${courseId} and content ID: ${contentId}:`, response.data);
+    dispatch(fetchDetailCourseUser(1));
+    // Dispatch an action here if you want to update the Redux state with the new progress.
+  } catch (error) {
+    console.error("Error updating progress content:", error.response ? error.response.data : error.message);
+  }
+};
+
+// Start course by course user ID, chapterSort, and contentSort
+export const startCourse = (courseUserId, chapterSort, contentSort) => async (dispatch) => {
+  try {
+    const token = getCookie("token");
+    if (!token) {
+      throw new Error("Token tidak ditemukan di cookies");
+    }
+    console.log(`Starting course for courseUserId: ${courseUserId}, chapterSort: ${chapterSort}, contentSort: ${contentSort}`);
+    const response = await axios.get(`${api_url}course-user/StartCourse/Course/${courseUserId}/${chapterSort}/${contentSort}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    console.log(`Started course for courseUserId: ${courseUserId}:`, response.data);
     dispatch(setCourseUser(response.data));
   } catch (error) {
     console.error('Error starting course:', error.response ? error.response.data : error.message);
   }
 };
 
-// Update progress for content by content ID
-export const updateProgressContent = (contentId, progressData) => async (dispatch) => {
+// Manage interpreters with CRUD operations
+export const fetchInterpreters = () => async (dispatch) => {
   try {
-    const token = getCookie("token");
-    if (!token) {
-      throw new Error("Token tidak ditemukan di cookies");
-    }
-    console.log(`Updating progress for content ID: ${contentId}`);
-    const response = await axios.put(`${apiUrl}/content/progress/${contentId}`, progressData, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    console.log(`Updated progress for content ID ${contentId}:`, response.data);
-    // Dispatch an action here if you want to update the Redux state with the new progress.
+    const response = await axios.get(`${api_url}api/interpreters`);
+    console.log('Fetched interpreters:', response.data);
+    // Dispatch to Redux state if needed
   } catch (error) {
-    console.error('Error updating progress content:', error.response ? error.response.data : error.message);
+    console.error('Error fetching interpreters:', error.response ? error.response.data : error.message);
+  }
+};
+
+export const addInterpreter = (interpreterData) => async (dispatch) => {
+  try {
+    const response = await axios.post(`${api_url}api/interpreters`, interpreterData);
+    console.log('Added interpreter:', response.data);
+    // Dispatch to Redux state if needed
+  } catch (error) {
+    console.error('Error adding interpreter:', error.response ? error.response.data : error.message);
+  }
+};
+
+export const updateInterpreter = (interpreterId, interpreterData) => async (dispatch) => {
+  try {
+    const response = await axios.put(`${api_url}api/interpreters/${interpreterId}`, interpreterData);
+    console.log(`Updated interpreter with ID ${interpreterId}:`, response.data);
+    // Dispatch to Redux state if needed
+  } catch (error) {
+    console.error('Error updating interpreter:', error.response ? error.response.data : error.message);
+  }
+};
+
+export const deleteInterpreter = (interpreterId) => async (dispatch) => {
+  try {
+    const response = await axios.delete(`${api_url}api/interpreters/${interpreterId}`);
+    console.log(`Deleted interpreter with ID ${interpreterId}:`, response.data);
+    // Dispatch to Redux state if needed
+  } catch (error) {
+    console.error('Error deleting interpreter:', error.response ? error.response.data : error.message);
   }
 };

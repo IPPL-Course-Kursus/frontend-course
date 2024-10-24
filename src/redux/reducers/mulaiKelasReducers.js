@@ -3,9 +3,9 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   detailCourseUser: {},
   courseUser: {},
-  chapters: [], // Make sure this is included
-  content: {}, // Initialize content state
-  // other states...
+  chapters: [], // Menyimpan data chapters
+  content: {},  // Menyimpan data content
+  // Tambahkan state lain jika diperlukan...
 };
 
 const mulaikelasSlice = createSlice({
@@ -21,19 +21,19 @@ const mulaikelasSlice = createSlice({
     setChapters: (state, action) => {
       state.chapters = action.payload;
     },
-    setContent: (state, action) => { // Add the setContent reducer
+    setContent: (state, action) => {
       state.content = action.payload;
     },
-    // other reducers...
+    // Tambahkan reducers lain jika diperlukan...
   },
 });
 
-// Export the actions including setContent
+// Export actions untuk digunakan di action creators atau komponen
 export const {
   setDetailCourseUser,
   setCourseUser,
   setChapters,
-  setContent, // Ensure setContent is exported
+  setContent, // Pastikan setContent diexport
 } = mulaikelasSlice.actions;
 
 export default mulaikelasSlice.reducer;

@@ -6,7 +6,7 @@ import {
   fetchContentByChapterId,
   startCourse,
   updateProgressContent,
-} from "../../redux/actions/mulaiKelasActions"; // Import action yang digunakan
+} from "../../redux/actions/mulaiKelasActions"; // Import actions
 
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
@@ -26,6 +26,9 @@ const MulaiKelas = () => {
     dispatch(fetchChapterByCourseId(1)); // ID course yang sesuai
     dispatch(fetchContentByChapterId(1)); // ID chapter yang sesuai
   }, [dispatch]);
+
+  // Menghitung total durasi dari chapters (jika tersedia)
+  const totalDuration = chapters?.reduce((acc, chapter) => acc + chapter.duration, 0) || 0;
 
   const handleStartCourse = () => {
     dispatch(startCourse(1)); // ID user yang sesuai
@@ -83,7 +86,9 @@ const MulaiKelas = () => {
                   {detailCourseUser?.course?.level || "Beginner Level"}
                 </span>
                 <span className="text-gray-500">{chapters?.length || 0} Modul</span>
-                <span className="text-gray-500">45 Menit</span>
+
+                {/* Menampilkan total durasi modul */}
+                <span className="text-gray-500">{totalDuration} Menit</span>
               </div>
             </div>
           </header>
@@ -100,9 +105,8 @@ const MulaiKelas = () => {
           <section className="bg-white p-6 rounded-lg shadow-lg mb-10">
             <h3 className="text-gray-700 text-2xl font-semibold">Tentang Kelas</h3>
             <p className="text-gray-600 mt-2">
-              {detailCourseUser?.course?.description || 
-                "Learn JavaScript, the world’s most popular programming language, with our beginner-friendly class."
-              }
+              {detailCourseUser?.course?.description ||
+                "Learn JavaScript, the world’s most popular programming language, with our beginner-friendly class."}
             </p>
           </section>
 
@@ -143,7 +147,7 @@ const MulaiKelas = () => {
           {/* Progress bar menggunakan komponen ProgressBar */}
           <div className="mb-6">
             <div className="flex justify-between items-center">
-              <h4 className="text-blue-600 font-bold">Progres Belajar</h4>
+              <h4 className="text-blue-600 font-bold">Progress Belajar</h4>
               <span className="text-sm text-gray-500">{detailCourseUser?.progress || 0}%</span>
             </div>
             <ProgressBar percentage={detailCourseUser?.progress || 0} />

@@ -1,8 +1,13 @@
 import { BadgeCheck } from "lucide-react";
-import { useState } from "react";
+import { useSelector } from "react-redux";
 
 const ProgressBar = () => {
-  const [percentage] = useState(90);
+  // Mengambil nilai progress dari Redux store
+  const detailCourseUser = useSelector(state => state.mulaikelas.detailCourseUser);
+
+  // Pastikan nilai progress diambil dari detailCourseUser
+  const percentage = detailCourseUser?.progress || 0;
+
   return (
     <div className="flex items-center">
       <div className="mr-2">

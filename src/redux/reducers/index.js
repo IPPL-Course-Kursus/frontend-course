@@ -22,7 +22,6 @@ import mulaiKelasReducers from "./mulaiKelasReducers";
 import levelCourseReducer from "./levelCourseReducers";
 import instrukturReducer from "./instrukturReducer";
 import LoginReducer from "./LoginReducer"
-import instructorReducer from "./datainstructorReducers";
 
 export default combineReducers({
 
@@ -68,5 +67,5 @@ export default combineReducers({
 
   // Instruktur
   instruktur: instrukturReducer,
-  instructors: instructorReducer,
+  
 });

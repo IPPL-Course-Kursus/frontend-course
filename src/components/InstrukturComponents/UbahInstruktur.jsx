@@ -47,7 +47,7 @@ const UbahInstruktur = ({ show, onClose, existingData, updateInstructor }) => {
     }
   };
 
-  const handleUpdate = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Data yang dikirim:", formDataToSend);
   
@@ -65,6 +65,7 @@ const UbahInstruktur = ({ show, onClose, existingData, updateInstructor }) => {
     }
     
     dispatch(updateInstructor(existingData.id, formDataToSend));
+    onSubmit(form);
     onClose();
   };
 
@@ -77,7 +78,7 @@ const UbahInstruktur = ({ show, onClose, existingData, updateInstructor }) => {
       formData={formData}
       handleInputChange={handleInputChange}
       handleImageUpload={handleImageUpload}
-      handleSubmit={handleUpdate} // Panggil handleUpdate yang benar
+      onSubmit={handleSubmit} // Panggil handleUpdate yang benar
       isEditMode={true}
     />
   );
