@@ -26,7 +26,7 @@ const UbahKategori = ({ show, onClose, existingData }) => {
     }
   }, [existingData]);
 
-  // Handle text input changes
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -63,7 +63,7 @@ const UbahKategori = ({ show, onClose, existingData }) => {
     onClose();
   };
 
-  // If existingData is null, don't render the form
+
   if (!existingData) return null;
 
   return (
