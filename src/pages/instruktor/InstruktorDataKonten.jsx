@@ -111,7 +111,7 @@ const InstruktorDataKonten = () => {
 
           <button
             className="flex items-center py-2 px-4 bg-gradient-to-r from-[#FF5722] to-[#FF9800] text-white font-semibold rounded-md text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl mb-4"
-            onClick={handleDetailClick}
+            // onClick={handleDetailClick}
           >
             <span className="font-bold">Data Konten Kelas</span>
           </button>
