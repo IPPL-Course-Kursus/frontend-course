@@ -63,7 +63,7 @@ const InstrukturFormEdit = ({ show, onClose, existingData, isEditMode, handleSub
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleUpdate = (e) => {
     e.preventDefault();
   
     // Membuat FormData untuk mengirim data
@@ -81,7 +81,7 @@ const InstrukturFormEdit = ({ show, onClose, existingData, isEditMode, handleSub
     form.append("country", formData.country); // Mengirim negara
 
     // Memanggil callback onSubmit untuk mengirim data ke backend
-    handleSubmit(form);
+    handleSubmit(formData);
     onClose();
   };
 
@@ -105,7 +105,7 @@ const InstrukturFormEdit = ({ show, onClose, existingData, isEditMode, handleSub
           {isEditMode ? "Ubah Instruktur" : "Tambah Instruktur"}
         </h2>
 
-        <form handleSubmit={handleUpdate}>
+        <form handleSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Nama Lengkap</label>
             <input

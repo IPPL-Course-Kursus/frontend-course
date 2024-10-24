@@ -182,7 +182,7 @@ InstrukturForm.propTypes = {
   onClose: PropTypes.func,
   existingData: PropTypes.object,
   isEditMode: PropTypes.bool,
-  onSubmit: PropTypes.func,
+  handleSubmit: PropTypes.func,
 };
 
 export default InstrukturForm;
