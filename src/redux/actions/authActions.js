@@ -299,39 +299,44 @@ export const updateProfile = (userData) => async (dispatch) => {
   }
 };
 
-export const changePassword =
-  (currentPassword, newPassword, confirmPassword) => async (dispatch) => {
-    try {
-      dispatch(changePasswordStart());
+export const changePassword = (currentPassword, newPassword, confirmPassword) => async (dispatch) => {
+  try {
+    dispatch(changePasswordStart());
 
-      const token = Cookies.get("token");
+    const token = Cookies.get("token");
 
-      // Mengirim permintaan untuk mengubah password dengan token di header
-      const response = await axios.post(
-        `${api_url}auth/change-password`,
-        {
-          currentPassword,
-          newPassword,
-          confirmPassword,
+    // Mengirim permintaan untuk mengubah password dengan token di header
+    const response = await axios.post(
+      `${api_url}auth/change-password`,
+      {
+        currentPassword,
+        newPassword,
+        confirmPassword,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Sertakan token dalam header Authorization
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, // Sertakan token dalam header Authorization
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        dispatch(changePasswordSuccess());
-        toast.success("Password berhasil diubah!");
-      } else {
-        throw new Error(response.data.message || "Gagal mengubah password.");
       }
-    } catch (error) {
-      dispatch(changePasswordFailure(error.message || "Terjadi kesalahan saat mengubah password."));
-      toast.error(error.message || "Terjadi kesalahan saat mengubah password.");
+    );
+
+    if (response.status === 200) {
+      dispatch(changePasswordSuccess());
+      toast.success("Password berhasil diubah!");
     }
-  };
+  } catch (error) {
+    dispatch(changePasswordFailure());
+
+    // Handle specific error for old password mismatch (400 Bad Request)
+    if (error.response && error.response.status === 400) {
+      toast.error("Password lama salah.");
+    } else {
+      toast.error("Terjadi kesalahan saat mengubah password.");
+    }
+  }
+};
+
+
 
 // export const login = (email, password, navigate) => async (dispatch) => {
 //   try {

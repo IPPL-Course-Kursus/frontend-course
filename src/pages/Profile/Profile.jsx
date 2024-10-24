@@ -8,16 +8,19 @@ import {
   selectProfileError,
 } from "../../redux/reducers/authReducers";
 import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom"; // useNavigate for navigation
+import { toast } from "react-toastify"; // For notification
 
 const Profile = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // useNavigate hook for navigation
 
-  // Ambil state dari Redux
+  // Redux state
   const profile = useSelector(selectProfile);
   const profileLoading = useSelector(selectProfileLoading);
   const profileError = useSelector(selectProfileError);
 
-  // State lokal untuk form dan fokus input
+  // Local state for form
   const [form, setForm] = useState({
     fullName: "",
     phoneNumber: "",
@@ -25,11 +28,14 @@ const Profile = () => {
     image: "",
     tanggalLahir: "",
   });
+  const [initialForm, setInitialForm] = useState({}); // For change detection
   const [focusedField, setFocusedField] = useState("");
   const [imagePreview, setImagePreview] = useState("/profile.jpg");
   const [imageFile, setImageFile] = useState(null);
+  const [isFormChanged, setIsFormChanged] = useState(false); // For save button activation
+  const [isSubmitting, setIsSubmitting] = useState(false); // Track submission status
 
-  // Mengambil data profil dari Redux saat komponen di-mount
+  // Fetch profile data when component mounts
   useEffect(() => {
     const token = Cookies.get("token");
 
@@ -38,26 +44,35 @@ const Profile = () => {
     }
   }, [dispatch]);
 
-  // Mengatur form state berdasarkan data profil dari Redux
+  // Set form state based on profile data
   useEffect(() => {
     if (profile) {
       const formattedTanggalLahir = profile.tanggalLahir
         ? new Date(profile.tanggalLahir).toISOString().substring(0, 10)
         : "";
-      setForm({
+      const newForm = {
         fullName: profile.fullName || "",
         email: profile.email || "",
         phoneNumber: profile.phoneNumber || "",
         city: profile.city || "",
         image: profile.image || "",
         tanggalLahir: formattedTanggalLahir || "",
-      });
+      };
 
+      setForm(newForm);
+      setInitialForm(newForm); // Save initial form for change comparison
       setImagePreview(profile.image || "/profile.jpg");
     }
   }, [profile]);
 
-  // Fungsi untuk menangani perubahan input pada form
+  // Check for form changes or image file changes
+  useEffect(() => {
+    const formChanged =
+      JSON.stringify(form) !== JSON.stringify(initialForm) || imageFile !== null;
+    setIsFormChanged(formChanged);
+  }, [form, initialForm, imageFile]);
+
+  // Handle form input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setForm((prevForm) => ({
@@ -66,9 +81,15 @@ const Profile = () => {
     }));
   };
 
+  // Save profile changes
   const handleSave = () => {
-    const formData = new FormData();
+    // Validate if any field is empty
+    if (!form.fullName || !form.phoneNumber || !form.city || !form.tanggalLahir) {
+      toast.error("Data tidak boleh kosong"); // Notification error
+      return;
+    }
 
+    const formData = new FormData();
     formData.append("fullName", form.fullName);
     formData.append("phoneNumber", form.phoneNumber);
     formData.append("city", form.city);
@@ -78,9 +99,30 @@ const Profile = () => {
       formData.append("image", imageFile);
     }
 
-    dispatch(updateProfile(formData));
+    // Set the loading state to true
+    setIsSubmitting(true);
+
+    // Dispatch action to update profile
+    dispatch(updateProfile(formData))
+      .then(() => {
+        toast.success("Profil berhasil diperbarui!"); // Success notification
+
+        // Re-fetch the profile data to refresh the state
+        dispatch(getMe());
+
+        // Reset submission state and navigate after a delay
+        setTimeout(() => {
+          setIsSubmitting(false); // Reset submitting state
+          navigate("/profile"); // Navigate to profile page
+        }, 1000);
+      })
+      .catch(() => {
+        toast.error("Terjadi kesalahan saat memperbarui profil.");
+        setIsSubmitting(false); // Reset submitting state on error
+      });
   };
 
+  // Handle focus
   const handleFocus = (field) => {
     setFocusedField(field);
   };
@@ -89,6 +131,7 @@ const Profile = () => {
     setFocusedField("");
   };
 
+  // Handle image upload
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -98,7 +141,7 @@ const Profile = () => {
       };
       reader.readAsDataURL(file);
 
-      setImageFile(file);
+      setImageFile(file); // Set the file state
     }
   };
 
@@ -112,21 +155,16 @@ const Profile = () => {
 
   return (
     <div className="flex flex-col items-center p-8">
-      {/* Bagian paling atas untuk judul di tengah */}
       <p className="text-4xl font-bold mb-8 text-center">Profile Saya</p>
 
       <div className="flex w-full max-w-4xl">
-        {/* Bagian kiri untuk foto profil */}
         <div className="flex flex-col items-center mr-12">
           <div className="relative">
-            {/* Tampilkan preview gambar, ukuran diperbesar */}
             <img
               src={imagePreview}
               alt="Profile"
-              className="w-64 h-64 rounded-full border-4 border-blue-800 shadow-lg" // Foto lebih besar
+              className="w-64 h-64 rounded-full border-4 border-blue-800 shadow-lg"
             />
-
-            {/* Ikon untuk mengganti foto profil, ukuran disesuaikan */}
             <div className="absolute bottom-2 right-2 w-16 h-16 bg-white border-2 border-blue-800 flex items-center justify-center shadow-md cursor-pointer rounded-full">
               <FaCamera size={24} color="gray" />
               <input
@@ -138,7 +176,6 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Nama di bawah foto */}
           <div className="mt-5 w-full text-center">
             <input
               type="text"
@@ -155,7 +192,6 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* Bagian kanan untuk field email, telepon, dll */}
         <div className="flex flex-col space-y-9 flex-1">
           <input
             type="email"
@@ -208,13 +244,15 @@ const Profile = () => {
         </div>
       </div>
 
-      {/* Tombol Simpan di bagian bawah, memenuhi lebar antara foto profil dan field */}
       <div className="w-full mt-12">
         <button
           onClick={handleSave}
-          className="w-full py-3 bg-blue-900 text-white rounded-full max-w-5xl mx-auto"
+          className={`w-full py-3 bg-blue-900 text-white rounded-full max-w-5xl mx-auto ${
+            (!isFormChanged || isSubmitting) ? "opacity-50 cursor-not-allowed" : "" // Disable button if no changes or during submission
+          }`}
+          disabled={!isFormChanged || isSubmitting} // Disabled if no form changes or submission in progress
         >
-          Simpan
+          {isSubmitting ? "Menyimpan..." : "Simpan"} {/* Show loading text when submitting */}
         </button>
       </div>
     </div>

@@ -1,9 +1,12 @@
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
 import default_image from "../assets/profil.png";
+import { getMe } from "../redux/actions/authActions"; // Import getMe action
 
 const Navbar = () => {
+    const dispatch = useDispatch(); // Initialize the dispatch function
+
     // Ambil token dan profile dari Redux store
     const { token } = useSelector((state) => state.auth);
     const profile = useSelector((state) => state.getMe.profile);
@@ -19,13 +22,17 @@ const Navbar = () => {
         setActiveDropdown((prev) => (prev === dropdown ? null : dropdown));
     };
 
+    // UseEffect untuk memanggil getMe saat komponen pertama kali dimuat
+    useEffect(() => {
+        if (token) {
+            dispatch(getMe()); // Dispatch getMe action jika token ada
+        }
+    }, [dispatch, token]); // Depend on dispatch and token
+
     return (
         <div className="navbar bg-base-100 shadow-md shadow-slate-300 z-50">
             <div className="flex-none">
-                <a
-                    className="btn btn-ghost lg:ml-10 text-xl text-primary"
-                    href="/"
-                >
+                <a className="btn btn-ghost lg:ml-10 text-xl text-primary" href="/">
                     EtamCourse
                 </a>
             </div>
@@ -59,10 +66,10 @@ const Navbar = () => {
                             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-40 p-2 shadow"
                         >
                             <li>
-                                <span className="justify-between font-medium text-primary  hover:text-primary">Katalog Kelas</span>
+                                <span className="justify-between font-medium text-primary hover:text-primary">Katalog Kelas</span>
                             </li>
                             <li>
-                                <span className="justify-between font-medium text-primary  hover:text-primary">Kelas Saya</span>
+                                <span className="justify-between font-medium text-primary hover:text-primary">Kelas Saya</span>
                             </li>
                         </ul>
                     )}
@@ -75,24 +82,24 @@ const Navbar = () => {
                         <details
                             open={activeDropdown === "course"}
                             onClick={() => toggleDropdown("course")}
-                            className="z-50 lg:pr-10 "
+                            className="z-50 lg:pr-10"
                         >
-                            <summary className=" hover:bg-primary hover:text-white  ">
+                            <summary className="hover:bg-primary hover:text-white">
                                 Course
                             </summary>
-                            <ul className="menu menu-sm ">
+                            <ul className="menu menu-sm">
                                 <li>
                                     <Link to="/topik-kelas">
-                                    <span className="whitespace-nowrap font-medium text-primary cursor-pointer  hover:text-primary">
-                                        Katalog Kelas
-                                    </span>
+                                        <span className="whitespace-nowrap font-medium text-primary cursor-pointer hover:text-primary">
+                                            Katalog Kelas
+                                        </span>
                                     </Link>
                                 </li>
                                 <li>
                                     <Link to="/mycourse">
-                                    <span className="whitespace-nowrap font-medium text-primary cursor-pointer  hover:text-primary">
-                                        Kelas Saya
-                                    </span>
+                                        <span className="whitespace-nowrap font-medium text-primary cursor-pointer hover:text-primary">
+                                            Kelas Saya
+                                        </span>
                                     </Link>
                                 </li>
                             </ul>

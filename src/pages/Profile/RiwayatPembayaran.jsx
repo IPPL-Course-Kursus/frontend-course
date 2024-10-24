@@ -22,46 +22,23 @@ const RiwayatPembayaran = () => {
     setFilteredPayments(paymentHistory);
   }, [paymentHistory]);
 
-  // Fungsi untuk memfilter berdasarkan tanggal
-  const filterByDate = (filterType) => {
+  // Fungsi untuk memfilter data
+  const filterPayments = (filterType) => {
     if (!Array.isArray(paymentHistory)) {
       console.error("paymentHistory is not an array");
       return;
     }
     let filteredData;
-    const today = new Date();
-    const startOfWeek = new Date(
-      today.setDate(today.getDate() - today.getDay())
-    );
-    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-    const startOfYear = new Date(today.getFullYear(), 0, 1);
 
-    if (filterType === "today") {
-      filteredData = paymentHistory.filter(
-        (payment) => payment.createdAt.split("T")[0] === new Date().toISOString().split("T")[0]
-      );
-    } else if (filterType === "week") {
-      filteredData = paymentHistory.filter((payment) => {
-        const paymentDate = new Date(payment.createdAt);
-        return paymentDate >= startOfWeek && paymentDate <= new Date();
-      });
-    } else if (filterType === "month") {
-      filteredData = paymentHistory.filter((payment) => {
-        const paymentDate = new Date(payment.createdAt);
-        return paymentDate >= startOfMonth && paymentDate <= new Date();
-      });
-    } else if (filterType === "year") {
-      filteredData = paymentHistory.filter((payment) => {
-        const paymentDate = new Date(payment.createdAt);
-        return paymentDate >= startOfYear && paymentDate <= new Date();
-      });
-    } else if (filterType === "waitingPayment") {
-      filteredData = paymentHistory.filter(
-        (payment) => payment.paymentStatus === "waiting"
-      );
+    if (filterType === "all") {
+      filteredData = paymentHistory; // Tampilkan semua data
     } else if (filterType === "paid") {
       filteredData = paymentHistory.filter(
         (payment) => payment.paymentStatus === "settlement"
+      );
+    } else if (filterType === "cancel") {
+      filteredData = paymentHistory.filter(
+        (payment) => payment.paymentStatus === "cancel"
       );
     } else {
       filteredData = paymentHistory; // Default, semua data
@@ -82,39 +59,21 @@ const RiwayatPembayaran = () => {
             {/* Filter buttons */}
             <div
               className="bg-white border border-gray-300 shadow-lg rounded-2xl w-40 h-16 flex justify-center items-center cursor-pointer"
-              onClick={() => filterByDate("today")}
+              onClick={() => filterPayments("all")}
             >
-              <span className="font-semibold text-xl text-center">Hari Ini</span>
+              <span className="font-semibold text-xl text-center">Semua</span>
             </div>
             <div
               className="bg-white border border-gray-300 shadow-lg rounded-2xl w-40 h-16 flex justify-center items-center cursor-pointer"
-              onClick={() => filterByDate("week")}
+              onClick={() => filterPayments("paid")}
             >
-              <span className="font-semibold text-xl text-center">Minggu Ini</span>
+              <span className="font-semibold text-xl text-center">Telah Dibayar</span>
             </div>
             <div
               className="bg-white border border-gray-300 shadow-lg rounded-2xl w-40 h-16 flex justify-center items-center cursor-pointer"
-              onClick={() => filterByDate("month")}
+              onClick={() => filterPayments("cancel")}
             >
-              <span className="font-semibold text-xl text-center">Bulan Ini</span>
-            </div>
-            <div
-              className="bg-white border border-gray-300 shadow-lg rounded-2xl w-40 h-16 flex justify-center items-center cursor-pointer"
-              onClick={() => filterByDate("year")}
-            >
-              <span className="font-semibold text-xl text-center">Tahun Ini</span>
-            </div>
-            <div
-              className="bg-white border border-gray-300 shadow-lg rounded-2xl w-40 h-16 flex justify-center items-center cursor-pointer"
-              onClick={() => filterByDate("waitingPayment")}
-            >
-              <span className="font-semibold text-xl text-center">Menunggu <br />pembayaran</span>
-            </div>
-            <div
-              className="bg-white border border-gray-300 shadow-lg rounded-2xl w-40 h-16 flex justify-center items-center cursor-pointer"
-              onClick={() => filterByDate("paid")}
-            >
-              <span className="font-semibold text-xl text-center">Telah dibayar</span>
+              <span className="font-semibold text-xl text-center">Dibatalkan</span>
             </div>
           </div>
         </div>
@@ -134,8 +93,7 @@ const RiwayatPembayaran = () => {
                 courseImage={payment.course.image}
                 courseLevel={payment.course.courseLevel.levelName}
                 courseModule={payment.totalChapters}
-                // courseRating=
-                courseStatus={payment.paymentStatus === "settlement" ? "Paid" : "Waiting for Payment"}
+                courseStatus={payment.paymentStatus === "settlement" ? "Paid" : "cancel"}
                 courseTime={payment.course.totalDuration}
                 courseTitle={payment.courseName}
               />
