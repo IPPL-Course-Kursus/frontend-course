@@ -63,30 +63,23 @@ const TopikKelas = () => {
     const handleCheckboxChange = (label) => {
         const updatedChecked = {
             ...filterChecked,
-            [label]: !filterChecked[label], // Toggle the current checkbox value
+            [label]: !filterChecked[label],
         };
     
-        setFilterChecked(updatedChecked); // Update the state
-        setCurrentPage(1); // Reset to the first page when filter changes
+        setFilterChecked(updatedChecked); 
+        setCurrentPage(1);
     
-        let typeId = null;
     
-        // if (["Paling Baru", "Paling Populer", "Promo"].includes(label)) {
-        //     if (updatedChecked[label]) {
-        //         setSelectedFilter(label); 
-        //     } else {
-        //         setSelectedFilter("All"); // Reset to "All" when filter is unchecked
-        //     }
-        // }
 
         const filters = {
             isNewest: updatedChecked["Paling Baru"] || false,
             isPopular: updatedChecked["Paling Populer"] || false,
             promoStatus: updatedChecked["Promo"] || false,
+            // Jika Anda ingin menambah kategori
+            categories: Object.keys(updatedChecked).filter(key => updatedChecked[key] && key !== "Paling Baru" && key !== "Paling Populer" && key !== "Promo"),
         };
     
         if (
-            typeId !== null ||
             updatedChecked["Promo"] ||
             updatedChecked["Paling Baru"] ||
             updatedChecked["Paling Populer"]
@@ -281,7 +274,7 @@ const TopikKelas = () => {
                                     >
                                         <input
                                             type="checkbox"
-                                            id={"filter-${label}"}
+                                            id={`filter-${label}`}
                                             checked={filterChecked[label]}
                                             onChange={() =>
                                                 handleCheckboxChange(label)
@@ -326,7 +319,7 @@ const TopikKelas = () => {
                                 >
                                     <input
                                         type="checkbox"
-                                        id={"filter-${category}"}
+                                        id={`filter-${category}`}
                                         checked={filterChecked[category]}
                                         onChange={() =>
                                             handleCheckboxChange(category)
@@ -334,7 +327,7 @@ const TopikKelas = () => {
                                         className="mr-2 checkbox-custom"
                                     />
                                     <label
-                                        htmlFor={"filter-${category}"}
+                                        htmlFor={`filter-${category}`}
                                         className="text-sm md:text-base"
                                     >
                                         {category}
@@ -432,9 +425,9 @@ const TopikKelas = () => {
                                                 to={`/course-detail/${course.id}`}
                                                 className="py-1 px-4 bg-blue-600 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
                                             >
-                                                {course.coursePrice === 0
-                                                    ? "Mulai Kelas"
-                                                    : `Beli Rp ${course.coursePrice}`}
+{course.coursePrice === 0
+                ? "Free"
+                : `Beli Rp. ${course.promoStatus ? course.courseDiscountPrice : course.coursePrice}`}
                                             </Link>
                                         </div>
                                     </div>
