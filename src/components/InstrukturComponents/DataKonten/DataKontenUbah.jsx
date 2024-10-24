@@ -1,19 +1,28 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { updateDataKonten } from "../../../redux/actions/instruktorActions";
+import { useDispatch } from "react-redux";
+
 function DataKontenUbah({ show, onClose, existingData }) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
-    Judulmateri: "",
-    videoURL: "",
-    durasi: "",
-    published: "",
+    sort: "",
+    contentTitle: "",
+    teks: "",
+    contentUrl: "",
+    duration: "",
   });
+
   useEffect(() => {
     if (existingData) {
       setFormData({
-        Judulmateri: existingData.Judulmateri || "Tidak Ada Data",
-        videoURL: existingData.video || "Tidak Ada Data", // Mengubah sesuai dengan data yang diberikan
-        durasi: existingData.durasi || "Tidak Ada Data",
-        published: existingData.published || "Tidak Ada Data",
+        sort: existingData.sort || "",
+        contentTitle: existingData.contentTitle || "",
+        teks: existingData.teks || "",
+        contentUrl: existingData.contentUrl || "",
+        duration: existingData.duration || "",
       });
     }
   }, [existingData]);
@@ -28,81 +37,122 @@ function DataKontenUbah({ show, onClose, existingData }) {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Ubah Konten:", formData);
+const handleUpdate = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+
+  const payload = {
+    sort: formData.sort,
+    contentTitle: formData.contentTitle,
+    teks: formData.teks,
+    contentUrl: formData.contentUrl,
+    duration: formData.duration,
   };
+
+  console.log("Updating with payload:", payload);
+
+  try {
+    await dispatch(updateDataKonten(existingData.id, payload));
+    onClose();
+    window.location.reload();
+  } catch (error) {
+    console.error("Failed to update data:", error.response?.data || error.message);
+    if (error.response) {
+      setError(`Error: ${error.response.data.message || 'Failed to update data. Please try again.'}`);
+    } else {
+      setError("Failed to update data. Please try again.");
+    }
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div
       className="fixed inset-0 flex justify-center items-center z-50"
       style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
     >
-      <div className="bg-white w-full max-w-lg max-h-[80vh] p-6 rounded-lg shadow-lg relative overflow-y-auto">
+      <div className="bg-white w-full max-w-lg h-[80vh] p-6 rounded-lg shadow-lg relative overflow-y-auto">
         <button className="absolute top-2 right-2 text-xl font-bold" onClick={onClose}>
           &times;
         </button>
-        <h2 className="text-xl font-bold text-[#0a61aa] mb-4 text-center">Data Konten</h2>
+        <h2 className="text-xl font-bold text-[#0a61aa] mb-4 text-center">Ubah Konten</h2>
 
-        <form onSubmit={handleSubmit}>
-          {/* Judul Materi Input */}
+        <form onSubmit={handleUpdate}>
+          <div className="mb-4">
+            <label className="block mb-1 font-semibold">Urutan</label>
+            <input
+              type="number"
+              name="sort"
+              value={formData.sort}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-xl"
+              placeholder="ex 1"
+            />
+          </div>
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Judul Materi</label>
             <input
-              type="input"
-              name="Judulmateri"
-              value={formData.Judulmateri}
+              type="text"
+              name="contentTitle"
+              value={formData.contentTitle}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
               placeholder="Masukkan judul kelas"
             />
           </div>
-
-          {/* Video URL Input */}
+          <div className="mb-4">
+            <label className="block mb-1 font-semibold">Teks</label>
+            <input
+              type="text"
+              name="teks"
+              value={formData.teks}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-xl"
+              placeholder="Masukkan teks"
+            />
+          </div>
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Video URL</label>
             <input
-              type="input"
-              name="videoURL"
-              value={formData.videoURL}
+              type="text"
+              name="contentUrl"
+              value={formData.contentUrl}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
-              placeholder="Masukkan judul kelas"
+              placeholder="Masukkan Video URL"
             />
           </div>
-
-          {/* Durasi Input */}
           <div className="mb-4">
-            <label className="block mb-1 font-semibold">Video URL</label>
+            <label className="block mb-1 font-semibold">Durasi</label>
             <input
-              type="input"
-              name="durasi"
-              value={formData.durasi}
+              type="number"
+              name="duration"
+              value={formData.duration}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
-              placeholder="Masukkan judul kelas"
+              placeholder="Masukkan durasi video"
             />
           </div>
-          <div className="mb-4">
-            <label className="block mb-1 font-semibold">Published</label>
-            <select
-              name="published"
-              value={formData.published}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-xl"
+          {error && <p className="text-red-500 mb-4">{error}</p>} {/* Display error message */}
+          <div className="flex justify-end space-x-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="bg-gray-300 px-4 py-2 rounded-md font-semibold"
             >
-              <option>Pilih</option>
-              <option>True</option>
-              <option>False</option>
-            </select>
+              Batal
+            </button>
+            <button
+              type="submit"
+              className="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold"
+              disabled={loading} // Disable button while loading
+            >
+              {loading ? "Mengupdate..." : "Ubah"} {/* Change button text based on loading state */}
+            </button>
           </div>
         </form>
-
-        <div className="flex justify-center">
-          <button className="py-2 px-6 bg-[#0a61aa] text-white rounded-xl" onClick={onClose}>
-            Ubah
-          </button>
-        </div>
       </div>
     </div>
   );

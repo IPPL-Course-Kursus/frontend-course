@@ -13,7 +13,7 @@ import {
 // Import getCookie from cookies-next
 import { getCookie } from "cookies-next";
 
-const api_url = import.meta.env.VITE_REACT_API_ADDRESS || "http://localhost:6969/";
+const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
 
 export const getAllTypeCourses = () => async (dispatch) => {
   dispatch(setLoading());
@@ -91,11 +91,7 @@ export const updateTypeCourseById = (id, typeName) => async (dispatch) => {
       },
     };
 
-    const response = await axios.put(
-      `${api_url}type-course/update/${id}`,
-      { typeName },
-      config
-    );
+    const response = await axios.put(`${api_url}type-course/update/${id}`, { typeName }, config);
     const data = response.data;
     if (data.success) {
       dispatch(setSuccessMessage(data.message));
@@ -122,10 +118,7 @@ export const deleteTypeCourseById = (id) => async (dispatch) => {
       },
     };
 
-    const response = await axios.delete(
-      `${api_url}type-course/delete/${id}`,
-      config
-    );
+    const response = await axios.delete(`${api_url}type-course/delete/${id}`, config);
     const data = response.data;
     if (data.success) {
       dispatch(setSuccessMessage(data.message));
