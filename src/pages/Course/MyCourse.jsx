@@ -12,59 +12,76 @@ const CoursesPage = () => {
   const { loading, error } = useSelector((state) => state.course || {});
   
   const [isMobileDropdownVisible, setMobileDropdownVisible] = useState(false);
-  const [filterChecked, setFilterChecked] = useState({});
-  const [courseStatusFilter, setCourseStatusFilter] = useState('all'); // State untuk status kursus
-  const [courseLevel, setCourseLevel] = useState('');
-
-  useEffect(() => {
-    dispatch(getUserCourses());
-  }, [dispatch]);
+  const [selectedFilter, setSelectedFilter] = useState("semua");
 
   const toggleMobileDropdown = () => {
     setMobileDropdownVisible(!isMobileDropdownVisible);
   };
-
-  const handleCheckboxChange = (filter) => {
-    setFilterChecked((prevState) => ({
-      ...prevState,
-      [filter]: !prevState[filter],
-    }));
+  const handleFilterClick = (filter) => {
+    setSelectedFilter(filter); // Set the selected filter
   };
 
-  const handleLevelChange = (level, isChecked) => {
-    if (isChecked) {
-      setCourseLevel(prevLevels => [...prevLevels, level]); // Menambahkan level ke array jika dicentang
-    } else {
-      setCourseLevel(prevLevels => prevLevels.filter(l => l !== level)); // Menghapus level dari array jika tidak dicentang
-    }
-  };
-  
-  const handleStatusFilterChange = (status) => {
-    setCourseStatusFilter(status);
-  };
+  // Course data array
+  const courses = [
+    {
+      name: "JavaScript Intermediate",
+      modules: 10,
+      level: "Intermediate Level",
+      duration: "120 Menit",
+      progress: "50%",
+      image:
+        "https://blog.tempoinstitute.com/wp-content/uploads/2019/07/aperture-black-blur-274973-800x600.jpg",
+    },
+    {
+      name: "React for Beginners",
+      modules: 8,
+      level: "Beginner Level",
+      duration: "90 Menit",
+      progress: "100%",
+      image:
+        "https://blog.tempoinstitute.com/wp-content/uploads/2019/07/aperture-black-blur-274973-800x600.jpg",
+    },
+    {
+      name: "Data Science Essentials",
+      modules: 12,
+      level: "Advanced Level",
+      duration: "150 Menit",
+      progress: "70%",
+      image:
+        "https://blog.tempoinstitute.com/wp-content/uploads/2019/07/aperture-black-blur-274973-800x600.jpg",
+    },
+    {
+      name: "UI/UX Design Basics",
+      modules: 5,
+      level: "Beginner Level",
+      duration: "60 Menit",
+      progress: "20%",
+      image:
+        "https://blog.tempoinstitute.com/wp-content/uploads/2019/07/aperture-black-blur-274973-800x600.jpg",
+    },
+    {
+      name: "Python Programming",
+      modules: 15,
+      level: "Intermediate Level",
+      duration: "200 Menit",
+      progress: "0%",
+      image:
+        "https://blog.tempoinstitute.com/wp-content/uploads/2019/07/aperture-black-blur-274973-800x600.jpg",
+    },
+  ];
 
   const filteredCourses = () => {
-    const activeFilters = Object.keys(filterChecked).filter((key) => filterChecked[key]);
-
-    return mycourse.filter((course) => {
-      const matchesFilter = activeFilters.length === 0 || activeFilters.includes(course.category); // Sesuaikan dengan kriteria filter Anda
-      const matchesStatus = courseStatusFilter === 'all' || 
-        (courseStatusFilter === 'notStarted' && course.contentFinish === 0) ||
-        (courseStatusFilter === 'inProgress' && course.contentFinish > 0 && course.contentFinish < course.course.totalDuration) ||
-        (courseStatusFilter === 'completed' && course.contentFinish === course.course.totalDuration);
-
-        const matchesLevel = courseLevel.length === 0 || // Jika tidak ada level yang dicentang, tampilkan semua
-        (courseLevel.includes('Beginner Level') && course.courseLevel.levelName === 'Beginner') ||
-        (courseLevel.includes('Intermediate Level') && course.courseLevel.levelName === 'Intermediate') ||
-        (courseLevel.includes('Advanced Level') && course.courseLevel.levelName === 'Advanced');
-    
-      
-        console.log(matchesLevel)
-
-      return matchesFilter && matchesStatus && matchesLevel;
-    });
+    if (selectedFilter === "belum") {
+      return courses.filter((course) => parseInt(course.progress) === 0);
+    } else if (selectedFilter === "selesai") {
+      return courses.filter((course) => parseInt(course.progress) === 100);
+    } else if (selectedFilter === "sedang dipelajari") {
+      return courses.filter((course) => parseInt(course.progress) > 0 && parseInt(course.progress) < 100);
+    }
+    return courses; // Tampilkan semua kursus untuk filter lainnya
   };
-
+  
+  
   return (
     <>
       <Navbar />
@@ -165,54 +182,47 @@ const CoursesPage = () => {
                       </label>
                     </div>
                   ))}
-                </div>
 
-                <h3 className="text-xl font-bold text-gray-800 mb-3 mt-6">Level Kesulitan</h3>
-{/* Filter Konten */}
-<div>
-  {["Beginner Level", "Intermediate Level", "Advanced Level"].map((label, index) => (
-    <div className="flex items-center mb-2" key={index}>
-<input
-  type="checkbox"
-  id={`filter-${label}`}
-  className="mr-2 checkbox-custom"
-  checked={courseLevel.includes(label)} // Menentukan apakah checkbox dicentang
-  onChange={(e) => handleLevelChange(label, e.target.checked)}
-/>
-
-      <label htmlFor={`filter-${label}`} className="text-sm md:text-base">
-        {label}
-      </label>
-    </div>
-  ))}
-  <button 
-    onClick={() => handleLevelChange('', false)} // Menghapus semua filter
-    className="px-10 py-2 rounded-md text-red-600 mt-10 whitespace-nowrap"
-  >
-    Hapus Filter
-  </button>
-</div>
-
-              </div>
-
-              {/* Filter untuk Mobile (dropdown toggle) */}
-              <div className={`md:hidden ${isMobileDropdownVisible ? "block" : "hidden"} bg-white shadow-md rounded-md p-4 mb-4`}>
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Filter</h3>
-                {/* Filter Konten untuk Mobile */}
-                <div>
-                  {["UI/UX Design", "Web Development", "Android Development", "Data Science", "Business Intelligence"].map((label, index) => (
+                  <h3 className="text-xl font-bold text-gray-800 mb-4">Kategori</h3>
+                  {[
+                    "UI/UX Design",
+                    "Web Development",
+                    "Android Development",
+                    "Data Science",
+                    "Business Intelligence",
+                  ].map((category, index) => (
                     <div className="flex items-center mb-2" key={index}>
                       <input
                         type="checkbox"
-                        id={`filter-mobile-${label}`}
+                        id={`filter-${category}`}
                         className="mr-2 checkbox-custom"
                         onChange={() => handleCheckboxChange(label)}
                       />
-                      <label htmlFor={`filter-mobile-${label}`} className="text-sm md:text-base">
-                        {label}
+                      <label htmlFor={`filter-${category}`} className="text-sm md:text-base">
+                        {category}
                       </label>
                     </div>
                   ))}
+
+                  <h3 className="text-xl font-bold text-gray-800 mb-4">Level Kesulitan</h3>
+                  {["Beginner Level", "Intermediate Level", "Advanced Level"].map(
+                    (level, index) => (
+                      <div className="flex items-center mb-2" key={index}>
+                        <input
+                          type="checkbox"
+                          id={`filter-${level}`}
+                          className="mr-2 checkbox-custom"
+                        />
+                        <label htmlFor={`filter-${level}`} className="text-sm md:text-base">
+                          {level}
+                        </label>
+                      </div>
+                    )
+                  )}
+
+                  <button className="px-10 py-2 rounded-md text-red-600 mt-10 whitespace-nowrap">
+                    Hapus Filter
+                  </button>
                 </div>
                 <h3 className="text-xl font-bold text-gray-800 mb-3 mt-6">Level Kesulitan</h3>
                 {/* Filter Konten */}
@@ -231,10 +241,43 @@ const CoursesPage = () => {
                     </div>
                   ))}
 
-<button className="px-10 py-2 rounded-md text-red-600 mt-10 whitespace-nowrap">
-                    Hapus Filter
-                  </button>
-                </div>
+                <h3 className="text-xl font-bold text-gray-800 mb-4">Kategori</h3>
+                {[
+                  "UI/UX Design",
+                  "Web Development",
+                  "Android Development",
+                  "Data Science",
+                  "Business Intelligence",
+                ].map((category, index) => (
+                  <div className="flex items-center mb-2" key={index}>
+                    <input
+                      type="checkbox"
+                      id={`filter-${category}`}
+                      className="mr-2 checkbox-custom"
+                    />
+                    <label htmlFor={`filter-${category}`} className="text-sm md:text-base">
+                      {category}
+                    </label>
+                  </div>
+                ))}
+
+                <h3 className="text-xl font-bold text-gray-800 mb-4">Level Kesulitan</h3>
+                {["Beginner Level", "Intermediate Level", "Advanced Level"].map((level, index) => (
+                  <div className="flex items-center mb-2" key={index}>
+                    <input
+                      type="checkbox"
+                      id={`filter-${level}`}
+                      className="mr-2 checkbox-custom"
+                    />
+                    <label htmlFor={`filter-${level}`} className="text-sm md:text-base">
+                      {level}
+                    </label>
+                  </div>
+                ))}
+
+                <button className="px-10 py-2 rounded-md text-red-600 mt-10 whitespace-nowrap">
+                  Hapus Filter
+                </button>
               </div>
             </div>
 
