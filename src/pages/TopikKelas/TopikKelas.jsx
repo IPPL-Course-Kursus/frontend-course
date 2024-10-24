@@ -10,6 +10,11 @@ import { IoIosSearch } from "react-icons/io";
 import { IoArrowBackCircle, IoArrowForwardCircle } from "react-icons/io5";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
+import {
+    getCategory,
+    getLevel,
+    getType,
+} from "../../redux/actions/categoryActions";
 
 const TopikKelas = () => {
     const dispatch = useDispatch();
@@ -23,9 +28,17 @@ const TopikKelas = () => {
 
     const [filterChecked, setFilterChecked] = useState({});
     const [searchQuery, setSearchQuery] = useState("");
+    const {
+        category = [],
+        courseLevel = [],
+        data: courseTypes = [], // Pastikan ini diambil dari state yang benar
+    } = useSelector((state) => state.category);
 
     useEffect(() => {
         dispatch(getAllCourse());
+        dispatch(getCategory());
+        dispatch(getLevel());
+        dispatch(getType());
     }, [dispatch]);
 
     useEffect(() => {
@@ -65,35 +78,47 @@ const TopikKelas = () => {
             ...filterChecked,
             [label]: !filterChecked[label],
         };
-    
-        setFilterChecked(updatedChecked); 
+
+        setFilterChecked(updatedChecked);
         setCurrentPage(1);
-    
-    
 
         const filters = {
             isNewest: updatedChecked["Paling Baru"] || false,
             isPopular: updatedChecked["Paling Populer"] || false,
             promoStatus: updatedChecked["Promo"] || false,
             // Jika Anda ingin menambah kategori
-            categories: Object.keys(updatedChecked).filter(key => updatedChecked[key] && key !== "Paling Baru" && key !== "Paling Populer" && key !== "Promo"),
+            categories: Object.keys(updatedChecked).filter(
+                (key) =>
+                    updatedChecked[key] &&
+                    key !== "Paling Baru" &&
+                    key !== "Paling Populer" &&
+                    key !== "Promo"
+            ),
+            levels: Object.keys(updatedChecked).filter(
+                (key) =>
+                    courseLevel.some(
+                        (level) =>
+                            level.levelName === key && updatedChecked[key]
+                    ) // Filter berdasarkan level
+            ),
         };
-    
+
         if (
             updatedChecked["Promo"] ||
             updatedChecked["Paling Baru"] ||
             updatedChecked["Paling Populer"]
-        ) if (filters.isNewest || filters.isPopular || filters.promoStatus) {
-            dispatch(getFilteredCourses(filters)); // Dispatch the filter action
-        } else {
-            dispatch(getAllCourse()); // If no filters, get all courses
-        }
+        )
+            if (filters.isNewest || filters.isPopular || filters.promoStatus) {
+                dispatch(getFilteredCourses(filters)); // Dispatch the filter action
+            } else {
+                dispatch(getAllCourse()); // If no filters, get all courses
+            }
     };
-    
+
     const handleFilterClick = (filter) => {
         setSelectedFilter(filter);
         setCurrentPage(1);
-    
+
         // Reset the filterChecked when "All" is clicked
         if (filter === "All") {
             clearFilters(); // Reset all filters when "All" is selected
@@ -114,9 +139,9 @@ const TopikKelas = () => {
                     .toLowerCase()
                     .includes(searchQuery.toLowerCase());
 
-            if (selectedFilter === "kelas_berbayar" && course.coursePrice === 0)
+            if (selectedFilter === "Premium" && course.coursePrice === 0)
                 return false;
-            if (selectedFilter === "Kelas_Gratis" && course.coursePrice !== 0)
+            if (selectedFilter === "Free" && course.coursePrice !== 0)
                 return false;
 
             return matchesSearch;
@@ -139,20 +164,19 @@ const TopikKelas = () => {
         const clearedFilterState = {
             "Paling Baru": false,
             "Paling Populer": false,
-            "Promo": false,
+            Promo: false,
             ...categories.reduce((acc, category) => {
                 acc[category.categoryName] = false;
                 return acc;
             }, {}),
         };
-        
+
         setFilterChecked(clearedFilterState); // Reset semua filter
         setSelectedFilter("All"); // Reset filter yang dipilih
         window.location.hash = ""; // Hapus hash URL
-    
+
         dispatch(getAllCourse()); // Dispatch untuk mendapatkan semua kursus
     };
-    
 
     const filteredCourseType = filteredCourses();
     const totalPages = Math.ceil(filteredCourseType.length / itemsPerPage);
@@ -232,30 +256,30 @@ const TopikKelas = () => {
                             >
                                 All
                             </button>
-                            <button
-                                className={`filter-btn px-6 py-2 w-full md:w-auto rounded-full font-bold text-xs ${
-                                    selectedFilter === "kelas_berbayar"
-                                        ? "bg-blue-600 text-white"
-                                        : "bg-white text-black hover:bg-gray-200"
-                                }`}
-                                onClick={() =>
-                                    handleFilterClick("kelas_berbayar")
-                                }
-                            >
-                                Kelas Berbayar
-                            </button>
-                            <button
-                                className={`filter-btn px-6 py-2 w-full md:w-auto rounded-full font-bold text-xs ${
-                                    selectedFilter === "Kelas_Gratis"
-                                        ? "bg-blue-600 text-white"
-                                        : "bg-white text-black hover:bg-gray-200"
-                                }`}
-                                onClick={() =>
-                                    handleFilterClick("Kelas_Gratis")
-                                }
-                            >
-                                Kelas Gratis
-                            </button>
+                            {courseTypes &&
+                                courseTypes.map(
+                                    (type, i) => (
+                                        console.log(courseTypes),
+                                        (
+                                            <button
+                                                key={i}
+                                                className={`filter-btn px-6 py-2 w-full md:w-auto rounded-full font-bold text-xs ${
+                                                    selectedFilter ===
+                                                    type.typeName
+                                                        ? "bg-blue-600 text-white"
+                                                        : "bg-white text-black hover:bg-gray-200"
+                                                }`}
+                                                onClick={() =>
+                                                    handleFilterClick(
+                                                        type.typeName
+                                                    )
+                                                }
+                                            >
+                                                {type.typeName}
+                                            </button>
+                                        )
+                                    )
+                                )}
                         </div>
                     </div>
                 </div>
@@ -291,76 +315,70 @@ const TopikKelas = () => {
                                 )
                             )}
 
-                            <h3 className="text-xl font-bold text-gray-800 mb-4">
-                                Kategori
-                            </h3>
-                            {[
-                                "Web Development",
-                                "Programming Ippl",
-                                "Mobile Development",
-                                "Cloud Computing",
-                                "Artificial Intelligence",
-                                "Android Development",
-                                "Machine Learning",
-                                "Cybersecurity",
-                                "Blockchain",
-                                "Game Development",
-                                "Digital Marketing",
-                                "Graphic Design",
-                                "Project Management",
-                                "DevOps",
-                                "Internet of Things",
-                                "Data Science",
-                                "Business Intelligence",
-                            ].map((category, index) => (
-                                <div
-                                    className="flex items-center mb-2"
-                                    key={index}
-                                >
-                                    <input
-                                        type="checkbox"
-                                        id={`filter-${category}`}
-                                        checked={filterChecked[category]}
-                                        onChange={() =>
-                                            handleCheckboxChange(category)
-                                        }
-                                        className="mr-2 checkbox-custom"
-                                    />
-                                    <label
-                                        htmlFor={`filter-${category}`}
-                                        className="text-sm md:text-base"
-                                    >
-                                        {category}
-                                    </label>
-                                </div>
-                            ))}
-                            <h3 className="text-xl font-bold text-gray-800 mb-4">
-                                Level Kesulitan
-                            </h3>
-                            {["Beginner", "Intermediate", "Advanced"].map(
-                                (level, index) => (
+                            <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">Kategori</h3>
+                            {category &&
+                                category.map((kategori, i) => (
                                     <div
                                         className="flex items-center mb-2"
-                                        key={index}
+                                        key={i}
                                     >
                                         <input
                                             type="checkbox"
-                                            id={`filter-${level}`}
-                                            checked={filterChecked[level]}
+                                            id={`filter-${kategori.categoryName}`}
+                                            checked={
+                                                filterChecked[
+                                                    kategori.categoryName
+                                                ] || false
+                                            }
                                             onChange={() =>
-                                                handleCheckboxChange(level)
+                                                handleCheckboxChange(
+                                                    kategori.categoryName
+                                                )
                                             }
                                             className="mr-2 checkbox-custom"
                                         />
                                         <label
-                                            htmlFor={`filter-${level}`}
+                                            htmlFor={`filter-${kategori.categoryName}`}
                                             className="text-sm md:text-base"
                                         >
-                                            {level}
+                                            {kategori.categoryName}
                                         </label>
                                     </div>
-                                )
-                            )}
+                                ))}
+
+                            <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">
+                                Level Kesulitan
+                            </h3>
+                            {courseLevel &&
+                                courseLevel.map((level, i) => (
+                                    <div
+                                        className="flex items-center mb-2"
+                                        key={i}
+                                    >
+                                        <input
+                                            type="checkbox"
+                                            id={`filter-${level.levelName}`}
+                                            checked={
+                                                filterChecked[
+                                                    level.levelName
+                                                ] || false
+                                            }
+                                            onChange={() =>
+                                                handleCheckboxChange(
+                                                    level.levelName
+                                                )
+                                            }
+                                            className="mr-2 checkbox-custom"
+                                        />
+                                        <label
+                                            htmlFor={`filter-${level.levelName}`}
+                                            className="text-sm md:text-base"
+                                        >
+                                            {level.levelName}
+                                        </label>
+                                    </div>
+                                ))}
+
                             <button
                                 onClick={clearFilters}
                                 className="bg-red-600 text-white px-4 py-2 rounded mt-4"
@@ -425,9 +443,13 @@ const TopikKelas = () => {
                                                 to={`/course-detail/${course.id}`}
                                                 className="py-1 px-4 bg-blue-600 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
                                             >
-{course.coursePrice === 0
-                ? "Free"
-                : `Beli Rp. ${course.promoStatus ? course.courseDiscountPrice : course.coursePrice}`}
+                                                {course.coursePrice === 0
+                                                    ? "Free"
+                                                    : `Beli Rp. ${
+                                                          course.promoStatus
+                                                              ? course.courseDiscountPrice
+                                                              : course.coursePrice
+                                                      }`}
                                             </Link>
                                         </div>
                                     </div>

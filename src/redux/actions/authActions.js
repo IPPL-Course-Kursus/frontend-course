@@ -37,6 +37,53 @@ import toast from "react-hot-toast";
 
 const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
 
+// export const login = (email, password, navigate) => async (dispatch) => {
+//   try {
+//     if (!email || !password) {
+//       toast.error("Email dan Password harus diisi.");
+//       return;
+//     }
+
+//     const response = await axios.post(`${api_url}auth/login`, {
+//       email,
+//       password,
+//     });
+
+//     // Mengakses data dari respons
+//     const { success, data } = response.data;
+//     const { token, role } = data; 
+
+//     // Menyimpan token di Redux
+//     dispatch(setToken(token));
+
+//     toast.success("Login Berhasil");
+
+//     // Navigasi berdasarkan role
+//     if (role === "Admin") {
+//       navigate("/admin/dashboard");
+//     } else if (role === "User") {
+//       navigate("/");
+//     } else if (role === "Instruktur") {
+//       // Pastikan role sesuai
+//       navigate("/inst/dashboard");
+//     } else {
+//       console.error("Role tidak dikenali:", role);
+//     }
+//   } catch (error) {
+//     if (error.response) {
+//       if (error.response.status === 403) {
+//         toast.error("Email atau Password Anda salah. Silahkan coba lagi.");
+//       } else if (error.response.status === 404) {
+//         toast.error("Email tidak terdaftar. Silakan cek kembali email Anda.");
+//       } else {
+//         toast.error("Login gagal. Silakan coba lagi nanti.");
+//       }
+//     } else {
+//       toast.error("Terjadi kesalahan pada server. Silakan coba lagi nanti.");
+//     }
+//   }
+// };
+
 export const login = (email, password, navigate) => async (dispatch) => {
   try {
     if (!email || !password) {
@@ -50,25 +97,27 @@ export const login = (email, password, navigate) => async (dispatch) => {
     });
 
     // Mengakses data dari respons
-    const { data } = response.data; // Data dari response
-    const { token } = data.token; // Ambil token
-    const role = data.role; // Ambil role dari data.token
+    const { success, data } = response.data; 
+    const { token, role } = data; 
 
-    // Menyimpan token di Redux
-    dispatch(setToken(token));
+    if (success) {
+      // Menyimpan token di Redux
+      dispatch(setToken(token));
 
-    toast.success("Login Berhasil");
+      toast.success("Login Berhasil");
 
-    // Navigasi berdasarkan role
-    if (role === "Admin") {
-      navigate("/admin/dashboard");
-    } else if (role === "User") {
-      navigate("/");
-    } else if (role === "Instruktur") {
-      // Pastikan role sesuai
-      navigate("/inst/dashboard");
+      // Navigasi berdasarkan role
+      if (role === "Admin") {
+        navigate("/admin/dashboard");
+      } else if (role === "User") {
+        navigate("/");
+      } else if (role === "Instruktur") {
+        navigate("/inst/dashboard");
+      } else {
+        console.error("Role tidak dikenali:", role);
+      }
     } else {
-      console.error("Role tidak dikenali:", role);
+      toast.error("Login gagal. Silakan coba lagi nanti.");
     }
   } catch (error) {
     if (error.response) {
