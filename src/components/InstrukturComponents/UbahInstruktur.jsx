@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
-import InstrukturForm from "./InstrukturForm";
 import { useState, useEffect } from "react";
-
+import InstrukturForm from "./InstrukturFormEdit";
+import { useDispatch } from "react-redux";
 const UbahInstruktur = ({ show, onClose, existingData, updateInstructor }) => {
   const [formData, setFormData] = useState({
     fullName: "",

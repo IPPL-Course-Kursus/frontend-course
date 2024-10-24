@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 
-const InstrukturForm = ({ show, onClose, existingData, isEditMode, onSubmit }) => {
+const InstrukturForm = ({ show, onClose, existingData, isEditMode, handleSubmit }) => {
   const [formData, setFormData] = useState({
     fullName: "",
     country: "",
@@ -46,9 +46,9 @@ const InstrukturForm = ({ show, onClose, existingData, isEditMode, onSubmit }) =
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleUpdate = (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    handleSubmit(formData);
     onClose();
   };
 
@@ -72,7 +72,7 @@ const InstrukturForm = ({ show, onClose, existingData, isEditMode, onSubmit }) =
           {isEditMode ? "Ubah Instruktur" : "Tambah Instruktur"}
         </h2>
 
-        <form onSubmit={handleSubmit}>
+        <form handleSubmit={handleUpdate}>
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Nama Lengkap</label>
             <input

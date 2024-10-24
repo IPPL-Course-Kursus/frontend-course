@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 
-const InstrukturFormEdit = ({ show, onClose, existingData, isEditMode, onSubmit }) => {
+const InstrukturFormEdit = ({ show, onClose, existingData, isEditMode, handleSubmit }) => {
   const [formData, setFormData] = useState({
     fullName: "",
     image: "",
@@ -81,7 +81,7 @@ const InstrukturFormEdit = ({ show, onClose, existingData, isEditMode, onSubmit 
     form.append("country", formData.country); // Mengirim negara
 
     // Memanggil callback onSubmit untuk mengirim data ke backend
-    onSubmit(form);
+    handleSubmit(form);
     onClose();
   };
 
@@ -105,7 +105,7 @@ const InstrukturFormEdit = ({ show, onClose, existingData, isEditMode, onSubmit 
           {isEditMode ? "Ubah Instruktur" : "Tambah Instruktur"}
         </h2>
 
-        <form onSubmit={handleSubmit}>
+        <form handleSubmit={handleUpdate}>
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Nama Lengkap</label>
             <input
@@ -211,7 +211,7 @@ InstrukturFormEdit.propTypes = {
   onClose: PropTypes.func,
   existingData: PropTypes.object,
   isEditMode: PropTypes.bool,
-  onSubmit: PropTypes.func,
+  handleSubmit: PropTypes.func,
 };
 
 export default InstrukturFormEdit;
