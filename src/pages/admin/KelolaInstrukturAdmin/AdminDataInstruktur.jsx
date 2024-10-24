@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllInstructors, addInstructor, updateInstructor, deleteInstructor } from "../../../redux/actions/datainstructorActions";
@@ -9,8 +10,7 @@ import UbahInstruktur from "../../../components/InstrukturComponents/UbahInstruk
 
 const AdminDataInstruktur = () => {
   const dispatch = useDispatch();
-  const { instructors = [], loading, error } = useSelector((state) => state.instructors || {});
-
+  const { instructors, loading, error } = useSelector((state) => state.instructors);
 
   const [showTambahPopup, setShowTambahPopup] = useState(false);
   const [showUbahPopup, setShowUbahPopup] = useState(false);
@@ -68,7 +68,7 @@ const AdminDataInstruktur = () => {
         instructor.id === updatedData.id ? updatedData : instructor
       );
       // Update state instructors
-      dispatch({ type: 'UPDATE_INSTRUCTORS', payload: updatedInstructors }); // Pastikan ada action ini di reducers
+      dispatch({ type: 'UPDATE_INSTRUCTOR', payload: updatedInstructors }); // Pastikan ada action ini di reducers
     }
 
     handleCloseUbahPopup(); // Tutup popup setelah selesai

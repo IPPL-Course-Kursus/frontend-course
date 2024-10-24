@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
-import InstrukturForm from "./InstrukturFormEdit";
+import InstrukturForm from "./InstrukturForm";
+import { useState, useEffect } from "react";
 
 const UbahInstruktur = ({ show, onClose, existingData, updateInstructor }) => {
   const [formData, setFormData] = useState({
