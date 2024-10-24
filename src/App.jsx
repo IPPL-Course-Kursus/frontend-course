@@ -39,7 +39,7 @@ import ProtectedRouteAdmin from "./security/ProtectRoleAdmin";
 import { ProtectedRouteInstruktur } from "./security/ProtectRoleInstruktur";
 
 import NoAccesToken from "./components/Protecd/NoAccesToken";
-import Protected from "./components/Protecd/NoAccesToken";
+// import Protected from "./components/Protecd/NoAccesToken";
 
 function App() {
   return (
@@ -84,8 +84,8 @@ function AppRoutes() {
   return (
     <Routes>
       {/* <Route element={<ProtectedRouteUser />}> */}
-        <Route path="/" element={<Home />} />
-        {/* </Protected> */}
+      <Route path="/" element={<Home />} />
+      {/* </Protected> */}
       {/* </Route> */}
 
       {/* Auth */}
@@ -101,27 +101,28 @@ function AppRoutes() {
       <Route path="/reset" element={<ResetPassword />} />
       <Route path="/send-email" element={<SendEmail />} />
       <Route path="/verify-email" element={<VerifyEmail />} />
-
-      {/* Profile */}
-      <Route path="/profile" element={<MainProfile />} />
-
-      {/* Course */}
-      {/* <Route path="/course-detail/:courseId" element={<DetailKelas />} /> */}
-      <Route path="/course-detail/:id" element={<DetailKelas />} />
-      <Route
-        path="/mycourse"
-        element={
-          <Protected>
+      <Route element={<ProtectedRouteUser />}>
+        {/* Profile */}
+        <Route path="/profile" element={<MainProfile />} />
+        <Route
+          path="/mycourse"
+          element={
+            // <Protected>
             <MyCourse />
-          </Protected>
-        }
-      />
+            // </Protected>
+          }
+        />
+        <Route path="/mulai-kelas" element={<MulaiKelas />} />
+        <Route path="/success-payment" element={<SuccessPage />} />
+        <Route path="/payment" element={<PaymentPage />} />
+      </Route>
+      {/* Course */}
+
+      <Route path="/course-detail/:id" element={<DetailKelas />} />
+
       <Route path="/topik-kelas" element={<TopikKelas />} />
-      <Route path="/mulai-kelas" element={<MulaiKelas />} />
 
       {/* Payment */}
-      <Route path="/payment" element={<PaymentPage />} />
-      <Route path="/success-payment" element={<SuccessPage />} />
 
       {/* Admin */}
       <Route element={<ProtectedRouteAdmin />}>
@@ -140,11 +141,11 @@ function AppRoutes() {
       </Route>
 
       {/* Kelola Instruktur ADMIN */}
-      <Route path="/admin/data-instruktur" element={<AdminDataInstruktur />} />
-      <Route path="/admin/regis-instruktur" element={<AdminRegisterInstruktur />} />
-
-      {/* Instruktor */}
       <Route element={<ProtectedRouteInstruktur />}>
+        <Route path="/admin/data-instruktur" element={<AdminDataInstruktur />} />
+        <Route path="/admin/regis-instruktur" element={<AdminRegisterInstruktur />} />
+
+        {/* Instruktor */}
         <Route
           exact
           path="/inst/dashboard"
@@ -154,13 +155,12 @@ function AppRoutes() {
             </NoAccesToken>
           }
         />
+        <Route path="/inst/data-kelas" element={<InstruktorDataKelas />} />
+        <Route path="/inst/data-konten/:id" element={<InstruktorDataKonten />} />
+        <Route path="/inst/data-chapter/:id" element={<InstruktorDataModule />} />
+        <Route path="/inst/data-kategori" element={<InstrukturDataKategori />} />
+        <Route path="/inst/profile" element={<InstrukturPorofile />} />
       </Route>
-      <Route path="/inst/data-kelas" element={<InstruktorDataKelas />} />
-
-      <Route path="/inst/data-konten/:id" element={<InstruktorDataKonten />} />
-      <Route path="/inst/data-chapter/:id" element={<InstruktorDataModule />} />
-      <Route path="/inst/data-kategori" element={<InstrukturDataKategori />} />
-      <Route path="/inst/profile" element={<InstrukturPorofile />} />
 
       {/* NotFound */}
       <Route path="/*" element={<NotFound />} />

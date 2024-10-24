@@ -1,12 +1,21 @@
 // src/components/SidebarAdmin.jsx
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { logout } from "../../redux/actions/authActions";
 
 const SidebarInstruktur = () => {
   const [isDataMenuOpen, setIsDataMenuOpen] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const toggleDataMenu = () => {
     setIsDataMenuOpen(!isDataMenuOpen);
+  };
+
+  const handleLogout = () => {
+    dispatch(logout()); // Dispatch action logout
+    navigate("/login"); // Arahkan pengguna ke halaman login
   };
 
   return (
@@ -56,9 +65,12 @@ const SidebarInstruktur = () => {
             </span>
           </Link>
         </div>
-        <a href="#" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
+        <button
+          onClick={handleLogout}
+          className="w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700 flex justify-between items-center"
+        >
           Keluar
-        </a>
+        </button>
       </nav>
     </div>
   );
