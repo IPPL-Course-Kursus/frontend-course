@@ -14,7 +14,7 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [country, setCountry] = useState("");
+  // const [country, setCountry] = useState("");
   const [city, setCity] = useState("");
   const [tanggalLahir, setTanggalLahir] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -22,7 +22,15 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    if (!fullName && !email && !phoneNumber && !country && !city && !tanggalLahir && !password) {
+    if (
+      !fullName &&
+      !email &&
+      !phoneNumber &&
+      // && !country
+      !city &&
+      !tanggalLahir &&
+      !password
+    ) {
       toast.error("Semua Form Harus Diisi");
       return;
     } else if (fullName == "") {
@@ -33,10 +41,12 @@ const Register = () => {
     } else if (phoneNumber === "") {
       toast.error("Nomor Telepon masih kosong");
       return;
-    } else if (country === "") {
-      toast.error("Negara masih kosong");
-      return;
-    } else if (city === "") {
+    }
+    // else if (country === "") {
+    //   toast.error("Negara masih kosong");
+    //   return;
+    // }
+    else if (city === "") {
       toast.error("Kota masih kosong");
       return;
     } else if (tanggalLahir === "") {
@@ -59,7 +69,16 @@ const Register = () => {
     console.log("lahir", tanggalLahir);
 
     dispatch(
-      register(email, password, fullName, phoneNumber, country, city, tanggalLahir, navigate)
+      register(
+        email,
+        password,
+        fullName,
+        phoneNumber,
+        // country,
+        city,
+        tanggalLahir,
+        navigate
+      )
     );
   };
 
@@ -93,7 +112,7 @@ const Register = () => {
                 <input
                   type="email"
                   className="border shadow-sm w-full p-2 rounded-xl"
-                  placeholder="Contoh: Guntur@mail.com"
+                  placeholder="Contoh: etamcode@mail.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -103,7 +122,7 @@ const Register = () => {
                 <input
                   type="text"
                   className="border shadow-sm w-full p-2 rounded-xl"
-                  placeholder="+62"
+                  placeholder="Contoh: 0895.."
                   value={phoneNumber}
                   autoComplete="tel"
                   onChange={(e) => {
@@ -114,7 +133,7 @@ const Register = () => {
                   }}
                 />
               </div>
-              <div className="flex flex-col">
+              {/* <div className="flex flex-col">
                 <label className="ttext-[14px] mb-[4px] font-medium font-Poppins">Negara</label>
                 <input
                   type="text"
@@ -124,13 +143,13 @@ const Register = () => {
                   autoComplete=""
                   onChange={(e) => setCountry(e.target.value)}
                 />
-              </div>
+              </div> */}
               <div className="flex flex-col">
                 <label className="text-[14px] mb-[4px] font-medium font-Poppins">Kota</label>
                 <input
                   type="text"
                   className="border shadow-sm w-full p-2 rounded-xl"
-                  placeholder="Kota"
+                  placeholder="Contoh: Bali"
                   value={city}
                   autoComplete="tel"
                   onChange={(e) => setCity(e.target.value)}

@@ -1,10 +1,4 @@
-import {
-  BrowserRouter,
-  Route,
-  Routes,
-  useNavigate,
-  useLocation,
-} from "react-router-dom";
+import { BrowserRouter, Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import Home from "./pages/Home";
@@ -31,10 +25,23 @@ import AdminDataInstruktur from "./pages/admin/KelolaInstrukturAdmin/AdminDataIn
 import AdminRegisterInstruktur from "./pages/admin/KelolaInstrukturAdmin/AdminRegisterInstruktur";
 // INSTRUKTUR
 import InstruktorDashboard from "./pages/instruktor/InstruktorDashboard";
-import InstruktorDataKelas from "./pages/instruktor/InstruktorDataKelas";
-import InstruktorDataModule from "./pages/instruktor/InstruktorDataModule";
-import InstruktorDataKonten from "./pages/instruktor/InstruktorDataKonten";
 
+<<<<<<< HEAD
+=======
+import InstruktorDataModule from "./pages/instruktor/InstruktorDataModule";
+
+import InstrukturPorofile from "./pages/instruktor/InstrukturPorofile";
+import InstrukturDataKategori from "./pages/instruktor/KeolaData/InstrukturDataKategori";
+import InstruktorDataKelas from "./pages/instruktor/InstruktorDataKelas";
+import InstruktorDataKonten from "./pages/instruktor/InstruktorDataKonten";
+import { ProtectedRouteUser } from "./security/ProtectRoleUser";
+import ProtectedRouteAdmin from "./security/ProtectRoleAdmin";
+import { ProtectedRouteInstruktur } from "./security/ProtectRoleInstruktur";
+
+import NoAccesToken from "./components/Protecd/NoAccesToken";
+import Protected from "./components/Protecd/NoAccesToken";
+
+>>>>>>> 763d08745509f424f8e6105e9259366b545875de
 function App() {
   return (
     <BrowserRouter>
@@ -76,19 +83,44 @@ function AppRoutes() {
 
   return (
     <Routes>
+<<<<<<< HEAD
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
+=======
+      {/* <Route element={<ProtectedRouteUser />}> */}
+        <Route path="/" element={<Home />} />
+        {/* </Protected> */}
+      {/* </Route> */}
+
+      {/* Auth */}
+      <Route
+        path="/login"
+        element={
+          <NoAccesToken>
+            <Login />
+          </NoAccesToken>
+        }
+      />
+>>>>>>> 763d08745509f424f8e6105e9259366b545875de
       <Route path="/register" element={<Register />} />
       <Route path="/reset" element={<ResetPassword />} />
       <Route path="/send-email" element={<SendEmail />} />
       <Route path="/verify-email" element={<VerifyEmail />} />
       <Route path="/profile" element={<MainProfile />} />
       <Route path="/course-detail/:id" element={<DetailKelas />} />
-      <Route path="/mycourse" element={<MyCourse />} />
+      <Route
+        path="/mycourse"
+        element={
+          <Protected>
+            <MyCourse />
+          </Protected>
+        }
+      />
       <Route path="/topik-kelas" element={<TopikKelas />} />
       <Route path="/mulai-kelas" element={<MulaiKelas />} />
       <Route path="/payment" element={<PaymentPage />} />
       <Route path="/success-payment" element={<SuccessPage />} />
+<<<<<<< HEAD
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
       <Route path="/admin/data-kategori" element={<AdminDataKategori />} />
       <Route path="/admin/data-level" element={<AdminDataLevel />} />
@@ -96,9 +128,53 @@ function AppRoutes() {
       <Route path="/admin/data-instruktur" element={<AdminDataInstruktur />} />
       <Route path="/admin/regis-instruktur" element={<AdminRegisterInstruktur />} />
       <Route path="/inst/dashboard" element={<InstruktorDashboard />} />
+=======
+
+      {/* Admin */}
+      <Route element={<ProtectedRouteAdmin />}>
+        <Route
+          exact
+          path="/admin/dashboard"
+          element={
+            // <NoAccesToken>
+            <AdminDashboard />
+            // </NoAccesToken>
+          }
+        />
+        <Route path="/admin/data-kategori" element={<AdminDataKategori />} />
+        <Route path="/admin/data-level" element={<AdminDataLevel />} />
+        <Route path="/admin/data-Type" element={<AdminDataType />} />
+      </Route>
+
+      {/* Kelola Instruktur ADMIN */}
+      <Route path="/admin/data-instruktur" element={<AdminDataInstruktur />} />
+      <Route path="/admin/regis-instruktur" element={<AdminRegisterInstruktur />} />
+
+      {/* Instruktor */}
+      <Route element={<ProtectedRouteInstruktur />}>
+        <Route
+          exact
+          path="/inst/dashboard"
+          element={
+            <NoAccesToken>
+              <InstruktorDashboard />
+            </NoAccesToken>
+          }
+        />
+      </Route>
+>>>>>>> 763d08745509f424f8e6105e9259366b545875de
       <Route path="/inst/data-kelas" element={<InstruktorDataKelas />} />
+
       <Route path="/inst/data-konten/:id" element={<InstruktorDataKonten />} />
+<<<<<<< HEAD
       <Route path="/inst/data-module/:id" element={<InstruktorDataModule />} />
+=======
+      <Route path="/inst/data-chapter/:id" element={<InstruktorDataModule />} />
+      <Route path="/inst/data-kategori" element={<InstrukturDataKategori />} />
+      <Route path="/inst/profile" element={<InstrukturPorofile />} />
+
+      {/* NotFound */}
+>>>>>>> 763d08745509f424f8e6105e9259366b545875de
       <Route path="/*" element={<NotFound />} />
     </Routes>
   );

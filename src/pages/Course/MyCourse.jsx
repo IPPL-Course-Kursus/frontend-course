@@ -5,11 +5,16 @@ import { selectMyCourses } from "../../redux/reducers/courseReducers";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 
+<<<<<<< HEAD
 const CoursesPage = () => {
   const dispatch = useDispatch();
   const mycourse = useSelector(selectMyCourses);
   const { loading, error } = useSelector((state) => state.course || {});
   
+=======
+
+const MyCourse = () => {
+>>>>>>> 763d08745509f424f8e6105e9259366b545875de
   const [isMobileDropdownVisible, setMobileDropdownVisible] = useState(false);
   const [filterChecked, setFilterChecked] = useState({});
   const [courseStatusFilter, setCourseStatusFilter] = useState('all'); // State untuk status kursus

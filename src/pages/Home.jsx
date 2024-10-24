@@ -1,6 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
 import Navbar from "../components/Navbar";
-// import CardCategory from "../components/HomeComponent/cardCategory";
 import CardCourse from "../components/HomeComponent/CardCourse";
 import CardFree from "../components/HomeComponent/CardFree";
 import imgSection from "../assets/bernadya.jpg";
@@ -29,7 +28,7 @@ const Home = () => {
   return (
     <>
       <Navbar />
-      <div className="w-full h-full pt-20 relative">
+      <div className="w-full h-full relative">
         <img
           src="/people_dasboard.png"
           alt="picture"

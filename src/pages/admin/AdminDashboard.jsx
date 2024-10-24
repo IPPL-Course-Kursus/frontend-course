@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaUsers, FaSearch, FaFilter, FaBars } from "react-icons/fa";
@@ -6,6 +7,17 @@ import { fetchStats, fetchPayments, fetchuser } from "../../redux/actions/admind
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
+=======
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { FaUsers, FaSearch, FaFilter, FaBars } from "react-icons/fa";
+import SideBar from "../../components/Sidebar/SidebarAdmin";
+import { fetchStats, fetchPayments, fetchuser } from "../../redux/actions/adminDashboardActions";
+
+const AdminDashboard = () => {
+  const dispatch = useDispatch();
+  // eslint-disable-next-line no-unused-vars
+>>>>>>> 763d08745509f424f8e6105e9259366b545875de
   const { stats, paymentStatus, loading, user } = useSelector((state) => state.adminDashboard);
 
   const [globalSearch, setGlobalSearch] = useState("");
