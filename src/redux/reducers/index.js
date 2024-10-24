@@ -1,25 +1,12 @@
 import { combineReducers } from "redux";
 import {
-<<<<<<< HEAD
-  authReducer, 
-=======
   authReducer,
->>>>>>> 763d08745509f424f8e6105e9259366b545875de
   emailReducer,
   resetPasswordReducer,
   verifyEmailReducer,
   getMeReducer,
   updateProfileReducer,
   changePasswordReducer,
-<<<<<<< HEAD
-} from "./authReducers"; 
-import courseReducer from "./courseReducers"; 
-import categoryReducer from "./categoryReducers";
-
-import transactionReducer from "./transactionReducers"; // Menggunakan reducer transaksi
-import adminDataKategoriReducer from "./adminDataKategoriReducers";
-import adminDashboardReducer from "./admindashboardreducer"; // Pastikan ini sudah benar
-=======
 } from "./authReducers";
 import chapterReducers from "./chapterReducers";
 import courseReducer from "./courseReducers";
@@ -35,18 +22,13 @@ import mulaiKelasReducers from "./mulaiKelasReducers";
 import levelCourseReducer from "./levelCourseReducers";
 import instrukturReducer from "./instrukturReducer";
 import LoginReducer from "./LoginReducer"
->>>>>>> 763d08745509f424f8e6105e9259366b545875de
 
 export default combineReducers({
 
   //Login
   login: LoginReducer,
   // Auth
-<<<<<<< HEAD
-  auth: authReducer, 
-=======
   auth: authReducer,
->>>>>>> 763d08745509f424f8e6105e9259366b545875de
   email: emailReducer,
   resetPassword: resetPasswordReducer,
   verifyEmail: verifyEmailReducer,
@@ -54,6 +36,7 @@ export default combineReducers({
   updateProfile: updateProfileReducer,
   changePassword: changePasswordReducer,
 
+  // Course
   course: courseReducer,
 
   // Category
@@ -68,11 +51,6 @@ export default combineReducers({
   // Admin
   adminDataKategori: adminDataKategoriReducer,
   adminDashboard: adminDashboardReducer,
-<<<<<<< HEAD
-
-  // Transaction
-  transaction: transactionReducer,
-=======
   typeCourse: typeCourseReducer,
   levelCourse: levelCourseReducer,
 
@@ -87,5 +65,4 @@ export default combineReducers({
 
   // Instruktur
   instruktur: instrukturReducer,
->>>>>>> 763d08745509f424f8e6105e9259366b545875de
 });

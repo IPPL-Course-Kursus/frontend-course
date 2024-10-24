@@ -11,23 +11,23 @@ import SuccessPage from "./pages/Payment/SuccessPage";
 import PaymentPage from "./pages/payment/PaymentPage";
 import DetailKelas from "./pages/Detail/DetailKelas";
 import MainProfile from "./pages/Profile/MainProfile";
-import MyCourse from "./pages/Course/MyCourse"; // Pastikan ini memiliki ekspor default
+import MyCourse from "./pages/Course/MyCourse";
 import VerifyEmail from "./pages/auth/VerifyEmail";
 import TopikKelas from "./pages/TopikKelas/TopikKelas";
 import MulaiKelas from "./pages/MulaiKelas/MulaiKelas";
 
 // ADMIN
 import AdminDashboard from "./pages/admin/AdminDashboard";
+//ADMIN KELOLA DATA
 import AdminDataKategori from "./pages/admin/KelolaDataAdmin/AdminDataKategori";
 import AdminDataLevel from "./pages/admin/KelolaDataAdmin/AdminDataLevel";
 import AdminDataType from "./pages/admin/KelolaDataAdmin/AdminDataType";
+//KELOLA INSTRUKTUR ADMIN
 import AdminDataInstruktur from "./pages/admin/KelolaInstrukturAdmin/AdminDataInstruktur";
 import AdminRegisterInstruktur from "./pages/admin/KelolaInstrukturAdmin/AdminRegisterInstruktur";
 // INSTRUKTUR
 import InstruktorDashboard from "./pages/instruktor/InstruktorDashboard";
 
-<<<<<<< HEAD
-=======
 import InstruktorDataModule from "./pages/instruktor/InstruktorDataModule";
 
 import InstrukturPorofile from "./pages/instruktor/InstrukturPorofile";
@@ -41,10 +41,10 @@ import { ProtectedRouteInstruktur } from "./security/ProtectRoleInstruktur";
 import NoAccesToken from "./components/Protecd/NoAccesToken";
 import Protected from "./components/Protecd/NoAccesToken";
 
->>>>>>> 763d08745509f424f8e6105e9259366b545875de
 function App() {
   return (
     <BrowserRouter>
+      {/* Setup toaster untuk menampilkan notifikasi */}
       <Toaster
         position="bottom-center"
         reverseOrder={false}
@@ -83,10 +83,6 @@ function AppRoutes() {
 
   return (
     <Routes>
-<<<<<<< HEAD
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<Login />} />
-=======
       {/* <Route element={<ProtectedRouteUser />}> */}
         <Route path="/" element={<Home />} />
         {/* </Protected> */}
@@ -101,12 +97,16 @@ function AppRoutes() {
           </NoAccesToken>
         }
       />
->>>>>>> 763d08745509f424f8e6105e9259366b545875de
       <Route path="/register" element={<Register />} />
       <Route path="/reset" element={<ResetPassword />} />
       <Route path="/send-email" element={<SendEmail />} />
       <Route path="/verify-email" element={<VerifyEmail />} />
+
+      {/* Profile */}
       <Route path="/profile" element={<MainProfile />} />
+
+      {/* Course */}
+      {/* <Route path="/course-detail/:courseId" element={<DetailKelas />} /> */}
       <Route path="/course-detail/:id" element={<DetailKelas />} />
       <Route
         path="/mycourse"
@@ -118,17 +118,10 @@ function AppRoutes() {
       />
       <Route path="/topik-kelas" element={<TopikKelas />} />
       <Route path="/mulai-kelas" element={<MulaiKelas />} />
+
+      {/* Payment */}
       <Route path="/payment" element={<PaymentPage />} />
       <Route path="/success-payment" element={<SuccessPage />} />
-<<<<<<< HEAD
-      <Route path="/admin/dashboard" element={<AdminDashboard />} />
-      <Route path="/admin/data-kategori" element={<AdminDataKategori />} />
-      <Route path="/admin/data-level" element={<AdminDataLevel />} />
-      <Route path="/admin/data-Type" element={<AdminDataType />} />
-      <Route path="/admin/data-instruktur" element={<AdminDataInstruktur />} />
-      <Route path="/admin/regis-instruktur" element={<AdminRegisterInstruktur />} />
-      <Route path="/inst/dashboard" element={<InstruktorDashboard />} />
-=======
 
       {/* Admin */}
       <Route element={<ProtectedRouteAdmin />}>
@@ -162,19 +155,14 @@ function AppRoutes() {
           }
         />
       </Route>
->>>>>>> 763d08745509f424f8e6105e9259366b545875de
       <Route path="/inst/data-kelas" element={<InstruktorDataKelas />} />
 
       <Route path="/inst/data-konten/:id" element={<InstruktorDataKonten />} />
-<<<<<<< HEAD
-      <Route path="/inst/data-module/:id" element={<InstruktorDataModule />} />
-=======
       <Route path="/inst/data-chapter/:id" element={<InstruktorDataModule />} />
       <Route path="/inst/data-kategori" element={<InstrukturDataKategori />} />
       <Route path="/inst/profile" element={<InstrukturPorofile />} />
 
       {/* NotFound */}
->>>>>>> 763d08745509f424f8e6105e9259366b545875de
       <Route path="/*" element={<NotFound />} />
     </Routes>
   );

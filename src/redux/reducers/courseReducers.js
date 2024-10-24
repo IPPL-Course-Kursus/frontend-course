@@ -1,22 +1,24 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { createSelector } from 'reselect';
+import { createSlice } from "@reduxjs/toolkit";
+import { createSelector } from "reselect";
 
-const courseSlice = createSlice({
-  name: 'courses',
-  initialState: {
-    courses: [],
-    mycourse: [],
-    loading: false,
-    detail: {},
-    error: null,
-  },
+const initialState = {
+  courses: [],
+  mycourse: [],
+  loading: false,
+  detail: {},
+  error: null,
+  free: [],
+  pageCourse: [],
+  popular: [],
+};
+
+const coursesSlice = createSlice({
+  name: "courses",
+  initialState,
   reducers: {
     setCourses: (state, action) => {
       state.courses = action.payload;
     },
-<<<<<<< HEAD
-    setMyCourses: (state, action) => {
-=======
     fetchCourseStart: (state) => {
       state.loading = true;
       state.error = null;
@@ -31,16 +33,17 @@ const courseSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
-
+    setMyCourse: (state, action) => {
+      state.mycourse = action.payload;
+    },
     setDetail: (state, action) => {
       state.detail = {
         ...action.payload,
         recommendedCourses: action.payload.recommendedCourses || [],
       };
     },
-    setMyCourse: (state, action) => {
->>>>>>> 763d08745509f424f8e6105e9259366b545875de
-      state.mycourse = action.payload;
+    removeDetail: (state) => {
+      state.detail = {};
     },
     setLoading: (state, action) => {
       state.loading = action.payload;
@@ -51,26 +54,21 @@ const courseSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
-    setDetail: (state, action) => {
-      state.detail = action.payload;
+    setFree: (state, action) => {
+      state.free = action.payload;
+    },
+    setPageCourse: (state, action) => {
+      state.pageCourse = action.payload;
+    },
+    setPopular: (state, action) => {
+      state.popular = action.payload;
     },
   },
 });
 
-<<<<<<< HEAD
-export const { setCourses, setMyCourses, setDetail, setLoading, setError, clearError } = courseSlice.actions;
+const selectCourses = (state) => state.course;
 
-// Selector to get the courses state
-const selectCourses = (state) => state.course || { mycourse: [] };
 
-// Memoized selector for myCourses
-export const selectMyCourses = createSelector(
-  [selectCourses],
-  (coursesState) => coursesState.mycourse
-);
-
-export default courseSlice.reducer;
-=======
 export const {
   setCourse,
   setDetail,
@@ -79,10 +77,16 @@ export const {
   setPopular,
   setFree,
   setPageCourse,
+  clearError,
+  setError,
+  setLoading,
   fetchCourseStart,
   fetchCourseSuccess,
   fetchCourseFailure,
 } = coursesSlice.actions;
 
+export const selectMyCourse = createSelector(
+  [selectCourses],
+  (coursesState) => coursesState.mycourse
+);
 export default coursesSlice.reducer;
->>>>>>> 763d08745509f424f8e6105e9259366b545875de

@@ -1,9 +1,5 @@
 import axios from "axios";
-<<<<<<< HEAD
-import { setCourses } from "../reducers/courseReducers";
-=======
 // import { fetchCourseFailure, fetchCourseStart, fetchCourseSuccess, setCourse } from "../reducers/courseReducers";
->>>>>>> 763d08745509f424f8e6105e9259366b545875de
 import {
   deleteChapter,
   deleteChapterFailure,
