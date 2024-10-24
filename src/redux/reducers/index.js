@@ -10,14 +10,14 @@ import {
 } from "./authReducers"; 
 import courseReducer from "./courseReducers"; 
 import categoryReducer from "./categoryReducers";
-
-import transactionReducer from "./transactionReducers"; // Menggunakan reducer transaksi
+import { transactionReducer } from "./transactionReducers";
 import adminDataKategoriReducer from "./adminDataKategoriReducers";
 import adminDashboardReducer from "./admindashboardreducer";
 import typeCourseReducer from "./typeCourseReducers";
 import instrukturDashboardReducers from "./instrukturDashboardReducers"; 
 import mulaiKelasReducers from "./mulaiKelasReducers";
 import levelCourseReducer from "./levelCourseReducers";
+import { paymentHistoryReducer } from "./transactionReducers";
 
 export default combineReducers({
   // Auth
@@ -43,6 +43,9 @@ export default combineReducers({
 
   // Transaction
   transaction: transactionReducer,
+  
+  // Payment History
+  paymentHistory: paymentHistoryReducer,
 
   // Instruktur
   instrukturDashboard: instrukturDashboardReducers,

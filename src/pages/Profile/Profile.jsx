@@ -7,10 +7,12 @@ import {
   selectProfileLoading,
   selectProfileError,
 } from "../../redux/reducers/authReducers";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import Cookies from "js-cookie";
 
 const Profile = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // Gunakan useNavigate untuk navigasi
 
   // Ambil state dari Redux
   const profile = useSelector(selectProfile);
@@ -24,15 +26,13 @@ const Profile = () => {
     country: "",
     city: "",
     image: "",
+    tanggalLahir: "",
   });
   const [focusedField, setFocusedField] = useState("");
   const [imagePreview, setImagePreview] = useState("/profile.jpg");
   const [imageFile, setImageFile] = useState(null);
 
   // Mengambil data profil dari Redux saat komponen di-mount
-  // useEffect(() => {
-  //   dispatch(getMe());
-  // }, [dispatch]);
   useEffect(() => {
     const token = Cookies.get("token");
 
@@ -40,6 +40,7 @@ const Profile = () => {
       dispatch(getMe());
     }
   }, [dispatch]);
+
   // Mengatur form state berdasarkan data profil dari Redux
   useEffect(() => {
     if (profile) {
@@ -50,6 +51,7 @@ const Profile = () => {
         country: profile.country || "",
         city: profile.city || "",
         image: profile.image || "",
+        tanggalLahir: profile.tanggalLahir || "",
       });
 
       setImagePreview(profile.image || "/profile.jpg");
@@ -65,19 +67,24 @@ const Profile = () => {
     }));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const formData = new FormData();
 
     formData.append("fullName", form.fullName);
     formData.append("phoneNumber", form.phoneNumber);
     formData.append("country", form.country);
     formData.append("city", form.city);
+    formData.append("tanggalLahir", form.tanggalLahir);
 
     if (imageFile) {
       formData.append("image", imageFile);
     }
 
-    dispatch(updateProfile(formData)); // Kirim form data dengan file gambar
+    // Dispatch update profile
+    await dispatch(updateProfile(formData));
+
+    // Setelah update sukses, arahkan ke halaman profil
+    navigate("/");
   };
 
   // Fungsi untuk menangani fokus pada input field
@@ -199,6 +206,18 @@ const Profile = () => {
             focusedField === "city" ? "border-black" : "border-gray-300"
           } focus:outline-none ${focusedField === "city" ? "text-black" : "text-gray-500"}`}
           placeholder="Kota"
+        />
+        <input
+          type="date"
+          name="tanggalLahir"
+          value={form.tanggalLahir}
+          onChange={handleInputChange}
+          onFocus={() => handleFocus("tanggalLahir")}
+          onBlur={handleBlur}
+          className={`block w-full p-2 border-b ${
+            focusedField === "tanggalLahir" ? "border-black" : "border-gray-300"
+          } focus:outline-none ${focusedField === "tanggalLahir" ? "text-black" : "text-gray-500"}`}
+          placeholder="tanggalLahir"
         />
         <button onClick={handleSave} className="py-2 bg-blue-900 text-white rounded-full">
           Simpan

@@ -282,7 +282,7 @@ export const verifyEmail = () => async (dispatch) => {
   }
 };
 
-export const updateProfile = (userData, navigate) => async (dispatch) => {
+export const updateProfile = (userData) => async (dispatch) => {
   try {
     dispatch(updateProfileStart()); // Mulai proses update
 
@@ -300,7 +300,7 @@ export const updateProfile = (userData, navigate) => async (dispatch) => {
     toast.success("Profil berhasil diperbarui!"); // Notifikasi berhasil
 
     // Navigasi ke halaman profil atau halaman lain jika diperlukan
-    navigate("/profile");
+    // navigate("/profile");
   } catch (error) {
     dispatch(updateProfileFailure(error.response?.data?.message || "Gagal memperbarui profil."));
     toast.error(error.message || "Terjadi kesalahan saat memperbarui profil."); // Notifikasi gagal
