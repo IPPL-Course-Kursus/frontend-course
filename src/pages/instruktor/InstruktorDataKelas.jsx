@@ -7,7 +7,7 @@ import DataKelasDetail from "../../components/InstrukturComponents/DataKelas/Dat
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import SidebarInstruktur from "../../components/Sidebar/SidebarInstruktur";
-import { getAllKelas } from "../../redux/actions/instruktorActions";
+import { getAllKelas, deleteDataCourse } from "../../redux/actions/instruktorActions";
 
 const InstruktorDataKelas = () => {
   const [courseTypeSearch, setCourseTypeSearch] = useState("");
@@ -16,6 +16,8 @@ const InstruktorDataKelas = () => {
   const [showUbahPopup, setShowUbahPopup] = useState(false);
   const [showDetailPopup, setShowDetailPopup] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [courseToDelete, setCourseToDelete] = useState(null);
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [filter, setFilter] = useState("");
@@ -32,21 +34,40 @@ const InstruktorDataKelas = () => {
   const toggleSearch = () => {
     setSearchVisible(!searchVisible);
   };
-  const handleAddClick = (course) => {
-    setSelectedCourse(course);
+  const handleAddClick = () => {
+    setSelectedCourse({});
     setShowTambahPopup(true);
   };
 
-  const handleEditClick = (course) => {
-    setSelectedCourse(course);
+  const handleEditClick = (courses) => {
+    setSelectedCourse(courses);
     setShowUbahPopup(true);
   };
 
-  const handleDetailClick = (course) => {
-    console.log("Selected Course:", course); // Tambahkan ini
-    setSelectedCourse(course);
+  const handleDetailClick = (courses) => {
+    console.log("Selected Course:", courses); // Tambahkan ini
+    setSelectedCourse(courses);
     setShowDetailPopup(true);
   };
+
+  const handleDelete = (courses) => {
+    setCourseToDelete(courses); // Pastikan Anda mengatur kursus yang ingin dihapus
+    setShowDeleteModal(true);
+  };
+
+const confirmDelete = () => {
+  console.log("Deleting course ID:", courseToDelete ? courseToDelete.id : "No course selected");
+  if (courseToDelete && courseToDelete.id) {
+    dispatch(deleteDataCourse(courseToDelete.id)).then(() => {
+      setShowDeleteModal(false); 
+      // window.location.reload(); // Reload halaman setelah penghapusan berhasil
+    });
+  } else {
+    console.error("Invalid course ID for deletion:", courseToDelete);
+  }
+};
+
+
 
   const filteredCourses = courses.filter(
     (courseType) =>
@@ -124,21 +145,21 @@ const InstruktorDataKelas = () => {
                 <select
                   value={filter}
                   onChange={handleFilterChange}
-                  className="p-1 border border-[#0a61aa] rounded-full text-sm text-[#0a61aa]"
+                  className=" py-1 px-4 bg-[#0a61aa] text-white font-semibold rounded-md text-sm transition-all duration-300 hover:scale-105 flex items-center justify-center"
                 >
                   <option value="">Filter</option>
                   <option value="Free">Free</option>
                   <option value="Premium">Premium</option>
                 </select>
-                <FaFilter className="absolute right-4 top-2 text-[#0a61aa] text-sm" />
+                <FaFilter className="absolute right-10 top-2 text-[#0a61aa] text-sm" />
               </div>
 
               {/* Pencarian */}
               <div className="relative w-full md:w-auto flex items-center">
-                <FaSearch
+                {/* <FaSearch
                   className="text-[#173D94] text-lg cursor-pointer"
                   onClick={toggleSearch}
-                />
+                /> */}
                 <input
                   type="text"
                   value={courseTypeSearch}
@@ -207,6 +228,12 @@ const InstruktorDataKelas = () => {
                       <button className="py-1 px-2 md:px-4 bg-blue-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2">
                         Promo
                       </button>
+                      <button
+                        className="py-1 px-2 md:px-4 bg-blue-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                        onClick={() => handleDelete(courseType)}
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -261,6 +288,28 @@ const InstruktorDataKelas = () => {
             onClose={() => setShowDetailPopup(false)}
             existingData={selectedCourse} // Pastikan data ini valid
           />
+
+          {showDeleteModal && (
+            <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+              <div className="bg-white p-6 rounded-3xl shadow-lg relative w-80">
+                <h2 className="text-xl font-bold text-center mb-4">Yakin hapus data?</h2>
+                <div className="flex justify-around mt-6">
+                  <button
+                    className="bg-red-600 text-white px-6 py-2 rounded-full font-bold"
+                    onClick={confirmDelete}
+                  >
+                    Hapus
+                  </button>
+                  <button
+                    className="bg-gray-300 px-6 py-2 rounded-full font-bold"
+                    onClick={() => setShowDeleteModal(false)}
+                  >
+                    Batal
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>
