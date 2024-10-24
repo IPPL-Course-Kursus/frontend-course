@@ -1,38 +1,42 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 
-const InstrukturForm = ({ show, onClose, existingData, isEditMode, onSubmit }) => {
+const InstrukturFormEdit = ({ show, onClose, existingData, isEditMode, onSubmit }) => {
   const [formData, setFormData] = useState({
     fullName: "",
-    country: "",
-    city: "",
+    image: "",
     phoneNumber: "",
+    role: "",
     tanggalLahir: "",
-    email: "",
-    password: ""
+    city: "",
+    country: ""
   });
+  const [filePreview, setFilePreview] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null); // Menyimpan file yang akan diupload
 
   useEffect(() => {
     if (existingData) {
       setFormData({
         fullName: existingData.fullName || "",
-        country: existingData.country || "",
-        city: existingData.city || "",
+        image: existingData.image || "",
         phoneNumber: existingData.phoneNumber || "",
+        role: existingData.role || "",
         tanggalLahir: existingData.tanggalLahir || "",
-        email: existingData.email || "",
-        password: "" // Tidak ada prefilled untuk password
+        city: existingData.city || "",
+        country: existingData.country || ""
       });
+      setFilePreview(existingData.image); // Menampilkan gambar yang ada
     } else {
       setFormData({
         fullName: "",
-        country: "",
-        city: "",
+        image: "",
         phoneNumber: "",
+        role: "",
         tanggalLahir: "",
-        email: "",
-        password: ""
+        city: "",
+        country: ""
       });
+      setFilePreview(null);
     }
   }, [existingData]);
 
@@ -46,9 +50,38 @@ const InstrukturForm = ({ show, onClose, existingData, isEditMode, onSubmit }) =
     }));
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const photoUrl = URL.createObjectURL(file);
+      setFormData((prev) => ({
+        ...prev,
+        image: photoUrl, // Menyimpan URL gambar
+      }));
+      setFilePreview(photoUrl); // Preview gambar
+      setSelectedFile(file); // Menyimpan file yang dipilih
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData);
+  
+    // Membuat FormData untuk mengirim data
+    const form = new FormData();
+    form.append("fullName", formData.fullName); // Mengirim nama lengkap
+    if (selectedFile) {
+      form.append("image", selectedFile); // Mengirim file gambar jika ada
+    } else if (formData.image) {
+      // Jika tidak ada file baru, sertakan gambar yang sudah ada
+      form.append("image", formData.image);
+    }
+    form.append("phoneNumber", formData.phoneNumber); // Mengirim nomor telepon
+    form.append("tanggalLahir", formData.tanggalLahir); // Mengirim tanggal lahir
+    form.append("city", formData.city); // Mengirim kota
+    form.append("country", formData.country); // Mengirim negara
+
+    // Memanggil callback onSubmit untuk mengirim data ke backend
+    onSubmit(form);
     onClose();
   };
 
@@ -87,30 +120,26 @@ const InstrukturForm = ({ show, onClose, existingData, isEditMode, onSubmit }) =
           </div>
 
           <div className="mb-4">
-            <label className="block mb-1 font-semibold">Negara</label>
+            <label className="block mb-1 font-semibold">Upload Foto</label>
             <input
-              type="text"
-              name="country"
-              value={formData.country}
-              onChange={handleInputChange}
+              type="file"
+              onChange={handleFileChange}
               className="w-full p-2 border rounded-xl"
-              placeholder="Masukkan negara"
-              required
+              accept="image/*"
+              required={!isEditMode}
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block mb-1 font-semibold">Kota</label>
-            <input
-              type="text"
-              name="city"
-              value={formData.city}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-xl"
-              placeholder="Masukkan kota"
-              required
-            />
-          </div>
+          {/* Preview gambar */}
+          {filePreview && (
+            <div className="mb-4">
+              <img
+                src={filePreview}
+                alt="Preview"
+                className="w-full h-24 object-contain rounded-md"
+              />
+            </div>
+          )}
 
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Nomor Telepon</label>
@@ -138,27 +167,27 @@ const InstrukturForm = ({ show, onClose, existingData, isEditMode, onSubmit }) =
           </div>
 
           <div className="mb-4">
-            <label className="block mb-1 font-semibold">Email</label>
+            <label className="block mb-1 font-semibold">Kota</label>
             <input
-              type="email"
-              name="email"
-              value={formData.email}
+              type="text"
+              name="city"
+              value={formData.city}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
-              placeholder="Masukkan email"
+              placeholder="Masukkan kota"
               required
             />
           </div>
 
           <div className="mb-4">
-            <label className="block mb-1 font-semibold">Password</label>
+            <label className="block mb-1 font-semibold">Negara</label>
             <input
-              type="password"
-              name="password"
-              value={formData.password}
+              type="text"
+              name="country"
+              value={formData.country}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
-              placeholder="Masukkan password"
+              placeholder="Masukkan negara"
               required
             />
           </div>
@@ -177,7 +206,7 @@ const InstrukturForm = ({ show, onClose, existingData, isEditMode, onSubmit }) =
   );
 };
 
-InstrukturForm.propTypes = {
+InstrukturFormEdit.propTypes = {
   show: PropTypes.bool,
   onClose: PropTypes.func,
   existingData: PropTypes.object,
@@ -185,4 +214,4 @@ InstrukturForm.propTypes = {
   onSubmit: PropTypes.func,
 };
 
-export default InstrukturForm;
+export default InstrukturFormEdit;
