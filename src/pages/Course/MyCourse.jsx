@@ -89,7 +89,7 @@ const CoursesPage = () => {
   >
     Semua
   </button>
-  
+
   <button
     onClick={() => handleStatusFilterChange('notStarted')}
     className={`w-40 font-bold text-sm md:text-base mx-1 mt-2 px-3 py-1 rounded-md ${
@@ -111,7 +111,7 @@ const CoursesPage = () => {
   >
     Sedang Dipelajari
   </button>
-  
+
   <button
     onClick={() => handleStatusFilterChange('completed')}
     className={`w-40 font-bold text-sm md:text-base mx-1 mt-2 px-3 py-1 rounded-md ${
@@ -166,12 +166,9 @@ const CoursesPage = () => {
                       </label>
                     </div>
                   ))}
-                  <button
-                                // onClick={clearFilters}
-                                className="bg-red-600 text-white px-4 py-2 rounded mt-4"
-                            >
-                                Clear Filters
-                            </button>
+                  <button className="px-10 py-2 rounded-md text-red-600 mt-10 whitespace-nowrap">
+                    Hapus Filter
+                  </button>
                 </div>
               </div>
 
@@ -212,7 +209,7 @@ const CoursesPage = () => {
                   ))}
 
 <button className="px-10 py-2 rounded-md text-red-600 mt-10 whitespace-nowrap">
-                    Clear Filter
+                    Hapus Filter
                   </button>
                 </div>
               </div>
@@ -222,7 +219,7 @@ const CoursesPage = () => {
             <div className="md:w-3/4 pl-0 md:pl-4">
               {loading && <p>Loading courses...</p>}
               {error && <p>Error: {error}</p>}
-              
+
               {filteredCourses().length > 0 ? (
                 filteredCourses().map((courseItem, index) => {
                   console.log(courseItem, index); // Menampilkan di console
@@ -267,7 +264,7 @@ const CoursesPage = () => {
   </span>
 </div>
 
-                        
+
 
                         <div className="flex items-center mb-2">
                           <svg

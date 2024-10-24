@@ -60,7 +60,7 @@ export const addDataKelas = (requesData) => async (dispatch) => {
         "Content-Type": "multipart/form-data", // Set the Content-Type header
       },
     };
-
+    
     // Make the POST request with the FormData
     const response = await axios.post(`${api_url}course/createCourse`, requesData, config);
 
