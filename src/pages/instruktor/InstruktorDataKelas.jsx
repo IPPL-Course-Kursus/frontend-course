@@ -32,8 +32,8 @@ const InstruktorDataKelas = () => {
   const toggleSearch = () => {
     setSearchVisible(!searchVisible);
   };
-  const handleAddClick = () => {
-    setSelectedCourse(null);
+  const handleAddClick = (course) => {
+    setSelectedCourse(course);
     setShowTambahPopup(true);
   };
 
@@ -103,7 +103,9 @@ const InstruktorDataKelas = () => {
 
           {/* Section Data Kelas */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
-            <h2 className="text-lg md:text-xl font-bold text-[#0a61aa]">Data Kelas</h2>
+            <h2 className="flex items-center py-2 px-4 bg-gradient-to-r from-[#FF5722] to-[#FF9800] text-white font-semibold rounded-md text-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl mb-4">
+              Data Kelas
+            </h2>
 
             <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
               {/* Tombol tambah kelas */}
@@ -112,8 +114,8 @@ const InstruktorDataKelas = () => {
                   className="py-1 px-4 bg-[#0a61aa] text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center"
                   onClick={handleAddClick}
                 >
-                  <IoAddCircleOutline className="mr-2" />
-                  Tambah
+                  <IoAddCircleOutline className="mr-2 text-2xl" />
+                  <span className="font-bold">Tambah</span>
                 </button>
               </div>
 
@@ -164,16 +166,7 @@ const InstruktorDataKelas = () => {
                   <th className="px-2 md:px-4 py-2">Aksi</th>
                 </tr>
               </thead>
-                  {/* file: null,
-    courseCode: "",
-    categoryName: "",
-    courseName: "",
-    typeName: "",
-    levelName: "",
-    coursePrice: "",
-    fullName: "",
-    intendedFor: "",
-    aboutCourse: "", */}
+
               <tbody>
                 {currentItems.map((courseType, index) => (
                   <tr key={index} className="border-t text-xs md:text-sm">
@@ -191,7 +184,7 @@ const InstruktorDataKelas = () => {
                     <td className="px-2 md:px-4 py-2">{courseType.coursePrice}</td>
                     <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
                       <Link
-                        to={`/inst/data-module/
+                        to={`/inst/data-chapter/
                         ${courseType.id}`}
                       >
                         {/* <Link to="/inst/data-module"> */}
