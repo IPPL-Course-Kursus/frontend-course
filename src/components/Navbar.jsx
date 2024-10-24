@@ -1,17 +1,25 @@
 // export default Navbar;
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import default_image from "../assets/profil.png";
-import { logout } from "../redux/actions/authActions";
+import { logout, getMe } from "../redux/actions/authActions"; // Import getMe
 import { FiBookOpen, FiLayers, FiLogOut, FiMenu, FiUser } from "react-icons/fi"; // Import React Icons
 
 const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   // Ambil token dan profile dari Redux store
   const { token } = useSelector((state) => state.auth);
   const profile = useSelector((state) => state.getMe.profile);
+
+  // Gunakan useEffect untuk memanggil getMe jika token ada
+  useEffect(() => {
+    if (token) {
+      dispatch(getMe()); // Fetch data profil user
+    }
+  }, [token, dispatch]);
 
   // Gambar profil default atau dari user
   const imgProfile = profile?.image || default_image;

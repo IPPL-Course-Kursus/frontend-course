@@ -224,7 +224,7 @@ export const verifyEmail = () => async (dispatch) => {
   }
 };
 
-export const updateProfile = (userData, navigate) => async (dispatch) => {
+export const updateProfile = (userData) => async (dispatch) => {
   try {
     dispatch(updateProfileStart()); // Mulai proses update
 
@@ -242,46 +242,51 @@ export const updateProfile = (userData, navigate) => async (dispatch) => {
     toast.success("Profil berhasil diperbarui!"); // Notifikasi berhasil
 
     // Navigasi ke halaman profil atau halaman lain jika diperlukan
-    navigate("/profile");
+    // navigate("/profile");
   } catch (error) {
     dispatch(updateProfileFailure(error.response?.data?.message || "Gagal memperbarui profil."));
     toast.error(error.message || "Terjadi kesalahan saat memperbarui profil."); // Notifikasi gagal
   }
 };
 
-export const changePassword =
-  (currentPassword, newPassword, confirmPassword) => async (dispatch) => {
-    try {
-      dispatch(changePasswordStart());
+export const changePassword = (currentPassword, newPassword, confirmPassword) => async (dispatch) => {
+  try {
+    dispatch(changePasswordStart());
 
-      const token = Cookies.get("token");
+    const token = Cookies.get("token");
 
-      // Mengirim permintaan untuk mengubah password dengan token di header
-      const response = await axios.post(
-        `${api_url}auth/change-password`,
-        {
-          currentPassword,
-          newPassword,
-          confirmPassword,
+    // Mengirim permintaan untuk mengubah password dengan token di header
+    const response = await axios.post(
+      `${api_url}auth/change-password`,
+      {
+        currentPassword,
+        newPassword,
+        confirmPassword,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Sertakan token dalam header Authorization
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, // Sertakan token dalam header Authorization
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        dispatch(changePasswordSuccess());
-        toast.success("Password berhasil diubah!");
-      } else {
-        throw new Error(response.data.message || "Gagal mengubah password.");
       }
-    } catch (error) {
-      dispatch(changePasswordFailure(error.message || "Terjadi kesalahan saat mengubah password."));
-      toast.error(error.message || "Terjadi kesalahan saat mengubah password.");
+    );
+
+    if (response.status === 200) {
+      dispatch(changePasswordSuccess());
+      toast.success("Password berhasil diubah!");
     }
-  };
+  } catch (error) {
+    dispatch(changePasswordFailure());
+
+    // Handle specific error for old password mismatch (400 Bad Request)
+    if (error.response && error.response.status === 400) {
+      toast.error("Password lama salah.");
+    } else {
+      toast.error("Terjadi kesalahan saat mengubah password.");
+    }
+  }
+};
+
+
 
 // export const login = (email, password, navigate) => async (dispatch) => {
 //   try {
