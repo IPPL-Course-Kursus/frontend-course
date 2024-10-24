@@ -12,7 +12,7 @@ import chapterReducers from "./chapterReducers";
 import courseReducer from "./courseReducers";
 import categoryReducer from "./categoryReducers";
 import contentReducers from "./contentReducers";
-
+import instructorReducer from "./datainstructorReducers";
 import transactionReducer from "./transactionReducers"; // Menggunakan reducer transaksi
 import adminDataKategoriReducer from "./adminDataKategoriReducers";
 import adminDashboardReducer from "./admindashboardreducer";
@@ -68,4 +68,5 @@ export default combineReducers({
 
   // Instruktur
   instruktur: instrukturReducer,
+  instructors: instructorReducer,
 });
