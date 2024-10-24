@@ -1,13 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { createSelector } from "reselect";
 
 const initialState = {
   courses: [],
-  detail: {}, // Ubah menjadi objek
   mycourse: [],
+  loading: false,
+  detail: {},
+  error: null,
   free: [],
   pageCourse: [],
-  loading: false,
-  error: null, // Tambahkan error dan loading ke initial state
+  popular: [],
 };
 
 const coursesSlice = createSlice({
@@ -15,7 +17,7 @@ const coursesSlice = createSlice({
   initialState,
   reducers: {
     setCourse: (state, action) => {
-      state.courses = action.payload;
+      state.courses = action.payload; 
     },
     addCourseRequest(state) {
       state.loading = true;
@@ -45,18 +47,26 @@ const coursesSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
-
+    setMyCourse: (state, action) => {
+      state.mycourse = action.payload;
+    },
     setDetail: (state, action) => {
       state.detail = {
         ...action.payload,
         recommendedCourses: action.payload.recommendedCourses || [],
       };
     },
-    setMyCourse: (state, action) => {
-      state.mycourse = action.payload;
+    removeDetail: (state) => {
+      state.detail = {};
     },
-    setPopular: (state, action) => {
-      state.popular = action.payload;
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
+    setError: (state, action) => {
+      state.error = action.payload;
+    },
+    clearError: (state) => {
+      state.error = null;
     },
     setFree: (state, action) => {
       state.free = action.payload;
@@ -64,8 +74,8 @@ const coursesSlice = createSlice({
     setPageCourse: (state, action) => {
       state.pageCourse = action.payload;
     },
-    removeDetail: (state) => {
-      state.detail = {};
+    setPopular: (state, action) => {
+      state.popular = action.payload;
     },
 
     // Tambahkan aksi baru untuk delete course
@@ -85,6 +95,9 @@ const coursesSlice = createSlice({
   },
 });
 
+const selectCourses = (state) => state.course;
+
+
 export const {
   setCourse,
   addCourseSuccess,
@@ -96,6 +109,9 @@ export const {
   setPopular,
   setFree,
   setPageCourse,
+  clearError,
+  setError,
+  setLoading,
   fetchCourseStart,
   fetchCourseSuccess,
   fetchCourseFailure,
@@ -104,4 +120,8 @@ export const {
   deleteCourseFailure,
 } = coursesSlice.actions;
 
+export const selectMyCourse = createSelector(
+  [selectCourses],
+  (coursesState) => coursesState.mycourse
+);
 export default coursesSlice.reducer;

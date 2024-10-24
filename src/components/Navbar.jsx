@@ -1,3 +1,4 @@
+// export default Navbar;
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
@@ -22,6 +23,7 @@ const Navbar = () => {
   const toggleDropdown = (dropdown) => {
     setActiveDropdown((prev) => (prev === dropdown ? null : dropdown));
   };
+
   const handleLogout = () => {
     dispatch(logout()); // Dispatch action logout
     navigate("/login"); // Arahkan pengguna ke halaman login
@@ -43,81 +45,100 @@ const Navbar = () => {
             onClick={() => toggleDropdown("menu")}
           >
             <FiMenu className="h-6 w-6 mr-2 transition-colors duration-300 ease-in-out " />
-            {/* <span className="transition-colors duration-300 ease-in-out">Menu</span> */}
           </div>
 
-          {activeDropdown === "menu" && (
-            <ul
-              tabIndex={0}
-              className="menu dropdown-content bg-white rounded-lg shadow-lg mt-3 w-48 right-0 p-3 z-50 transform transition-transform duration-300 ease-in-out hover:scale-105"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <li className="w-full">
-                <Link
-                  to="/topik-kelas"
-                  className="flex items-center py-3 px-4 font-medium text-gray-700 hover:bg-gradient-to-r hover:from-primary hover:to-red-600 hover:text-white rounded-lg transition-all duration-300 ease-in-out w-full"
-                >
-                  <FiBookOpen className="h-6 w-6 mr-3 text-red-600" />
-                  Katalog Kelas
-                </Link>
-              </li>
+          {activeDropdown === "menu" &&
+            (token ? (
+              <ul
+                tabIndex={0}
+                className="menu dropdown-content bg-white rounded-lg shadow-lg mt-3 w-48 right-0 p-3 z-50 transform transition-transform duration-300 ease-in-out hover:scale-105"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <li className="w-full">
+                  <Link
+                    to="/topik-kelas"
+                    className="flex items-center py-3 px-4 font-medium text-gray-700 hover:bg-gradient-to-r hover:from-primary hover:to-red-600 hover:text-white rounded-lg transition-all duration-300 ease-in-out w-full"
+                  >
+                    <FiBookOpen className="h-6 w-6 mr-3 text-red-600" />
+                    Katalog Kelas
+                  </Link>
+                </li>
 
-              <li className="w-full">
-                <Link
-                  to="/mycourse"
-                  className="flex items-center py-3 px-4 font-medium text-gray-700 hover:bg-gradient-to-r hover:from-primary hover:to-red-600 hover:text-white rounded-lg transition-all duration-300 ease-in-out w-full"
-                >
-                  <FiLayers className="h-6 w-6 mr-3 text-red-600" />
-                  Kelas Saya
-                </Link>
-              </li>
-            </ul>
-          )}
+                <li className="w-full">
+                  <Link
+                    to="/mycourse"
+                    className="flex items-center py-3 px-4 font-medium text-gray-700 hover:bg-gradient-to-r hover:from-primary hover:to-red-600 hover:text-white rounded-lg transition-all duration-300 ease-in-out w-full"
+                  >
+                    <FiLayers className="h-6 w-6 mr-3 text-red-600" />
+                    Kelas Saya
+                  </Link>
+                </li>
+              </ul>
+            ) : (
+              <ul
+                tabIndex={0}
+                className="menu dropdown-content bg-white rounded-lg shadow-lg mt-3 w-48 right-0 p-3 z-50 transform transition-transform duration-300 ease-in-out hover:scale-105"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <li className="w-full">
+                  <Link
+                    to="/topik-kelas"
+                    className="flex items-center py-3 px-4 font-medium text-gray-700 hover:bg-gradient-to-r hover:from-primary hover:to-red-600 hover:text-white rounded-lg transition-all duration-300 ease-in-out w-full"
+                  >
+                    <FiBookOpen className="h-6 w-6 mr-3 text-red-600" />
+                    Katalog Kelas
+                  </Link>
+                </li>
+              </ul>
+            ))}
         </div>
       </div>
 
       <div className="navbar-center hidden lg:flex">
-        <div className="dropdown dropdown-end px-6 z-50">
-          <div
-            tabIndex={0}
-            role="button"
-            open={activeDropdown === "course"}
-            className="btn btn-ghost flex items-center text-lg text-primary rounded-lg px-4 py-2 transition-all duration-300 ease-in-out hover:bg-primary hover:text-white"
-            onClick={() => toggleDropdown("course")}
-          >
-            <FiBookOpen className="h-6 w-6 mr-2 transition-colors duration-300 ease-in-out" />
-            <span className="transition-colors duration-300 ease-in-out">Course</span>
-          </div>
-
-          {activeDropdown === "course" && (
-            <ul
+        {token && ( // Menampilkan dropdown course hanya jika token ada
+          <div className="dropdown dropdown-end px-6 z-50">
+            <div
               tabIndex={0}
-              className="menu dropdown-content bg-white rounded-lg shadow-lg mt-3 w-48 right-0 p-3 z-50 transform transition-transform duration-300 ease-in-out hover:scale-105"
-              onClick={(e) => e.stopPropagation()}
+              role="button"
+              open={activeDropdown === "course"}
+              className="btn btn-ghost flex items-center text-lg text-primary rounded-lg px-4 py-2 transition-all duration-300 ease-in-out hover:bg-primary hover:text-white"
+              onClick={() => toggleDropdown("course")}
             >
-              <li className="w-full">
-                <Link
-                  to="/topik-kelas"
-                  className="flex items-center py-3 px-4 font-medium text-gray-700 hover:bg-gradient-to-r hover:from-primary hover:to-red-600 hover:text-white rounded-lg transition-all duration-300 ease-in-out w-full"
-                >
-                  <FiBookOpen className="h-6 w-6 mr-3 text-red-600" />
-                  Katalog Kelas
-                </Link>
-              </li>
+              <FiBookOpen className="h-6 w-6 mr-2 transition-colors duration-300 ease-in-out" />
+              <span className="transition-colors duration-300 ease-in-out">Course</span>
+            </div>
 
-              <li className="w-full">
-                <Link
-                  to="/mycourse"
-                  className="flex items-center py-3 px-4 font-medium text-gray-700 hover:bg-gradient-to-r hover:from-primary hover:to-red-600 hover:text-white rounded-lg transition-all duration-300 ease-in-out w-full"
-                >
-                  <FiLayers className="h-6 w-6 mr-3 text-red-600" />
-                  Kelas Saya
-                </Link>
-              </li>
-            </ul>
-          )}
-        </div>
+            {activeDropdown === "course" && (
+              <ul
+                tabIndex={0}
+                className="menu dropdown-content bg-white rounded-lg shadow-lg mt-3 w-48 right-0 p-3 z-50 transform transition-transform duration-300 ease-in-out hover:scale-105"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <li className="w-full">
+                  <Link
+                    to="/topik-kelas"
+                    className="flex items-center py-3 px-4 font-medium text-gray-700 hover:bg-gradient-to-r hover:from-primary hover:to-red-600 hover:text-white rounded-lg transition-all duration-300 ease-in-out w-full"
+                  >
+                    <FiBookOpen className="h-6 w-6 mr-3 text-red-600" />
+                    Katalog Kelas
+                  </Link>
+                </li>
+
+                <li className="w-full">
+                  <Link
+                    to="/mycourse"
+                    className="flex items-center py-3 px-4 font-medium text-gray-700 hover:bg-gradient-to-r hover:from-primary hover:to-red-600 hover:text-white rounded-lg transition-all duration-300 ease-in-out w-full"
+                  >
+                    <FiLayers className="h-6 w-6 mr-3 text-red-600" />
+                    Kelas Saya
+                  </Link>
+                </li>
+              </ul>
+            )}
+          </div>
+        )}
       </div>
+
       <div className="flex-none gap-6 lg:pr-4 ">
         {token ? (
           <div className="dropdown dropdown-end px-6 z-50">
