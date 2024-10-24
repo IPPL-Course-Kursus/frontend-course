@@ -284,7 +284,7 @@ const TopikKelas = () => {
                     </div>
                 </div>
 
-                <div className="flex flex-col md:flex-row md:space-x-6 pr-4 md:pr-10">
+                <div className="flex flex-col md:flex-row md:space-x-6 pr-4 md:pr-10 ml-10">
                     <div className="md:block md:w-1/4">
                         <div className="bg-white shadow-md rounded-md p-4">
                             <h3 className="text-xl font-bold text-gray-800 mb-4">

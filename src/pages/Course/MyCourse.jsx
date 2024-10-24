@@ -242,7 +242,7 @@ const CoursesPage = () => {
                           <h3 className="text-xl font-bold text-blue-800">
                             {courseItem.course.courseName}
                           </h3>
-                          <button className="bg-blue-500 hover:bg-slate-400 text-white mt-3 px-3 py-2 text-wrap rounded-md">
+                          <button className="bg-blue-500 hover:bg-slate-400 text-white mt-3 px-2 py-1 md:px-3 md:py-2 text-wrap rounded-md">
                             Lihat Detail Kelas
                           </button>
                         </div>

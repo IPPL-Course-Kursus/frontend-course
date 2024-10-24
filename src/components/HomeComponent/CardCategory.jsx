@@ -67,7 +67,7 @@ const CardCategory = () => {
       <div className="flex w-full justify-center items-center max-w-[1060px] flex-col pt-[26px] pb-[14px] gap-5 container">
       <div className="flex justify-between w-full px-6">
             <h2 className="text-2xl font-bold text-gray-800">Kategori Belajar</h2>
-            <Link to="/class" className="text-sm font-semibold text-blue-600 hover:underline">
+            <Link to="/topik-kelas" className="text-sm font-semibold text-blue-600 hover:underline">
               Lihat Semua
             </Link>
           </div>

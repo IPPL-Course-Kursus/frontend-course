@@ -92,7 +92,7 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
           {/* Header Section */}
           <div className="flex justify-between w-full px-6">
             <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
-            <Link to="/class" className="text-sm font-semibold text-blue-600 hover:underline">
+            <Link to="/topik-kelas" className="text-sm font-semibold text-blue-600 hover:underline">
               Lihat Semua
             </Link>
           </div>

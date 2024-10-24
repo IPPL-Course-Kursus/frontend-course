@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import { Link, useLocation } from "react-router-dom";
@@ -12,8 +12,8 @@ const SuccessPage = () => {
   useEffect(() => {
     const query = new URLSearchParams(location.search);
     const orderId = query.get("order_id"); // Mengambil order_id dari URL
-    const statusCode = query.get("status_code");
-    const transactionStatus = query.get("transaction_status");
+    // const statusCode = query.get("status_code");
+    // const transactionStatus = query.get("transaction_status");
 
     if (orderId) {
       // Dispatch action untuk melakukan POST request
@@ -36,7 +36,7 @@ const SuccessPage = () => {
             className="mx-auto mb-8 max-w-full h-auto"
           />
           <p className="text-gray-600 mb-4">Transaksi pembayaran kelas premium berhasil!</p>
-          <p className="text-gray-600 mb-14">E-receipt telah dikirimkan ke email.</p>
+          <p className="text-gray-600 mb-14"></p>
           <div className="flex flex-col items-center space-y-4">
             <Link to="/mycourse">
               <a className="bg-blue-600 text-white py-2 px-32 rounded-full font-bold inline-block">
