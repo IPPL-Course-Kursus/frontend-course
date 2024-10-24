@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+
 const initialState = {
   category: [],
-  // loading: false,
-  // error: null,
+  courseLevel: [],
+  data : [],
 };
 
 const categorySlice = createSlice({
@@ -13,9 +14,16 @@ const categorySlice = createSlice({
     setCategory: (state, action) => {
       state.category = action.payload;
     },
+    setLevel: (state, action) => {
+      state.courseLevel = action.payload;
+    },
+    setType: (state, action) => {
+      state.data = action.payload;
+    },
   },
 });
 
-export const { setCategory } = categorySlice.actions;
+
+export const { setCategory, setLevel, setType } = categorySlice.actions;
 
 export default categorySlice.reducer;
