@@ -7,7 +7,6 @@ import ProgressBar from "../../components/MyCourse/ProgressBar";
 import { FaArrowLeft, FaCheckCircle } from "react-icons/fa";
 import { Link, useParams, useNavigate } from "react-router-dom";
 
-
 const MulaiKelas = () => {
     const dispatch = useDispatch();
     const { data, loading, error } = useSelector((state) => state.mulaiKelas);
@@ -17,10 +16,10 @@ const MulaiKelas = () => {
     const { id } = useParams();
 
     useEffect(() => {
-        if (id) { 
-        dispatch(fetchMulaiKelas(id));
+        if (id) {
+            dispatch(fetchMulaiKelas(id));
         }
-    }, [id, dispatch]); 
+    }, [id, dispatch]);
 
     const runCode = () => {
         try {
@@ -47,6 +46,17 @@ const MulaiKelas = () => {
     if (loading) {
         return <p>Loading...</p>;
     }
+
+    const totalContents =
+        data?.data?.course?.chapters?.reduce(
+            (acc, chapter) => acc + chapter.contents.length,
+            0
+        ) || 0;
+    const contentFinish = data?.data?.contentFinish || 0;
+    const percentage =
+        totalContents > 0
+            ? Math.round((contentFinish / totalContents) * 100)
+            : 0;
 
     return (
         <>
@@ -80,43 +90,52 @@ const MulaiKelas = () => {
                                 </span>
                                 <span className="text-gray-500">5 Modul</span>
                                 <span className="text-gray-500">
-                                {data?.data?.course?.totalDuration ? `${data.data.course.totalDuration} menit` : 'Durasi tidak tersedia'}
-
+                                    {data?.data?.course?.totalDuration
+                                        ? `${data.data.course.totalDuration} menit`
+                                        : "Durasi tidak tersedia"}
                                 </span>
                             </div>
                         </div>
                     </header>
 
-{/* Video Placeholder */}
-<section className="bg-black h-56 flex items-center relative justify-center mb-6">
-    {selectedContent && (
-        <iframe
-            width="560"
-            height="215"
-            src={selectedContent.contentUrl}
-            title={selectedContent.contentTitle}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media;"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
-            className="absolute w-full h-full"
-        ></iframe>
-    )}
-</section>
+                    {/* Video Placeholder */}
+                    <section className="bg-black h-56 flex items-center relative justify-center mb-6">
+                        {selectedContent && (
+                            <iframe
+                                width="560"
+                                height="215"
+                                src={selectedContent.contentUrl}
+                                title={selectedContent.contentTitle}
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media;"
+                                referrerPolicy="strict-origin-when-cross-origin"
+                                allowFullScreen
+                                className="absolute w-full h-full"
+                            ></iframe>
+                        )}
+                    </section>
 
-{/* Course Info Section */}
-<section className="bg-white p-6 rounded-lg shadow-lg mb-10">
-    <h3 className="text-gray-700 text-2xl font-semibold">Tentang Kelas</h3>
-    {selectedContent ? (
-        <p className="text-gray-600 mt-2">{selectedContent.teks}</p>
-    ) : (
-        <p className="text-gray-600 mt-2">Pilih konten untuk melihat informasi lebih lanjut.</p>
-    )}
-</section>
-
+                    {/* Course Info Section */}
+                    <section className="bg-white p-6 rounded-lg shadow-lg mb-10">
+                        <h3 className="text-gray-700 text-2xl font-semibold">
+                            Tentang Kelas
+                        </h3>
+                        {selectedContent ? (
+                            <p className="text-gray-600 mt-2">
+                                {selectedContent.teks}
+                            </p>
+                        ) : (
+                            <p className="text-gray-600 mt-2">
+                                Pilih konten untuk melihat informasi lebih
+                                lanjut.
+                            </p>
+                        )}
+                    </section>
 
                     {/* Code Editor Section */}
                     <section className="bg-white p-6 rounded-lg shadow-lg mb-10">
-                        <h3 className="text-gray-700 text-2xl font-semibold mb-4"></h3>
+                        <h3 className="text-gray-700 text-2xl font-semibold mb-4">
+                            Editor Kode
+                        </h3>
                         <textarea
                             id="code"
                             placeholder="Write your code here..."
@@ -161,48 +180,66 @@ const MulaiKelas = () => {
                         Materi Belajar
                     </h3>
 
-                    {/* Progress bar menggunakan komponen ProgressBar */}
+                    {/* Progres Belajar */}
                     <div className="mb-6">
                         <div className="flex justify-between items-center">
                             <h4 className="text-blue-600 font-bold">
                                 Progres Belajar
                             </h4>
-                            <span className="text-sm text-gray-500">90%</span>
+                            <span className="text-sm text-gray-500">
+                                {percentage}%
+                            </span>
                         </div>
-                        <ProgressBar percentage={90} />
+                        <ProgressBar percentage={percentage} />
                     </div>
 
                     {/* Chapter List */}
                     <div className="mb-6">
-    <div className="flex justify-between items-center">
-        <span className="text-sm text-gray-500">
-            {data?.data?.course?.totalDuration ? `${data.data.course.totalDuration} menit` : 'Durasi tidak tersedia'}
-        </span>
-    </div>
-    <ul className="space-y-2 mt-4">
-        {data?.data?.course?.chapters?.map((chapter) => (
-            <div key={chapter.id}>
-                <h5 className="text-blue-600 font-semibold">Chapter {chapter.sort} {chapter.chapterTitle}</h5>
-                {chapter.contents?.map((content, index) => (
-                    <li key={content.id} className="flex justify-between items-center">
-                        <div className="flex items-center gap-2">
-                            <span className="bg-blue-200 text-blue-800 rounded-full h-8 w-8 flex items-center justify-center">
-                                {index + 1}
+                        <div className="flex justify-between items-center">
+                            <span className="text-sm text-gray-500">
+                                {data?.data?.course?.totalDuration
+                                    ? `${data.data.course.totalDuration} menit`
+                                    : "Durasi tidak tersedia"}
                             </span>
-                            <Link to="#" onClick={() => handleContentClick(content)}>
-                                <span className="text-gray-700">{content.contentTitle}</span>
-                            </Link>
                         </div>
-                        <span className="text-green-500">▶</span>
-                    </li>
-                ))}
-            </div>
-        ))}
-    </ul>
-</div>
-
-
-
+                        <ul className="space-y-2 mt-4">
+                            {data?.data?.course?.chapters?.map((chapter) => (
+                                <div key={chapter.id}>
+                                    <h5 className="text-blue-600 font-semibold">
+                                        Chapter {chapter.sort}{" "}
+                                        {chapter.chapterTitle}
+                                    </h5>
+                                    {chapter.contents?.map((content, index) => (
+                                        <li
+                                            key={content.id}
+                                            className="flex justify-between items-center"
+                                        >
+                                            <div className="flex items-center gap-2">
+                                                <span className="bg-blue-200 text-blue-800 rounded-full h-8 w-8 flex items-center justify-center">
+                                                    {index + 1}
+                                                </span>
+                                                <Link
+                                                    to="#"
+                                                    onClick={() =>
+                                                        handleContentClick(
+                                                            content
+                                                        )
+                                                    }
+                                                >
+                                                    <span className="text-gray-700">
+                                                        {content.contentTitle}
+                                                    </span>
+                                                </Link>
+                                            </div>
+                                            <span className="text-green-500">
+                                                ▶
+                                            </span>
+                                        </li>
+                                    ))}
+                                </div>
+                            ))}
+                        </ul>
+                    </div>
 
                     {/* <div className="mb-6">
                         <div className="flex justify-between items-center">
