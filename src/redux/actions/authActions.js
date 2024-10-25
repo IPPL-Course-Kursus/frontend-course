@@ -6,8 +6,7 @@ import {
   registerStart,
   registerSuccess,
   registerFailure,
-  selectToken,
-  setUser,
+    setUser,
   setToken,
 
   // logout,
@@ -37,53 +36,6 @@ import toast from "react-hot-toast";
 
 const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
 
-// export const login = (email, password, navigate) => async (dispatch) => {
-//   try {
-//     if (!email || !password) {
-//       toast.error("Email dan Password harus diisi.");
-//       return;
-//     }
-
-//     const response = await axios.post(`${api_url}auth/login`, {
-//       email,
-//       password,
-//     });
-
-//     // Mengakses data dari respons
-//     const { success, data } = response.data;
-//     const { token, role } = data; 
-
-//     // Menyimpan token di Redux
-//     dispatch(setToken(token));
-
-//     toast.success("Login Berhasil");
-
-//     // Navigasi berdasarkan role
-//     if (role === "Admin") {
-//       navigate("/admin/dashboard");
-//     } else if (role === "User") {
-//       navigate("/");
-//     } else if (role === "Instruktur") {
-//       // Pastikan role sesuai
-//       navigate("/inst/dashboard");
-//     } else {
-//       console.error("Role tidak dikenali:", role);
-//     }
-//   } catch (error) {
-//     if (error.response) {
-//       if (error.response.status === 403) {
-//         toast.error("Email atau Password Anda salah. Silahkan coba lagi.");
-//       } else if (error.response.status === 404) {
-//         toast.error("Email tidak terdaftar. Silakan cek kembali email Anda.");
-//       } else {
-//         toast.error("Login gagal. Silakan coba lagi nanti.");
-//       }
-//     } else {
-//       toast.error("Terjadi kesalahan pada server. Silakan coba lagi nanti.");
-//     }
-//   }
-// };
-
 export const login = (email, password, navigate) => async (dispatch) => {
   try {
     if (!email || !password) {
@@ -97,8 +49,8 @@ export const login = (email, password, navigate) => async (dispatch) => {
     });
 
     // Mengakses data dari respons
-    const { success, data } = response.data; 
-    const { token, role } = data; 
+    const { success, data } = response.data;
+    const { token, role } = data;
 
     if (success) {
       // Menyimpan token di Redux
@@ -136,8 +88,7 @@ export const login = (email, password, navigate) => async (dispatch) => {
 
 // Register action
 export const register =
-  (email, password, fullName, phoneNumber, country, city, tanggalLahir, navigate) =>
-  async (dispatch) => {
+  (email, password, fullName, phoneNumber, city, tanggalLahir, navigate) => async (dispatch) => {
     dispatch(registerStart()); // Memulai proses registrasi
 
     try {
@@ -146,14 +97,13 @@ export const register =
         password,
         fullName,
         phoneNumber,
-        country,
         city,
         tanggalLahir,
       });
 
       if (response.status === 201) {
         dispatch(registerSuccess()); // Dispatch jika registrasi berhasil
-        toast.success("Pendaftaran Berhasil!"); // Notifikasi berhasil
+        toast.success("Pendaftaran Berhasil, silahkan check email untuk melakukan verified!"); // Notifikasi berhasil
         navigate("/login"); // Navigasi ke halaman login
       } else {
         throw new Error("Registrasi gagal.");
@@ -174,7 +124,7 @@ export const getMe = () => async (dispatch) => {
     const token = Cookies.get("token");
 
     if (!token) {
-      throw new Error("Token tidak ditemukan. Silakan login kembali.");
+      // throw new Error("Token tidak ditemukan. Silakan login kembali.");
     }
 
     // Lakukan permintaan untuk mendapatkan data pengguna dari API
@@ -189,13 +139,13 @@ export const getMe = () => async (dispatch) => {
     dispatch(getMeSuccess(data));
   } catch (error) {
     dispatch(getMeFailure(error.response?.data?.message || "Gagal mengambil data pengguna."));
-    toast.error(error.message || "Terjadi kesalahan saat mengambil data pengguna.");
+    // toast.error(error.message || "Terjadi kesalahan saat mengambil data pengguna.");
   }
 };
 
 export const logout = () => (dispatch) => {
   Cookies.remove("token"); // Menghapus cookie token
-  dispatch(selectToken(null));
+  dispatch(setToken(null));
   dispatch(setUser(null));
 };
 
@@ -274,7 +224,7 @@ export const verifyEmail = () => async (dispatch) => {
   }
 };
 
-export const updateProfile = (userData, navigate) => async (dispatch) => {
+export const updateProfile = (userData) => async (dispatch) => {
   try {
     dispatch(updateProfileStart()); // Mulai proses update
 
@@ -292,46 +242,51 @@ export const updateProfile = (userData, navigate) => async (dispatch) => {
     toast.success("Profil berhasil diperbarui!"); // Notifikasi berhasil
 
     // Navigasi ke halaman profil atau halaman lain jika diperlukan
-    navigate("/profile");
+    // navigate("/profile");
   } catch (error) {
     dispatch(updateProfileFailure(error.response?.data?.message || "Gagal memperbarui profil."));
     toast.error(error.message || "Terjadi kesalahan saat memperbarui profil."); // Notifikasi gagal
   }
 };
 
-export const changePassword =
-  (currentPassword, newPassword, confirmPassword) => async (dispatch) => {
-    try {
-      dispatch(changePasswordStart());
+export const changePassword = (currentPassword, newPassword, confirmPassword) => async (dispatch) => {
+  try {
+    dispatch(changePasswordStart());
 
-      const token = Cookies.get("token");
+    const token = Cookies.get("token");
 
-      // Mengirim permintaan untuk mengubah password dengan token di header
-      const response = await axios.post(
-        `${api_url}auth/change-password`,
-        {
-          currentPassword,
-          newPassword,
-          confirmPassword,
+    // Mengirim permintaan untuk mengubah password dengan token di header
+    const response = await axios.post(
+      `${api_url}auth/change-password`,
+      {
+        currentPassword,
+        newPassword,
+        confirmPassword,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Sertakan token dalam header Authorization
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, // Sertakan token dalam header Authorization
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        dispatch(changePasswordSuccess());
-        toast.success("Password berhasil diubah!");
-      } else {
-        throw new Error(response.data.message || "Gagal mengubah password.");
       }
-    } catch (error) {
-      dispatch(changePasswordFailure(error.message || "Terjadi kesalahan saat mengubah password."));
-      toast.error(error.message || "Terjadi kesalahan saat mengubah password.");
+    );
+
+    if (response.status === 200) {
+      dispatch(changePasswordSuccess());
+      toast.success("Password berhasil diubah!");
     }
-  };
+  } catch (error) {
+    dispatch(changePasswordFailure());
+
+    // Handle specific error for old password mismatch (400 Bad Request)
+    if (error.response && error.response.status === 400) {
+      toast.error("Password lama salah.");
+    } else {
+      toast.error("Terjadi kesalahan saat mengubah password.");
+    }
+  }
+};
+
+
 
 // export const login = (email, password, navigate) => async (dispatch) => {
 //   try {

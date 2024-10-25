@@ -79,17 +79,22 @@ const CardCategory = () => {
             <p>Error: {error}</p>
           ) : (
             <Slider ref={sliderRef} {...sliderSettings}>
-              {category.map((kategori, i) => (
-                <div key={i} className="justify-center items-center flex flex-col pl-1.5 pr-2.5">
-                  <img
-                    src={kategori.image}
-                    className="aspect-[1.6] object-cover object-center w-[140px] rounded-xl shadow-md hover:cursor-pointer"
-                  />
-                  <div className="text-black text-center text-xs font-semibold leading-9 whitespace-nowrap">
-                    {kategori.categoryName}
+              {category.length > 0 ? (
+                category.map((kategori, i) => (
+                  <div key={i} className="justify-center items-center flex flex-col pl-1.5 pr-2.5">
+                    <img
+                      src={kategori.image}
+                      alt={kategori.categoryName} // Tambahkan alt untuk aksesibilitas
+                      className="aspect-[1.6] object-cover object-center w-[140px] rounded-xl shadow-md hover:cursor-pointer"
+                    />
+                    <div className="text-black text-center text-xs font-semibold leading-9 whitespace-nowrap">
+                      {kategori.categoryName}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p>Tidak ada kategori yang tersedia.</p>
+              )}
             </Slider>
           )}
         </div>

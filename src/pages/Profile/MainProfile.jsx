@@ -4,12 +4,23 @@ import UbahPassword from "./UbahPassword";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import RiwayatPembayaran from "./RiwayatPembayaran";
+import { useDispatch } from "react-redux"; // Import useDispatch dari Redux
+import { logout } from "../../redux/actions/authActions"; // Import aksi logout
+import { useNavigate } from "react-router-dom"; // Import useNavigate untuk navigasi
 
 const MainProfile = () => {
   const [activeMenu, setActiveMenu] = useState("");
+  const dispatch = useDispatch(); // Inisialisasi dispatch
+  const navigate = useNavigate(); // Inisialisasi navigate
 
   const handleMenuClick = (menu) => {
-    setActiveMenu(menu);
+    if (menu === "keluar") {
+      // Jika user memilih keluar, lakukan dispatch logout dan navigasi
+      dispatch(logout()); // Panggil aksi logout dari Redux
+      navigate("/login"); // Arahkan pengguna ke halaman login
+    } else {
+      setActiveMenu(menu); // Set menu aktif sesuai pilihan
+    }
   };
 
   const renderContent = () => {
@@ -20,12 +31,6 @@ const MainProfile = () => {
         return <UbahPassword />;
       case "riwayat":
         return <RiwayatPembayaran />;
-      case "keluar":
-        return (
-          <div>
-            <h2>Anda telah keluar</h2>
-          </div>
-        );
       default:
         return <Profile />;
     }
@@ -33,7 +38,7 @@ const MainProfile = () => {
 
   return (
     <>
-    <Navbar/>
+      <Navbar />
       <div className="p-6">
         {/* Sidebar */}
         <div className="flex bg-gray-100 shadow-md text-black rounded-3xl h-full w-full p-8">

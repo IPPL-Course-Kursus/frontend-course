@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux"; // Untuk mengirim aksi ke Redux
+import { toast } from "react-hot-toast";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { changePassword } from "../../redux/actions/authActions"; // Mengimpor aksi ubah password dari Redux
-import { toast } from "react-hot-toast"; // Untuk notifikasi
 import { useNavigate } from "react-router-dom"; // Untuk navigasi setelah berhasil
 
 const UbahPassword = () => {
@@ -12,6 +12,7 @@ const UbahPassword = () => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); // For submit button state
 
   const dispatch = useDispatch(); // Inisialisasi dispatch Redux
   const navigate = useNavigate(); // Untuk navigasi setelah password diubah
@@ -29,19 +30,33 @@ const UbahPassword = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!isPasswordValid || newPassword !== confirmPassword) {
-      toast.error("Password tidak valid atau konfirmasi password tidak cocok.");
-      return;
+    // Cek jika ada kolom yang kosong
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      return toast.error("Semua kolom harus diisi.");
     }
 
-    // Mengirim aksi ke Redux
+    // Validasi password baru dan konfirmasi
+    if (!isPasswordValid || newPassword !== confirmPassword) {
+      return toast.error("Password tidak valid atau konfirmasi password tidak cocok.");
+    }
+
+    // Set isSubmitting menjadi true saat memproses
+    setIsSubmitting(true);
+
+    // Mengirim aksi ke Redux untuk mengubah password
     dispatch(changePassword(oldPassword, newPassword, confirmPassword))
       .then(() => {
-        toast.success("Password berhasil diubah.");
-        navigate("/"); // Navigasi ke halaman utama setelah berhasil
+        setIsSubmitting(false);
+        navigate("/profile"); // Navigasi ke halaman profile setelah berhasil
+
+        // Trigger a manual navigation to simulate a page refresh
+        setTimeout(() => {
+          navigate(0); // Force re-render/reload after navigation
+        }, 500);
       })
-      .catch((error) => {
-        toast.error("Gagal mengubah password: " + error.message);
+      .catch(() => {
+        setIsSubmitting(false);
+        // Error handling should already be handled in Redux action
       });
   };
 
@@ -59,6 +74,7 @@ const UbahPassword = () => {
                 value={oldPassword}
                 onChange={(e) => setOldPassword(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded mt-2"
+                required
               />
               <button
                 type="button"
@@ -79,6 +95,7 @@ const UbahPassword = () => {
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded mt-2"
+                required
               />
               <button
                 type="button"
@@ -99,6 +116,7 @@ const UbahPassword = () => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded mt-2"
+                required
               />
               <button
                 type="button"
@@ -123,12 +141,13 @@ const UbahPassword = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            disabled={!isPasswordValid || newPassword !== confirmPassword}
+            disabled={!isPasswordValid || newPassword !== confirmPassword || isSubmitting}
             className={`w-full py-2 bg-blue-900 text-white rounded-full ${
-              (!isPasswordValid || newPassword !== confirmPassword) && "opacity-50 cursor-not-allowed"
+              (!isPasswordValid || newPassword !== confirmPassword || isSubmitting) &&
+              "opacity-50 cursor-not-allowed"
             }`}
           >
-            Simpan
+            {isSubmitting ? "Menyimpan..." : "Simpan"}
           </button>
         </form>
       </main>

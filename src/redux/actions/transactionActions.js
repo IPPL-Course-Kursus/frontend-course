@@ -4,7 +4,11 @@ import {
     transactionRequest,
     transactionSuccess,
     transactionFail,
+    paymentHistoryRequest,
+    paymentHistorySuccess,
+    paymentHistoryFail
 } from "../reducers/transactionReducers";
+
 
 const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
 
@@ -50,6 +54,25 @@ export const postSuccessPayment = (orderId) => async (dispatch) => {
         return response.data;
     } catch (error) {
         dispatch(transactionFail(error.response.data));
+        throw error;
+    }
+};
+
+export const fetchPaymentHistory = () => async (dispatch) => {
+    try {
+        dispatch(paymentHistoryRequest());
+
+        const token = getCookie("token");
+        const response = await axios.get(`${api_url}transaction/user`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        dispatch(paymentHistorySuccess(response.data.data || []));
+        return response.data;
+    } catch (error) {
+        dispatch(paymentHistoryFail(error.response?.data || "Something went wrong"));
         throw error;
     }
 };
