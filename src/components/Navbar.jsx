@@ -58,12 +58,16 @@ const Navbar = () => {
                             tabIndex={0}
                             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-40 p-2 shadow"
                         >
+                            <Link to="/topik-kelas">
                             <li>
                                 <span className="justify-between font-medium text-primary  hover:text-primary">Katalog Kelas</span>
                             </li>
+                            </Link>
+                            <Link to="/mycourse">
                             <li>
                                 <span className="justify-between font-medium text-primary  hover:text-primary">Kelas Saya</span>
                             </li>
+                            </Link>
                         </ul>
                     )}
                 </div>

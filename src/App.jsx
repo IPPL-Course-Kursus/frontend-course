@@ -117,7 +117,7 @@ function AppRoutes() {
         }
       />
       <Route path="/topik-kelas" element={<TopikKelas />} />
-      <Route path="/mulai-kelas" element={<MulaiKelas />} />
+      <Route path="/mulai-kelas/:id" element={<MulaiKelas />} />
 
       {/* Payment */}
       <Route path="/payment" element={<PaymentPage />} />
