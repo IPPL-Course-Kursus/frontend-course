@@ -53,6 +53,7 @@ export default combineReducers({
   // Admin
   adminDataKategori: adminDataKategoriReducer,
   adminDashboard: adminDashboardReducer,
+  instructors: instructorReducer,
   typeCourse: typeCourseReducer,
   levelCourse: levelCourseReducer,
 
@@ -70,5 +71,5 @@ export default combineReducers({
 
   // Instruktur
   instruktur: instrukturReducer,
-  instructors: instructorReducer,
+  
 });
