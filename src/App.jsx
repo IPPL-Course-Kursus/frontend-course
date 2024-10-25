@@ -123,6 +123,7 @@ function AppRoutes() {
       <Route path="/course-detail/:id" element={<DetailKelas />} />
 
       <Route path="/topik-kelas" element={<TopikKelas />} />
+      <Route path="/mulai-kelas/:id" element={<MulaiKelas />} />
 
       {/* Payment */}
 
