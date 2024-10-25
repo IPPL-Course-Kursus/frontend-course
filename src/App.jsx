@@ -22,6 +22,8 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminDataKategori from "./pages/admin/KelolaDataAdmin/AdminDataKategori";
 import AdminDataLevel from "./pages/admin/KelolaDataAdmin/AdminDataLevel";
 import AdminDataType from "./pages/admin/KelolaDataAdmin/AdminDataType";
+import AdminDataKelas from "./pages/admin/KelolaDataAdmin/AdminDataKelas";
+
 //KELOLA INSTRUKTUR ADMIN
 import AdminDataInstruktur from "./pages/admin/KelolaInstrukturAdmin/AdminDataInstruktur";
 import AdminRegisterInstruktur from "./pages/admin/KelolaInstrukturAdmin/AdminRegisterInstruktur";
@@ -138,6 +140,7 @@ function AppRoutes() {
         <Route path="/admin/data-kategori" element={<AdminDataKategori />} />
         <Route path="/admin/data-level" element={<AdminDataLevel />} />
         <Route path="/admin/data-Type" element={<AdminDataType />} />
+        <Route path="/admin/data-kelas" element={<AdminDataKelas/>} />
       </Route>
 
       {/* Kelola Instruktur ADMIN */}
