@@ -55,19 +55,28 @@ export const addDataKelas = (requestData) => async (dispatch) => {
 
   try {
     // Ambil token dari cookies
-    const token = getCookie("token"); // Pastikan fungsi ini sudah didefinisikan
-    // console.log(token);
+    const token = getCookie("token");
+
+    // Konversi tipe data ke format yang diharapkan
+    const formattedData = {
+      ...requestData,
+      categoryId: parseInt(requestData.categoryId, 10),
+      courseLevelId: parseInt(requestData.courseLevelId, 10),
+      typeCourseId: parseInt(requestData.typeCourseId, 10),
+      totalDuration: parseInt(requestData.totalDuration, 10),
+      certificateStatus: Boolean(requestData.certificateStatus),
+    };
 
     // Set up config untuk header
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json", // Set Content-Type ke multipart
+        "Content-Type": "multipart/form-data",
       },
     };
 
     // Lakukan POST request dengan FormData
-    const response = await axios.post(`${api_url}course/createCourse`, requestData, config);
+    const response = await axios.post(`${api_url}course/createCourse`, formattedData, config);
 
     dispatch(addCourseSuccess(response.data.message)); // Sesuaikan dengan response API Anda
     console.log(response.data.message);

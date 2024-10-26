@@ -4,21 +4,28 @@ import { FaCamera } from "react-icons/fa";
 import { getMe, updateProfile } from "../../redux/actions/authActions";
 import {
   selectProfile,
-  selectProfileLoading,
-  selectProfileError,
+  // selectProfileLoading,
+  // selectProfileError,
 } from "../../redux/reducers/authReducers";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom"; // useNavigate for navigation
 import { toast } from "react-toastify"; // For notification
 
 const Profile = () => {
+  const [initialForm, setInitialForm] = useState({}); // For change detection
+  const [focusedField, setFocusedField] = useState("");
+  const [imagePreview, setImagePreview] = useState("/profile.jpg");
+  const [imageFile, setImageFile] = useState(null);
+  const [isFormChanged, setIsFormChanged] = useState(false); // For save button activation
+  const [isSubmitting, setIsSubmitting] = useState(false); // Track submission status
+
   const dispatch = useDispatch();
   const navigate = useNavigate(); // useNavigate hook for navigation
 
   // Redux state
   const profile = useSelector(selectProfile);
-  const profileLoading = useSelector(selectProfileLoading);
-  const profileError = useSelector(selectProfileError);
+  // const profileLoading = useSelector(selectProfileLoading);
+  // const profileError = useSelector(selectProfileError);
 
   // Local state for form
   const [form, setForm] = useState({
@@ -27,13 +34,8 @@ const Profile = () => {
     city: "",
     image: "",
     tanggalLahir: "",
+    email: "", // Menambahkan email di sini
   });
-  const [initialForm, setInitialForm] = useState({}); // For change detection
-  const [focusedField, setFocusedField] = useState("");
-  const [imagePreview, setImagePreview] = useState("/profile.jpg");
-  const [imageFile, setImageFile] = useState(null);
-  const [isFormChanged, setIsFormChanged] = useState(false); // For save button activation
-  const [isSubmitting, setIsSubmitting] = useState(false); // Track submission status
 
   // Fetch profile data when component mounts
   useEffect(() => {
@@ -50,25 +52,23 @@ const Profile = () => {
       const formattedTanggalLahir = profile.tanggalLahir
         ? new Date(profile.tanggalLahir).toISOString().substring(0, 10)
         : "";
-      const newForm = {
+
+      setForm({
         fullName: profile.fullName || "",
-        email: profile.email || "",
+        email: profile.email || "", // Memastikan email tidak undefined
         phoneNumber: profile.phoneNumber || "",
         city: profile.city || "",
-        image: profile.image || "",
         tanggalLahir: formattedTanggalLahir || "",
-      };
+        image: profile.image || "",
+      });
 
-      setForm(newForm);
-      setInitialForm(newForm); // Save initial form for change comparison
       setImagePreview(profile.image || "/profile.jpg");
     }
   }, [profile]);
 
   // Check for form changes or image file changes
   useEffect(() => {
-    const formChanged =
-      JSON.stringify(form) !== JSON.stringify(initialForm) || imageFile !== null;
+    const formChanged = JSON.stringify(form) !== JSON.stringify(initialForm) || imageFile !== null;
     setIsFormChanged(formChanged);
   }, [form, initialForm, imageFile]);
 
@@ -80,6 +80,7 @@ const Profile = () => {
       [name]: value,
     }));
   };
+
 
   // Save profile changes
   const handleSave = () => {
@@ -145,14 +146,6 @@ const Profile = () => {
     }
   };
 
-  if (profileLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (profileError) {
-    return <div>Error: {profileError}</div>;
-  }
-
   return (
     <div className="flex flex-col items-center p-8">
       <p className="text-4xl font-bold mb-8 text-center">Profile Saya</p>
@@ -214,7 +207,9 @@ const Profile = () => {
             onBlur={handleBlur}
             className={`block w-full p-2 border-b ${
               focusedField === "phoneNumber" ? "border-black" : "border-gray-300"
-            } focus:outline-none ${focusedField === "phoneNumber" ? "text-black" : "text-gray-500"}`}
+            } focus:outline-none ${
+              focusedField === "phoneNumber" ? "text-black" : "text-gray-500"
+            }`}
             placeholder="Nomor Telepon"
           />
           <input
@@ -238,7 +233,9 @@ const Profile = () => {
             onBlur={handleBlur}
             className={`block w-full p-2 border-b ${
               focusedField === "tanggalLahir" ? "border-black" : "border-gray-300"
-            } focus:outline-none ${focusedField === "tanggalLahir" ? "text-black" : "text-gray-500"}`}
+            } focus:outline-none ${
+              focusedField === "tanggalLahir" ? "text-black" : "text-gray-500"
+            }`}
             placeholder="Tanggal Lahir"
           />
         </div>
@@ -248,7 +245,7 @@ const Profile = () => {
         <button
           onClick={handleSave}
           className={`w-full py-3 bg-blue-900 text-white rounded-full max-w-5xl mx-auto ${
-            (!isFormChanged || isSubmitting) ? "opacity-50 cursor-not-allowed" : "" // Disable button if no changes or during submission
+            !isFormChanged || isSubmitting ? "opacity-50 cursor-not-allowed" : "" // Disable button if no changes or during submission
           }`}
           disabled={!isFormChanged || isSubmitting} // Disabled if no form changes or submission in progress
         >
