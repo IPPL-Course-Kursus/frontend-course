@@ -9,7 +9,7 @@ const InstrukturDataKategori = () => {
   const dispatch = useDispatch();
 
   // Fetch categories from Redux store
-  const { loading, categories, error } = useSelector((state) => state.adminDataKategori);
+  const { categories} = useSelector((state) => state.adminDataKategori);
 
   useEffect(() => {
     dispatch(fetchAdminCategories());
@@ -69,39 +69,33 @@ const InstrukturDataKategori = () => {
           </div>
 
           {/* Tabel Data Kategori */}
-          <div className="overflow-x-auto bg-white p-4">
-            {loading ? (
-              <p>Loading...</p>
-            ) : error ? (
-              <p>Error: {error}</p>
-            ) : (
-              <table className="min-w-full table-auto">
-                <thead>
-                  <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
-                    <th className="px-2 md:px-4 py-2">ID</th>
-                    <th className="px-2 md:px-4 py-2">Nama Kategori</th>
-                    <th className="px-2 md:px-4 py-2">Foto</th>
-                    <th className="px-2 md:px-4 py-2">Published</th>
+          <div className="overflow-x-auto bg-white p-4 rounded-lg shadow-md">
+            <table className="min-w-full table-auto">
+              <thead>
+                <tr className="bg-gray-200 text-left text-xs md:text-sm font-semibold">
+                  <th className="px-2 md:px-4 py-2">ID</th>
+                  <th className="px-2 md:px-4 py-2">Nama Kategori</th>
+                  <th className="px-2 md:px-4 py-2">Foto</th>
+                  <th className="px-2 md:px-4 py-2">Published</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentItems?.map((category, index) => (
+                  <tr key={index} className="border-t text-xs md:text-sm">
+                    <td className="px-2 md:px-4 py-2">{category.id}</td>
+                    <td className="px-2 md:px-4 py-2">{category.categoryName}</td>
+                    <td className="px-2 md:px-4 py-2">
+                      <img
+                        src={category.image}
+                        alt={category.categoryName}
+                        className="w-16 h-16 object-cover rounded-md"
+                      />
+                    </td>
+                    <td className="px-2 md:px-4 py-2">{category.published ? "True" : "False"}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {currentItems?.map((category, index) => (
-                    <tr key={index} className="border-t text-xs md:text-sm">
-                      <td className="px-2 md:px-4 py-2">{category.id}</td>
-                      <td className="px-2 md:px-4 py-2">{category.categoryName}</td>
-                      <td className="px-2 md:px-4 py-2">
-                        <img
-                          src={category.image}
-                          alt={category.categoryName}
-                          className="w-16 h-16 object-cover rounded-md"
-                        />
-                      </td>
-                      <td className="px-2 md:px-4 py-2">{category.published ? "True" : "False"}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
+                ))}
+              </tbody>
+            </table>
           </div>
 
           {/* Pagination Controls */}

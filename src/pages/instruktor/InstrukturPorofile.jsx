@@ -1,14 +1,110 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SidebarInstruktur from "../../components/Sidebar/SidebarInstruktur";
-import { FaBars } from "react-icons/fa";
-import CardProfileInstruktur from "../../components/InstrukturComponents/CardProfileInstruktur";
+import { FaBars, FaUpload } from "react-icons/fa";
+import { getMe, updateProfile } from "../../redux/actions/authActions";
+import { useDispatch, useSelector } from "react-redux";
+import Cookies from "js-cookie";
+import { selectProfile } from "../../redux/reducers/authReducers";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
-const InstrukturPorofile = () => {
+const InstrukturProfile = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [imagePreview, setImagePreview] = useState("/profile.jpg");
+  const [imageFile, setImageFile] = useState(null);
+  const [form, setForm] = useState({
+    image: "",
+    fullName: "",
+    phoneNumber: "",
+    city: "",
+    tanggalLahir: "",
+    email: "",
+  });
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const profile = useSelector(selectProfile);
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+
+    if (token) {
+      dispatch(getMe());
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (profile) {
+      const formattedTanggalLahir = profile.tanggalLahir
+        ? new Date(profile.tanggalLahir).toISOString().substring(0, 10)
+        : "";
+      setForm({
+        fullName: profile.fullName || "",
+        email: profile.email || "",
+        phoneNumber: profile.phoneNumber || "",
+        city: profile.city || "",
+        image: profile.image || "",
+        tanggalLahir: formattedTanggalLahir || "",
+      });
+      setImagePreview(profile.image || "/images/image/svg/default-profile.png");
+    }
+  }, [profile]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSave = () => {
+    // Validate if any field is empty
+    if (!form.fullName || !form.phoneNumber || !form.city || !form.tanggalLahir) {
+      toast.error("Data tidak boleh kosong"); // Notification error
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("fullName", form.fullName);
+    formData.append("phoneNumber", form.phoneNumber);
+    formData.append("city", form.city);
+    formData.append("tanggalLahir", form.tanggalLahir);
+
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
+
+    // Dispatch action to update profile
+    dispatch(updateProfile(formData)).then(() => {
+      dispatch(getMe());
+      setTimeout(() => {
+        navigate("/inst/profile");
+      }, 1000);
+    });
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+
+      setImageFile(file); // Set the file state
+    }
+  };
+
+  // Conditional rendering for profile data
+  if (!profile) {
+    return <div></div>; // You can replace this with a loading spinner or skeleton component
+  }
 
   return (
     <>
-      <div className="flex">
+      <div className="flex bg-gray-100 min-h-screen font-poppins">
         <div
           className={`fixed inset-0 z-50 transition-transform transform bg-white md:relative md:translate-x-0 md:bg-transparent ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
@@ -17,118 +113,127 @@ const InstrukturPorofile = () => {
           <SidebarInstruktur />
         </div>
 
-        {/* Overlay */}
         {sidebarOpen && (
           <div
-            className="fixed inset-0 bg-black opacity-50 z-40 md:hidden"
+            className="fixed inset-0 bg-black opacity-40 z-40 md:hidden"
             onClick={() => setSidebarOpen(false)}
           ></div>
         )}
-        <div className="flex-1 p-4 md:p-6 bg-secondary min-h-screen font-poppins">
-          {/* header */}
-          {/* <div className="bg-[#F3F7FB] p-4 flex justify-between items-center mb-4 shadow-lg rounded-lg">
+
+        <div className="flex-1 p-4 md:p-8 bg-secondary font-poppins overflow-auto">
+          <div className="bg-[#F3F7FB] p-4 flex justify-between items-center mb-4 shadow-xl">
             <button
-              className="text-[#0a61aa] md:hidden hover:scale-105 transition-transform duration-300"
+              className="text-[#0a61aa] md:hidden"
               onClick={() => setSidebarOpen(!sidebarOpen)}
             >
               <FaBars className="text-2xl" />
             </button>
+            <h1 className="text-2xl font-bold text-[#0a61aa]">Hi, Instruktur!</h1>
+          </div>
 
-            <h1 className="text-3xl font-bold text-[#0a61aa] tracking-wide">Hi, Instruktur!</h1>
-          </div> */}
-          {/* <button
-          className="flex items-center py-2 px-4 bg-gradient-to-r from-[#FF5722] to-[#FF9800] text-white font-semibold rounded-md text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl mb-4"
-          // onClick={handleDetailClick}
-        >
-          <span className="font-bold">Profile Instruktur</span>
-          </button> */}
-        </div>
-        <div className="w-full lg:w-8/12 px-4">
-          <CardProfileInstruktur />
-        </div>
-        <div className="w-full lg:w-4/12 px-4">
-          <div className="container mx-auto px-4 w-full lg:w-1/ h-full">
-            <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
-              <div className="px-6">
-                <div className="flex flex-wrap justify-center">
-                  <div className="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center">
-                    <div className="relative">
+          <div className="flex flex-col items-center bg-[#EBF3FC] py-6 mt-10">
+            <div className="card w-full max-w-6xl bg-base-100 shadow-xl mb-5">
+              <div className="card-body flex flex-col md:flex-row items-center p-10 space-y-8 md:space-y-0">
+                <div className="flex flex-col items-center md:w-1/3">
+                  <div className="avatar mb-4 relative">
+                    <div className="w-48 h-48 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 overflow-hidden flex items-center justify-center">
                       <img
-                        alt="..."
-                        // src={require("assets/img/team-2-800x800.jpg").default}
-                        className="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px"
+                        src={imagePreview || "/images/image/svg/default-profile.png"}
+                        className="w-full h-full object-cover"
                       />
                     </div>
-                  </div>
-                  <div className="w-full lg:w-4/12 px-4 lg:order-3 lg:text-right lg:self-center">
-                    <div className="py-6 px-3 mt-32 sm:mt-0">
-                      <button
-                        className="bg-lightBlue-500 active:bg-lightBlue-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150"
-                        type="button"
-                      >
-                        Connect
-                      </button>
-                    </div>
-                  </div>
-                  <div className="w-full lg:w-4/12 px-4 lg:order-1">
-                    <div className="flex justify-center py-4 lg:pt-4 pt-8">
-                      <div className="mr-4 p-3 text-center">
-                        <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
-                          22
-                        </span>
-                        <span className="text-sm text-blueGray-400">Friends</span>
-                      </div>
-                      <div className="mr-4 p-3 text-center">
-                        <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
-                          10
-                        </span>
-                        <span className="text-sm text-blueGray-400">Photos</span>
-                      </div>
-                      <div className="lg:mr-4 p-3 text-center">
-                        <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
-                          89
-                        </span>
-                        <span className="text-sm text-blueGray-400">Comments</span>
-                      </div>
-                    </div>
+                    <label
+                      htmlFor="imageInput"
+                      className="absolute bottom-2 right-2 flex items-center bg-primary text-white rounded-full p-3 shadow-lg cursor-pointer hover:bg-opacity-80 transition duration-200"
+                      title="Unggah Gambar"
+                    >
+                      <FaUpload className="w-6 h-6" />
+                    </label>
+                    <input
+                      type="file"
+                      id="imageInput"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
                   </div>
                 </div>
-                <div className="text-center mt-12">
-                  <h3 className="text-4xl font-semibold leading-normal mb-2 text-blueGray-700">
-                    Jenna Stones
-                  </h3>
-                  <div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
-                    <i className="fas fa-map-marker-alt mr-2 text-lg text-blueGray-400"></i> Los
-                    Angeles, California
-                  </div>
-                  <div className="mb-2 text-blueGray-600 mt-10">
-                    <i className="fas fa-briefcase mr-2 text-lg text-blueGray-400"></i>
-                    Solution Manager - Creative Tim Officer
-                  </div>
-                  <div className="mb-2 text-blueGray-600">
-                    <i className="fas fa-university mr-2 text-lg text-blueGray-400"></i>
-                    University of Computer Science
-                  </div>
-                </div>
-                <div className="mt-10 py-10 border-t border-blueGray-200 text-center">
-                  <div className="flex flex-wrap justify-center">
-                    <div className="w-full lg:w-9/12 px-4">
-                      <p className="mb-4 text-lg leading-relaxed text-blueGray-700">
-                        An artist of considerable range, Jenna the name taken by Melbourne-raised,
-                        Brooklyn-based Nick Murphy writes, performs and records all of his own
-                        music, giving it a warm, intimate feel with a solid groove structure. An
-                        artist of considerable range.
-                      </p>
-                      <a
-                        href="#pablo"
-                        className="font-normal text-lightBlue-500"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        Show more
-                      </a>
+
+                {/* Form Data Profil */}
+                <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <label className="form-control w-full">
+                    <div className="label">
+                      <span className="label-text">Nama</span>
                     </div>
+                    <input
+                      type="text"
+                      name="fullName"
+                      value={form.fullName}
+                      onChange={handleInputChange}
+                      placeholder="Masukkan Nama"
+                      className="input input-bordered placeholder:text-[12px] placeholder:text-[#8A8A8A] w-full rounded-2xl"
+                    />
+                  </label>
+                  <label className="form-control w-full">
+                    <div className="label">
+                      <span className="label-text">Email</span>
+                    </div>
+                    <input
+                      type="email"
+                      name="email"
+                      value={form.email}
+                      disabled
+                      placeholder="Masukkan Email"
+                      className="input input-bordered placeholder:text-[12px] placeholder:text-[#8A8A8A] w-full rounded-2xl"
+                    />
+                  </label>
+                  <label className="form-control w-full">
+                    <div className="label">
+                      <span className="label-text">Nomor Telepon</span>
+                    </div>
+                    <input
+                      type="tel"
+                      name="phoneNumber" // Pastikan nama ini sesuai dengan state form
+                      value={form.phoneNumber} // Menggunakan form.phoneNumber
+                      onChange={handleInputChange}
+                      placeholder="Masukkan Nomor Telepon"
+                      className="input input-bordered placeholder:text-[12px] placeholder:text-[#8A8A8A] w-full rounded-2xl"
+                    />
+                  </label>
+                  <label className="form-control w-full">
+                    <div className="label">
+                      <span className="label-text">Tanggal Lahir</span>
+                    </div>
+                    <input
+                      type="date"
+                      name="tanggalLahir"
+                      value={form.tanggalLahir}
+                      onChange={handleInputChange}
+                      className="input input-bordered placeholder:text-[12px] placeholder:text-[#8A8A8A] w-full rounded-2xl"
+                    />
+                  </label>
+                  <div className="form-control w-full">
+                    <div className="label">
+                      <span className="label-text">Kota</span>
+                    </div>
+                    <input
+                      type="text"
+                      name="city" // Ensure this key matches the form data
+                      value={form.city}
+                      onChange={handleInputChange}
+                      placeholder="Masukkan kota tempat tinggal"
+                      className="input input-bordered placeholder:text-[12px] placeholder:text-[#8A8A8A] w-full rounded-2xl"
+                    />
                   </div>
                 </div>
+              </div>
+
+              <div className="flex justify-center p-8">
+                <button
+                  onClick={handleSave}
+                  className="btn bg-[#0a61aa] text-white rounded-3xl w-full max-w-xs"
+                >
+                  Simpan Profil Saya
+                </button>
               </div>
             </div>
           </div>
@@ -138,4 +243,4 @@ const InstrukturPorofile = () => {
   );
 };
 
-export default InstrukturPorofile;
+export default InstrukturProfile;

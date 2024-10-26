@@ -70,7 +70,7 @@ const DataKontenModule = ({ show, onClose, chapterId }) => {
         <h2 className="text-xl font-bold text-[#0a61aa] mb-4 text-center">Tambah Kategori</h2>
 
         {/* Display loading indicator */}
-        {loading && <div className="mb-4 text-center text-blue-600">Loading...</div>}
+        {/* {loading && <div className="mb-4 text-center text-blue-600">Loading...</div>} */}
 
         {/* Display error message */}
         {error && <div className="mb-4 text-center text-red-600">{error}</div>}

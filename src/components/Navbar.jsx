@@ -2,7 +2,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import default_image from "../assets/profil.png";
+// import default_image from "../assets/profil.png";
 import { logout, getMe } from "../redux/actions/authActions"; // Import getMe
 import { FiBookOpen, FiLayers, FiLogOut, FiMenu, FiUser } from "react-icons/fi"; // Import React Icons
 
@@ -22,7 +22,7 @@ const Navbar = () => {
   }, [token, dispatch]);
 
   // Gambar profil default atau dari user
-  const imgProfile = profile?.image || default_image;
+  const imgProfile = profile?.image;
 
   // State untuk menentukan dropdown mana yang sedang terbuka
   const [activeDropdown, setActiveDropdown] = useState(null);

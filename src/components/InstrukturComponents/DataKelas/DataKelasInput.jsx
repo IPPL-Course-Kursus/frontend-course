@@ -702,7 +702,6 @@ const DataKelasInput = ({ show, onClose }) => {
     }
   };
 
-
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
@@ -722,25 +721,11 @@ const DataKelasInput = ({ show, onClose }) => {
       image,
     } = formData;
 
-    // Debugging: Log data yang akan dikirim
-    console.log({
-      categoryId,
-      courseLevelId,
-      typeCourseId,
-      courseName,
-      aboutCourse,
-      intendedFor,
-      coursePrice,
-      totalDuration,
-      publish,
-      certificateStatus,
-    });
-
     const requiredFields = [
       categoryId,
       courseLevelId,
       typeCourseId,
-      courseName, 
+      courseName,
       aboutCourse,
       intendedFor,
       coursePrice,
@@ -749,24 +734,24 @@ const DataKelasInput = ({ show, onClose }) => {
       totalDuration,
     ];
 
-    if (requiredFields.some((field) => !field)) {
+    if (requiredFields.some((field) => field === "" || field === null)) {
       alert("Please fill in all required fields.");
       setLoading(false);
       return;
     }
 
     const dataToSend = {
-      categoryId: Number(categoryId) || 0,
+      categoryId: parseInt(categoryId, 10),
       courseName,
-      typeCourseId: Number(typeCourseId) || 0,
-      courseLevelId: Number(courseLevelId) || 0,
-      coursePrice: parseFloat(coursePrice) || 0,
+      typeCourseId: parseInt(typeCourseId, 10),
+      courseLevelId: parseInt(courseLevelId, 10),
+      coursePrice: parseFloat(coursePrice),
       publish,
       intendedFor,
       aboutCourse,
-      courseDiscountPercent: parseFloat(courseDiscountPercent) || 0,
-      totalDuration: parseFloat(totalDuration) || 0,
-      certificateStatus,
+      courseDiscountPercent: parseFloat(courseDiscountPercent),
+      totalDuration: parseFloat(totalDuration),
+      certificateStatus: certificateStatus === "true", // Konversi ke boolean
     };
 
     const formDataToSend = new FormData();
@@ -776,7 +761,6 @@ const DataKelasInput = ({ show, onClose }) => {
       formDataToSend.append("image", image);
     }
 
-    // Debugging: Log data yang dikirim ke backend
     console.log("Data yang dikirim:", dataToSend);
 
     dispatch(addDataKelas(formDataToSend))
