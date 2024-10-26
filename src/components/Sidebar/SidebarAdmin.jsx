@@ -45,6 +45,12 @@ const Sidebar = () => {
           {isDataMenuOpenKelas && (
             <div className="pl-4">
               <a
+                href="/admin/data-kelas"
+                className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700"
+              >
+                Data Kelas
+              </a>
+              <a
                 href="/admin/data-kategori"
                 className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700"
               >
