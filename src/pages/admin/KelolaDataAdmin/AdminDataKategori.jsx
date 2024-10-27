@@ -163,7 +163,7 @@ const AdminDataKategori = () => {
               <table className="min-w-full table-auto">
                 <thead>
                   <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
-                    <th className="px-2 md:px-4 py-2">ID</th>
+                    <th className="px-2 md:px-4 py-2">Nomor</th>
                     <th className="px-2 md:px-4 py-2">Nama Kategori</th>
                     <th className="px-2 md:px-4 py-2">Kode Kategori</th>
                     <th className="px-2 md:px-4 py-2">Foto</th>
@@ -171,41 +171,45 @@ const AdminDataKategori = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredCategories?.map((category, index) => (
-                    <tr key={index} className="border-t text-xs md:text-sm">
-                      <td className="px-2 md:px-4 py-2">{category.id}</td>
-                      <td className="px-2 md:px-4 py-2">
-                        {category.categoryName}
-                      </td>
-                      <td className="px-2 md:px-4 py-2">
-                        {category.categoryCode}
-                      </td>
-                      <td className="px-2 md:px-4 py-2">
-                        <img
-                          src={category.image}
-                          alt={category.categoryName}
-                          className="w-16 h-16 object-cover rounded-md"
-                        />
-                      </td>
-                      <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
-                        {/* Edit Button */}
-                        <button
-                          className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
-                          onClick={() => handleEditClick(category)}
-                        >
-                          Ubah
-                        </button>
-                        {/* Delete Button */}
-                        <button
-                          className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
-                          onClick={() => handleDelete(category)}
-                        >
-                          Hapus
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                  {filteredCategories?.map((category, index) => {
+                    const rowNumber = (currentPage - 1) * itemsPerPage + index + 1;
+                    return (
+                      <tr key={index} className="border-t text-xs md:text-sm">
+                        <td className="px-2 md:px-4 py-2">{rowNumber}</td>
+                        <td className="px-2 md:px-4 py-2">
+                          {category.categoryName}
+                        </td>
+                        <td className="px-2 md:px-4 py-2">
+                          {category.categoryCode}
+                        </td>
+                        <td className="px-2 md:px-4 py-2">
+                          <img
+                            src={category.image}
+                            alt={category.categoryName}
+                            className="w-16 h-16 object-cover rounded-md"
+                          />
+                        </td>
+                        <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
+                          {/* Edit Button */}
+                          <button
+                            className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                            onClick={() => handleEditClick(category)}
+                          >
+                            Ubah
+                          </button>
+                          {/* Delete Button */}
+                          <button
+                            className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                            onClick={() => handleDelete(category)}
+                          >
+                            Hapus
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
+
               </table>
             )}
           </div>
