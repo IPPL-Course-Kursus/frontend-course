@@ -187,7 +187,7 @@ export const DetailKelas = () => {
                   <FaBook className="w-[50px] h-[50px] mr-4" />
                   <div>
                     <p className="font-medium text-[#151515] text-base leading-5">
-                      {detail.chapters?.length || 0} Materi
+                      {detail.totalContents} Materi
                     </p>
                   </div>
                 </div>

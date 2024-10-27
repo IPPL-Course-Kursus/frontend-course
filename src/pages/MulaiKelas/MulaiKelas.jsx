@@ -77,12 +77,15 @@ const MulaiKelas = () => {
                         {/* Main class information */}
                         <div className="mt-4">
                             <h1 className="text-3xl font-bold text-gray-800 mb-2">
-                                Java Script
+                            {data?.data?.course?.courseName
+                                        ? `${data.data.course.courseName} `
+                                        : "Course name tidak tersedia"}
                             </h1>
                             <h2 className="text-xl text-gray-600">
-                                Intro to Basic Java Script
+                            {data?.data?.course?.intendedFor
+                                        ? `${data.data.course.intendedFor} `
+                                        : "Tidak tersedia"}
                             </h2>
-
                             <div className="flex items-center gap-4 mt-4">
                                 <span className="text-green-600 flex items-center gap-2">
                                     <FaCheckCircle />
@@ -99,7 +102,7 @@ const MulaiKelas = () => {
                     </header>
 
                     {/* Video Placeholder */}
-                    <section className="bg-black h-56 flex items-center relative justify-center mb-6">
+                    <section className="bg-black h-[600px] flex items-center relative justify-center mb-6">
                         {selectedContent && (
                             <iframe
                                 width="560"
@@ -117,7 +120,7 @@ const MulaiKelas = () => {
                     {/* Course Info Section */}
                     <section className="bg-white p-6 rounded-lg shadow-lg mb-10">
                         <h3 className="text-gray-700 text-2xl font-semibold">
-                            Tentang Kelas
+                            Deskripsi Video
                         </h3>
                         {selectedContent ? (
                             <p className="text-gray-600 mt-2">
