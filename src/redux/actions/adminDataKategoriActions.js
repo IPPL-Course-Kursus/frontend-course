@@ -30,19 +30,40 @@ export const fetchAdminCategories = () => async (dispatch) => {
   }
 };
 
+// WORK
+// export const deleteCategory = (categoryId) => async (dispatch) => {
+//   try {
+//     dispatch(deleteCategoryRequest());
+
+//     const token = getCookie("token"); // Ambil token dari cookie
+//     const response = await axios.delete(`${api_url}category/delete-category/${categoryId}`, {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     });
+
+//     dispatch(deleteCategorySuccess(response.data));
+//     return response.data;
+//   } catch (error) {
+//     dispatch(deleteCategoryFailure(error.response?.data || "Delete failed"));
+//     throw error;
+//   }
+// };
+
+// MAYBE NOT WORK
 export const deleteCategory = (categoryId) => async (dispatch) => {
   try {
     dispatch(deleteCategoryRequest());
 
-    const token = getCookie("token"); // Ambil token dari cookie
-    const response = await axios.delete(`${api_url}category/delete-category/${categoryId}`, {
+    const token = getCookie("token"); // Retrieve token from cookies
+    await axios.delete(`${api_url}category/delete-category/${categoryId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
-    dispatch(deleteCategorySuccess(response.data));
-    return response.data;
+    // Dispatch success action with categoryId as payload
+    dispatch(deleteCategorySuccess(categoryId));
   } catch (error) {
     dispatch(deleteCategoryFailure(error.response?.data || "Delete failed"));
     throw error;
