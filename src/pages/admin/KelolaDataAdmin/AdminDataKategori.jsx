@@ -56,7 +56,7 @@ const AdminDataKategori = () => {
   const dispatch = useDispatch();
 
   // Fetch categories from Redux store
-  const { loading, categories, error } = useSelector(
+  const { loading, categories = [], error } = useSelector(
     (state) => state.adminDataKategori
   );
 
@@ -64,21 +64,41 @@ const AdminDataKategori = () => {
     dispatch(fetchAdminCategories());
   }, [dispatch]);
 
-  // Pagination logic: slicing categories for the current page
-  const totalPages = Math.ceil(categories?.length / itemsPerPage);
-  const currentItems = categories?.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
   const confirmDelete = () => {
     dispatch(deleteCategory(categoryToDelete.id));
     setShowDeleteModal(false);
   };
 
-  const filteredCategories = currentItems?.filter((category) =>
-    category.categoryName.toLowerCase().includes(searchValue.toLowerCase())
+  // Remove undefined or null categories
+  const validCategories = categories.filter(
+    (category) => category && typeof category.categoryName === "string"
   );
+
+  // 1. Filter categories based on searchValue before pagination
+  const filteredCategories = validCategories.filter((category) => {
+    const categoryName = category.categoryName.toLowerCase();
+    const searchTerm = (searchValue || "").toLowerCase();
+    return categoryName.includes(searchTerm);
+  });
+
+  // 2. Calculate total pages based on filtered categories
+  const totalPages = Math.ceil(filteredCategories.length / itemsPerPage) || 1;
+
+  // 3. Adjust currentPage if it exceeds totalPages
+  const adjustedCurrentPage = Math.min(currentPage, totalPages);
+
+  // 4. Slice the filtered categories for the current page
+  const currentItems = filteredCategories.slice(
+    (adjustedCurrentPage - 1) * itemsPerPage,
+    adjustedCurrentPage * itemsPerPage
+  );
+
+  // 5. Update currentPage when totalPages changes
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   return (
     <>
@@ -141,7 +161,10 @@ const AdminDataKategori = () => {
                 <input
                   type="text"
                   value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
+                  onChange={(e) => {
+                    setSearchValue(e.target.value ?? "");
+                    setCurrentPage(1); // Reset to first page on search
+                  }}
                   className={`transition-all duration-300 ease-in-out border border-[#173D94] rounded-full ml-2 p-1 ${
                     searchVisible
                       ? "w-40 opacity-100"
@@ -171,10 +194,15 @@ const AdminDataKategori = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredCategories?.map((category, index) => {
-                    const rowNumber = (currentPage - 1) * itemsPerPage + index + 1;
+                  {currentItems?.map((category, index) => {
+                    if (!category || !category.categoryName) return null; // Skip undefined categories
+                    const rowNumber =
+                      (adjustedCurrentPage - 1) * itemsPerPage + index + 1;
                     return (
-                      <tr key={index} className="border-t text-xs md:text-sm">
+                      <tr
+                        key={category.id}
+                        className="border-t text-xs md:text-sm"
+                      >
                         <td className="px-2 md:px-4 py-2">{rowNumber}</td>
                         <td className="px-2 md:px-4 py-2">
                           {category.categoryName}
@@ -209,7 +237,6 @@ const AdminDataKategori = () => {
                     );
                   })}
                 </tbody>
-
               </table>
             )}
           </div>
@@ -218,29 +245,29 @@ const AdminDataKategori = () => {
           <div className="flex justify-between items-center mt-4">
             <button
               className={`flex items-center py-2 px-4 rounded-lg ${
-                currentPage === 1
+                adjustedCurrentPage === 1
                   ? "bg-gray-300 cursor-not-allowed"
                   : "bg-[#0a61aa] text-white"
               } transition-all duration-300 hover:scale-105`}
-              onClick={() => setCurrentPage(currentPage - 1)}
-              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={adjustedCurrentPage === 1}
             >
               <IoArrowBackCircle className="mr-2 text-xl" />
               Previous
             </button>
 
             <span className="text-lg font-semibold">
-              Page {currentPage} of {totalPages}
+              Page {adjustedCurrentPage} of {totalPages}
             </span>
 
             <button
               className={`flex items-center py-2 px-4 rounded-lg ${
-                currentPage === totalPages
+                adjustedCurrentPage === totalPages
                   ? "bg-gray-300 cursor-not-allowed"
                   : "bg-[#0a61aa] text-white"
               } transition-all duration-300 hover:scale-105`}
-              onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+              disabled={adjustedCurrentPage === totalPages}
             >
               Next
               <IoArrowForwardCircle className="ml-2 text-xl" />
@@ -250,13 +277,19 @@ const AdminDataKategori = () => {
           {/* Pop-up for Add Category */}
           <TambahKategori
             show={showTambahPopup}
-            onClose={() => setShowTambahPopup(false)}
+            onClose={() => {
+              setShowTambahPopup(false);
+              dispatch(fetchAdminCategories()); // Refresh categories after adding
+            }}
           />
 
           {/* Pop-up for Edit Category */}
           <UbahKategori
             show={showUbahPopup}
-            onClose={() => setShowUbahPopup(false)}
+            onClose={() => {
+              setShowUbahPopup(false);
+              dispatch(fetchAdminCategories()); // Refresh categories after editing
+            }}
             existingData={selectedCategory}
           />
 
