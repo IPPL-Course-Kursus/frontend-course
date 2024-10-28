@@ -2,11 +2,14 @@ import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { updateDataKonten } from "../../../redux/actions/instruktorActions";
 import { useDispatch } from "react-redux";
+import toast from "react-hot-toast";
+import {  useNavigate } from "react-router-dom";
 
 function DataKontenUbah({ show, onClose, existingData }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     sort: "",
     contentTitle: "",
@@ -37,36 +40,41 @@ function DataKontenUbah({ show, onClose, existingData }) {
     }));
   };
 
-const handleUpdate = async (e) => {
-  e.preventDefault();
-  setLoading(true);
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-  const payload = {
-    sort: formData.sort,
-    contentTitle: formData.contentTitle,
-    teks: formData.teks,
-    contentUrl: formData.contentUrl,
-    duration: formData.duration,
+    const payload = {
+      sort: formData.sort,
+      contentTitle: formData.contentTitle,
+      teks: formData.teks,
+      contentUrl: formData.contentUrl,
+      duration: formData.duration,
+    };
+
+    console.log("Updating with payload:", payload);
+    dispatch(updateDataKonten())
+      .then(() => {
+        toast.success("Module berhasil diperbarui");
+
+        dispatch(updateDataKonten());
+        setTimeout(() => {
+          navigate("/inst/data-konten");
+        }, 1000);
+      })
+      .catch((error) => {
+        console.error("Failed to update data:", error);
+        if (error.response) {
+          setError(
+            `Error: ${error.response.data.message || "Failed to update data. Please try again."}`
+          );
+        } else {
+          setError("Failed to update data. Please try again.");
+        }
+      });
   };
 
-  console.log("Updating with payload:", payload);
-
-  try {
-    await dispatch(updateDataKonten(existingData.id, payload));
-    onClose();
-    window.location.reload();
-  } catch (error) {
-    console.error("Failed to update data:", error.response?.data || error.message);
-    if (error.response) {
-      setError(`Error: ${error.response.data.message || 'Failed to update data. Please try again.'}`);
-    } else {
-      setError("Failed to update data. Please try again.");
-    }
-  } finally {
-    setLoading(false);
-  }
-};
-
+  // };
 
   return (
     <div

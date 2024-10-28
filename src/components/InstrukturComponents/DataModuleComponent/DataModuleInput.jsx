@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addDataModule } from "../../redux/actions/instruktorActions";
+import { addDataModule, getDataModule } from "../../../redux/actions/instruktorActions";
 
 const DataModuleInput = ({ show, onClose, courseId }) => {
   const dispatch = useDispatch();
@@ -20,7 +20,7 @@ const DataModuleInput = ({ show, onClose, courseId }) => {
     }));
   };
 
-  const handleAdd = (e) => {
+  const handleAdd = async (e) => {
     e.preventDefault();
     setLoading(true);
 
@@ -36,19 +36,28 @@ const DataModuleInput = ({ show, onClose, courseId }) => {
       chapterTitle,
     };
 
-    dispatch(addDataModule(requestData, courseId))
-      .then(() => {
-        console.log("Data module berhasil ditambahkan");
-        setLoading(false);
-        onClose();
-        // Reload window after adding the data
-        window.location.reload();
-      })
-      .catch((err) => {
-        setLoading(false);
-        setError(err.response?.data?.message || "Error adding content");
-        console.error("Error detail:", err);
-      });
+    try {
+      await dispatch(addDataModule(requestData, courseId));
+      console.log("Data module berhasil ditambahkan");
+
+      setLoading(false);
+      onClose();
+      await fetchData(); // Panggil fetchData di sini untuk memperbarui state
+    } catch (err) {
+      setLoading(false);
+      setError(err.response?.data?.message || "Error adding content");
+      console.error("Error detail:", err);
+    }
+  };
+
+  // Modifikasi fetchData dengan pengecekan tambahan
+  const fetchData = async () => {
+    try {
+      await dispatch(getDataModule(courseId)); // Pastikan untuk memanggil getDataModule
+      // console.log("Chapters fetched:", chapters); // Log chapter setelah di-fetch
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    }
   };
 
   if (!show) return null;

@@ -116,16 +116,18 @@ const AdminDataKelas = () => {
               <table className="min-w-full table-auto">
                 <thead>
                   <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
-                    <th className="px-2 md:px-4 py-2">ID</th>
+                    <th className="px-2 md:px-4 py-2">Nomor</th>
                     <th className="px-2 md:px-4 py-2">Nama Kelas</th>
                     <th className="px-2 md:px-4 py-2">Kode Kelas</th>
                     <th className="px-2 md:px-4 py-2">Foto</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredCourses?.map((course, index) => (
+                  {filteredCourses?.map((course, index) => {
+                     const rowNumber = (currentPage - 1) * itemsPerPage + index + 1;
+                     return (
                     <tr key={index} className="border-t text-xs md:text-sm">
-                      <td className="px-2 md:px-4 py-2">{course.id}</td>
+                      <td className="px-2 md:px-4 py-2">{rowNumber}</td>
                       <td className="px-2 md:px-4 py-2">{course.courseName}</td>
                       <td className="px-2 md:px-4 py-2">{course.courseCode}</td>
                       <td className="px-2 md:px-4 py-2">
@@ -136,7 +138,7 @@ const AdminDataKelas = () => {
                         />
                       </td>
                     </tr>
-                  ))}
+                  )})}
                 </tbody>
               </table>
             )}

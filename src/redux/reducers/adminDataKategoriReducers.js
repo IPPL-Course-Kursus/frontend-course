@@ -34,12 +34,18 @@ const adminDataKategoriSlice = createSlice({
       state.error = null;
       state.token = null; // Menyimpan token
     },
+    // deleteCategorySuccess: (state, action) => {
+    //   state.loading = false;
+    //   state.categories = state.categories.filter(
+    //     (category) => category.id !== action.payload
+    //   );
+    // },
     deleteCategorySuccess: (state, action) => {
       state.loading = false;
       state.categories = state.categories.filter(
         (category) => category.id !== action.payload
       );
-    },
+    },    
     deleteCategoryFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;

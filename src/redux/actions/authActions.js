@@ -123,8 +123,11 @@ export const getMe = () => async (dispatch) => {
     // Ambil token dari cookie
     const token = Cookies.get("token");
 
+    // Jika token tidak ada, jangan lakukan request dan akhiri fungsi
     if (!token) {
-      // throw new Error("Token tidak ditemukan. Silakan login kembali.");
+      // console.log("Token tidak ditemukan. Pengguna belum login.");
+      // Kamu bisa memutuskan apa yang dilakukan di sini, misalnya redirect ke login
+      return;
     }
 
     // Lakukan permintaan untuk mendapatkan data pengguna dari API
@@ -142,6 +145,7 @@ export const getMe = () => async (dispatch) => {
     // toast.error(error.message || "Terjadi kesalahan saat mengambil data pengguna.");
   }
 };
+
 
 export const logout = () => (dispatch) => {
   Cookies.remove("token"); // Menghapus cookie token
