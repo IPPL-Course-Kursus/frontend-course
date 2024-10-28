@@ -1,37 +1,64 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchMulaiKelas } from "../../redux/actions/mulaiKelasActions";
+import {
+    fetchMulaiKelas,
+    updateContentProgress,
+    runCode,
+} from "../../redux/actions/mulaiKelasActions";
+import { resetOutput } from "../../redux/reducers/mulaiKelasReducers";
+import CodeMirror from "@uiw/react-codemirror";
+import { githubLight } from '@uiw/codemirror-theme-github';
+import { python } from "@codemirror/lang-python";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import ProgressBar from "../../components/MyCourse/ProgressBar";
 import { FaArrowLeft, FaCheckCircle } from "react-icons/fa";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+
 
 const MulaiKelas = () => {
     const dispatch = useDispatch();
-    const { data, loading, error } = useSelector((state) => state.mulaiKelas);
-    const [code, setCode] = useState("");
-    const [output, setOutput] = useState("");
+    const { data, loading, error, output } = useSelector(
+        (state) => state.mulaiKelas
+    );
+    const [sourceCode, setCode] = useState("");
+    const [language, setLanguage] = useState("");
     const [selectedContent, setSelectedContent] = useState(null);
     const { id } = useParams();
 
     useEffect(() => {
         if (id) {
             dispatch(fetchMulaiKelas(id));
+            {
+                if (selectedContent && selectedContent.interpreterStatus) {
+                    setCode(selectedContent?.interpreter?.sourceCode || "");
+                    setLanguage(
+                        selectedContent?.interpreter?.languageInterpreter || ""
+                    );
+                }
+            }
         }
-    }, [id, dispatch]);
+    }, [id, dispatch, selectedContent]);
 
-    const runCode = () => {
-        try {
-            const result = eval(code);
-            setOutput(result || "Code ran successfully");
-        } catch (error) {
-            setOutput("Error: " + error.message);
-        }
+    const handleRunCode = () => {
+        dispatch(runCode(language, sourceCode)).catch((error) => {
+            console.error(
+                "Error:",
+                error.response ? error.response.data : error.message
+            );
+        });
     };
 
+    const handleContentClick = (content) => {
+        // Reset output sebelum berpindah ke konten yang baru
+        dispatch(resetOutput());
+        setSelectedContent(content);
+        dispatch(updateContentProgress(id, content.id));
+    };
+    
+
     const copyCode = () => {
-        navigator.clipboard.writeText(code);
+        navigator.clipboard.writeText(sourceCode);
         alert("Code successfully copied!");
     };
 
@@ -39,24 +66,11 @@ const MulaiKelas = () => {
         setCode("");
     };
 
-    const handleContentClick = (content) => {
-        setSelectedContent(content);
-    };
-
     if (loading) {
         return <p>Loading...</p>;
     }
 
-    const totalContents =
-        data?.data?.course?.chapters?.reduce(
-            (acc, chapter) => acc + chapter.contents.length,
-            0
-        ) || 0;
     const contentFinish = data?.data?.contentFinish || 0;
-    const percentage =
-        totalContents > 0
-            ? Math.round((contentFinish / totalContents) * 100)
-            : 0;
 
     return (
         <>
@@ -67,31 +81,35 @@ const MulaiKelas = () => {
                     {/* Header Section */}
                     <header className="bg-blue-50 p-6 rounded-lg shadow-sm mb-6">
                         {/* Back button */}
-                        <div className="flex items-center gap-4">
-                            <FaArrowLeft className="text-gray-500 cursor-pointer" />
-                            <h1 className="text-xl font-bold text-gray-800">
-                                Kelas Lainnya
-                            </h1>
-                        </div>
+                        <Link to="/mycourse">
+                            <div className="flex items-center gap-4">
+                                <FaArrowLeft className="text-gray-500 cursor-pointer" />
+                                <h1 className="text-xl font-bold text-gray-800">
+                                    Kelas Lainnya
+                                </h1>
+                            </div>
+                        </Link>
 
                         {/* Main class information */}
                         <div className="mt-4">
                             <h1 className="text-3xl font-bold text-gray-800 mb-2">
-                            {data?.data?.course?.courseName
-                                        ? `${data.data.course.courseName} `
-                                        : "Course name tidak tersedia"}
+                                {data?.data?.course?.courseName
+                                    ? `${data.data.course.courseName} `
+                                    : "Course name tidak tersedia"}
                             </h1>
                             <h2 className="text-xl text-gray-600">
-                            {data?.data?.course?.intendedFor
-                                        ? `${data.data.course.intendedFor} `
-                                        : "Tidak tersedia"}
+                                {data?.data?.course?.intendedFor
+                                    ? `${data.data.course.intendedFor} `
+                                    : "Tidak tersedia"}
                             </h2>
                             <div className="flex items-center gap-4 mt-4">
                                 <span className="text-green-600 flex items-center gap-2">
                                     <FaCheckCircle />
-                                    Beginner Level
+                                    {data?.data?.course?.courseLevel.levelName}
                                 </span>
-                                <span className="text-gray-500">5 Modul</span>
+                                <span className="text-gray-500">
+                                    {data?.data?.course?._count.chapters} modul
+                                </span>
                                 <span className="text-gray-500">
                                     {data?.data?.course?.totalDuration
                                         ? `${data.data.course.totalDuration} menit`
@@ -103,78 +121,106 @@ const MulaiKelas = () => {
 
                     {/* Video Placeholder */}
                     <section className="bg-black h-[600px] flex items-center relative justify-center mb-6">
-                        {selectedContent && (
-                            <iframe
-                                width="560"
-                                height="215"
-                                src={selectedContent.contentUrl}
-                                title={selectedContent.contentTitle}
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media;"
-                                referrerPolicy="strict-origin-when-cross-origin"
-                                allowFullScreen
+                        {selectedContent ? (
+                            selectedContent.contentUrl ? (
+                                <iframe
+                                    width="560"
+                                    height="215"
+                                    src={selectedContent.contentUrl}
+                                    title={selectedContent.contentTitle}
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media;"
+                                    referrerPolicy="strict-origin-when-cross-origin"
+                                    allowFullScreen
+                                    className="absolute w-full h-full"
+                                ></iframe>
+                            ) : (
+                                <img
+                                    src={data?.data?.course?.image}
+                                    alt={data?.data?.course?.courseName}
+                                    className="absolute w-full h-full"
+                                />
+                            )
+                        ) : (
+                            <img
+                                src={data?.data?.course?.image}
+                                alt={data?.data?.course?.courseName}
                                 className="absolute w-full h-full"
-                            ></iframe>
+                            />
                         )}
                     </section>
 
                     {/* Course Info Section */}
                     <section className="bg-white p-6 rounded-lg shadow-lg mb-10">
-                        <h3 className="text-gray-700 text-2xl font-semibold">
-                            Deskripsi Video
-                        </h3>
+                        {selectedContent ? (
+                            <h3 className="text-gray-700 text-2xl font-semibold">
+                                {" "}
+                                Deskripsi video{" "}
+                            </h3>
+                        ) : (
+                            <h3 className="text-gray-700 text-2xl font-semibold">
+                                Tentang Kelas
+                            </h3>
+                        )}
+                        {/* // <h3 className="text-gray-700 text-2xl font-semibold">
+                        //     Deskripsi Video
+                        // </h3> */}
                         {selectedContent ? (
                             <p className="text-gray-600 mt-2">
                                 {selectedContent.teks}
                             </p>
                         ) : (
                             <p className="text-gray-600 mt-2">
-                                Pilih konten untuk melihat informasi lebih
-                                lanjut.
+                                {data?.data?.course?.aboutCourse}
                             </p>
                         )}
                     </section>
 
                     {/* Code Editor Section */}
-                    <section className="bg-white p-6 rounded-lg shadow-lg mb-10">
-                        <h3 className="text-gray-700 text-2xl font-semibold mb-4">
-                            Editor Kode
-                        </h3>
-                        <textarea
-                            id="code"
-                            placeholder="Write your code here..."
-                            value={code}
-                            onChange={(e) => setCode(e.target.value)}
-                            className="w-full p-3 border border-gray-300 rounded-lg mb-4"
-                        ></textarea>
+                    {selectedContent && selectedContent.interpreterStatus && (
+                        <section className="bg-white p-6 rounded-lg shadow-lg mb-10">
+                            <h3 className="text-gray-700 text-2xl font-semibold mb-4">
+                                Editor Kode
+                            </h3>
+                            <CodeMirror
+                                id="code"
+                                value={sourceCode}
+                                theme={githubLight}
+                                height="400px"
+                                extensions={[python()]}
+                                onChange={(value) => setCode(value)}
+                                className="w-full p-3 border border-gray-600 rounded-lg mb-4"
+                            ></CodeMirror>
+                            <div className="flex space-x-4">
+                                <button
+                                    className="bg-blue-600 text-white py-2 px-4 rounded-lg"
+                                    onClick={handleRunCode}
+                                    disabled={loading}
+                                >
+                                    {loading ? "Running..." : "Run Code"}
+                                </button>
 
-                        <div className="flex space-x-4">
-                            <button
-                                className="bg-blue-600 text-white py-2 px-4 rounded-lg"
-                                onClick={runCode}
-                            >
-                                Run Code
-                            </button>
-                            <button
-                                className="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg"
-                                onClick={copyCode}
-                            >
-                                Copy Code
-                            </button>
-                            <button
-                                className="bg-red-600 text-white py-2 px-4 rounded-lg"
-                                onClick={resetCode}
-                            >
-                                Reset Code
-                            </button>
-                        </div>
+                                <button
+                                    className="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg"
+                                    onClick={copyCode}
+                                >
+                                    Copy Code
+                                </button>
+                                <button
+                                    className="bg-red-600 text-white py-2 px-4 rounded-lg"
+                                    onClick={resetCode}
+                                >
+                                    Reset Code
+                                </button>
+                            </div>
 
-                        <div className="mt-4 p-4 bg-gray-100 rounded-lg">
-                            <h4 className="text-gray-700 font-semibold">
-                                Output:
-                            </h4>
-                            <p className="text-gray-600 mt-2">{output}</p>
-                        </div>
-                    </section>
+                            <div className="mt-4 p-4 bg-gray-100 rounded-lg">
+                                <h4 className="text-gray-700 font-semibold">
+                                    Output:
+                                </h4>
+                                <p className="text-gray-600 mt-2">{output}</p>
+                            </div>
+                        </section>
+                    )}
                 </div>
 
                 {/* Sidebar */}
@@ -189,11 +235,11 @@ const MulaiKelas = () => {
                             <h4 className="text-blue-600 font-bold">
                                 Progres Belajar
                             </h4>
-                            <span className="text-sm text-gray-500">
-                                {percentage}%
-                            </span>
+                            {/* <span className="text-sm text-gray-500">
+                                {percentage}
+                            </span> */}
                         </div>
-                        <ProgressBar percentage={percentage} />
+                        <ProgressBar contentFinish={contentFinish} />
                     </div>
 
                     {/* Chapter List */}
@@ -206,78 +252,95 @@ const MulaiKelas = () => {
                             </span>
                         </div>
                         <ul className="space-y-2 mt-4">
-                            {data?.data?.course?.chapters?.map((chapter) => (
-                                <div key={chapter.id}>
-                                    <h5 className="text-blue-600 font-semibold">
-                                        Chapter {chapter.sort}{" "}
-                                        {chapter.chapterTitle}
-                                    </h5>
-                                    {chapter.contents?.map((content, index) => (
-                                        <li
-                                            key={content.id}
-                                            className="flex justify-between items-center"
-                                        >
-                                            <div className="flex items-center gap-2">
-                                                <span className="bg-blue-200 text-blue-800 rounded-full h-8 w-8 flex items-center justify-center">
-                                                    {index + 1}
-                                                </span>
-                                                <Link
-                                                    to="#"
-                                                    onClick={() =>
-                                                        handleContentClick(
-                                                            content
-                                                        )
-                                                    }
-                                                >
-                                                    <span className="text-gray-700">
-                                                        {content.contentTitle}
-                                                    </span>
-                                                </Link>
-                                            </div>
-                                            <span className="text-green-500">
-                                                ▶
-                                            </span>
-                                        </li>
-                                    ))}
-                                </div>
-                            ))}
+                            {data?.data?.course?.chapters?.map(
+                                (chapter, chapterIndex) => {
+                                    // Periksa apakah semua konten di chapter sebelumnya selesai
+                                    const previousChapterCompleted =
+                                        chapterIndex === 0 || // Jika ini adalah chapter pertama, selalu buka
+                                        data.data.course.chapters[
+                                            chapterIndex - 1
+                                        ].contents.every((content) =>
+                                            content.userContentProgress.some(
+                                                (progress) =>
+                                                    progress.contentStatus ===
+                                                    true
+                                            )
+                                        );
+
+                                    return (
+                                        <div key={chapter.id} className="mb-4">
+                                            <h5
+                                                className={`${
+                                                    previousChapterCompleted
+                                                        ? "text-blue-600"
+                                                        : "text-gray-400"
+                                                } font-semibold`}
+                                            >
+                                                Chapter {chapter.sort}{" "}
+                                                {chapter.chapterTitle}
+                                            </h5>
+                                            {chapter.contents?.map(
+                                                (content, index) => {
+                                                    const isLocked =
+                                                        !previousChapterCompleted;
+
+                                                    return (
+                                                        <li
+                                                            key={content.id}
+                                                            className={`flex justify-between items-center ${
+                                                                isLocked
+                                                                    ? "text-gray-400"
+                                                                    : "text-gray-700"
+                                                            }`}
+                                                        >
+                                                            <div className="flex items-center gap-2">
+                                                                <span
+                                                                    className={`rounded-full h-8 w-8 flex items-center justify-center ${
+                                                                        isLocked
+                                                                            ? "bg-gray-200 text-gray-400"
+                                                                            : "bg-blue-200 text-blue-800"
+                                                                    }`}
+                                                                >
+                                                                    {index + 1}
+                                                                </span>
+                                                                {isLocked ? (
+                                                                    <span className="text-gray-400">
+                                                                        {
+                                                                            content.contentTitle
+                                                                        }
+                                                                    </span>
+                                                                ) : (
+                                                                    <Link
+                                                                        to="#"
+                                                                        onClick={() =>
+                                                                            handleContentClick(
+                                                                                content
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        <span>
+                                                                            {
+                                                                                content.contentTitle
+                                                                            }
+                                                                        </span>
+                                                                    </Link>
+                                                                )}
+                                                            </div>
+                                                            <span className="text-green-500">
+                                                                {isLocked
+                                                                    ? "🔒"
+                                                                    : "▶"}
+                                                            </span>
+                                                        </li>
+                                                    );
+                                                }
+                                            )}
+                                        </div>
+                                    );
+                                }
+                            )}
                         </ul>
                     </div>
-
-                    {/* <div className="mb-6">
-                        <div className="flex justify-between items-center">
-                            <h4 className="text-blue-600 font-bold">
-                                Chapter 2 - Memulai Desain
-                            </h4>
-                            <span className="text-sm text-gray-500">
-                                120 Menit
-                            </span>
-                        </div>
-                        <ul className="space-y-2 mt-4">
-                            <li className="flex justify-between items-center">
-                                <div className="flex items-center gap-2">
-                                    <span className="bg-gray-200 text-gray-400 rounded-full h-8 w-8 flex items-center justify-center">
-                                        4
-                                    </span>
-                                    <span className="text-gray-400">
-                                        Lorem Ipsum
-                                    </span>
-                                </div>
-                                <span className="text-gray-400">🔒</span>
-                            </li>
-                            <li className="flex justify-between items-center">
-                                <div className="flex items-center gap-2">
-                                    <span className="bg-gray-200 text-gray-400 rounded-full h-8 w-8 flex items-center justify-center">
-                                        5
-                                    </span>
-                                    <span className="text-gray-400">
-                                        Lorem Ipsum
-                                    </span>
-                                </div>
-                                <span className="text-gray-400">🔒</span>
-                            </li>
-                        </ul>
-                    </div> */}
                 </aside>
             </div>
             <Footer />
