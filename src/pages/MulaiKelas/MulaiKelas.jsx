@@ -14,6 +14,7 @@ import Footer from "../../components/Footer";
 import ProgressBar from "../../components/MyCourse/ProgressBar";
 import { FaArrowLeft, FaCheckCircle } from "react-icons/fa";
 import { Link, useParams } from "react-router-dom";
+import jsPDF from "jspdf";
 
 
 const MulaiKelas = () => {
@@ -64,6 +65,19 @@ const MulaiKelas = () => {
 
     const resetCode = () => {
         setCode("");
+    };
+
+    const generateCertificate = () => {
+        if (contentFinish < data?.data?.course?.chapters?.length) {
+            alert("Selesaikan semua materi untuk mendapatkan sertifikat.");
+            return;
+        }
+
+        const doc = new jsPDF();
+        doc.text("Certificate of Completion", 20, 20);
+        doc.text(`Diberikan kepada: ${data?.data?.fullName}`, 20, 30);
+        doc.text(`Untuk penyelesaian: ${data?.data?.course?.courseName}`, 20, 40);
+        doc.save(`Sertifikat ${data?.data?.course?.courseName}.pdf`);
     };
 
     if (loading) {
@@ -341,7 +355,19 @@ const MulaiKelas = () => {
                             )}
                         </ul>
                     </div>
+
+                    {/* Tombole generate sertifikat */}
+                    <div className="text-center border-t-2 border-gray-300">
+                <button
+                    onClick={generateCertificate}
+                    className="bg-blue-600 text-white p-2 rounded-lg mt-5"
+                >
+                    Download Sertifikat
+                </button>
+            </div>
+
                 </aside>
+
             </div>
             <Footer />
         </>

@@ -310,11 +310,11 @@ const CoursesPage = () => {
   <div
     className="bg-indigo-500 rounded-full h-full flex items-center justify-center"
     style={{
-      width: `${(courseItem.contentFinish / courseItem.course.totalDuration) * 100}%`,
+      width: `${courseItem.contentFinish}%`,
     }}
   >
     <span className="text-white text-xs font-bold pl-9">
-      {Math.round((courseItem.contentFinish / courseItem.course.totalDuration) * 100)}%
+      {Math.round((courseItem.contentFinish))}%
     </span>
   </div>
 </div>
