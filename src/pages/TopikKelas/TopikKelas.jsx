@@ -316,8 +316,7 @@ const TopikKelas = () => {
                             )}
 
                             <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">Kategori</h3>
-                            {category &&
-                                category.map((kategori, i) => (
+                            {category && category.map((kategori, i) => (
                                     <div
                                         className="flex items-center mb-2"
                                         key={i}
@@ -476,18 +475,6 @@ const TopikKelas = () => {
                                 Page {currentPage} of {totalPages}
                             </span>
 
-                            <button
-                                className={`flex items-center py-2 px-4 rounded-lg ${
-                                    currentPage === totalPages
-                                        ? "bg-gray-300 cursor-not-allowed"
-                                        : "bg-[#0a61aa] text-white"
-                                } transition-all duration-300 hover:scale-105`}
-                                onClick={() => setCurrentPage(currentPage + 1)}
-                                disabled={currentPage === totalPages}
-                            >
-                                Next
-                                <IoArrowForwardCircle className="ml-2 text-xl" />
-                            </button>
                         </div>
                     </div>
                 </div>
