@@ -307,7 +307,7 @@ const CoursesPage = () => {
                         </div>
 
                         {/* Progress Bar di bawah durasi */}
-<div className="w-full bg-gray-300 rounded-full h-6 mb-2">
+                        <div className="w-full bg-gray-300 rounded-full h-6 mb-2">
   <div
     className="bg-indigo-500 rounded-full h-full flex items-center justify-center"
     style={{
@@ -315,11 +315,10 @@ const CoursesPage = () => {
     }}
   >
     <span className="text-white text-xs font-bold pl-9">
-      {Math.round((courseItem.contentFinish))}%
+      {Math.round(courseItem.contentFinish) }%
     </span>
   </div>
 </div>
-
                       </div>
                     </div>
                   );
