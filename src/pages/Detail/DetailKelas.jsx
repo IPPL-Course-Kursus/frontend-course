@@ -140,7 +140,7 @@ export const DetailKelas = () => {
               </button>
             </div>
             <div className="w-full sm:w-[512px] pt-16 pb-16">
-              <img className="w-full h-auto" src={detail.image} alt="Gambar Kelas" />
+              <img className="w-full rounded-xl h-auto" src={detail.image} alt="Gambar Kelas" />
             </div>
           </div>
         </div>
