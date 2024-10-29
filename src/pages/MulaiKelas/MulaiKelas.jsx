@@ -6,6 +6,7 @@ import {
     runCode,
 } from "../../redux/actions/mulaiKelasActions";
 import { resetOutput } from "../../redux/reducers/mulaiKelasReducers";
+import { getMe } from "../../redux/actions/authActions";
 import CodeMirror from "@uiw/react-codemirror";
 import { githubLight } from '@uiw/codemirror-theme-github';
 import { python } from "@codemirror/lang-python";
@@ -14,6 +15,10 @@ import Footer from "../../components/Footer";
 import ProgressBar from "../../components/MyCourse/ProgressBar";
 import { FaArrowLeft, FaCheckCircle } from "react-icons/fa";
 import { Link, useParams } from "react-router-dom";
+import jsPDF from "jspdf";
+import sertifikat from "../../assets/sertif-ec.png";
+import Swal from "sweetalert2";
+
 
 
 const MulaiKelas = () => {
@@ -21,10 +26,12 @@ const MulaiKelas = () => {
     const { data, loading, error, output } = useSelector(
         (state) => state.mulaiKelas
     );
+    const profile = useSelector((state) => state.getMe.profile);
     const [sourceCode, setCode] = useState("");
     const [language, setLanguage] = useState("");
     const [selectedContent, setSelectedContent] = useState(null);
     const { id } = useParams();
+    const name = profile?.fullName;
 
     useEffect(() => {
         if (id) {
@@ -38,6 +45,7 @@ const MulaiKelas = () => {
                 }
             }
         }
+        dispatch(getMe());
     }, [id, dispatch, selectedContent]);
 
     const handleRunCode = () => {
@@ -66,9 +74,53 @@ const MulaiKelas = () => {
         setCode("");
     };
 
-    if (loading) {
-        return <p>Loading...</p>;
-    }
+    const generateCertificate = () => {
+        if (data?.data?.courseStatus !== "Completed") {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Selesaikan semua materi untuk mendapatkan sertifikat.',
+            });
+            return;
+        }
+    
+        const doc = new jsPDF({
+            orientation: "landscape",
+            unit: "px",
+            format: [800, 600] // Sesuaikan ukuran sesuai dengan ukuran gambar sertifikat
+        });
+    
+        // Tambahkan gambar sertifikat sebagai background
+        doc.addImage(sertifikat, "PNG", 0, 0, 800, 600);
+    
+        // Tambahkan nama peserta di bawah "Diberikan pada"
+        doc.setFontSize(28); // Ukuran font sedikit lebih besar
+        doc.setTextColor(235, 167, 30); // Warna teks mirip dengan warna pada sertifikat
+        doc.setFont("helvetica", "bold"); // Menambahkan font yang lebih tebal
+        doc.text(name || "Nama Peserta", 90, 260, {
+            align: "left",
+            charSpace: 0.75 // Jarak antar karakter sedikit
+        });
+    
+        // Tambahkan nama kursus di bawah "Atas kelulusannya pada kelas"
+        doc.setFontSize(24);
+        doc.setTextColor(235, 167, 30); // Sama dengan warna teks nama peserta
+        doc.setFont("helvetica", "bold");
+        doc.text(
+            data?.data?.course?.courseName || "Nama Kursus",
+            90,
+            330,
+            { align: "left", charSpace: 0.5 }
+        );
+    
+        // Unduh sertifikat
+        doc.save(`Sertifikat ${data?.data?.course?.courseName}_${name}.pdf`);
+    };
+    
+
+    // if (loading) {
+    //     return <p>Loading...</p>;
+    // }
 
     const contentFinish = data?.data?.contentFinish || 0;
 
@@ -341,7 +393,19 @@ const MulaiKelas = () => {
                             )}
                         </ul>
                     </div>
+
+                    {/* Tombole generate sertifikat */}
+                    <div className="text-center border-t-2 border-gray-300">
+                <button
+                    onClick={generateCertificate}
+                    className="bg-blue-600 text-white p-2 rounded-lg mt-5"
+                >
+                    Download Sertifikat
+                </button>
+            </div>
+
                 </aside>
+
             </div>
             <Footer />
         </>
