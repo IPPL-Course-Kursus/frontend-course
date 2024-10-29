@@ -1,58 +1,75 @@
-import { useLocation } from "react-router-dom";
+import { FaFacebook, FaGithub, FaInstagram, FaTwitter, FaTwitch } from "react-icons/fa";
+
+const sections = [
+  {
+    title: "Solutions",
+    items: ["Marketing", "Analytics", "Commerce", "Data", "Cloud"],
+  },
+  {
+    title: "Support",
+    items: ["Pricing", "Documentation", "Guides", "API Status"],
+  },
+  {
+    title: "Company",
+    items: ["About", "Blog", "Jobs", "Press", "Partners"],
+  },
+  {
+    title: "Legal",
+    items: ["Claims", "Privacy", "Terms", "Policies", "Conditions"],
+  },
+];
+
+const items = [
+  { name: "Facebook", icon: FaFacebook, link: "https://www.facebook.com/" },
+  { name: "Instagram", icon: FaInstagram, link: "https://www.instagram.com/" },
+  { name: "Twitter", icon: FaTwitter, link: "https://twitter.com/" },
+  { name: "Twitch", icon: FaTwitch, link: "https://www.twitch.tv/" },
+  { name: "Github", icon: FaGithub, link: "https://github.com/" },
+];
 
 const Footer = () => {
-  const location = useLocation();
-  const hidePath = ["/login", "/register", "/reset", "/validate", "/account"];
-
-  const isHidden =
-    hidePath.includes(location.pathname) ||
-    location.pathname.startsWith("/forgot/") ||
-    location.pathname.startsWith("/details/");
-
-  if (isHidden) {
-    return null;
-  }
   return (
-    <footer className="footer bg-white text-base-content p-10">
-      <aside>
-        <svg
-          width="50"
-          height="50"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-          fillRule="evenodd"
-          clipRule="evenodd"
-          className="fill-current"
-        >
-          <path d="M22.672 15.226l-2.432.811.841 2.515c.33 1.019-.209 2.127-1.23 2.456-1.15.325-2.148-.321-2.463-1.226l-.84-2.518-5.013 1.677.84 2.517c.391 1.203-.434 2.542-1.831 2.542-.88 0-1.601-.564-1.86-1.314l-.842-2.516-2.431.809c-1.135.328-2.145-.317-2.463-1.229-.329-1.018.211-2.127 1.231-2.456l2.432-.809-1.621-4.823-2.432.808c-1.355.384-2.558-.59-2.558-1.839 0-.817.509-1.582 1.327-1.846l2.433-.809-.842-2.515c-.33-1.02.211-2.129 1.232-2.458 1.02-.329 2.13.209 2.461 1.229l.842 2.515 5.011-1.677-.839-2.517c-.403-1.238.484-2.553 1.843-2.553.819 0 1.585.509 1.85 1.326l.841 2.517 2.431-.81c1.02-.33 2.131.211 2.461 1.229.332 1.018-.21 2.126-1.23 2.456l-2.433.809 1.622 4.823 2.433-.809c1.242-.401 2.557.484 2.557 1.838 0 .819-.51 1.583-1.328 1.847m-8.992-6.428l-5.01 1.675 1.619 4.828 5.011-1.674-1.62-4.829z"></path>
-        </svg>
-        <p>
-          ACME Industries Ltd.
-          <br />
-          Providing reliable tech since 1992
-        </p>
-      </aside>
-      <nav>
-        <h6 className="footer-title">Services</h6>
-        <a className="link link-hover">Branding</a>
-        <a className="link link-hover">Design</a>
-        <a className="link link-hover">Marketing</a>
-        <a className="link link-hover">Advertisement</a>
-      </nav>
-      <nav>
-        <h6 className="footer-title">Company</h6>
-        <a className="link link-hover">About us</a>
-        <a className="link link-hover">Contact</a>
-        <a className="link link-hover">Jobs</a>
-        <a className="link link-hover">Press kit</a>
-      </nav>
-      <nav>
-        <h6 className="footer-title">Legal</h6>
-        <a className="link link-hover">Terms of use</a>
-        <a className="link link-hover">Privacy policy</a>
-        <a className="link link-hover">Cookie policy</a>
-      </nav>
-    </footer>
+    <div className="w-full mt-24 bg-slate-900 text-gray-300 py-y px-2">
+      <div className="max-w-[1240px] mx-auto grid grid-cols-2 md:grid-cols-6 border-b-2 border-gray-600 py-8">
+        {sections.map((section, index) => (
+          <div key={index}>
+            <h6 className="font-bold uppercase pt-2">{section.title}</h6>
+            <ul>
+              {section.items.map((item, i) => (
+                <li key={i} className="py-1 text-gray-500 hover:text-white">
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+
+        <div className="col-span-2 pt-8 md:pt-2">
+          <button className="font-bold uppercase">EtamCode</button>
+          <p className="py-4">
+            Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum
+            Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum.
+          </p>
+          {/* <form className="flex flex-col sm:flex-row">
+            <input
+              className="w-full p-2 mr-4 rounded-md mb-4"
+              type="email"
+              placeholder="Enter email.."
+            />
+            <button className="p-2 mb-4">Subscribe</button>
+          </form> */}
+        </div>
+      </div>
+
+      <div className="flex flex-col max-w-[1240px] px-2 py-4 mx-auto justify-between sm:flex-row text-center text-gray-500">
+        <p className="py-4">2024 Etam-Code Kursus</p>
+        <div className="flex justify-between sm:w-[300px] pt-4 text-2xl">
+          {items.map((x, index) => {
+            return <x.icon key={index} className="hover:text-white" />;
+          })}
+        </div>
+      </div>
+    </div>
   );
 };
 

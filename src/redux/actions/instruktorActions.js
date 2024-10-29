@@ -24,9 +24,12 @@ import {
   updateContentSuccess,
 } from "../reducers/contentReducers";
 import {
-  fetchCourseFailure,
-  fetchCourseStart,
-  fetchCourseSuccess,
+  addCourseFailure,
+  addCourseRequest,
+  addCourseSuccess,
+  deleteCourseFailure,
+  deleteCourseRequest,
+  deleteCourseSuccess,
   setCourse,
 } from "../reducers/courseReducers";
 
@@ -39,7 +42,7 @@ export const getAllKelas = () => async (dispatch) => {
     const response = await axios.get(`${api_url}course`);
 
     const courses = response.data;
-    console.log("ini kelas :", response.data);
+    // console.log("ini kelas :", response.data);
 
     dispatch(setCourse(courses));
   } catch (error) {
@@ -47,30 +50,60 @@ export const getAllKelas = () => async (dispatch) => {
   }
 };
 
-export const addDataKelas = (requesData) => async (dispatch) => {
-  dispatch(fetchCourseStart());
+export const addDataKelas = (requestData) => async (dispatch) => {
+  dispatch(addCourseRequest()); // Set loading state
+
   try {
-    // Get the token from cookies
+    // Ambil token dari cookies
     const token = getCookie("token");
 
-    // Set up the config with headers
+    // Konversi tipe data ke format yang diharapkan
+    const formattedData = {
+      ...requestData,
+      categoryId: parseInt(requestData.categoryId, 10),
+      courseLevelId: parseInt(requestData.courseLevelId, 10),
+      typeCourseId: parseInt(requestData.typeCourseId, 10),
+      totalDuration: parseInt(requestData.totalDuration, 10),
+      certificateStatus: Boolean(requestData.certificateStatus),
+    };
+
+    // Set up config untuk header
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data", // Set the Content-Type header
+        "Content-Type": "multipart/form-data",
       },
     };
-    
-    // Make the POST request with the FormData
-    const response = await axios.post(`${api_url}course/createCourse`, requesData, config);
 
-    dispatch(fetchCourseSuccess(response.data.message));
+    // Lakukan POST request dengan FormData
+    const response = await axios.post(`${api_url}course/createCourse`, formattedData, config);
+
+    dispatch(addCourseSuccess(response.data.message)); // Sesuaikan dengan response API Anda
+    console.log(response.data.message);
     dispatch(getAllKelas());
   } catch (error) {
-    console.error("Add category error:", error.response || error);
-    const errorMessage = error.response?.data?.message || error.message || "Add category failed";
-    dispatch(fetchCourseFailure(errorMessage));
-    throw error;
+    console.error("Error adding data kelas:", error.response || error);
+    const errorMessage = error.response?.data?.message || error.message || "Add data kelas failed";
+    dispatch(addCourseFailure(errorMessage)); // Dispatch action failure
+  }
+};
+
+export const deleteDataCourse = (courseId) => async (dispatch) => {
+  dispatch(deleteCourseRequest()); // Memulai proses penghapusan
+  try {
+    const token = getCookie("token"); // Ambil token dari cookie
+    const response = await axios.delete(`${api_url}course/delete-course/${courseId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    dispatch(deleteCourseSuccess(courseId)); // Kirim ID kursus yang dihapus ke aksi sukses
+    return response.data; // Kembalikan data dari respon
+  } catch (error) {
+    console.error("Delete error:", error.response ? error.response.data : error.message);
+    dispatch(deleteCourseFailure(error.response?.data || "Delete failed")); // Tangani kesalahan
+    throw error; // Lempar kesalahan jika perlu
   }
 };
 

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUserCourses } from "../../redux/actions/courseActions";
 import { selectMyCourse } from "../../redux/reducers/courseReducers";
-
+import { Link } from "react-router-dom";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 
@@ -52,11 +52,12 @@ const CoursesPage = () => {
           course.contentFinish > 0 &&
           course.contentFinish < course.course.totalDuration) ||
         (courseStatusFilter === "completed" && course.contentFinish === course.course.totalDuration);
-  
-      // Memastikan hanya menampilkan kursus yang sesuai dengan semua filter yang aktif
-      const matchesAllFilters = matchesStatus && 
-                                (activeFilters.length === 0 || 
-                                (matchesCategoryFilter && matchesLevelFilter));
+        
+        const matchesAllFilters = matchesStatus && 
+        (activeFilters.length === 0 || // Jika tidak ada filter aktif, tampilkan semua kursus
+        (activeFilters.length === 1 && (matchesCategoryFilter || matchesLevelFilter)) || // Jika satu filter aktif
+        (activeFilters.length > 1 && matchesCategoryFilter && matchesLevelFilter) || // Jika dua filter aktif
+        (activeFilters.length === 2 && matchesCategoryFilter && matchesLevelFilter)); // Pastikan kedua filter terpenuhi jika ada dua filter aktif  
   
       return matchesAllFilters; // Kembalikan true jika kursus memenuhi semua syarat
     });
@@ -243,9 +244,11 @@ const CoursesPage = () => {
                           <h3 className="text-xl font-bold text-blue-800">
                             {courseItem.course.courseName}
                           </h3>
-                          <button className="bg-blue-500 hover:bg-slate-400 text-white mt-3 px-3 py-2 text-wrap rounded-md">
+                          <Link to={`/mulai-kelas/${courseItem.id}`}>
+                          <button className="bg-blue-500 hover:bg-slate-400 text-white mt-3 px-2 py-1 md:px-3 md:py-2 text-wrap rounded-md">
                             Lihat Detail Kelas
                           </button>
+                          </Link>
                         </div>
 
                         <div className="flex items-center mb-2">
@@ -300,7 +303,7 @@ const CoursesPage = () => {
                               d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                             />
                           </svg>
-                          <span>{courseItem.course.totalDuration} menit</span>
+                          <span>{courseItem.course.contentFinish} menit</span>
                         </div>
 
                         {/* Progress Bar di bawah durasi */}
@@ -312,7 +315,7 @@ const CoursesPage = () => {
                             }}
                           >
                             <span className="text-white text-xs font-bold pl-9">
-                              {Math.round((courseItem.contentFinish / courseItem.course.totalDuration) * 100)}%
+                              {courseItem.course.contentFinish}%
                             </span>
                           </div>
                         </div>

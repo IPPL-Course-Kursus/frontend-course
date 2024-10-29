@@ -18,9 +18,34 @@ const Register = () => {
   const [city, setCity] = useState("");
   const [tanggalLahir, setTanggalLahir] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    if (!fullName) {
+      setErrorMessage("Silahkan isi nama lengkap anda");
+      return;
+    }
+    if (!email) {
+      setErrorMessage("Silahkan isi email anda");
+      return;
+    }
+    if (!phoneNumber) {
+      setErrorMessage("Silahkan masukkan no telepon anda");
+      return;
+    }
+    if (!city) {
+      setErrorMessage("Silahkan isi kota anda");
+      return;
+    }
+    if (!tanggalLahir) {
+      setErrorMessage("Silahkan masukkan tanggal lahir anda");
+      return;
+    }
+    if (!password) {
+      setErrorMessage("Silahkan isi password anda");
+      return;
+    }
 
     if (
       !fullName &&
@@ -114,7 +139,10 @@ const Register = () => {
                   className="border shadow-sm w-full p-2 rounded-xl"
                   placeholder="Contoh: etamcode@mail.com"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setErrorMessage("");
+                  }}
                 />
               </div>
               <div className="flex flex-col">
@@ -130,6 +158,7 @@ const Register = () => {
                     if (validatePhoneInput(input)) {
                       setPhoneNumber(input);
                     }
+                    setErrorMessage("");
                   }}
                 />
               </div>
@@ -152,7 +181,10 @@ const Register = () => {
                   placeholder="Contoh: Bali"
                   value={city}
                   autoComplete="tel"
-                  onChange={(e) => setCity(e.target.value)}
+                  onChange={(e) => {
+                    setCity(e.target.value);
+                    setErrorMessage("");
+                  }}
                 />
               </div>
               <div className="flex flex-col">
@@ -166,7 +198,10 @@ const Register = () => {
                   value={tanggalLahir}
                   autoComplete=""
                   // onChange={handleDateChange}
-                  onChange={(e) => setTanggalLahir(e.target.value)}
+                  onChange={(e) => {
+                    setTanggalLahir(e.target.value);
+                    setErrorMessage("");
+                  }}
                 />
               </div>
               <div className="flex flex-col">
@@ -182,7 +217,10 @@ const Register = () => {
                     placeholder="Masukkan Password"
                     value={password}
                     autoComplete="current-password"
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setErrorMessage("");
+                    }}
                   />
                   {/* buat hide password */}
                   <button
@@ -198,11 +236,11 @@ const Register = () => {
                   </button>
                 </div>
               </div>
+              {errorMessage && (
+                <p className="text-red-500 font-medium text-sm mb-2">{errorMessage}</p>
+              )}
             </div>
-            <button
-              className=" btn  w-full text-[14px] font-medium bg-[#0A61AA] text-white py-[10px] rounded-2xl mt-5 "
-              type="submit"
-            >
+            <button className="btn w-full text-[14px] font-medium bg-[#0A61AA] text-white py-[10px] rounded-2xl mt-5 hover:bg-blue-600 transition-colors duration-300">
               Daftar
             </button>
             <div className="flex justify-center items-center gap-2 mt-6">

@@ -5,7 +5,7 @@ const RiwayatContentCard = ({courseTitle,
     courseImage,
     courseCategory,
     courseAuthor,
-    courseRating,
+    // courseRating,
     courseLevel,
     courseModule,
     courseTime,
@@ -45,7 +45,7 @@ const RiwayatContentCard = ({courseTitle,
             <div className="flex items-center space-x-1">
               <span className="text-yellow-500 font-bold text-xl">★</span>
               <span className="text-xl font-bold text-gray-700">
-                {courseRating}
+                {/* {courseRating} */}
               </span>
             </div>
           </div>
