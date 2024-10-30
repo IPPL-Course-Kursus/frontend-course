@@ -208,9 +208,15 @@ import { runCode } from "../../../redux/actions/mulaiKelasActions";
 const DataKontenModule = ({ show, onClose, chapterId }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [language, setLanguage] = useState("");
+  const [
+    language,
+    // , setLanguage
+  ] = useState("");
   const [sourceCode, setCode] = useState("");
-  const [output, setOutput] = useState("");
+  const [
+    output,
+    // , setOutput
+  ] = useState("");
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     sort: "",

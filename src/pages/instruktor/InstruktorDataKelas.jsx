@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaSearch, FaFilter, FaBars } from "react-icons/fa";
+import { FaFilter, FaBars } from "react-icons/fa";
 import { IoAddCircleOutline, IoArrowBackCircle, IoArrowForwardCircle } from "react-icons/io5";
 import DataKelasInput from "../../components/InstrukturComponents/DataKelas/DataKelasInput";
 import DataKelasUbah from "../../components/InstrukturComponents/DataKelas/DataKelasUbah";
@@ -11,7 +11,7 @@ import { getAllKelas, deleteDataCourse } from "../../redux/actions/instruktorAct
 
 const InstruktorDataKelas = () => {
   const [courseTypeSearch, setCourseTypeSearch] = useState("");
-  const [searchVisible, setSearchVisible] = useState(false);
+  const [searchVisible] = useState(false);
   const [showTambahPopup, setShowTambahPopup] = useState(false);
   const [showUbahPopup, setShowUbahPopup] = useState(false);
   const [showDetailPopup, setShowDetailPopup] = useState(false);
