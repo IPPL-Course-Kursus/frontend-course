@@ -21,6 +21,7 @@ import sertifikat from "../../assets/sertif-ec.png";
 import Swal from "sweetalert2";
 
 const MulaiKelas = () => {
+<<<<<<< HEAD
   const dispatch = useDispatch();
   const { data, loading, output } = useSelector((state) => state.mulaiKelas);
   const profile = useSelector((state) => state.getMe.profile);
@@ -131,6 +132,11 @@ const MulaiKelas = () => {
       {
         align: "left",
       }
+=======
+    const dispatch = useDispatch();
+    const { data, loading, output } = useSelector(
+        (state) => state.mulaiKelas
+>>>>>>> 807212382b8d8506a5e367dde26a4591f6ec84e5
     );
 
     // Unduh sertifikat
@@ -245,6 +251,7 @@ const MulaiKelas = () => {
             )}
           </section>
 
+<<<<<<< HEAD
           {/* Code Editor Section */}
           {selectedContent && selectedContent.interpreterStatus && (
             <section className="bg-white p-6 rounded-lg shadow-lg mb-10">
@@ -266,6 +273,31 @@ const MulaiKelas = () => {
                 >
                   {loading ? "Running..." : "Run Code"}
                 </button>
+=======
+                    {/* Code Editor Section */}
+                    {selectedContent && selectedContent.interpreterStatus && (
+                        <section className="bg-white p-6 rounded-lg shadow-lg mb-10">
+                            <h3 className="text-gray-700 text-2xl font-semibold mb-4">
+                                Editor Kode
+                            </h3>
+                            <CodeMirror
+                                id="code"
+                                value={sourceCode}
+                                theme={githubLight}
+                                height="400px"
+                                extensions={[python()]}
+                                onChange={(value) => setCode(value)}
+                                className="w-full p-3 border border-gray-600 rounded-lg mb-4"
+                            ></CodeMirror>
+                            <div className="flex space-x-4">
+                                <button
+                                    className="bg-green-500 text-white py-2 px-4 rounded-lg"
+                                    onClick={handleRunCode}
+                                    disabled={loading}
+                                >
+                                    {loading ? "Running..." : "Run Code"}
+                                </button>
+>>>>>>> 807212382b8d8506a5e367dde26a4591f6ec84e5
 
                 <button
                   className="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg"
@@ -366,6 +398,7 @@ const MulaiKelas = () => {
             </ul>
           </div>
 
+<<<<<<< HEAD
           {/* Tombole generate sertifikat */}
           <div className="text-center border-t-2 border-gray-300">
             <button
@@ -380,6 +413,24 @@ const MulaiKelas = () => {
       <Footer />
     </>
   );
+=======
+                    {/* Tombole generate sertifikat
+                    <div className="text-center border-t-2 border-gray-300">
+                <button
+                    onClick={generateCertificate}
+                    className="bg-blue-600 text-white p-2 rounded-lg mt-5"
+                >
+                    Download Sertifikat
+                </button>
+            </div> */}
+
+                </aside>
+
+            </div>
+            <Footer />
+        </>
+    );
+>>>>>>> 807212382b8d8506a5e367dde26a4591f6ec84e5
 };
 
 export default MulaiKelas;

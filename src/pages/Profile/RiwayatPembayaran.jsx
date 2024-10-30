@@ -48,29 +48,29 @@ const RiwayatPembayaran = () => {
   };
 
   return (
-    <div>
-      <div className="flex-col bg-blue-800 text-white rounded-t-3xl p-3 font-semibold text-2xl">
+    <div className="p-4">
+      <div className="bg-blue-800 text-white rounded-t-3xl p-3 font-semibold text-2xl text-center">
         Riwayat Pembayaran
       </div>
-      <div className="flex">
-        {/* Filter side */}
-        <div className="basis-1/5 p-3">
-          <div className="flex flex-col space-y-4 items-center mt-10">
+      <div className="flex flex-col md:flex-row">
+        {/* Filter side - hanya ditampilkan pada desktop */}
+        <div className="hidden md:flex md:basis-1/5 p-3">
+          <div className="flex md:flex-col space-y-4 items-center md:mt-10">
             {/* Filter buttons */}
             <div
-              className="bg-white border border-gray-300 shadow-lg rounded-2xl w-40 h-16 flex justify-center items-center cursor-pointer"
+              className="bg-white border border-gray-300 shadow-lg rounded-2xl w-full md:w-40 h-16 flex justify-center items-center cursor-pointer"
               onClick={() => filterPayments("all")}
             >
               <span className="font-semibold text-xl text-center">Semua</span>
             </div>
             <div
-              className="bg-white border border-gray-300 shadow-lg rounded-2xl w-40 h-16 flex justify-center items-center cursor-pointer"
+              className="bg-white border border-gray-300 shadow-lg rounded-2xl w-full md:w-40 h-16 flex justify-center items-center cursor-pointer"
               onClick={() => filterPayments("paid")}
             >
               <span className="font-semibold text-xl text-center">Telah Dibayar</span>
             </div>
             <div
-              className="bg-white border border-gray-300 shadow-lg rounded-2xl w-40 h-16 flex justify-center items-center cursor-pointer"
+              className="bg-white border border-gray-300 shadow-lg rounded-2xl w-full md:w-40 h-16 flex justify-center items-center cursor-pointer"
               onClick={() => filterPayments("cancel")}
             >
               <span className="font-semibold text-xl text-center">Dibatalkan</span>
@@ -78,8 +78,8 @@ const RiwayatPembayaran = () => {
           </div>
         </div>
 
-        {/* Content side */}
-        <div className="border-l shadow-md basis-4/5 p-5 max-h-screen overflow-y-scroll mr-5">
+        {/* Content side - riwayat pembayaran tetap ditampilkan pada mobile */}
+        <div className="md:border-l shadow-md md:basis-4/5 p-5 max-h-screen overflow-y-scroll">
           {loading ? (
             <p>Loading...</p>
           ) : error ? (
