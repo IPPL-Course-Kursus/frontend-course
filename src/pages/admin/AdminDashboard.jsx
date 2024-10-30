@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaUsers, FaSearch, FaFilter, FaBars } from "react-icons/fa";
 import { IoArrowBackCircle, IoArrowForwardCircle } from "react-icons/io5";
@@ -68,7 +68,7 @@ const AdminDashboard = () => {
 
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black opacity-50 z-40 md:hidden"
+          className="fixed inset-0 z-40 md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -149,7 +149,7 @@ const AdminDashboard = () => {
                 <th className="px-2 md:px-4 py-2">Harga</th>
                 <th className="px-2 md:px-4 py-2">Status</th>
                 <th className="px-2 md:px-4 py-2">Metode Pembayaran</th>
-                <th className="px-2 md:px-4 py-2">Tanggal Bayar</th>
+                <th className="px-2 md:px-4 py-2">Waktu Transaksi</th>
               </tr>
             </thead>
             <tbody>
