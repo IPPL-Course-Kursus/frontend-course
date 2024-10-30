@@ -184,7 +184,7 @@ const Profile = () => {
               onChange={handleInputChange}
               onFocus={() => handleFocus("fullName")}
               onBlur={handleBlur}
-              className={`block w-full py-1 sm:py-2 text-center border-b ${
+              className={`block w-full py-1 sm:py-2 border-b ${
                 focusedField === "fullName" ? "border-black" : "border-gray-300"
               } focus:outline-none ${focusedField === "fullName" ? "text-black" : "text-gray-500"}`}
               placeholder="Nama"
@@ -244,10 +244,10 @@ const Profile = () => {
         </div>
       </div>
 
-      <div className="w-full mt-6 sm:mt-8">
+      <div className="w-full mt-6 sm:mt-8 lg:w-full lg:flex lg:items-center">
         <button
           onClick={handleSave}
-          className={`w-full py-2 sm:py-3 bg-blue-900 text-white rounded-full max-w-xs sm:max-w-md mx-auto ${
+          className={`w-full py-2 sm:py-3 bg-blue-900 text-white rounded-full sm:max-w-md mx-auto ${
             (!isFormChanged || isSubmitting) ? "opacity-50 cursor-not-allowed" : "" // Disable button if no changes or during submission
           }`}
           disabled={!isFormChanged || isSubmitting} // Disabled if no form changes or submission in progress
