@@ -55,6 +55,16 @@ const SidebarInstruktur = () => {
                   Data Kategori
                 </span>
               </Link>
+              <Link to="/inst/data-level">
+                <span className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
+                  Data Level
+                </span>
+              </Link>
+              <Link to="/inst/data-type">
+                <span className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
+                  Data Type
+                </span>
+              </Link>
             </div>
           )}
         </div>
