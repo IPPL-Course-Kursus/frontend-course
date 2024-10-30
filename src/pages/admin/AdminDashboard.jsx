@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FaUsers, FaSearch, FaFilter, FaBars } from "react-icons/fa";
 import { IoArrowBackCircle, IoArrowForwardCircle } from "react-icons/io5";
@@ -11,7 +11,7 @@ import {
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
-  const { stats, paymentStatus, loading, user } = useSelector(
+  const { paymentStatus,  user } = useSelector(
     (state) => state.adminDashboard
   );
 
