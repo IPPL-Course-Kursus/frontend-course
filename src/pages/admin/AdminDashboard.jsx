@@ -136,7 +136,7 @@ const AdminDashboard = () => {
               className={`${color} text-white font-semibold p-4 rounded-lg shadow-sm flex items-center`}
             >
               <div className="bg-white rounded-full p-2">
-                <FaUsers className="text-2xl" />
+                <FaUsers className="text-2xl text-primary" />
               </div>
               <div className="ml-4">
                 <div className="text-2xl">{count}</div>
