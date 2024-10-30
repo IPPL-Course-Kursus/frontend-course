@@ -1,48 +1,29 @@
-// File: AdminDataKelas.jsx
-
 import { useState, useEffect } from "react";
-import { FaSearch, FaBars } from "react-icons/fa";
+import Sidebar from "../../../components/Sidebar/SidebarInstruktur";
+import { FaBars } from "react-icons/fa";
 import { IoArrowBackCircle, IoArrowForwardCircle } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
+import { getAllLevelCourses } from "../../../redux/actions/levelCourseActions";
 
-import { getAllCourse } from "../../../redux/actions/courseActions";
+const InstrukturDataLevel = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-import SideBar from "../../../components/Sidebar/SidebarAdmin";
+  // Redux dispatch and selector
+  const dispatch = useDispatch();
+  const { levelCourses, loading, error, successMessage } = useSelector(
+    (state) => state.levelCourse
+  );
 
-const AdminDataKelas = () => {
-  const [searchValue, setSearchValue] = useState("");
-  const [searchVisible, setSearchVisible] = useState(false);
+  // Fetch level courses on component mount
+  useEffect(() => {
+    dispatch(getAllLevelCourses());
+  }, [dispatch]);
 
-  // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 7;
 
-  // Sidebar state for mobile
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  const toggleSearch = () => {
-    setSearchVisible(!searchVisible);
-  };
-
-  const dispatch = useDispatch();
-
-  // Fetch courses from Redux store
-  const { courses, loading, error } = useSelector((state) => state.course);
-
-  useEffect(() => {
-    dispatch(getAllCourse());
-  }, [dispatch]);
-
-  // Pagination logic: slicing courses for the current page
-  const totalPages = Math.ceil(courses?.length / itemsPerPage);
-  const currentItems = courses?.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  const filteredCourses = currentItems?.filter((course) =>
-    course.courseName.toLowerCase().includes(searchValue.toLowerCase())
-  );
+  // Pagination logic: slicing categories for the current page
+  const totalPages = Math.ceil(levelCourses?.length / itemsPerPage);
 
   return (
     <>
@@ -53,7 +34,7 @@ const AdminDataKelas = () => {
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <SideBar />
+          <Sidebar />
         </div>
 
         {/* Overlay */}
@@ -75,76 +56,43 @@ const AdminDataKelas = () => {
               <FaBars className="text-2xl" />
             </button>
 
-            <h1 className="text-2xl font-bold text-[#0a61aa]">Hi, Admin!</h1>
+            <h1 className="text-2xl font-bold text-[#0a61aa]">
+              Hi, Instruktur!
+            </h1>
           </div>
 
-          {/* Section Data Kelas */}
+          {/* Section Data Level */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
             <h2 className="text-lg md:text-xl font-bold text-[#0a61aa]">
-              Data Kelas
+              Data Level Kelas
             </h2>
-
-            <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
-              {/* Search Input */}
-              <div className="relative w-full md:w-auto flex items-center">
-                <FaSearch
-                  className="text-[#173D94] text-lg cursor-pointer"
-                  onClick={toggleSearch}
-                />
-                <input
-                  type="text"
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                  className={`transition-all duration-300 ease-in-out border border-[#173D94] rounded-full ml-2 p-1 ${
-                    searchVisible
-                      ? "w-40 opacity-100"
-                      : "w-0 opacity-0 pointer-events-none"
-                  }`}
-                  placeholder="Cari Nama..."
-                />
-              </div>
-            </div>
           </div>
 
-          {/* Table Data Kelas */}
+          {/* Success and Error Messages */}
+          {successMessage && (
+            <p className="text-green-500 mb-4">{successMessage}</p>
+          )}
+          {error && <p className="text-red-500 mb-4">{error}</p>}
+
+          {/* Tabel Data Level */}
           <div className="overflow-x-auto bg-white p-4">
             {loading ? (
               <p>Loading...</p>
-            ) : error ? (
-              <p>Error: {error}</p>
             ) : (
               <table className="min-w-full table-auto">
                 <thead>
                   <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
-                    <th className="px-2 md:px-4 py-2">Nomor</th>
-                    <th className="px-2 md:px-4 py-2">Kode Kelas</th>
-                    <th className="px-2 md:px-4 py-2">Nama Kelas</th>
-                    <th className="px-2 md:px-4 py-2">Foto</th>
+                    <th className="px-2 md:px-4 py-2">ID</th>
+                    <th className="px-2 md:px-4 py-2">Level</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredCourses?.map((course, index) => {
-                    const rowNumber =
-                      (currentPage - 1) * itemsPerPage + index + 1;
+                  {levelCourses.map((level, index) => {
+                    const rowNumber = index + 1;
                     return (
                       <tr key={index} className="border-t text-xs md:text-sm">
                         <td className="px-2 md:px-4 py-2">{rowNumber}</td>
-                        <td className="px-2 md:px-4 py-2">
-                          {course.courseCode}
-                        </td>
-                        <td className="px-2 md:px-4 py-2">
-                          {course.courseName}
-                        </td>
-                        <td className="px-2 md:px-4 py-2">
-                          {course.courseCode}
-                        </td>
-                        <td className="px-2 md:px-4 py-2">
-                          <img
-                            src={course.image}
-                            alt={course.courseName}
-                            className="w-16 h-16 object-cover rounded-md"
-                          />
-                        </td>
+                        <td className="px-2 md:px-4 py-2">{level.levelName}</td>
                       </tr>
                     );
                   })}
@@ -191,4 +139,4 @@ const AdminDataKelas = () => {
   );
 };
 
-export default AdminDataKelas;
+export default InstrukturDataLevel;

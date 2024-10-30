@@ -3,12 +3,18 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { GrTransaction } from "react-icons/gr";
 import { FaUsers, FaSearch, FaFilter } from "react-icons/fa";
-import { IoArrowBackCircle, IoArrowForwardCircle, IoBookSharp } from "react-icons/io5";
+import {
+  IoArrowBackCircle,
+  IoArrowForwardCircle,
+  IoBookSharp,
+} from "react-icons/io5";
 import { instfetchPayments } from "../../redux/actions/instrukturDashboardActions";
 
 const InstruktorDashboard = () => {
   const dispatch = useDispatch();
-  const { stats, paymentStatus, loading, user } = useSelector((state) => state.instrukturDashboard);
+  const { stats, paymentStatus, loading, user } = useSelector(
+    (state) => state.instrukturDashboard
+  );
 
   // State for search input
   const [globalSearch, setGlobalSearch] = useState("");
@@ -62,14 +68,22 @@ const InstruktorDashboard = () => {
           globalSearch === "" ||
           payment.id.toString().includes(globalSearch.toLowerCase()) ||
           payment.kategori.toLowerCase().includes(globalSearch.toLowerCase()) ||
-          payment.kelasPremium.toLowerCase().includes(globalSearch.toLowerCase());
+          payment.kelasPremium
+            .toLowerCase()
+            .includes(globalSearch.toLowerCase());
 
         const isPaymentSearchMatch =
           paymentSearch === "" ||
           payment.id.toString().includes(paymentSearch.toLowerCase()) ||
-          payment.kategori.toLowerCase().includes(paymentSearch.toLowerCase()) ||
-          payment.kelasPremium.toLowerCase().includes(paymentSearch.toLowerCase()) ||
-          payment.tanggalBayar.toLowerCase().includes(paymentSearch.toLowerCase());
+          payment.kategori
+            .toLowerCase()
+            .includes(paymentSearch.toLowerCase()) ||
+          payment.kelasPremium
+            .toLowerCase()
+            .includes(paymentSearch.toLowerCase()) ||
+          payment.tanggalBayar
+            .toLowerCase()
+            .includes(paymentSearch.toLowerCase());
 
         const isFilterMatch = filter === "" || payment.paymentStatus === filter;
 
@@ -82,7 +96,10 @@ const InstruktorDashboard = () => {
   // Get current payments based on pagination
   const indexOfLastPayment = currentPage * itemsPerPage;
   const indexOfFirstPayment = indexOfLastPayment - itemsPerPage;
-  const currentPayments = sortedPayments.slice(indexOfFirstPayment, indexOfLastPayment);
+  const currentPayments = sortedPayments.slice(
+    indexOfFirstPayment,
+    indexOfLastPayment
+  );
   console.log("currentPayments", currentPayments);
 
   const handleFilterChange = (e) => setFilter(e.target.value);
@@ -168,23 +185,41 @@ const InstruktorDashboard = () => {
             </thead>
             <tbody>
               {!loading && currentPayments.length > 0 ? (
-                currentPayments.map((payment) => (
-                  <tr key={payment.id} className="border-t text-xs md:text-sm">
-                    <td className="px-2 md:px-4 py-2">{payment.id}</td>
-                    <td className="px-2 md:px-4 py-2">{payment.orderId}</td>
-                    <td className="px-2 md:px-4 py-2">{payment.courseName}</td>
-                    <td className="px-2 md:px-4 py-2">Rp.{payment.totalPrice},00</td>
-                    <td className="px-2 md:px-4 py-2">{payment.paymentStatus}</td>
-                    <td className="px-2 md:px-4 py-2">{payment.paymentMethod}</td>
-                    <td className="px-2 md:px-4 py-2">
-                      {new Date(payment.createdAt).toLocaleDateString("id-ID", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </td>
-                  </tr>
-                ))
+                currentPayments.map((payment, index) => {
+                  const rowNumber =
+                    (currentPage - 1) * itemsPerPage + index + 1;
+                  return (
+                    <tr
+                      key={payment.id}
+                      className="border-t text-xs md:text-sm"
+                    >
+                      <td className="px-2 md:px-4 py-2">{rowNumber}</td>
+                      <td className="px-2 md:px-4 py-2">{payment.orderId}</td>
+                      <td className="px-2 md:px-4 py-2">
+                        {payment.courseName}
+                      </td>
+                      <td className="px-2 md:px-4 py-2">
+                        Rp.{payment.totalPrice},00
+                      </td>
+                      <td className="px-2 md:px-4 py-2">
+                        {payment.paymentStatus}
+                      </td>
+                      <td className="px-2 md:px-4 py-2">
+                        {payment.paymentMethod}
+                      </td>
+                      <td className="px-2 md:px-4 py-2">
+                        {new Date(payment.createdAt).toLocaleDateString(
+                          "id-ID",
+                          {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          }
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })
               ) : (
                 <tr>
                   <td colSpan="6" className="text-center py-4">
@@ -199,7 +234,9 @@ const InstruktorDashboard = () => {
           <div className="flex justify-between items-center mt-4">
             <button
               className={`flex items-center py-2 px-4 rounded-lg ${
-                currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-[#0a61aa] text-white"
+                currentPage === 1
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-[#0a61aa] text-white"
               } transition-all duration-300 hover:scale-105`}
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
@@ -209,7 +246,8 @@ const InstruktorDashboard = () => {
             </button>
 
             <span className="text-lg font-semibold">
-              Page {currentPage} of {Math.ceil(sortedPayments.length / itemsPerPage)}
+              Page {currentPage} of{" "}
+              {Math.ceil(sortedPayments.length / itemsPerPage)}
             </span>
 
             <button
@@ -219,7 +257,9 @@ const InstruktorDashboard = () => {
                   : "bg-[#0a61aa] text-white"
               } transition-all duration-300 hover:scale-105`}
               onClick={() => paginate(currentPage + 1)}
-              disabled={currentPage === Math.ceil(sortedPayments.length / itemsPerPage)}
+              disabled={
+                currentPage === Math.ceil(sortedPayments.length / itemsPerPage)
+              }
             >
               Next
               <IoArrowForwardCircle className="ml-2 text-xl" />

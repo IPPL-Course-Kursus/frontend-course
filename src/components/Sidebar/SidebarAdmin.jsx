@@ -5,7 +5,8 @@ import { logout } from "../../redux/actions/authActions";
 
 const Sidebar = () => {
   const [isDataMenuOpenKelas, setIsDataMenuOpenKelas] = useState(false);
-  const [isDataMenuOpenInstruktur, setIsDataMenuOpenInstruktur] = useState(false);
+  const [isDataMenuOpenInstruktur, setIsDataMenuOpenInstruktur] =
+    useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const toggleDataKelas = () => {
@@ -21,7 +22,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="h-screen w-64 bg-blue-900 text-white flex flex-col">
+    <div className="h-full min-h-screen w-64 bg-blue-900 text-white flex flex-col">
       <div className="flex items-center justify-center h-20">
         <h1 className="text-2xl font-bold">LOGO</h1>
       </div>
@@ -89,12 +90,12 @@ const Sidebar = () => {
               >
                 Data Instruktur
               </a>
-              <a
+              {/* <a
                 href="/admin/regis-instruktur"
                 className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700"
               >
                 Register Instruktur
-              </a>
+              </a> */}
             </div>
           )}
         </div>
