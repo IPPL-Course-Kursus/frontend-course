@@ -656,31 +656,332 @@
 
 // export default DataKelasInput;\
 
-import PropTypes from "prop-types";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+// import PropTypes from "prop-types";
+// import { useState } from "react";
+// import { useDispatch } from "react-redux";
 
+// import { addDataKelas } from "../../../redux/actions/instruktorActions";
+
+// const DataKelasInput = ({ show, onClose }) => {
+//   const [loading, setLoading] = useState(false);
+//   const [error, setError] = useState(null);
+//   const [formData, setFormData] = useState({
+//     categoryId: null,
+//     courseLevelId: null,
+//     typeCourseId: null,
+//     courseName: "",
+//     aboutCourse: "",
+//     intendedFor: "",
+//     coursePrice: null,
+//     courseDiscountPercent: null,
+//     totalDuration: null,
+//     certificateStatus: false,
+//     publish: false,
+//     image: null,
+//   });
+
+//   const dispatch = useDispatch();
+//   const [imagePreview, setImagePreview] = useState(null);
+
+//   if (!show) return null;
+
+//   const handleInputChange = (e) => {
+//     const { name, value, type, checked } = e.target;
+
+//     setFormData((prevData) => ({
+//       ...prevData,
+//       [name]: type === "checkbox" ? checked : value,
+//     }));
+//   };
+
+//   const handleImageUpload = (e) => {
+//     const file = e.target.files[0];
+//     if (file) {
+//       console.log("Selected file:", file); // Tambahkan log ini untuk cek file
+//       setFormData({ ...formData, image: file });
+//       const reader = new FileReader();
+//       reader.onload = () => {
+//         setImagePreview(reader.result);
+//       };
+//       reader.readAsDataURL(file);
+//     }
+//   };
+
+//   const handleSubmit = (e) => {
+//     e.preventDefault();
+//     setLoading(true);
+
+//     // Helper function to ensure values are numbers or valid defaults
+//     const parseField = (field, defaultValue = "") => {
+//       const parsed = parseInt(formData[field], 10);
+//       return isNaN(parsed) ? defaultValue : parsed;
+//     };
+
+//     // Construct data object with validated values
+//     const dataToSend = {
+//       categoryId: parseField("categoryId", 0),
+//       courseLevelId: parseField("courseLevelId", 0),
+//       typeCourseId: parseField("typeCourseId", 0),
+//       courseName: formData.courseName || "", // Ensure non-empty strings
+//       aboutCourse: formData.aboutCourse || "",
+//       intendedFor: formData.intendedFor || "",
+//       coursePrice: parseFloat(formData.coursePrice) || 0,
+//       courseDiscountPercent: parseFloat(formData.courseDiscountPercent) || 0,
+//       totalDuration: parseFloat(formData.totalDuration) || 0,
+//       publish: formData.publish,
+//       certificateStatus: formData.certificateStatus,
+//     };
+
+//     const formDataToSend = new FormData();
+//     // Append each field to ensure data is formatted correctly
+//     Object.keys(dataToSend).forEach((key) => {
+//       formDataToSend.append(key, dataToSend[key]);
+//     });
+
+//     if (formData.image) {
+//       formDataToSend.append("image", formData.image);
+//     }
+
+//     // Dispatch request
+//     dispatch(addDataKelas(formDataToSend))
+//       .then(() => {
+//         setLoading(false);
+//         onClose();
+//       })
+//       .catch((error) => {
+//         setLoading(false);
+//         setError(error.response?.data?.message || "Error adding course");
+//         console.error("Error adding data kelas:", error);
+//       });
+//   };
+
+//   return (
+//     <div
+//       className="fixed inset-0 flex justify-center items-center z-50"
+//       style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
+//     >
+//       <div className="bg-white w-full max-w-lg h-[80vh] p-6 rounded-lg shadow-lg relative overflow-y-auto">
+//         <button className="absolute top-2 right-2 text-xl font-bold" onClick={onClose}>
+//           &times;
+//         </button>
+//         <h2 className="text-xl font-bold text-[#0a61aa] mb-4 text-center">Tambah Kelas</h2>
+//         {/* Display loading indicator */}
+//         {loading && <div className="mb-4 text-center text-blue-600">Loading...</div>}
+
+//         {/* Display error message */}
+//         {error && <div className="mb-4 text-center text-red-600">{error}</div>}
+//         <form onSubmit={handleSubmit}>
+//           <div className="mb-4">
+//             <label className="block mb-1 font-semibold">Upload File</label>
+//             {imagePreview && (
+//               <img
+//                 src={imagePreview}
+//                 alt="kelas preview"
+//                 className="w-full p-2 border rounded-xl"
+//               />
+//             )}
+//             <input
+//               type="file"
+//               accept="image/*"
+//               name="image"
+//               onChange={handleImageUpload}
+//               className="w-full p-2 border rounded-xl"
+//             />
+//             <small className="text-gray-500">SVG, PNG, JPG or GIF (MAX. 800x400px).</small>
+//           </div>
+
+//           <div className="mb-4">
+//             <label className="block mb-1 font-semibold">Kategori</label>
+//             <div className="relative">
+//               <input
+//                 type="number"
+//                 name="categoryId"
+//                 value={formData.categoryId}
+//                 onChange={handleInputChange}
+//                 className="w-full p-2 border rounded-xl"
+//               />
+//             </div>
+//           </div>
+
+//           <div className="mb-4">
+//             <label className="block mb-1 font-semibold">Judul Kelas</label>
+//             <input
+//               type="text"
+//               name="courseName"
+//               value={formData.courseName}
+//               onChange={handleInputChange}
+//               className="w-full p-2 border rounded-xl"
+//               placeholder="Masukkan judul kelas"
+//             />
+//           </div>
+
+//           <div className="mb-4">
+//             <label className="block mb-1 font-semibold">Tipe Kelas</label>
+//             <input
+//               type="number"
+//               name="typeCourseId"
+//               value={formData.typeCourseId}
+//               onChange={handleInputChange}
+//               className="w-full p-2 border rounded-xl"
+//             />
+//           </div>
+
+//           <div className="mb-4">
+//             <label className="block mb-1 font-semibold">Level Kelas</label>
+//             <input
+//               type="number"
+//               name="courseLevelId"
+//               value={formData.courseLevelId}
+//               onChange={handleInputChange}
+//               className="w-full p-2 border rounded-xl"
+//             />
+//           </div>
+
+//           <div className="mb-4">
+//             <label className="block mb-1 font-semibold">Harga Kelas</label>
+//             <input
+//               type="number"
+//               name="coursePrice"
+//               value={formData.coursePrice}
+//               onChange={handleInputChange}
+//               className="w-full p-2 border rounded-xl"
+//               placeholder="Rp"
+//             />
+//           </div>
+
+//           <div className="mb-4">
+//             <label className="block mb-1 font-semibold">Discount Kelas</label>
+//             <input
+//               type="number"
+//               name="courseDiscountPercent"
+//               value={formData.courseDiscountPercent}
+//               onChange={handleInputChange}
+//               className="w-full p-2 border rounded-xl"
+//             />
+//           </div>
+
+//           <div className="mb-4">
+//             <label className="block mb-1 font-semibold">Total Durasi Kelas</label>
+//             <input
+//               type="number"
+//               name="totalDuration"
+//               value={formData.totalDuration}
+//               onChange={handleInputChange}
+//               className="w-full p-2 border rounded-xl"
+//             />
+//           </div>
+
+//           <div className="mb-4">
+//             <label className="block mb-1 font-semibold">Published</label>
+//             <select
+//               name="publish"
+//               value={formData.publish}
+//               onChange={handleInputChange}
+//               className="w-full p-2 border rounded-xl"
+//             >
+//               <option value="" disabled hidden>
+//                 Pilih
+//               </option>
+//               <option value="Published"> Published</option>
+//               <option value="Archived"> Archived</option>
+//             </select>
+//           </div>
+
+//           <div className="mb-4">
+//             <label className="block mb-1 font-semibold">Certificate</label>
+//             <input
+//               type="checkbox"
+//               name="certificateStatus"
+//               checked={formData.certificateStatus}
+//               onChange={handleInputChange}
+//               className="w-full p-2 border rounded-xl"
+//             />
+//           </div>
+
+//           <div className="mb-4">
+//             <label className="block mb-1 font-semibold">Intended For</label>
+//             <input
+//               type="text"
+//               name="intendedFor"
+//               value={formData.intendedFor}
+//               onChange={handleInputChange}
+//               className="w-full p-2 border rounded-xl"
+//               placeholder="Siapa yang boleh mengikuti kelas ini?"
+//             />
+//           </div>
+
+//           <div className="mb-4">
+//             <label className="block mb-1 font-semibold">About Course</label>
+//             <textarea
+//               name="aboutCourse"
+//               value={formData.aboutCourse}
+//               onChange={handleInputChange}
+//               className="w-full p-2 border rounded-xl"
+//               placeholder="Deskripsi tentang kelas ini"
+//             ></textarea>
+//           </div>
+
+//           <div className="flex justify-end mt-4">
+//             <button
+//               type="button"
+//               className="bg-red-500 text-white px-4 py-2 rounded-lg mr-2"
+//               onClick={onClose}
+//             >
+//               Batal
+//             </button>
+//             <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-lg">
+//               Simpan
+//             </button>
+//           </div>
+//         </form>
+//       </div>
+//     </div>
+//   );
+// };
+
+// DataKelasInput.propTypes = {
+//   show: PropTypes.bool.isRequired,
+//   onClose: PropTypes.func.isRequired,
+// };
+
+// export default DataKelasInput;
+
+import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getCategory } from "../../../redux/actions/categoryActions";
+import { getAllTypeCourses } from "../../../redux/actions/typeCourseActions";
+import { getAllLevelCourses } from "../../../redux/actions/levelCourseActions";
 import { addDataKelas } from "../../../redux/actions/instruktorActions";
 
 const DataKelasInput = ({ show, onClose }) => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
-    categoryId: "",
-    courseLevelId: "",
-    typeCourseId: "",
+    categoryId: "", // Ubah nama key ke categoryId
     courseName: "",
-    image: null,
-    aboutCourse: "",
-    intendedFor: "",
+    typeCourseId: "", // Ubah nama key ke typeCourseId
+    levelCourseId: "", // Ubah nama key ke levelCourseId
     coursePrice: "",
     courseDiscountPercent: "",
-    certificateStatus: "",
-    publish: "",
     totalDuration: "",
+    fullName: "",
+    publish: "",
+    certificateStatus: "",
+    intendedFor: "",
+    aboutCourse: "",
   });
-  const dispatch = useDispatch();
   const [imagePreview, setImagePreview] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+
+  const dispatch = useDispatch();
+  const { category } = useSelector((state) => state.category);
+  const { typeCourses } = useSelector((state) => state.typeCourse);
+  const { levelCourses } = useSelector((state) => state.levelCourse);
+
+  useEffect(() => {
+    dispatch(getCategory());
+    dispatch(getAllTypeCourses());
+    dispatch(getAllLevelCourses());
+  }, [dispatch]);
 
   if (!show) return null;
 
@@ -692,8 +993,8 @@ const DataKelasInput = ({ show, onClose }) => {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      console.log("Selected file:", file); // Tambahkan log ini untuk cek file
-      setFormData({ ...formData, image: file });
+      setImageFile(file);
+
       const reader = new FileReader();
       reader.onload = () => {
         setImagePreview(reader.result);
@@ -702,77 +1003,39 @@ const DataKelasInput = ({ show, onClose }) => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
-    const {
-      categoryId,
-      courseLevelId,
-      typeCourseId,
-      courseName,
-      aboutCourse,
-      intendedFor,
-      coursePrice,
-      courseDiscountPercent,
-      totalDuration,
-      publish,
-      certificateStatus,
-      image,
-    } = formData;
-
-    const requiredFields = [
-      categoryId,
-      courseLevelId,
-      typeCourseId,
-      courseName,
-      aboutCourse,
-      intendedFor,
-      coursePrice,
-      publish,
-      certificateStatus,
-      totalDuration,
-    ];
-
-    if (requiredFields.some((field) => field === "" || field === null)) {
-      alert("Please fill in all required fields.");
-      setLoading(false);
-      return;
-    }
-
-    const dataToSend = {
-      categoryId: parseInt(categoryId, 10),
-      courseName,
-      typeCourseId: parseInt(typeCourseId, 10),
-      courseLevelId: parseInt(courseLevelId, 10),
-      coursePrice: parseFloat(coursePrice),
-      publish,
-      intendedFor,
-      aboutCourse,
-      courseDiscountPercent: parseFloat(courseDiscountPercent),
-      totalDuration: parseFloat(totalDuration),
-      certificateStatus: certificateStatus === "true", // Konversi ke boolean
-    };
+    console.log("add data kelas:", formData);
 
     const formDataToSend = new FormData();
-    formDataToSend.append("data", JSON.stringify(dataToSend));
 
-    if (image) {
-      formDataToSend.append("image", image);
+    // Pastikan ID yang benar
+    formDataToSend.append("categoryId", formData.categoryId); // Ubah ke categoryId
+    formDataToSend.append("courseName", formData.courseName);
+    formDataToSend.append("typeCourseId", formData.typeCourseId); // Ubah ke typeCourseId
+    formDataToSend.append("courseLevelId", formData.levelCourseId); // Ubah ke levelCourseId
+    formDataToSend.append("coursePrice", Number(formData.coursePrice));
+    formDataToSend.append("fullName", formData.fullName);
+    formDataToSend.append("publish", formData.publish === "Published");
+    formDataToSend.append("intendedFor", formData.intendedFor);
+    formDataToSend.append("aboutCourse", formData.aboutCourse);
+    formDataToSend.append("courseDiscountPercent", Number(formData.courseDiscountPercent));
+    formDataToSend.append("totalDuration", Number(formData.totalDuration));
+    formDataToSend.append("certificateStatus", formData.certificateStatus === "true");
+
+    if (imageFile) {
+      formDataToSend.append("image", imageFile);
     }
 
-    console.log("Data yang dikirim:", dataToSend);
+    // Debugging: log the FormData
+    console.log("FormData to send:", Array.from(formDataToSend.entries()));
 
-    dispatch(addDataKelas(formDataToSend))
-      .then(() => {
-        setLoading(false);
-        onClose();
-      })
-      .catch((error) => {
-        setLoading(false);
-        setError(error.response?.data?.message || "Error adding course");
-        console.error("Error detail:", error);
-      });
+    try {
+      await dispatch(addDataKelas(formDataToSend));
+      onClose();
+    } catch (error) {
+      console.error("Error adding data kelas:", error);
+    }
   };
 
   return (
@@ -785,14 +1048,11 @@ const DataKelasInput = ({ show, onClose }) => {
           &times;
         </button>
         <h2 className="text-xl font-bold text-[#0a61aa] mb-4 text-center">Tambah Kelas</h2>
-        {/* Display loading indicator */}
-        {loading && <div className="mb-4 text-center text-blue-600">Loading...</div>}
 
-        {/* Display error message */}
-        {error && <div className="mb-4 text-center text-red-600">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Upload File</label>
+
             {imagePreview && (
               <img
                 src={imagePreview}
@@ -813,13 +1073,21 @@ const DataKelasInput = ({ show, onClose }) => {
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Kategori</label>
             <div className="relative">
-              <input
-                type="number"
-                name="categoryId"
+              <select
+                name="categoryId" // Ubah nama ke categoryId
                 value={formData.categoryId}
                 onChange={handleInputChange}
                 className="w-full p-2 border rounded-xl"
-              />
+              >
+                <option value="" disabled hidden>
+                  Pilih
+                </option>
+                {category.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.categoryName}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
@@ -837,24 +1105,40 @@ const DataKelasInput = ({ show, onClose }) => {
 
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Tipe Kelas</label>
-            <input
-              type="number"
-              name="typeCourseId"
+            <select
+              name="typeCourseId" // Ubah nama ke typeCourseId
               value={formData.typeCourseId}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
-            />
+            >
+              <option value="" disabled hidden>
+                Pilih
+              </option>
+              {typeCourses.map((typeCourse) => (
+                <option key={typeCourse.id} value={typeCourse.id}>
+                  {typeCourse.typeName}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Level Kelas</label>
-            <input
-              type="number"
-              name="courseLevelId"
-              value={formData.courseLevelId}
+            <select
+              name="levelCourseId" // Ubah nama ke levelCourseId
+              value={formData.levelCourseId}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
-            />
+            >
+              <option value="" disabled hidden>
+                Pilih
+              </option>
+              {levelCourses.map((levelCourse) => (
+                <option key={levelCourse.id} value={levelCourse.id}>
+                  {levelCourse.levelName}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="mb-4">
@@ -892,72 +1176,72 @@ const DataKelasInput = ({ show, onClose }) => {
           </div>
 
           <div className="mb-4">
-            <label className="block mb-1 font-semibold">Published</label>
+            <label className="block mb-1 font-semibold">Nama Pembuat Kelas</label>
+            <input
+              type="text"
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-xl"
+              placeholder="Masukkan nama"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block mb-1 font-semibold">Status Publish</label>
             <select
               name="publish"
               value={formData.publish}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
             >
-              <option value="" disabled hidden>
-                Pilih
-              </option>
-              <option value="Published"> Published</option>
-              <option value="Archived"> Archived</option>
+              <option value="Published">Published</option>
+              <option value="Unpublished">Unpublished</option>
             </select>
           </div>
 
           <div className="mb-4">
-            <label className="block mb-1 font-semibold">Certificate</label>
+            <label className="block mb-1 font-semibold">Status Sertifikat</label>
             <select
               name="certificateStatus"
               value={formData.certificateStatus}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
             >
-              <option value="" disabled hidden>
-                Pilih
-              </option>
-              <option value="true">Available</option>
-              <option value="false">Not Available</option>
+              <option value="true">Yes</option>
+              <option value="false">No</option>
             </select>
           </div>
 
           <div className="mb-4">
-            <label className="block mb-1 font-semibold">Intended For</label>
+            <label className="block mb-1 font-semibold">Ditujukan Untuk</label>
             <input
               type="text"
               name="intendedFor"
               value={formData.intendedFor}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
-              placeholder="Siapa yang boleh mengikuti kelas ini?"
+              placeholder="Masukkan untuk siapa"
             />
           </div>
 
           <div className="mb-4">
-            <label className="block mb-1 font-semibold">About Course</label>
+            <label className="block mb-1 font-semibold">Tentang Kelas</label>
             <textarea
               name="aboutCourse"
               value={formData.aboutCourse}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
-              placeholder="Deskripsi tentang kelas ini"
-            ></textarea>
+              rows={3}
+            />
           </div>
 
-          <div className="flex justify-end mt-4">
-            <button
-              type="button"
-              className="bg-red-500 text-white px-4 py-2 rounded-lg mr-2"
-              onClick={onClose}
-            >
-              Batal
-            </button>
-            <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-lg">
-              Simpan
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="bg-[#0a61aa] text-white font-bold py-2 px-4 rounded-xl w-full"
+          >
+            Simpan
+          </button>
         </form>
       </div>
     </div>

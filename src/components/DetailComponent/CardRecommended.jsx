@@ -85,7 +85,7 @@ const CardRecommended = ({ title = "Kelas rekomendasi" }) => {
               {course.coursePrice > 0 ? (
                 <>
                   <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
-                    {`Beli Rp. ${course.promoStatus ? course.courseDiscountPrice : course.coursePrice}`}{" "}
+                    {`Rp. ${course.promoStatus ? course.courseDiscountPrice : course.coursePrice}`}{" "}
                   </button>
                   <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
                     <Gem size={16} className="mr-2" /> Premium

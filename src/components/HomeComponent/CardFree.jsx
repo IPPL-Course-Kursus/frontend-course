@@ -75,19 +75,19 @@ const CardFree = ({ title = "Kelas Free" }) => {
     ],
   };
 
-  const courseSliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    nextArrow: <NextArrow />,
-    prevArrow: <PrevArrow />,
-    responsive: [
-      { breakpoint: 1024, settings: { slidesToShow: 2, slidesToScroll: 1 } },
-      { breakpoint: 600, settings: { slidesToShow: 1, slidesToScroll: 1 } },
-    ],
-  };
+   const courseSliderSettings = {
+     dots: true,
+     infinite: true,
+     speed: 500,
+     slidesToShow: 3,
+     slidesToScroll: 1,
+     nextArrow: <NextArrow />,
+     prevArrow: <PrevArrow />,
+     responsive: [
+       { breakpoint: 1024, settings: { slidesToShow: 2, slidesToScroll: 1 } },
+       { breakpoint: 600, settings: { slidesToShow: 1, slidesToScroll: 1 } },
+     ],
+   };
 
   return (
     <>
@@ -225,9 +225,9 @@ const CardFree = ({ title = "Kelas Free" }) => {
             </Slider>
           ) : (
             // Tampilan grid untuk kategori yang dipilih
-            <div className="grid mt-2 gap-2 grid-cols-1 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:mt-4">
+            <div className="flex mt-2 overflow-x-auto space-x-4">
               {filteredCoursePopular.map((val) => (
-                <div key={val.id} className="p-2">
+                <div key={val.id} className="flex-none w-1/3 p-2">
                   <div
                     className={`w-full bg-white shadow-xl rounded-xl overflow-hidden pb-3 h-full flex flex-col ${
                       val.isPurchased ? "bg-green-50" : ""
@@ -299,7 +299,7 @@ const CardFree = ({ title = "Kelas Free" }) => {
                               to={`/course-detail/${val.id}`} // Link to course detail page
                               className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
                             >
-                              Lihat Kelas
+                              Lihat Detail
                             </Link>
                           </div>
                         </div>
@@ -311,7 +311,9 @@ const CardFree = ({ title = "Kelas Free" }) => {
             </div>
           )
         ) : (
-          <div className="text-center text-gray-500 mt-10">Tidak ada kursus tersedia.</div>
+          <div className="flex justify-center items-center">
+            <p className="text-gray-500">Tidak ada kursus yang tersedia.</p>
+          </div>
         )}
       </div>
     </>
