@@ -76,7 +76,7 @@ const CoursesPage = () => {
           <h2 className="text-4xl font-bold text-gray-900">Kelas Saya</h2>
             <button
               onClick={toggleMobileDropdown}
-              className="md:hidden bg-blue-500 text-white px-2 py-2 rounde~d"
+              className="md:hidden bg-blue-500 text-white px-2 py-2 rounded"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
