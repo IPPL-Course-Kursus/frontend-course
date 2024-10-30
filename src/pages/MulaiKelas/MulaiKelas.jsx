@@ -440,7 +440,19 @@ const MulaiKelas = () => {
                             )}
                         </ul>
                     </div>
+
+                    {/* Tombole generate sertifikat */}
+                    <div className="text-center border-t-2 border-gray-300">
+                <button
+                    onClick={generateCertificate}
+                    className="bg-blue-600 text-white p-2 rounded-lg mt-5"
+                >
+                    Download Sertifikat
+                </button>
+            </div>
+
                 </aside>
+
             </div>
             <Footer />
         </>
