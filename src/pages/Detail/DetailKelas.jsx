@@ -8,7 +8,6 @@ import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import { FaBook } from "react-icons/fa";
 import { GrCertificate } from "react-icons/gr";
-import { IoMdArrowRoundBack } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { getDetailCourse } from "../../redux/actions/detailActions";
 import { createTransaction } from "../../redux/actions/transactionActions";

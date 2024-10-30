@@ -11,7 +11,7 @@ import {
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
-  const { stats, paymentStatus, loading, user } = useSelector(
+  const { paymentStatus,  user } = useSelector(
     (state) => state.adminDashboard
   );
 
