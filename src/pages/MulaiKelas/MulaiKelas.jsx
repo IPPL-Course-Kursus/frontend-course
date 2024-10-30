@@ -6,25 +6,39 @@ import {
     runCode,
 } from "../../redux/actions/mulaiKelasActions";
 import { resetOutput } from "../../redux/reducers/mulaiKelasReducers";
+import { getMe } from "../../redux/actions/authActions";
 import CodeMirror from "@uiw/react-codemirror";
-import { githubLight } from '@uiw/codemirror-theme-github';
+import { githubLight } from "@uiw/codemirror-theme-github";
 import { python } from "@codemirror/lang-python";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import ProgressBar from "../../components/MyCourse/ProgressBar";
 import { FaArrowLeft, FaCheckCircle } from "react-icons/fa";
 import { Link, useParams } from "react-router-dom";
-
+import { fetchCertificate } from "../../redux/actions/certificateAction";
+import jsPDF from "jspdf";
+import sertifikat from "../../assets/sertif-ec.png";
+import Swal from "sweetalert2";
 
 const MulaiKelas = () => {
     const dispatch = useDispatch();
     const { data, loading, error, output } = useSelector(
         (state) => state.mulaiKelas
     );
+    const profile = useSelector((state) => state.getMe.profile);
     const [sourceCode, setCode] = useState("");
     const [language, setLanguage] = useState("");
     const [selectedContent, setSelectedContent] = useState(null);
+    const { data: certificateData } = useSelector((state) => state.certificate);
     const { id } = useParams();
+    const name = profile?.fullName;
+    const formatTanggal = (tanggal) => {
+        return new Date(tanggal).toLocaleDateString("id-ID", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+        });
+    };
 
     useEffect(() => {
         if (id) {
@@ -38,6 +52,8 @@ const MulaiKelas = () => {
                 }
             }
         }
+        dispatch(getMe());
+        dispatch(fetchCertificate(id));
     }, [id, dispatch, selectedContent]);
 
     const handleRunCode = () => {
@@ -55,7 +71,6 @@ const MulaiKelas = () => {
         setSelectedContent(content);
         dispatch(updateContentProgress(id, content.id));
     };
-    
 
     const copyCode = () => {
         navigator.clipboard.writeText(sourceCode);
@@ -66,9 +81,81 @@ const MulaiKelas = () => {
         setCode("");
     };
 
-    if (loading) {
-        return <p>Loading...</p>;
-    }
+    const generateCertificate = () => {
+        if (data?.data?.courseStatus !== "Completed") {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Selesaikan semua materi untuk mendapatkan sertifikat.",
+            });
+            return;
+        }
+
+        const doc = new jsPDF({
+            orientation: "landscape",
+            unit: "px",
+            format: [842, 595], 
+        });
+
+        // Tambahkan gambar sertifikat sebagai background
+        doc.addImage(sertifikat, "PNG", 0, 0, 800, 600);
+
+        // Tambahkan nama peserta di bawah "Diberikan pada"
+        doc.setFontSize(28); // Ukuran font sedikit lebih besar
+        doc.setTextColor(235, 167, 30); // Warna teks mirip dengan warna pada sertifikat
+        doc.setFont("montserrat", "bold"); // Menambahkan font yang lebih tebal
+        doc.text(name || "Nama Peserta", 90, 260, {
+            align: "left",
+            charSpace: 0.75, // Jarak antar karakter sedikit
+        });
+
+        // Tambahkan nama kursus di bawah "Atas kelulusannya pada kelas"
+        doc.setFontSize(24);
+        doc.setTextColor(235, 167, 30); // Sama dengan warna teks nama peserta
+        doc.setFont("arial", "bold");
+        doc.text(data?.data?.course?.courseName || "Nama Kursus", 90, 330, {
+            align: "left",
+            charSpace: 0.5,
+        });
+
+        doc.setFillColor(14, 43, 92); // Warna background
+        doc.roundedRect(90, 180, 112, 20, 5, 5, "F");
+        doc.setFontSize(20);
+        doc.setTextColor(255, 255, 255); // Warna teks untuk nomor sertifikat
+        doc.setFont("montserrat", "normal");
+        doc.text(
+            ` ${certificateData?.certificateNumber || "XXXXXX"}`,
+            95,
+            195,
+            {
+                align: "left",
+            }
+        );
+
+        // Tambahkan tanggal penerbitan sertifikat
+        doc.setFontSize(20);
+        doc.setTextColor(0, 0, 0);
+        doc.setFont("montserrat", "bold");
+        doc.text(
+            `${
+        certificateData?.issueDate
+            ? formatTanggal(certificateData.issueDate)
+            : "Tanggal Terbit"
+    }`,
+            90,
+            405,
+            {
+                align: "left",
+            }
+        );
+
+        // Unduh sertifikat
+        doc.save(`Sertifikat ${data?.data?.course?.courseName}_${name}.pdf`);
+    };
+
+    // if (loading) {
+    //     return <p>Loading...</p>;
+    // }
 
     const contentFinish = data?.data?.contentFinish || 0;
 
@@ -115,6 +202,20 @@ const MulaiKelas = () => {
                                         ? `${data.data.course.totalDuration} menit`
                                         : "Durasi tidak tersedia"}
                                 </span>
+                                {/* Tombole generate sertifikat */}
+                                <button
+                                    onClick={generateCertificate}
+                                    className={`p-2 rounded-lg ${
+                                        data?.data?.courseStatus === "Completed"
+                                            ? "bg-blue-600 text-white"
+                                            : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                    }`}
+                                    disabled={
+                                        data?.data?.courseStatus !== "Completed"
+                                    }
+                                >
+                                    Download Sertifikat
+                                </button>
                             </div>
                         </div>
                     </header>
@@ -232,14 +333,14 @@ const MulaiKelas = () => {
                     {/* Progres Belajar */}
                     <div className="mb-6">
                         <div className="flex justify-between items-center">
-                            <h4 className="text-blue-600 font-bold">
+                            <h4 className="text-blue-600 font-bold mb-2">
                                 Progres Belajar
                             </h4>
                             {/* <span className="text-sm text-gray-500">
                                 {percentage}
                             </span> */}
                         </div>
-                        <ProgressBar contentFinish={contentFinish} />
+                        <ProgressBar contentFinish={contentFinish}/>
                     </div>
 
                     {/* Chapter List */}
@@ -251,12 +352,11 @@ const MulaiKelas = () => {
                                     : "Durasi tidak tersedia"}
                             </span>
                         </div>
-                        <ul className="space-y-2 mt-4">
+                        <ul className="space-y-4 mt-4">
                             {data?.data?.course?.chapters?.map(
                                 (chapter, chapterIndex) => {
-                                    // Periksa apakah semua konten di chapter sebelumnya selesai
                                     const previousChapterCompleted =
-                                        chapterIndex === 0 || // Jika ini adalah chapter pertama, selalu buka
+                                        chapterIndex === 0 ||
                                         data.data.course.chapters[
                                             chapterIndex - 1
                                         ].contents.every((content) =>
@@ -283,54 +383,53 @@ const MulaiKelas = () => {
                                                 (content, index) => {
                                                     const isLocked =
                                                         !previousChapterCompleted;
+                                                    const isSelected =
+                                                        selectedContent?.id ===
+                                                        content.id;
 
                                                     return (
                                                         <li
                                                             key={content.id}
-                                                            className={`flex justify-between items-center ${
-                                                                isLocked
-                                                                    ? "text-gray-400"
-                                                                    : "text-gray-700"
-                                                            }`}
+                                                            onClick={() =>
+                                                                !isLocked &&
+                                                                handleContentClick(
+                                                                    content
+                                                                )
+                                                            }
+                                                            className={`flex justify-between items-center cursor-pointer
+                                ${isLocked ? "text-gray-400" : "text-gray-700"}
+                                ${
+                                    isSelected
+                                        ? "bg-blue-100"
+                                        : "hover:bg-gray-100"
+                                }
+                                transition-colors duration-200 p-2 rounded-lg
+                            `}
                                                         >
                                                             <div className="flex items-center gap-2">
                                                                 <span
-                                                                    className={`rounded-full h-8 w-8 flex items-center justify-center ${
-                                                                        isLocked
-                                                                            ? "bg-gray-200 text-gray-400"
-                                                                            : "bg-blue-200 text-blue-800"
-                                                                    }`}
+                                                                    className={`rounded-full h-8 w-8 flex items-center justify-center text-lg font-semibold mr-2 p-4
+                                        ${
+                                            isLocked
+                                                ? "bg-gray-200 text-gray-400"
+                                                : "bg-blue-200 text-blue-800"
+                                        }
+                                    `}
                                                                 >
                                                                     {index + 1}
                                                                 </span>
-                                                                {isLocked ? (
-                                                                    <span className="text-gray-400">
-                                                                        {
-                                                                            content.contentTitle
-                                                                        }
-                                                                    </span>
-                                                                ) : (
-                                                                    <Link
-                                                                        to="#"
-                                                                        onClick={() =>
-                                                                            handleContentClick(
-                                                                                content
-                                                                            )
-                                                                        }
-                                                                    >
-                                                                        <span>
-                                                                            {
-                                                                                content.contentTitle
-                                                                            }
-                                                                        </span>
-                                                                    </Link>
-                                                                )}
+                                                                <span
+                                                                    className={`${
+                                                                        isSelected
+                                                                            ? "text-blue-800 font-semibold"
+                                                                            : ""
+                                                                    }`}
+                                                                >
+                                                                    {
+                                                                        content.contentTitle
+                                                                    }
+                                                                </span>
                                                             </div>
-                                                            <span className="text-green-500">
-                                                                {isLocked
-                                                                    ? "🔒"
-                                                                    : "▶"}
-                                                            </span>
                                                         </li>
                                                     );
                                                 }
@@ -341,7 +440,19 @@ const MulaiKelas = () => {
                             )}
                         </ul>
                     </div>
+
+                    {/* Tombole generate sertifikat */}
+                    <div className="text-center border-t-2 border-gray-300">
+                <button
+                    onClick={generateCertificate}
+                    className="bg-blue-600 text-white p-2 rounded-lg mt-5"
+                >
+                    Download Sertifikat
+                </button>
+            </div>
+
                 </aside>
+
             </div>
             <Footer />
         </>

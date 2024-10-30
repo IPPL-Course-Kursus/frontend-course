@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2"; // Import SweetAlert
 import CardRecommended from "../../components/DetailComponent/CardRecommended";
+import { FaArrowLeft} from "react-icons/fa";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import { FaBook } from "react-icons/fa";
@@ -117,8 +118,10 @@ export const DetailKelas = () => {
             to="/"
             className="flex items-center gap-2 mx-2 hover:text-color-primary lg:text-lg "
           >
-            <IoMdArrowRoundBack />
-            <p>Kembali Ke Beranda</p>
+            <FaArrowLeft className="text-gray-700 cursor-pointer my-4" />
+                                {/* <h1 className="text-xl font-bold text-gray-800">
+                                    Kembali ke halaman utama
+                                </h1> */}
           </Link>
         </div>
 
@@ -210,7 +213,7 @@ export const DetailKelas = () => {
               {detail.chapters?.length > 0 ? (
                 detail.chapters.map((chapter, index) => (
                   <Link
-                    to={`/course/${id}/chapter/${chapter.id}`}
+                    // to={`/course/${id}/chapter/${chapter.id}`}
                     key={chapter.id}
                     className="block p-2 mb-2 rounded-md bg-gray-200 hover:bg-gray-300"
                   >

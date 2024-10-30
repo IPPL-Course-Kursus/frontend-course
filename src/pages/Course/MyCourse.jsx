@@ -308,17 +308,17 @@ const CoursesPage = () => {
 
                         {/* Progress Bar di bawah durasi */}
                         <div className="w-full bg-gray-300 rounded-full h-6 mb-2">
-                          <div
-                            className="bg-indigo-500 rounded-full h-full flex items-center justify-center"
-                            style={{
-                              width: `${(courseItem.contentFinish / courseItem.course.totalDuration) * 100}%`,
-                            }}
-                          >
-                            <span className="text-white text-xs font-bold pl-9">
-                              {courseItem.course.contentFinish}%
-                            </span>
-                          </div>
-                        </div>
+  <div
+    className="bg-indigo-500 rounded-full h-full flex items-center justify-center"
+    style={{
+      width: `${courseItem.contentFinish}%`,
+    }}
+  >
+    <span className="text-white text-xs font-bold pl-9">
+      {Math.round(courseItem.contentFinish) }%
+    </span>
+  </div>
+</div>
                       </div>
                     </div>
                   );
