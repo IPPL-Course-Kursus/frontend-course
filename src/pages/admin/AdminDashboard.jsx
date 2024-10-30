@@ -3,11 +3,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { FaUsers, FaSearch, FaFilter, FaBars } from "react-icons/fa";
 import { IoArrowBackCircle, IoArrowForwardCircle } from "react-icons/io5";
 import SideBar from "../../components/Sidebar/SidebarAdmin";
-import { fetchStats, fetchPayments, fetchuser } from "../../redux/actions/adminDashboardActions";
+import {
+  fetchStats,
+  fetchPayments,
+  fetchuser,
+} from "../../redux/actions/adminDashboardActions";
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
-  const { stats, paymentStatus, loading, user } = useSelector((state) => state.adminDashboard);
+  const { stats, paymentStatus, loading, user } = useSelector(
+    (state) => state.adminDashboard
+  );
 
   const [paymentSearch, setPaymentSearch] = useState("");
   const [filter, setFilter] = useState("");
@@ -22,15 +28,26 @@ const AdminDashboard = () => {
     dispatch(fetchuser());
   }, [dispatch]);
 
-  const freeClassesCount = paymentStatus.filter(payment => payment.paymentMethod === "Free").length;
-  const premiumClassesCount = paymentStatus.filter(payment => payment.paymentMethod !== "Free").length;
+  const freeClassesCount = paymentStatus.filter(
+    (payment) => payment.paymentMethod === "Free"
+  ).length;
+  const premiumClassesCount = paymentStatus.filter(
+    (payment) => payment.paymentMethod !== "Free"
+  ).length;
 
   const filteredPayments = paymentStatus.filter((payment) => {
     const isPaymentSearchMatch =
       paymentSearch === "" ||
-      (payment.id && payment.id.toString().includes(paymentSearch.toLowerCase())) ||  
-      (payment.courseName && payment.courseName.toLowerCase().includes(paymentSearch.toLowerCase())) ||
-      (payment.paymentMethod && payment.paymentMethod.toLowerCase().includes(paymentSearch.toLowerCase()));
+      (payment.id &&
+        payment.id.toString().includes(paymentSearch.toLowerCase())) ||
+      (payment.courseName &&
+        payment.courseName
+          .toLowerCase()
+          .includes(paymentSearch.toLowerCase())) ||
+      (payment.paymentMethod &&
+        payment.paymentMethod
+          .toLowerCase()
+          .includes(paymentSearch.toLowerCase()));
 
     const isFilterMatch = filter === "" || payment.paymentStatus === filter;
 
@@ -90,25 +107,43 @@ const AdminDashboard = () => {
         </div>
 
         <div className="mt-[80px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {[{ count: user.userCount, label: "Users", color: "bg-primary" },
-          { count: user.instrukturCount, label: "Instruktor", color: "bg-success" },
-          { count: freeClassesCount, label: "Free Class", color: "bg-[#173D94]" },
-          { count: premiumClassesCount, label: "Premium Class", color: "bg-[#173D94]" }]
-            .map(({ count, label, color }) => (
-              <div key={label} className={`${color} text-white font-semibold p-4 rounded-lg shadow-sm flex items-center`}>
-                <div className="bg-white rounded-full p-2">
-                  <FaUsers className="text-2xl text-primary" />
-                </div>
-                <div className="ml-4">
-                  <div className="text-2xl">{count}</div>
-                  <div className="text-sm">{label}</div>
-                </div>
+          {[
+            { count: user.userCount, label: "Users", color: "bg-primary" },
+            {
+              count: user.instrukturCount,
+              label: "Instruktor",
+              color: "bg-success",
+            },
+            {
+              count: freeClassesCount,
+              label: "Free Class",
+              color: "bg-[#173D94]",
+            },
+            {
+              count: premiumClassesCount,
+              label: "Premium Class",
+              color: "bg-[#173D94]",
+            },
+          ].map(({ count, label, color }) => (
+            <div
+              key={label}
+              className={`${color} text-white font-semibold p-4 rounded-lg shadow-sm flex items-center`}
+            >
+              <div className="bg-white rounded-full p-2">
+                <FaUsers className="text-2xl text-primary" />
               </div>
-            ))}
+              <div className="ml-4">
+                <div className="text-2xl">{count}</div>
+                <div className="text-sm">{label}</div>
+              </div>
+            </div>
+          ))}
         </div>
 
         <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
-          <h2 className="mt-4 text-lg md:text-xl font-bold text-neutral05">Status Pembayaran</h2>
+          <h2 className="mt-4 text-lg md:text-xl font-bold text-neutral05">
+            Status Pembayaran
+          </h2>
 
           <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
             <div className="relative">
@@ -133,8 +168,11 @@ const AdminDashboard = () => {
                 type="text"
                 value={paymentSearch}
                 onChange={(e) => setPaymentSearch(e.target.value)}
-                className={`transition-all duration-300 ease-in-out border border-[#173D94] rounded-full ml-2 p-1 ${searchVisible ? "w-40 opacity-100" : "w-0 opacity-0 pointer-events-none"
-                  }`}
+                className={`transition-all duration-300 ease-in-out border border-[#173D94] rounded-full ml-2 p-1 ${
+                  searchVisible
+                    ? "w-40 opacity-100"
+                    : "w-0 opacity-0 pointer-events-none"
+                }`}
                 placeholder="Cari"
               />
             </div>
@@ -158,7 +196,9 @@ const AdminDashboard = () => {
                 <tr key={payment.id} className="border-b">
                   <td className="px-2 md:px-4 py-2">{payment.id}</td>
                   <td className="px-2 md:px-4 py-2">{payment.courseName}</td>
-                  <td className="px-2 md:px-4 py-2">Rp. {payment.totalPrice}</td>
+                  <td className="px-2 md:px-4 py-2">
+                    Rp. {payment.totalPrice}
+                  </td>
                   <td className="px-2 md:px-4 py-2">{payment.paymentStatus}</td>
                   <td className="px-2 md:px-4 py-2">{payment.paymentMethod}</td>
                   <td className="px-2 md:px-4 py-2">{payment.updatedAt}</td>
@@ -170,7 +210,11 @@ const AdminDashboard = () => {
           {/* Pagination Controls */}
           <div className="flex justify-between items-center mt-4">
             <button
-              className={`flex items-center py-2 px-4 rounded-lg ${currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-[#0a61aa] text-white"} transition-all duration-300 hover:scale-105`}
+              className={`flex items-center py-2 px-4 rounded-lg ${
+                currentPage === 1
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-[#0a61aa] text-white"
+              } transition-all duration-300 hover:scale-105`}
               onClick={goToPreviousPage}
               disabled={currentPage === 1}
             >
@@ -183,7 +227,11 @@ const AdminDashboard = () => {
             </span>
 
             <button
-              className={`flex items-center py-2 px-4 rounded-lg ${currentPage === totalPages ? "bg-gray-300 cursor-not-allowed" : "bg-[#0a61aa] text-white"} transition-all duration-300 hover:scale-105`}
+              className={`flex items-center py-2 px-4 rounded-lg ${
+                currentPage === totalPages
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-[#0a61aa] text-white"
+              } transition-all duration-300 hover:scale-105`}
               onClick={goToNextPage}
               disabled={currentPage === totalPages}
             >
