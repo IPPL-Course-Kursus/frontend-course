@@ -81,7 +81,7 @@ const TopikKelas = () => {
           key !== "Promo"
       ),
       levels: Object.keys(updatedChecked).filter(
-        (key) => courseLevel.some((level) => level.levelName === key && updatedChecked[key]) // Filter berdasarkan level
+        (key) => courseLevel.every((level) => level.levelName === key && updatedChecked[key]) // Filter berdasarkan level
       ),
     };
 
@@ -123,7 +123,7 @@ const TopikKelas = () => {
 
     if (activeFilters.length > 0) {
       filteredCourses = filteredCourses.filter((course) =>
-        activeFilters.some(
+        activeFilters.every(
           (filter) =>
             course.category.categoryName === filter || course.courseLevel.levelName === filter
         )
