@@ -333,13 +333,10 @@ const TopikKelas = () => {
                     className="w-full h-28 object-cover"
                   />
                   <div className="mx-2 md:mx-4 flex flex-col mt-1 md:mt-2">
-                    <h1 className="text-color-primary font-bold text-sm lg:text-base">
-                      {course.category.categoryName}
-                    </h1>
-                    <p className="text-sm text-gray-600">{course.courseName}</p>
+                    <p className="text-sm font-bold">{course.courseName}</p>
                     <div className="flex justify-between items-center my-2">
                       <p className="text-black text-sm font-semibold">
-                        <p className="text-black text-sm font-semibold">
+                        <p className="text-black text-sm font-semibold text-gray-600">
                           Instructor: {course.user.fullName}
                         </p>
                       </p>
