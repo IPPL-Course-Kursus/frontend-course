@@ -8,7 +8,6 @@ import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import { FaBook } from "react-icons/fa";
 import { GrCertificate } from "react-icons/gr";
-import { IoMdArrowRoundBack } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { getDetailCourse } from "../../redux/actions/detailActions";
 import { createTransaction } from "../../redux/actions/transactionActions";
@@ -143,7 +142,7 @@ export const DetailKelas = () => {
               </button>
             </div>
             <div className="w-full sm:w-[512px] pt-16 pb-16">
-              <img className="w-full h-auto" src={detail.image} alt="Gambar Kelas" />
+              <img className="w-full rounded-xl h-auto" src={detail.image} alt="Gambar Kelas" />
             </div>
           </div>
         </div>

@@ -254,7 +254,7 @@ const Register = () => {
 
         {/* Gambar Kanan */}
         <div className="hidden lg:flex justify-center items-center bg-[#0A61AA] w-[50%] min-h-[100dvh]">
-          <img src="/LOGO.png" alt="logo" className="" />
+          <img src="/ETAMCOURSE.png" alt="logo" className="" />
         </div>
       </div>
       {/* <Toaster position="top-center" /> */}
