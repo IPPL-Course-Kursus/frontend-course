@@ -7,20 +7,22 @@ import RiwayatPembayaran from "./RiwayatPembayaran";
 import { useDispatch } from "react-redux"; // Import useDispatch dari Redux
 import { logout } from "../../redux/actions/authActions"; // Import aksi logout
 import { useNavigate } from "react-router-dom"; // Import useNavigate untuk navigasi
+import { FaBars } from "react-icons/fa"; // Import icon untuk hamburger menu
 
 const MainProfile = () => {
   const [activeMenu, setActiveMenu] = useState("");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State untuk toggle sidebar pada mobile
   const dispatch = useDispatch(); // Inisialisasi dispatch
   const navigate = useNavigate(); // Inisialisasi navigate
 
   const handleMenuClick = (menu) => {
     if (menu === "keluar") {
-      // Jika user memilih keluar, lakukan dispatch logout dan navigasi
       dispatch(logout()); // Panggil aksi logout dari Redux
       navigate("/login"); // Arahkan pengguna ke halaman login
     } else {
       setActiveMenu(menu); // Set menu aktif sesuai pilihan
     }
+    setIsSidebarOpen(false); // Tutup sidebar setelah memilih menu
   };
 
   const renderContent = () => {
@@ -40,11 +42,23 @@ const MainProfile = () => {
     <>
       <Navbar />
       <div className="p-6">
-        {/* Sidebar */}
-        <div className="flex bg-gray-100 shadow-md text-black rounded-3xl h-full w-full p-8">
-          <div className="px-4">
+        {/* Hamburger Button for mobile */}
+        <button
+          className="sm:hidden text-gray-600 mb-4 focus:outline-none"
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        >
+          <FaBars size={24} />
+        </button>
+
+        <div className="flex flex-col sm:flex-row bg-gray-100 shadow-md text-black rounded-3xl h-full w-full">
+          {/* Sidebar */}
+          <div
+            className={`px-4 py-4 sm:py-8 bg-white shadow-lg rounded-3xl sm:w-1/4 ${
+              isSidebarOpen ? "block" : "hidden"
+            } sm:block`}
+          >
             <h1
-              className={`text-md cursor-pointer border-b-2 py-2 px ${
+              className={`text-md cursor-pointer border-b-2 py-2 ${
                 activeMenu === "profile" ? "text-blue-600 font-bold" : ""
               }`}
               onClick={() => handleMenuClick("profile")}
@@ -77,7 +91,10 @@ const MainProfile = () => {
             </h1>
           </div>
 
-          <div className="bg-white shadow-lg p-8 rounded-3xl w-full">{renderContent()}</div>
+          {/* Main content */}
+          <div className="bg-white shadow-lg p-8 rounded-3xl w-full sm:w-3/4">
+            {renderContent()}
+          </div>
         </div>
       </div>
       <Footer />
