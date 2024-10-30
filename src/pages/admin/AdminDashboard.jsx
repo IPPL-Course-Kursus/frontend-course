@@ -15,11 +15,8 @@ const AdminDashboard = () => {
     (state) => state.adminDashboard
   );
 
-  const [globalSearch, setGlobalSearch] = useState("");
-  const [paymentSearch, setPaymentSearch] = useState("");
   const [filter, setFilter] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [searchVisible, setSearchVisible] = useState(false);
 
   useEffect(() => {
     dispatch(fetchStats());
@@ -31,24 +28,9 @@ const AdminDashboard = () => {
   const itemsPerPage = 10;
 
   const filteredPayments = paymentStatus?.filter((payment) => {
-    const isGlobalSearchMatch =
-      globalSearch === "" ||
-      payment.id.toString().includes(globalSearch.toLowerCase()) ||
-      payment.kategori.toLowerCase().includes(globalSearch.toLowerCase()) ||
-      payment.kelasPremium.toLowerCase().includes(globalSearch.toLowerCase());
-
-    const isPaymentSearchMatch =
-      paymentSearch === "" ||
-      payment.id.toString().includes(paymentSearch.toLowerCase()) ||
-      payment.kategori.toLowerCase().includes(paymentSearch.toLowerCase()) ||
-      payment.kelasPremium
-        .toLowerCase()
-        .includes(paymentSearch.toLowerCase()) ||
-      payment.tanggalBayar.toLowerCase().includes(paymentSearch.toLowerCase());
-
     const isFilterMatch = filter === "" || payment.paymentStatus === filter;
 
-    return isGlobalSearchMatch && isPaymentSearchMatch && isFilterMatch;
+    return isFilterMatch;
   });
 
   const sortedPayments = filteredPayments?.sort((a, b) => a.id - b.id);
@@ -68,7 +50,11 @@ const AdminDashboard = () => {
 
   const handleFilterChange = (e) => setFilter(e.target.value);
 
-  const toggleSearch = () => setSearchVisible((prev) => !prev);
+  const formatCurrency = (value) => {
+    return (
+      "Rp " + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ",00"
+    );
+  };
 
   return (
     <div className="flex">
@@ -97,19 +83,6 @@ const AdminDashboard = () => {
           </button>
 
           <h1 className="text-2xl font-bold text-[#173D94]">Hi, Admin!</h1>
-
-          <div className="relative w-full max-w-xs md:max-w-sm lg:max-w-md hidden md:block">
-            <input
-              type="text"
-              value={globalSearch}
-              onChange={(e) => setGlobalSearch(e.target.value)}
-              placeholder="Cari..."
-              className="w-full p-2 pl-4 pr-10 text-sm text-gray-700 rounded-full shadow-sm outline-none"
-            />
-            <button className="absolute right-0 top-0 mt-1 mr-2">
-              <FaSearch className="text-[#173D94]" />
-            </button>
-          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -160,27 +133,9 @@ const AdminDashboard = () => {
               >
                 <option value="">Filter</option>
                 <option value="settlement">Sudah Bayar</option>
-                <option value="pending">Belum Bayar</option>
+                <option value="cancel">Cancel Bayar</option>
               </select>
               <FaFilter className="absolute right-4 top-2 text-[#173D94] text-sm" />
-            </div>
-
-            <div className="relative w-full md:w-auto flex items-center">
-              <FaSearch
-                className="text-[#173D94] text-lg cursor-pointer"
-                onClick={toggleSearch}
-              />
-              <input
-                type="text"
-                value={paymentSearch}
-                onChange={(e) => setPaymentSearch(e.target.value)}
-                className={`transition-all duration-300 ease-in-out border border-[#173D94] rounded-full ml-2 p-1 ${
-                  searchVisible
-                    ? "w-40 opacity-100"
-                    : "w-0 opacity-0 pointer-events-none"
-                }`}
-                placeholder="Cari..."
-              />
             </div>
           </div>
         </div>
@@ -204,7 +159,7 @@ const AdminDashboard = () => {
                     <td className="px-2 md:px-4 py-2">{payment.id}</td>
                     <td className="px-2 md:px-4 py-2">{payment.courseName}</td>
                     <td className="px-2 md:px-4 py-2">
-                      Rp.{payment.totalPrice}00,00
+                      {formatCurrency(payment.totalPrice)}
                     </td>
                     <td className="px-2 md:px-4 py-2">
                       {payment.paymentStatus}
