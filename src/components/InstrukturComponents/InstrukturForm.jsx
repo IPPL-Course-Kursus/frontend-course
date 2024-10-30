@@ -1,37 +1,40 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 
-const InstrukturForm = ({ show, onClose, existingData, isEditMode, onSubmit }) => {
+const InstrukturForm = ({
+  show,
+  onClose,
+  existingData,
+  isEditMode,
+  onSubmit,
+}) => {
   const [formData, setFormData] = useState({
     fullName: "",
-    country: "",
     city: "",
     phoneNumber: "",
     tanggalLahir: "",
     email: "",
-    password: ""
+    password: "",
   });
 
   useEffect(() => {
     if (existingData) {
       setFormData({
         fullName: existingData.fullName || "",
-        country: existingData.country || "",
         city: existingData.city || "",
         phoneNumber: existingData.phoneNumber || "",
         tanggalLahir: existingData.tanggalLahir || "",
         email: existingData.email || "",
-        password: "" // Tidak ada prefilled untuk password
+        password: "", // Tidak ada prefilled untuk password
       });
     } else {
       setFormData({
         fullName: "",
-        country: "",
         city: "",
         phoneNumber: "",
         tanggalLahir: "",
         email: "",
-        password: ""
+        password: "",
       });
     }
   }, [existingData]);
@@ -82,19 +85,6 @@ const InstrukturForm = ({ show, onClose, existingData, isEditMode, onSubmit }) =
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
               placeholder="Masukkan nama lengkap"
-              required
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="block mb-1 font-semibold">Negara</label>
-            <input
-              type="text"
-              name="country"
-              value={formData.country}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-xl"
-              placeholder="Masukkan negara"
               required
             />
           </div>
