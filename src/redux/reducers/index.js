@@ -23,6 +23,7 @@ import levelCourseReducer from "./levelCourseReducers";
 import { paymentHistoryReducer } from "./transactionReducers";
 import instrukturReducer from "./instrukturReducer";
 import LoginReducer from "./LoginReducer"
+import certificateReducers from "./certificateReducers";
 
 export default combineReducers({
 
@@ -68,6 +69,7 @@ export default combineReducers({
 
   // Mulai Kelas
   mulaikelas: mulaiKelasReducers,
+  certificate: certificateReducers,
 
   // Instruktur
   instruktur: instrukturReducer,
