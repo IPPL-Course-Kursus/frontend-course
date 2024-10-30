@@ -22,7 +22,7 @@ import Swal from "sweetalert2";
 
 const MulaiKelas = () => {
     const dispatch = useDispatch();
-    const { data, loading, error, output } = useSelector(
+    const { data, loading, output } = useSelector(
         (state) => state.mulaiKelas
     );
     const profile = useSelector((state) => state.getMe.profile);
