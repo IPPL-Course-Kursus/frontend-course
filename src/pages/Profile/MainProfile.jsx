@@ -53,7 +53,7 @@ const MainProfile = () => {
         <div className="flex flex-col sm:flex-row bg-gray-100 shadow-md text-black rounded-3xl h-full w-full">
           {/* Sidebar */}
           <div
-            className={`px-4 py-4 sm:py-8 bg-white shadow-lg rounded-3xl sm:w-1/4 ${
+            className={`px-4 py-4 sm:py-8 sm:w-1/6 ${
               isSidebarOpen ? "block" : "hidden"
             } sm:block`}
           >
@@ -92,7 +92,7 @@ const MainProfile = () => {
           </div>
 
           {/* Main content */}
-          <div className="bg-white shadow-lg p-8 rounded-3xl w-full sm:w-3/4">
+          <div className="bg-white shadow-lg p-8 rounded-3xl w-full sm:w-3/4 lg:w-full lg:items-center">
             {renderContent()}
           </div>
         </div>
