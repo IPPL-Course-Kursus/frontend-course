@@ -43,7 +43,7 @@ const RiwayatContentCard = ({courseTitle,
             </div>
             {/* Rating */}
             <div className="flex items-center space-x-1">
-              <span className="text-yellow-500 font-bold text-xl">★</span>
+              {/* <span className="text-yellow-500 font-bold text-xl">★</span> */}
               <span className="text-xl font-bold text-gray-700">
                 {/* {courseRating} */}
               </span>

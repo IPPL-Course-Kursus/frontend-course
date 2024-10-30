@@ -293,7 +293,7 @@ const MulaiKelas = () => {
                             ></CodeMirror>
                             <div className="flex space-x-4">
                                 <button
-                                    className="bg-blue-600 text-white py-2 px-4 rounded-lg"
+                                    className="bg-green-500 text-white py-2 px-4 rounded-lg"
                                     onClick={handleRunCode}
                                     disabled={loading}
                                 >
@@ -441,7 +441,7 @@ const MulaiKelas = () => {
                         </ul>
                     </div>
 
-                    {/* Tombole generate sertifikat */}
+                    {/* Tombole generate sertifikat
                     <div className="text-center border-t-2 border-gray-300">
                 <button
                     onClick={generateCertificate}
@@ -449,7 +449,7 @@ const MulaiKelas = () => {
                 >
                     Download Sertifikat
                 </button>
-            </div>
+            </div> */}
 
                 </aside>
 
