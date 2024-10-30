@@ -50,24 +50,127 @@ export const getAllKelas = () => async (dispatch) => {
   }
 };
 
+// export const addDataKelas = (requestData) => async (dispatch) => {
+//   dispatch(addCourseRequest()); // Set loading state
+
+//   try {
+//     // Ambil token dari cookies
+//     const token = getCookie("token");
+
+//     // Konversi tipe data ke format yang diharapkan
+//     const formattedData = {
+//       ...requestData,
+//       categoryId: parseInt(requestData.categoryId, 10),
+//       courseLevelId: parseInt(requestData.courseLevelId, 10),
+//       typeCourseId: parseInt(requestData.typeCourseId, 10),
+//       totalDuration: parseInt(requestData.totalDuration, 10),
+//       certificateStatus: Boolean(requestData.certificateStatus),
+//     };
+
+//     // Set up config untuk header
+//     const config = {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         "Content-Type": "multipart/form-data",
+//       },
+//     };
+
+//     // Lakukan POST request dengan FormData
+//     const response = await axios.post(`${api_url}course/createCourse`, formattedData, config);
+
+//     dispatch(addCourseSuccess(response.data.message)); // Sesuaikan dengan response API Anda
+//     console.log(response.data.message);
+//     dispatch(getAllKelas());
+//   } catch (error) {
+//     console.error("Error adding data kelas:", error.response || error);
+//     const errorMessage = error.response?.data?.message || error.message || "Add data kelas failed";
+//     dispatch(addCourseFailure(errorMessage)); // Dispatch action failure
+//   }
+// };
+
+// export const addDataKelas = (requestData) => async (dispatch) => {
+//   dispatch(addCourseRequest());
+
+//   try {
+//     // Get token from cookies
+//     const token = getCookie("token");
+
+//     // Create FormData and manually format each field
+//     const formData = new FormData();
+
+//     formData.append("categoryId", JSON.stringify(parseInt(requestData.categoryId, 10)));
+//     formData.append("courseLevelId", JSON.stringify(parseInt(requestData.courseLevelId, 10)));
+//     formData.append("typeCourseId", JSON.stringify(parseInt(requestData.typeCourseId, 10)));
+//     formData.append("courseName", requestData.courseName || "");
+//     formData.append("aboutCourse", requestData.aboutCourse || "");
+//     formData.append("intendedFor", requestData.intendedFor || "");
+//     formData.append("coursePrice", JSON.stringify(parseFloat(requestData.coursePrice) || 0));
+//     formData.append(
+//       "courseDiscountPercent",
+//       JSON.stringify(parseFloat(requestData.courseDiscountPercent) || 0)
+//     );
+//     formData.append("totalDuration", JSON.stringify(parseFloat(requestData.totalDuration) || 0));
+//     formData.append("certificateStatus", JSON.stringify(Boolean(requestData.certificateStatus)));
+//     formData.append("publish", JSON.stringify(Boolean(requestData.publish)));
+
+//     if (requestData.image) {
+//       formData.append("image", requestData.image);
+//     }
+
+//     const config = {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         "Content-Type": "multipart/form-data",
+//       },
+//     };
+
+//     const response = await axios.post(`${api_url}course/createCourse`, formData, config);
+
+//     dispatch(addCourseSuccess(response.data.message));
+//     dispatch(getAllKelas());
+//   } catch (error) {
+//     const errorMessage = error.response?.data?.message || error.message || "Add data kelas failed";
+//     dispatch(addCourseFailure(errorMessage));
+//   }
+// };
 export const addDataKelas = (requestData) => async (dispatch) => {
-  dispatch(addCourseRequest()); // Set loading state
+  dispatch(addCourseRequest());
 
   try {
-    // Ambil token dari cookies
+    // Get token from cookies
     const token = getCookie("token");
 
-    // Konversi tipe data ke format yang diharapkan
-    const formattedData = {
-      ...requestData,
-      categoryId: parseInt(requestData.categoryId, 10),
-      courseLevelId: parseInt(requestData.courseLevelId, 10),
-      typeCourseId: parseInt(requestData.typeCourseId, 10),
-      totalDuration: parseInt(requestData.totalDuration, 10),
-      certificateStatus: Boolean(requestData.certificateStatus),
-    };
+    // Log requestData to see what it contains
+    console.log("Request Data:", requestData);
 
-    // Set up config untuk header
+    // Create FormData and manually format each field
+    const formData = new FormData();
+
+    // Parse and append each field
+    const categoryId = parseInt(requestData.categoryId, 10);
+    const courseLevelId = parseInt(requestData.courseLevelId, 10);
+    const typeCourseId = parseInt(requestData.typeCourseId, 10);
+
+    // Log parsed values to debug
+    console.log("Parsed Values:", { categoryId, courseLevelId, typeCourseId });
+
+    formData.append("categoryId", !isNaN(categoryId) ? categoryId : null);
+    formData.append("courseLevelId", !isNaN(courseLevelId) ? courseLevelId : null);
+    formData.append("typeCourseId", !isNaN(typeCourseId) ? typeCourseId : null);
+    formData.append("courseName", requestData.courseName || "");
+    formData.append("aboutCourse", requestData.aboutCourse || "");
+    formData.append("intendedFor", requestData.intendedFor || "");
+    formData.append("coursePrice", parseFloat(requestData.coursePrice) || 0);
+    formData.append("courseDiscountPercent", parseFloat(requestData.courseDiscountPercent) || 0);
+    formData.append("totalDuration", parseFloat(requestData.totalDuration) || 0);
+    formData.append("certificateStatus", Boolean(requestData.certificateStatus));
+    formData.append("publish", Boolean(requestData.publish));
+
+    // If there is an image, append it to FormData
+    if (requestData.image) {
+      formData.append("image", requestData.image);
+    }
+
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -75,16 +178,12 @@ export const addDataKelas = (requestData) => async (dispatch) => {
       },
     };
 
-    // Lakukan POST request dengan FormData
-    const response = await axios.post(`${api_url}course/createCourse`, formattedData, config);
-
-    dispatch(addCourseSuccess(response.data.message)); // Sesuaikan dengan response API Anda
-    console.log(response.data.message);
+    const response = await axios.post(`${api_url}course/createCourse`, formData, config);
+    dispatch(addCourseSuccess(response.data.message));
     dispatch(getAllKelas());
   } catch (error) {
-    console.error("Error adding data kelas:", error.response || error);
     const errorMessage = error.response?.data?.message || error.message || "Add data kelas failed";
-    dispatch(addCourseFailure(errorMessage)); // Dispatch action failure
+    dispatch(addCourseFailure(errorMessage));
   }
 };
 
@@ -272,7 +371,7 @@ export const updateDataKonten = (contentId, updatedData) => async (dispatch) => 
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json", // Pastikan tetap application/json karena tidak ada file
+        "Content-Type": "application/json",
       },
     };
 
@@ -283,13 +382,15 @@ export const updateDataKonten = (contentId, updatedData) => async (dispatch) => 
     );
 
     dispatch(updateContentSuccess(response.data.message));
-    dispatch(getDataKonten()); // Optional: Untuk refresh data setelah update
+    dispatch(getDataKonten());
+    return response.data.message; // Mengembalikan pesan sukses untuk di-`then` pada komponen
   } catch (error) {
     const errorMessage = error.response?.data?.message || error.message;
     dispatch(updateContentFailure(errorMessage));
-    throw new Error(errorMessage); // Untuk ditangani di komponen
+    throw new Error(errorMessage);
   }
 };
+
 
 export const deleteDataKonten = (contentId) => async (dispatch) => {
   dispatch(fetchContentesRequest());
