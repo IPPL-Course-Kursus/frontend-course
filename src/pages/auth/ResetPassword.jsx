@@ -98,16 +98,16 @@ const ResetPassword = () => {
           </div>
           <button
             className="btn w-full text-[14px] font-medium bg-[#0A61AA] text-white py-[10px] rounded-2xl mt-5"
-            disabled={resetting} 
+            disabled={resetting}
           >
             {resetting ? "Menyimpan..." : "Simpan"}
           </button>
-          {error && <p className="text-red-500 mt-3">{error}</p>} 
+          {error && <p className="text-red-500 mt-3">{error}</p>}
         </form>
       </div>
       <div className="hidden lg:flex justify-center items-center bg-[#0A61AA] w-[50%] min-h-[100dvh]">
-          <img src="/LOGO.png" alt="logo." />
-        </div>
+        <img src="/ETAMCOURSE.png" alt="logo." />
+      </div>
     </div>
   );
 };

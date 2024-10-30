@@ -56,22 +56,23 @@ const InstruktorDataKonten = () => {
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
-    if (!contentToDelete?.id || !contentToDelete?.chapterId) {
-      console.error("Content ID atau Chapter ID tidak ada.");
-      return;
-    }
+const confirmDelete = () => {
+  if (!contentToDelete?.chapterId) {
+    console.error("Chapter ID is required.");
+    return; // Jangan lanjut jika chapterId tidak ada
+  }
 
-    dispatch(deleteDataKonten(contentToDelete.id, contentToDelete.chapterId))
-      .then(() => {
-        setShowDeleteModal(false);
-        dispatch(getDataKonten(id)); // Memuat ulang data setelah penghapusan
-      })
-      .catch((error) => {
-        console.error("Error deleting content:", error);
-        setShowDeleteModal(false);
-      });
-  };
+  dispatch(deleteDataKonten(contentToDelete.id, contentToDelete.chapterId))
+    .then(() => {
+      setShowDeleteModal(false); // Tutup modal setelah berhasil
+      dispatch(getDataKonten(id)); // Memuat ulang data setelah penghapusan
+    })
+    .catch((error) => {
+      console.error("Error deleting content:", error);
+      setShowDeleteModal(false);
+    });
+};
+
 
   const handleBackClick = () => {
     navigate(-1);
