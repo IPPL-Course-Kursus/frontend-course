@@ -119,7 +119,7 @@ const Login = () => {
             <div className="flex flex-col justify-center items-center gap-2 mt-6">
               <div className="flex gap-2">
                 <h1 className="text-[14px] font-normal font-Poppins">Belum punya akun?</h1>
-                <Link to="/register" className="text-darkblue text-[14px] font-bold">
+                <Link to="/register" className="text-red-500 text-[14px] font-bold">
                   Daftar di sini
                 </Link>
               </div>
@@ -129,7 +129,7 @@ const Login = () => {
 
         {/* Gambar Kanan */}
         <div className="hidden lg:flex justify-center items-center bg-[#0A61AA] w-[50%] min-h-[100dvh]">
-          <img src="/LOGO.png" alt="logo." />
+          <img src="/ETAMCOURSE.png" alt="logo." />
         </div>
       </div>
     </>
