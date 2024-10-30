@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserCourses } from "../../redux/actions/courseActions";
-import { selectMyCourse } from "../../redux/reducers/courseReducers";
 import { Link } from "react-router-dom";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
+import { getUserCourses } from "../../redux/actions/courseActions";
+import { selectMyCourse } from "../../redux/reducers/courseReducers";
 
 const CoursesPage = () => {
   const dispatch = useDispatch();
@@ -34,6 +34,7 @@ const CoursesPage = () => {
   const handleStatusFilterChange = (status) => {
     setCourseStatusFilter(status);
   };
+  
 
   const filteredCourses = () => {
     const activeFilters = Object.keys(filterChecked).filter((key) => filterChecked[key]);
@@ -50,14 +51,14 @@ const CoursesPage = () => {
         (courseStatusFilter === "notStarted" && course.contentFinish === 0) ||
         (courseStatusFilter === "inProgress" &&
           course.contentFinish > 0 &&
-          course.contentFinish < course.course.totalDuration) ||
-        (courseStatusFilter === "completed" && course.contentFinish === course.course.totalDuration);
+          course.contentFinish < 100) ||
+        (courseStatusFilter === "completed" && course.contentFinish === 100);
         
         const matchesAllFilters = matchesStatus && 
         (activeFilters.length === 0 || // Jika tidak ada filter aktif, tampilkan semua kursus
         (activeFilters.length === 1 && (matchesCategoryFilter || matchesLevelFilter)) || // Jika satu filter aktif
         (activeFilters.length > 1 && matchesCategoryFilter && matchesLevelFilter) || // Jika dua filter aktif
-        (activeFilters.length === 2 && matchesCategoryFilter && matchesLevelFilter)); // Pastikan kedua filter terpenuhi jika ada dua filter aktif  
+        (activeFilters.length === 2 && matchesCategoryFilter && matchesLevelFilter)); // Pastikan kedua filter terpenuhi jika ada dua filter aktif
   
       return matchesAllFilters; // Kembalikan true jika kursus memenuhi semua syarat
     });
