@@ -21,122 +21,9 @@ import sertifikat from "../../assets/sertif-ec.png";
 import Swal from "sweetalert2";
 
 const MulaiKelas = () => {
-<<<<<<< HEAD
-  const dispatch = useDispatch();
-  const { data, loading, output } = useSelector((state) => state.mulaiKelas);
-  const profile = useSelector((state) => state.getMe.profile);
-  const [sourceCode, setCode] = useState("");
-  const [language, setLanguage] = useState("");
-  const [selectedContent, setSelectedContent] = useState(null);
-  const { data: certificateData } = useSelector((state) => state.certificate);
-  const { id } = useParams();
-  const name = profile?.fullName;
-  const formatTanggal = (tanggal) => {
-    return new Date(tanggal).toLocaleDateString("id-ID", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-  };
-
-  useEffect(() => {
-    if (id) {
-      dispatch(fetchMulaiKelas(id));
-      {
-        if (selectedContent && selectedContent.interpreterStatus) {
-          setCode(selectedContent?.interpreter?.sourceCode || "");
-          setLanguage(selectedContent?.interpreter?.languageInterpreter || "");
-        }
-      }
-    }
-    dispatch(getMe());
-    dispatch(fetchCertificate(id));
-  }, [id, dispatch, selectedContent]);
-
-  const handleRunCode = () => {
-    dispatch(runCode(language, sourceCode)).catch((error) => {
-      console.error("Error:", error.response ? error.response.data : error.message);
-    });
-  };
-
-  const handleContentClick = (content) => {
-    // Reset output sebelum berpindah ke konten yang baru
-    dispatch(resetOutput());
-    setSelectedContent(content);
-    dispatch(updateContentProgress(id, content.id));
-  };
-
-  const copyCode = () => {
-    navigator.clipboard.writeText(sourceCode);
-    alert("Code successfully copied!");
-  };
-
-  const resetCode = () => {
-    setCode("");
-  };
-
-  const generateCertificate = () => {
-    if (data?.data?.courseStatus !== "Completed") {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Selesaikan semua materi untuk mendapatkan sertifikat.",
-      });
-      return;
-    }
-
-    const doc = new jsPDF({
-      orientation: "landscape",
-      unit: "px",
-      format: [842, 595],
-    });
-
-    // Tambahkan gambar sertifikat sebagai background
-    doc.addImage(sertifikat, "PNG", 0, 0, 800, 600);
-
-    // Tambahkan nama peserta di bawah "Diberikan pada"
-    doc.setFontSize(28); // Ukuran font sedikit lebih besar
-    doc.setTextColor(235, 167, 30); // Warna teks mirip dengan warna pada sertifikat
-    doc.setFont("montserrat", "bold"); // Menambahkan font yang lebih tebal
-    doc.text(name || "Nama Peserta", 90, 260, {
-      align: "left",
-      charSpace: 0.75, // Jarak antar karakter sedikit
-    });
-
-    // Tambahkan nama kursus di bawah "Atas kelulusannya pada kelas"
-    doc.setFontSize(24);
-    doc.setTextColor(235, 167, 30); // Sama dengan warna teks nama peserta
-    doc.setFont("arial", "bold");
-    doc.text(data?.data?.course?.courseName || "Nama Kursus", 90, 330, {
-      align: "left",
-      charSpace: 0.5,
-    });
-
-    doc.setFillColor(14, 43, 92); // Warna background
-    doc.roundedRect(90, 180, 112, 20, 5, 5, "F");
-    doc.setFontSize(20);
-    doc.setTextColor(255, 255, 255); // Warna teks untuk nomor sertifikat
-    doc.setFont("montserrat", "normal");
-    doc.text(` ${certificateData?.certificateNumber || "XXXXXX"}`, 95, 195, {
-      align: "left",
-    });
-
-    // Tambahkan tanggal penerbitan sertifikat
-    doc.setFontSize(20);
-    doc.setTextColor(0, 0, 0);
-    doc.setFont("montserrat", "bold");
-    doc.text(
-      `${certificateData?.issueDate ? formatTanggal(certificateData.issueDate) : "Tanggal Terbit"}`,
-      90,
-      405,
-      {
-        align: "left",
-      }
-=======
     const dispatch = useDispatch();
     const { data, loading, output } = useSelector(
         (state) => state.mulaiKelas
->>>>>>> 807212382b8d8506a5e367dde26a4591f6ec84e5
     );
 
     // Unduh sertifikat
@@ -251,29 +138,6 @@ const MulaiKelas = () => {
             )}
           </section>
 
-<<<<<<< HEAD
-          {/* Code Editor Section */}
-          {selectedContent && selectedContent.interpreterStatus && (
-            <section className="bg-white p-6 rounded-lg shadow-lg mb-10">
-              <h3 className="text-gray-700 text-2xl font-semibold mb-4">Editor Kode</h3>
-              <CodeMirror
-                id="code"
-                value={sourceCode}
-                theme={githubLight}
-                height="400px"
-                extensions={[python()]}
-                onChange={(value) => setCode(value)}
-                className="w-full p-3 border border-gray-600 rounded-lg mb-4"
-              ></CodeMirror>
-              <div className="flex space-x-4">
-                <button
-                  className="bg-blue-600 text-white py-2 px-4 rounded-lg"
-                  onClick={handleRunCode}
-                  disabled={loading}
-                >
-                  {loading ? "Running..." : "Run Code"}
-                </button>
-=======
                     {/* Code Editor Section */}
                     {selectedContent && selectedContent.interpreterStatus && (
                         <section className="bg-white p-6 rounded-lg shadow-lg mb-10">
@@ -297,7 +161,6 @@ const MulaiKelas = () => {
                                 >
                                     {loading ? "Running..." : "Run Code"}
                                 </button>
->>>>>>> 807212382b8d8506a5e367dde26a4591f6ec84e5
 
                 <button
                   className="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg"
@@ -398,22 +261,6 @@ const MulaiKelas = () => {
             </ul>
           </div>
 
-<<<<<<< HEAD
-          {/* Tombole generate sertifikat */}
-          <div className="text-center border-t-2 border-gray-300">
-            <button
-              onClick={generateCertificate}
-              className="bg-blue-600 text-white p-2 rounded-lg mt-5"
-            >
-              Download Sertifikat
-            </button>
-          </div>
-        </aside>
-      </div>
-      <Footer />
-    </>
-  );
-=======
                     {/* Tombole generate sertifikat
                     <div className="text-center border-t-2 border-gray-300">
                 <button
@@ -430,7 +277,6 @@ const MulaiKelas = () => {
             <Footer />
         </>
     );
->>>>>>> 807212382b8d8506a5e367dde26a4591f6ec84e5
-};
+
 
 export default MulaiKelas;
