@@ -19,7 +19,6 @@ const TopikKelas = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
 
-  const [isMobileDropdownVisible, setMobileDropdownVisible] = useState(false);
   const [filterChecked, setFilterChecked] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const {
@@ -34,10 +33,6 @@ const TopikKelas = () => {
     dispatch(getLevel());
     dispatch(getType());
   }, [dispatch]);
-
-  const toggleMobileDropdown = () => {
-    setMobileDropdownVisible(!isMobileDropdownVisible);
-  };
 
   useEffect(() => {
     if (courses.length > 0) {
@@ -86,7 +81,7 @@ const TopikKelas = () => {
           key !== "Promo"
       ),
       levels: Object.keys(updatedChecked).filter(
-        (key) => courseLevel.some((level) => level.levelName === key && updatedChecked[key]) // Filter berdasarkan level
+        (key) => courseLevel.every((level) => level.levelName === key && updatedChecked[key]) // Filter berdasarkan level
       ),
     };
 
@@ -128,7 +123,7 @@ const TopikKelas = () => {
 
     if (activeFilters.length > 0) {
       filteredCourses = filteredCourses.filter((course) =>
-        activeFilters.some(
+        activeFilters.every(
           (filter) =>
             course.category.categoryName === filter || course.courseLevel.levelName === filter
         )
@@ -214,25 +209,7 @@ const TopikKelas = () => {
               TOPIK KELAS
             </h3>
 
-            <button
-              onClick={toggleMobileDropdown}
-              className="md:hidden bg-blue-500 text-white px-2 py-2 rounded ml-auto mb-4"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16m-7 6h7"
-                />
-              </svg>
-            </button>
+            
 
             {/* Container tombol ditengah */}
             <div className="flex flex-wrap justify-center w-full md:w-auto mx-auto gap-3">
@@ -273,8 +250,10 @@ const TopikKelas = () => {
 
                 <div className="flex flex-col md:flex-row md:space-x-6 pr-4 md:pr-10 ml-10">
                     <div className="md:block md:w-1/4">
-                    <div className={`md:hidden ${isMobileDropdownVisible ? "block" : "hidden"} bg-white shadow-md rounded-md p-4 mb-4`}>
-                    <h3 className="text-xl font-bold text-gray-800 mb-4">Filter</h3>
+                        <div className="bg-white shadow-md rounded-md p-4">
+                            <h3 className="text-xl font-bold text-gray-800 mb-4">
+                                Filter
+                            </h3>
                             {["Paling Baru", "Paling Populer", "Promo"].map(
                                 (label, index) => (
                                     <div
@@ -356,10 +335,13 @@ const TopikKelas = () => {
                     className="w-full h-28 object-cover"
                   />
                   <div className="mx-2 md:mx-4 flex flex-col mt-1 md:mt-2">
-                    <p className="text-sm font-bold">{course.courseName}</p>
+                    <h1 className="text-color-primary font-bold text-sm lg:text-base">
+                      {course.category.categoryName}
+                    </h1>
+                    <p className="text-sm text-gray-600">{course.courseName}</p>
                     <div className="flex justify-between items-center my-2">
                       <p className="text-black text-sm font-semibold">
-                        <p className="text-black text-sm font-semibold text-gray-600">
+                        <p className="text-black text-sm font-semibold">
                           Instructor: {course.user.fullName}
                         </p>
                       </p>

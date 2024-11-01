@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { sendEmail } from "../../redux/actions/authActions"; 
+import { resetEmailSuccess } from "../../redux/reducers/authReducers";
 
 const SendEmail = () => {
   const [email, setEmail] = useState("");
@@ -15,8 +16,9 @@ const SendEmail = () => {
     if (success) {
       navigate("/login"); // Navigasi hanya setelah render dan jika sukses
       console.log(success);
+      dispatch(resetEmailSuccess());
     }
-  }, [success, navigate]);
+  }, [success, navigate, dispatch]);
 
   const handleSend = (e) => {
     e.preventDefault();
