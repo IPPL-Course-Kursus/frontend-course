@@ -363,12 +363,12 @@ const filteredCourses = () => {
                       className="w-full h-28 object-cover"
                   />
                   <div className="mx-2 md:mx-4 flex flex-col mt-1 md:mt-2">
-                    <h1 className="text-color-primary font-bold text-sm lg:text-base">
+                    {/* <h1 className="text-color-primary font-bold text-sm lg:text-base">
                       {course.category.categoryName}
-                    </h1>
-                    <p className="text-sm text-gray-600">{course.courseName}</p>
+                    </h1> */}
+                    <p className="font-bold text-sm lg:text-base truncate">{course.courseName}</p>
                     <div className="flex justify-between items-center my-2">
-                      <p className="text-black text-sm font-semibold">
+                      <p className="text-gray-600 text-sm font-semibold flex-shrink-0">
                         Instructor: {course.user.fullName}
                       </p>
                     </div>
