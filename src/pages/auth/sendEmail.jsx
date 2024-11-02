@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { sendEmail } from "../../redux/actions/authActions"; 
 import { resetEmailSuccess } from "../../redux/reducers/authReducers";
-
+import Swal from 'sweetalert2';
 const SendEmail = () => {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
@@ -14,8 +14,12 @@ const SendEmail = () => {
   // Pindahkan navigasi ke dalam useEffect
   useEffect(() => {
     if (success) {
-      navigate("/login"); // Navigasi hanya setelah render dan jika sukses
-      console.log(success);
+      Swal.fire({
+        icon: 'success',
+        title: 'Email Terkirim!',
+        text: 'Silakan cek email Anda untuk tautan reset password.',
+        confirmButtonText: 'OK'
+      });
       dispatch(resetEmailSuccess());
     }
   }, [success, navigate, dispatch]);
