@@ -76,7 +76,7 @@ const CardFree = ({ title = "Kelas Free" }) => {
   };
 
    const courseSliderSettings = {
-     dots: true,
+     dots: false,
      infinite: true,
      speed: 500,
      slidesToShow: 3,
@@ -102,7 +102,9 @@ const CardFree = ({ title = "Kelas Free" }) => {
           </div>
 
           {/* Category Carousel Section */}
-          <div className="relative w-full">
+          <div className="relative w-full px-6">
+            {" "}
+            {/* Add padding here */}
             <Slider ref={sliderRef} {...categorySliderSettings}>
               <button
                 onClick={() => handleFilterClick(null)} // Change to null for "All"

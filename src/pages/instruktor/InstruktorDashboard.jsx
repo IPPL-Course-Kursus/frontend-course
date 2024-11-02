@@ -6,6 +6,7 @@ import { FaUsers, FaSearch, FaFilter } from "react-icons/fa";
 import { IoArrowBackCircle, IoArrowForwardCircle, IoBookSharp } from "react-icons/io5";
 import { instfetchPayments } from "../../redux/actions/instrukturDashboardActions";
 import { IoIosInformationCircle } from "react-icons/io";
+import HeadInstruktur from "../../components/InstrukturComponents/HeadInstruktur";
 
 const InstruktorDashboard = () => {
   const dispatch = useDispatch();
@@ -14,7 +15,7 @@ const InstruktorDashboard = () => {
   // State for search input
   const [globalSearch, setGlobalSearch] = useState("");
   const [paymentSearch, setPaymentSearch] = useState("");
-  const [searchVisible, setSearchVisible] = useState(false);
+
   const [filter, setFilter] = useState("");
 
   // State for pagination
@@ -106,19 +107,7 @@ const InstruktorDashboard = () => {
       <div className="p-6 bg-secondary min-h-screen w-screen font-poppins">
         {/* Header */}
         <div className="bg-[#F3F7FB] p-4 flex justify-between items-center mb-4 shadow-sm">
-          <h1 className="text-2xl font-bold text-[#173D94]">Hi, Instruktor</h1>
-          {/* <div className="relative flex items-center bg-white rounded-full shadow-sm">
-            <input
-              type="text"
-              value={globalSearch}
-              onChange={(e) => setGlobalSearch(e.target.value)}
-              placeholder="Cari"
-              className="p-2 pl-4 pr-10 text-sm text-gray-700 rounded-lg outline-none"
-            />
-            <button className="absolute right-1 bg-[#173D94] p-1.5 rounded-lg">
-              <FaSearch className="text-white" />
-            </button>
-          </div> */}
+          <HeadInstruktur />
         </div>
 
         {/* Cards */}

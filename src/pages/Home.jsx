@@ -65,11 +65,11 @@ const Home = () => {
               className="w-full h-auto"
             />
           </div>
-          <div className="lg:w-1/2 text-center lg:text-left mt-6 lg:mt-0 lg:pl-12">
-            <h2 className="text-white text-3xl font-semibold mb-4">
+          <div className="lg:w-1/2 mt-6 lg:mt-0 lg:pl-12 text-center lg:text-left">
+            <h2 className="text-white text-2xl font-semibold mb-4">
               Siap Membangun Karir Freelancer Profesional? <br /> Freelance Plus Solusinya
             </h2>
-            <p className="text-white text-base mb-6">
+            <p className="text-white text-base mb-6 text-justify lg:text-left">
               Kuasai strategi menjadi freelancer profesional untuk meningkatkan pendapatan secara
               langsung bersama para ahli berpengalaman.
             </p>
@@ -81,6 +81,7 @@ const Home = () => {
           </div>
         </div>
       </div>
+
       <CardFree title="Kursus Gratis" free={free} />
       <div className="w-full h-auto bg-gray-100 py-16 mt-10">
         <div className="max-w-3xl mx-auto bg-white px-6 lg:px-12 relative">

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Shield, Book, Clock } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllCourse, getFilteredCourses } from "../../redux/actions/courseActions";
@@ -10,23 +10,20 @@ import Navbar from "../../components/Navbar";
 import { getCategory, getLevel, getType } from "../../redux/actions/categoryActions";
 
 const TopikKelas = () => {
-  const dispatch = useDispatch();
-
-  const courses = useSelector((state) => state.course.courses);
-  const [categories, setCategories] = useState([]);
-  const [selectedFilter, setSelectedFilter] = useState("All");
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 9;
-
-  const [isMobileDropdownVisible, setMobileDropdownVisible] = useState(false);
-  const [filterChecked, setFilterChecked] = useState({});
-  const [searchQuery, setSearchQuery] = useState("");
-  const {
-    category = [],
-    courseLevel = [],
-    data: courseTypes = [], // Pastikan ini diambil dari state yang benar
-  } = useSelector((state) => state.category);
+    const dispatch = useDispatch();
+    const location = useLocation(); // Get the current location
+    const courses = useSelector((state) => state.course.courses);
+    const [categories, setCategories] = useState([]);
+    const [selectedFilter, setSelectedFilter] = useState("All");
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 9;
+    const [filterChecked, setFilterChecked] = useState({});
+    const [searchQuery, setSearchQuery] = useState("");
+   const {
+     category = [],
+     courseLevel = [],
+     data: courseTypes = [],
+   } = useSelector((state) => state.category);
 
   useEffect(() => {
     dispatch(getAllCourse());
@@ -35,21 +32,17 @@ const TopikKelas = () => {
     dispatch(getType());
   }, [dispatch]);
 
-  const toggleMobileDropdown = () => {
-    setMobileDropdownVisible(!isMobileDropdownVisible);
-  };
-
-  useEffect(() => {
-    if (courses.length > 0) {
-      const uniqueCategories = [...new Set(courses.map((course) => course.category))];
-      setCategories(uniqueCategories);
-      const initialFilterState = uniqueCategories.reduce((acc, category) => {
-        acc[category.categoryName] = false;
-        return acc;
-      }, {});
-      setFilterChecked(initialFilterState);
-    }
-  }, [courses]);
+ useEffect(() => {
+   if (courses.length > 0) {
+     const uniqueCategories = [...new Set(courses.map((course) => course.category))];
+     setCategories(uniqueCategories);
+     const initialFilterState = uniqueCategories.reduce((acc, category) => {
+       acc[category.categoryName] = false;
+       return acc;
+     }, {});
+     setFilterChecked(initialFilterState);
+   }
+ }, [courses]);
 
   useEffect(() => {
     const activeFilters = Object.keys(filterChecked).filter((key) => filterChecked[key]);
@@ -63,6 +56,18 @@ const TopikKelas = () => {
       window.location.hash = "";
     }
   }, [filterChecked]);
+
+    useEffect(() => {
+      const params = new URLSearchParams(location.search);
+      const categoryFromUrl = params.get("category");
+      if (categoryFromUrl) {
+        setFilterChecked((prev) => ({
+          ...prev,
+          [categoryFromUrl]: true, // Set the checked state for the selected category
+        }));
+        setSelectedFilter(categoryFromUrl); // Update selected filter
+      }
+    }, [location.search]);
 
   const handleCheckboxChange = (label) => {
     const updatedChecked = {
@@ -112,31 +117,31 @@ const TopikKelas = () => {
     }
   };
 
-  const filteredCourses = () => {
-    const activeFilters = Object.keys(filterChecked).filter((key) => filterChecked[key]);
+const filteredCourses = () => {
+  const activeFilters = Object.keys(filterChecked).filter((key) => filterChecked[key]);
 
-    let filteredCourses = courses.filter((course) => {
-      const matchesSearch =
-        course.courseName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        course.category.categoryName.toLowerCase().includes(searchQuery.toLowerCase());
+  let filteredCourses = courses.filter((course) => {
+    const matchesSearch =
+      course.courseName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.category.categoryName.toLowerCase().includes(searchQuery.toLowerCase());
 
-      if (selectedFilter === "Premium" && course.coursePrice === 0) return false;
-      if (selectedFilter === "Free" && course.coursePrice !== 0) return false;
+    if (selectedFilter === "Premium" && course.coursePrice === 0) return false;
+    if (selectedFilter === "Free" && course.coursePrice !== 0) return false;
 
-      return matchesSearch;
-    });
+    return matchesSearch;
+  });
 
-    if (activeFilters.length > 0) {
-      filteredCourses = filteredCourses.filter((course) =>
-        activeFilters.some(
-          (filter) =>
-            course.category.categoryName === filter || course.courseLevel.levelName === filter
-        )
-      );
-    }
+  if (activeFilters.length > 0) {
+    filteredCourses = filteredCourses.filter((course) =>
+      activeFilters.some(
+        (filter) =>
+          course.category.categoryName === filter || course.courseLevel.levelName === filter
+      )
+    );
+  }
 
-    return filteredCourses;
-  };
+  return filteredCourses;
+};
 
   const clearFilters = () => {
     const clearedFilterState = {
@@ -214,26 +219,6 @@ const TopikKelas = () => {
               TOPIK KELAS
             </h3>
 
-            <button
-              onClick={toggleMobileDropdown}
-              className="md:hidden bg-blue-500 text-white px-2 py-2 rounded ml-auto mb-4"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16m-7 6h7"
-                />
-              </svg>
-            </button>
-
             {/* Container tombol ditengah */}
             <div className="flex flex-wrap justify-center w-full md:w-auto mx-auto gap-3">
               {" "}
@@ -273,8 +258,10 @@ const TopikKelas = () => {
 
                 <div className="flex flex-col md:flex-row md:space-x-6 pr-4 md:pr-10 ml-10">
                     <div className="md:block md:w-1/4">
-                    <div className={`md:hidden ${isMobileDropdownVisible ? "block" : "hidden"} bg-white shadow-md rounded-md p-4 mb-4`}>
-                    <h3 className="text-xl font-bold text-gray-800 mb-4">Filter</h3>
+                        <div className="bg-white shadow-md rounded-md p-4">
+                            <h3 className="text-xl font-bold text-gray-800 mb-4">
+                                Filter
+                            </h3>
                             {["Paling Baru", "Paling Populer", "Promo"].map(
                                 (label, index) => (
                                     <div
