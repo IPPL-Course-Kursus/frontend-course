@@ -159,7 +159,7 @@ const TopikKelas = () => {
     window.location.hash = "";
 
     dispatch(getAllCourse());
-};
+  };
 
   const [showFilters, setShowFilters] = useState(false);
 
@@ -176,6 +176,15 @@ const TopikKelas = () => {
   return (
     <>
       <Navbar />
+      {/* Button kembali ke Home*/}
+      <div className="flex justify-start mt-4 px-20">
+        <Link to="/">
+          <button className="px-5 py-4 bg-blue-500 text-white font-bold rounded-badge">
+            Home
+          </button>
+        </Link>
+      </div>
+
       <main className="w-full bg-blue-50 pb-4">
         <section className="w-full text-center bg-white py-12 mt-4">
           <div className="max-w-screen-lg mx-auto">
@@ -329,7 +338,7 @@ const TopikKelas = () => {
                 Clear Filters
               </button>
             </div>
-        </div>
+          </div>
 
           <div className="md:w-3/4">
             <div className="grid mt-2 gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
