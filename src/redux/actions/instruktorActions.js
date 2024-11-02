@@ -32,6 +32,7 @@ import {
   deleteCourseSuccess,
   setCourse,
 } from "../reducers/courseReducers";
+import { data } from "autoprefixer";
 
 const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
 
@@ -178,10 +179,13 @@ export const addDataKelas = (requestData) => async (dispatch) => {
       },
     };
 
-    const response = await axios.post(`${api_url}course/createCourse`, formData, config);
-    dispatch(addCourseSuccess(response.data.message));
-    dispatch(getAllKelas());
+    // const response = await axios.post(`${api_url}course/createCourse`, formData, config);
+    // dispatch(addCourseSuccess(response.data.message));
+    // dispatch(getAllKelas());
+    console.log(formData);
+    
   } catch (error) {
+    console.log(error);
     const errorMessage = error.response?.data?.message || error.message || "Add data kelas failed";
     dispatch(addCourseFailure(errorMessage));
   }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Shield, Book, Clock } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllCourse, getFilteredCourses } from "../../redux/actions/courseActions";
@@ -10,20 +10,22 @@ import Navbar from "../../components/Navbar";
 import { getCategory, getLevel, getType } from "../../redux/actions/categoryActions";
 
 const TopikKelas = () => {
-    const dispatch = useDispatch();
-    const location = useLocation(); // Get the current location
-    const courses = useSelector((state) => state.course.courses);
-    const [categories, setCategories] = useState([]);
-    const [selectedFilter, setSelectedFilter] = useState("All");
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 9;
-    const [filterChecked, setFilterChecked] = useState({});
-    const [searchQuery, setSearchQuery] = useState("");
-   const {
-     category = [],
-     courseLevel = [],
-     data: courseTypes = [],
-   } = useSelector((state) => state.category);
+  const dispatch = useDispatch();
+
+  const courses = useSelector((state) => state.course.courses);
+  const [categories, setCategories] = useState([]);
+  const [selectedFilter, setSelectedFilter] = useState("All");
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9;
+
+  const [filterChecked, setFilterChecked] = useState({});
+  const [searchQuery, setSearchQuery] = useState("");
+  const {
+    category = [],
+    courseLevel = [],
+    data: courseTypes = [], // Pastikan ini diambil dari state yang benar
+  } = useSelector((state) => state.category);
 
   useEffect(() => {
     dispatch(getAllCourse());
@@ -32,17 +34,17 @@ const TopikKelas = () => {
     dispatch(getType());
   }, [dispatch]);
 
- useEffect(() => {
-   if (courses.length > 0) {
-     const uniqueCategories = [...new Set(courses.map((course) => course.category))];
-     setCategories(uniqueCategories);
-     const initialFilterState = uniqueCategories.reduce((acc, category) => {
-       acc[category.categoryName] = false;
-       return acc;
-     }, {});
-     setFilterChecked(initialFilterState);
-   }
- }, [courses]);
+  useEffect(() => {
+    if (courses.length > 0) {
+      const uniqueCategories = [...new Set(courses.map((course) => course.category))];
+      setCategories(uniqueCategories);
+      const initialFilterState = uniqueCategories.reduce((acc, category) => {
+        acc[category.categoryName] = false;
+        return acc;
+      }, {});
+      setFilterChecked(initialFilterState);
+    }
+  }, [courses]);
 
   useEffect(() => {
     const activeFilters = Object.keys(filterChecked).filter((key) => filterChecked[key]);
@@ -91,7 +93,7 @@ const TopikKelas = () => {
           key !== "Promo"
       ),
       levels: Object.keys(updatedChecked).filter(
-        (key) => courseLevel.some((level) => level.levelName === key && updatedChecked[key]) // Filter berdasarkan level
+        (key) => courseLevel.every((level) => level.levelName === key && updatedChecked[key]) // Filter berdasarkan level
       ),
     };
 
@@ -131,14 +133,14 @@ const filteredCourses = () => {
     return matchesSearch;
   });
 
-  if (activeFilters.length > 0) {
-    filteredCourses = filteredCourses.filter((course) =>
-      activeFilters.some(
-        (filter) =>
-          course.category.categoryName === filter || course.courseLevel.levelName === filter
-      )
-    );
-  }
+    if (activeFilters.length > 0) {
+      filteredCourses = filteredCourses.filter((course) =>
+        activeFilters.every(
+          (filter) =>
+            course.category.categoryName === filter || course.courseLevel.levelName === filter
+        )
+      );
+    }
 
   return filteredCourses;
 };
@@ -218,6 +220,8 @@ const filteredCourses = () => {
             >
               TOPIK KELAS
             </h3>
+
+            
 
             {/* Container tombol ditengah */}
             <div className="flex flex-wrap justify-center w-full md:w-auto mx-auto gap-3">
@@ -343,10 +347,13 @@ const filteredCourses = () => {
                     className="w-full h-28 object-cover"
                   />
                   <div className="mx-2 md:mx-4 flex flex-col mt-1 md:mt-2">
-                    <p className="text-sm font-bold">{course.courseName}</p>
+                    <h1 className="text-color-primary font-bold text-sm lg:text-base">
+                      {course.category.categoryName}
+                    </h1>
+                    <p className="text-sm text-gray-600">{course.courseName}</p>
                     <div className="flex justify-between items-center my-2">
                       <p className="text-black text-sm font-semibold">
-                        <p className="text-black text-sm font-semibold text-gray-600">
+                        <p className="text-black text-sm font-semibold">
                           Instructor: {course.user.fullName}
                         </p>
                       </p>

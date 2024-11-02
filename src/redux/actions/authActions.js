@@ -59,18 +59,32 @@ export const login = (email, password, navigate) => async (dispatch) => {
       toast.success("Login Berhasil");
 
       // Navigasi berdasarkan role
-      if (role === "Admin") {
-        navigate("/admin/dashboard");
-      } else if (role === "User") {
-        navigate("/");
-      } else if (role === "Instruktur") {
-        navigate("/inst/dashboard");
+        if (role === "Admin") {
+          navigate("/admin/dashboard");
+        } else if (role === "User") {
+          navigate("/");
+        } else if (role === "Instruktur") {
+          navigate("/inst/dashboard");
+        } else {
+          console.error("Role tidak dikenali:", role);
+        }
       } else {
-        console.error("Role tidak dikenali:", role);
+        toast.error("Login gagal. Silakan coba lagi nanti.");
       }
-    } else {
-      toast.error("Login gagal. Silakan coba lagi nanti.");
-    }
+    //   setTimeout(() => {
+    //     if (role === "Admin") {
+    //       navigate("/admin/dashboard");
+    //     } else if (role === "User") {
+    //       navigate("/");
+    //     } else if (role === "Instruktur") {
+    //       navigate("/inst/dashboard");
+    //     } else {
+    //       console.error("Role tidak dikenali:", role);
+    //     }
+    //   }, 3000); // Delay 3000 ms atau 3 detik
+    // } else {
+    //   toast.error("Login gagal. Silakan coba lagi nanti.");
+    // }
   } catch (error) {
     if (error.response) {
       if (error.response.status === 403) {

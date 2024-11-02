@@ -6,7 +6,10 @@ import { FaUsers, FaSearch, FaFilter } from "react-icons/fa";
 import { IoArrowBackCircle, IoArrowForwardCircle, IoBookSharp } from "react-icons/io5";
 import { instfetchPayments } from "../../redux/actions/instrukturDashboardActions";
 import { IoIosInformationCircle } from "react-icons/io";
+
 import HeadInstruktur from "../../components/InstrukturComponents/HeadInstruktur";
+
+
 
 const InstruktorDashboard = () => {
   const dispatch = useDispatch();
@@ -34,7 +37,7 @@ const InstruktorDashboard = () => {
     {
       count: paymentStatus?.transactionCountByType?.Free || 0,
       label: "Free Class",
-      color: "bg-primary",
+      color: "bg-primary" ,
       info: <IoIosInformationCircle className="w-6 h-6" />,
       icon: <IoBookSharp className="text-2xl text-primary" />,
     },
@@ -43,7 +46,7 @@ const InstruktorDashboard = () => {
       label: "Premium Class",
       color: "bg-primary",
       info: <IoIosInformationCircle className="w-6 h-6" />,
-      icon: <IoBookSharp className="text-2xl text-primary" />,
+      icon: <IoBookSharp className="text-2xl text-primary text-center items-center" />,
     },
     {
       count: paymentStatus?.totalTransactions || 0,
@@ -111,7 +114,7 @@ const InstruktorDashboard = () => {
         </div>
 
         {/* Cards */}
-        <div className="grid grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-3 gap-10 mb-8">
           {cardData.map((card, index) => (
             <div
               key={index}
@@ -121,10 +124,10 @@ const InstruktorDashboard = () => {
               <div className="mr-10 -mt-10">{card.info}</div>
 
               {/* Icon utama */}
-              <div className="bg-white rounded-full p-2 ml-28">{card.icon}</div>
+              <div className="bg-white rounded-full p-2 ml-10">{card.icon}</div>
 
               <div className="ml-4">
-                <div className="text-2xl">{card.count}</div>
+                <div className="flex items-center text-2xl">{card.count}</div>
                 <div className="text-sm">{card.label}</div>
               </div>
             </div>

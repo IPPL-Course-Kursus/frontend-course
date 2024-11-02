@@ -26,15 +26,22 @@ const ResetPassword = () => {
       return;
     }
 
+    // Validasi standar untuk password
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      toast.error("Password harus minimal 8 karakter, memiliki huruf besar, huruf kecil, dan angka.");
+      return;
+      // (?=.*[@$!%*?&])
+    }
 
     if (confirmPassword !== password) {
       toast.error("Password harus sama!");
       return;
     }
 
-
     dispatch(resetPassword(oobCode, password, confirmPassword));
-  };
+};
+
 
 
   useEffect(() => {
