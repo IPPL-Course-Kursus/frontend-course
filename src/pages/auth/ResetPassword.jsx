@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { resetPassword } from "../../redux/actions/authActions"; // Import action
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
@@ -48,7 +49,12 @@ const ResetPassword = () => {
     console.log(success);
     
     if (success) {
-      toast.success("Password berhasil diubah. Silakan login dengan password baru.");
+      Swal.fire({
+        icon: 'success',
+        title: 'Password Terganti!',
+        text: 'Silakan login kembali.',
+        confirmButtonText: 'OK'
+      });
       navigate("/login");
       localStorage.removeItem("oobCode");
       console.log(success);

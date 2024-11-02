@@ -208,7 +208,7 @@ const InstrukturProfile = () => {
                       name="tanggalLahir"
                       value={form.tanggalLahir}
                       onChange={handleInputChange}
-                      className="input input-bordered placeholder:text-[12px] placeholder:text-[#8A8A8A] w-full rounded-2xl"
+                      className="input input-bordered placeholder:text-[12px] placeholder:text-[#8A8A8A] w-full rounded-2xl hover:cursor-pointer"
                     />
                   </label>
                   <div className="form-control w-full">

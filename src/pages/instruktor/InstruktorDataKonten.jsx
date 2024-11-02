@@ -13,6 +13,7 @@ import Sidebar from "../../components/Sidebar/SidebarInstruktur";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteDataKonten, getDataKonten } from "../../redux/actions/instruktorActions";
+import HeadInstruktur from "../../components/InstrukturComponents/HeadInstruktur";
 
 const InstruktorDataKonten = () => {
   const [showTambahPopup, setShowTambahPopup] = useState(false);
@@ -56,23 +57,22 @@ const InstruktorDataKonten = () => {
     setShowDeleteModal(true);
   };
 
-const confirmDelete = () => {
-  if (!contentToDelete?.chapterId) {
-    console.error("Chapter ID is required.");
-    return; // Jangan lanjut jika chapterId tidak ada
-  }
+  const confirmDelete = () => {
+    if (!contentToDelete?.chapterId) {
+      console.error("Chapter ID is required.");
+      return; // Jangan lanjut jika chapterId tidak ada
+    }
 
-  dispatch(deleteDataKonten(contentToDelete.id, contentToDelete.chapterId))
-    .then(() => {
-      setShowDeleteModal(false); // Tutup modal setelah berhasil
-      dispatch(getDataKonten(id)); // Memuat ulang data setelah penghapusan
-    })
-    .catch((error) => {
-      console.error("Error deleting content:", error);
-      setShowDeleteModal(false);
-    });
-};
-
+    dispatch(deleteDataKonten(contentToDelete.id, contentToDelete.chapterId))
+      .then(() => {
+        setShowDeleteModal(false); // Tutup modal setelah berhasil
+        dispatch(getDataKonten(id)); // Memuat ulang data setelah penghapusan
+      })
+      .catch((error) => {
+        console.error("Error deleting content:", error);
+        setShowDeleteModal(false);
+      });
+  };
 
   const handleBackClick = () => {
     navigate(-1);
@@ -117,7 +117,7 @@ const confirmDelete = () => {
             >
               <FaBars className="text-2xl" />
             </button>
-            <h1 className="text-2xl font-bold text-[#0a61aa]">Hi, Instruktur!</h1>
+            <HeadInstruktur />
           </div>
 
           <button

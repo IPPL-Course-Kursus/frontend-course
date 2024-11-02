@@ -12,6 +12,7 @@ import SideBar from "../../components/Sidebar/SidebarInstruktur";
 import UbahModule from "../../components/InstrukturComponents/DataModuleComponent/UbahModule";
 import { deleteDataModule, getDataModule } from "../../redux/actions/instruktorActions";
 import DataModuleInput from "../../components/InstrukturComponents/DataModuleComponent/DataModuleInput";
+import HeadInstruktur from "../../components/InstrukturComponents/HeadInstruktur";
 
 const InstruktorDataModule = () => {
   const [showTambahPopup, setShowTambahPopup] = useState(false);
@@ -27,7 +28,7 @@ const InstruktorDataModule = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { chapter, loading, error } = useSelector((state) => state.chapter);
+  const { chapter } = useSelector((state) => state.chapter);
 
   const { id } = useParams();
 
@@ -103,7 +104,7 @@ const InstruktorDataModule = () => {
               <FaBars className="text-2xl" />
             </button>
 
-            <h1 className="text-3xl font-bold text-[#0a61aa] tracking-wide">Hi, Instruktur!</h1>
+            <HeadInstruktur />
           </div>
 
           <button

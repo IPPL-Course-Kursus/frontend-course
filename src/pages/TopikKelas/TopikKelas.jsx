@@ -59,6 +59,18 @@ const TopikKelas = () => {
     }
   }, [filterChecked]);
 
+    useEffect(() => {
+      const params = new URLSearchParams(location.search);
+      const categoryFromUrl = params.get("category");
+      if (categoryFromUrl) {
+        setFilterChecked((prev) => ({
+          ...prev,
+          [categoryFromUrl]: true, // Set the checked state for the selected category
+        }));
+        setSelectedFilter(categoryFromUrl); // Update selected filter
+      }
+    }, [location.search]);
+
   const handleCheckboxChange = (label) => {
     const updatedChecked = {
       ...filterChecked,
@@ -107,19 +119,19 @@ const TopikKelas = () => {
     }
   };
 
-  const filteredCourses = () => {
-    const activeFilters = Object.keys(filterChecked).filter((key) => filterChecked[key]);
+const filteredCourses = () => {
+  const activeFilters = Object.keys(filterChecked).filter((key) => filterChecked[key]);
 
-    let filteredCourses = courses.filter((course) => {
-      const matchesSearch =
-        course.courseName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        course.category.categoryName.toLowerCase().includes(searchQuery.toLowerCase());
+  let filteredCourses = courses.filter((course) => {
+    const matchesSearch =
+      course.courseName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.category.categoryName.toLowerCase().includes(searchQuery.toLowerCase());
 
-      if (selectedFilter === "Premium" && course.coursePrice === 0) return false;
-      if (selectedFilter === "Free" && course.coursePrice !== 0) return false;
+    if (selectedFilter === "Premium" && course.coursePrice === 0) return false;
+    if (selectedFilter === "Free" && course.coursePrice !== 0) return false;
 
-      return matchesSearch;
-    });
+    return matchesSearch;
+  });
 
     if (activeFilters.length > 0) {
       filteredCourses = filteredCourses.filter((course) =>
@@ -130,8 +142,8 @@ const TopikKelas = () => {
       );
     }
 
-    return filteredCourses;
-  };
+  return filteredCourses;
+};
 
   const clearFilters = () => {
     const clearedFilterState = {

@@ -13,19 +13,18 @@ import { python } from "@codemirror/lang-python";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import ProgressBar from "../../components/MyCourse/ProgressBar";
-import { FaArrowLeft, FaCheckCircle, } from "react-icons/fa";
-import { IoIosLock  } from "react-icons/io";
+import { FaArrowLeft, FaCheckCircle } from "react-icons/fa";
+import { IoIosLock } from "react-icons/io";
 import { Link, useParams } from "react-router-dom";
 import { fetchCertificate } from "../../redux/actions/certificateAction";
 import jsPDF from "jspdf";
 import sertifikat from "../../assets/sertif-ec.png";
 import Swal from "sweetalert2";
 
+
 const MulaiKelas = () => {
     const dispatch = useDispatch();
-    const { data, loading, output } = useSelector(
-        (state) => state.mulaiKelas
-    );
+    const { data, loading, output } = useSelector((state) => state.mulaiKelas);
     const profile = useSelector((state) => state.getMe.profile);
     const [sourceCode, setCode] = useState("");
     const [language, setLanguage] = useState("");
@@ -95,7 +94,7 @@ const MulaiKelas = () => {
         const doc = new jsPDF({
             orientation: "landscape",
             unit: "px",
-            format: [842, 595], 
+            format: [842, 595],
         });
 
         // Tambahkan gambar sertifikat sebagai background
@@ -139,10 +138,10 @@ const MulaiKelas = () => {
         doc.setFont("montserrat", "bold");
         doc.text(
             `${
-        certificateData?.issueDate
-            ? formatTanggal(certificateData.issueDate)
-            : "Tanggal Terbit"
-    }`,
+                certificateData?.issueDate
+                    ? formatTanggal(certificateData.issueDate)
+                    : "Tanggal Terbit"
+            }`,
             90,
             405,
             {
@@ -341,7 +340,7 @@ const MulaiKelas = () => {
                                 {percentage}
                             </span> */}
                         </div>
-                        <ProgressBar contentFinish={contentFinish}/>
+                        <ProgressBar contentFinish={contentFinish} />
                     </div>
 
                     {/* Chapter List */}
@@ -373,7 +372,7 @@ const MulaiKelas = () => {
                                             <h5
                                                 className={`${
                                                     previousChapterCompleted
-                                                        ? "text-blue-600"
+                                                        ? "text-blue-800"
                                                         : "text-gray-400"
                                                 } font-semibold`}
                                             >
@@ -387,6 +386,12 @@ const MulaiKelas = () => {
                                                     const isSelected =
                                                         selectedContent?.id ===
                                                         content.id;
+                                                    const isCompleted =
+                                                        content.userContentProgress.some(
+                                                            (progress) =>
+                                                                progress.contentStatus ===
+                                                                true
+                                                        );
 
                                                     return (
                                                         <li
@@ -398,24 +403,28 @@ const MulaiKelas = () => {
                                                                 )
                                                             }
                                                             className={`flex justify-between items-center cursor-pointer
-                                ${isLocked ? "text-gray-400" : "text-gray-700"}
-                                ${
-                                    isSelected
-                                        ? "bg-blue-100"
-                                        : "hover:bg-gray-100"
-                                }
-                                transition-colors duration-200 p-2 rounded-lg
-                            `}
+                                    ${
+                                        isLocked
+                                            ? "text-gray-400"
+                                            : "text-gray-700"
+                                    }
+                                    ${
+                                        isSelected
+                                            ? "bg-blue-100"
+                                            : "hover:bg-gray-100"
+                                    }
+                                    transition-colors duration-200 p-2 rounded-lg
+                                `}
                                                         >
                                                             <div className="flex items-center gap-2">
                                                                 <span
-                                                                    className={`rounded-full h-8 w-8 flex items-center justify-center text-lg font-semibold mr-2 p-4
-                                        ${
-                                            isLocked
-                                                ? "bg-gray-200 text-gray-400"
-                                                : "bg-blue-200 text-blue-800"
-                                        }
-                                    `}
+                                                                    className={`rounded-full h-4 w-4 flex items-center justify-center text-lg font-semibold mr-2 p-4
+                                            ${
+                                                isLocked
+                                                    ? "bg-gray-200 text-gray-400"
+                                                    : "bg-blue-200 text-blue-800"
+                                            }
+                                        `}
                                                                 >
                                                                     {index + 1}
                                                                 </span>
@@ -430,6 +439,14 @@ const MulaiKelas = () => {
                                                                         content.contentTitle
                                                                     }
                                                                 </span>
+                                                            </div>
+                                                            {/* Icon untuk centang atau gembok */}
+                                                            <div className="flex items-center">
+                                                                {isCompleted ? (
+                                                                    <FaCheckCircle className="w-4 h-4 text-green-500" />
+                                                                ) : isLocked ? (
+                                                                    <IoIosLock className="w-4 h-4 text-yellow-500 " />
+                                                                ) : null}
                                                             </div>
                                                         </li>
                                                     );
@@ -451,9 +468,7 @@ const MulaiKelas = () => {
                     Download Sertifikat
                 </button>
             </div> */}
-
                 </aside>
-
             </div>
             <Footer />
         </>

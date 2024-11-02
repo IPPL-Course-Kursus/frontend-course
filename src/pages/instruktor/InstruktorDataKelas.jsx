@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import SidebarInstruktur from "../../components/Sidebar/SidebarInstruktur";
 import { getAllKelas, deleteDataCourse } from "../../redux/actions/instruktorActions";
+import HeadInstruktur from "../../components/InstrukturComponents/HeadInstruktur";
 
 const InstruktorDataKelas = () => {
   const [courseTypeSearch, setCourseTypeSearch] = useState("");
@@ -31,7 +32,6 @@ const InstruktorDataKelas = () => {
     dispatch(getAllKelas());
   }, [dispatch]);
 
-  
   const handleAddClick = () => {
     setSelectedCourse({});
     setShowTambahPopup(true);
@@ -53,19 +53,17 @@ const InstruktorDataKelas = () => {
     setShowDeleteModal(true);
   };
 
-const confirmDelete = () => {
-  console.log("Deleting course ID:", courseToDelete ? courseToDelete.id : "No course selected");
-  if (courseToDelete && courseToDelete.id) {
-    dispatch(deleteDataCourse(courseToDelete.id)).then(() => {
-      setShowDeleteModal(false); 
-      // window.location.reload(); // Reload halaman setelah penghapusan berhasil
-    });
-  } else {
-    console.error("Invalid course ID for deletion:", courseToDelete);
-  }
-};
-
-
+  const confirmDelete = () => {
+    console.log("Deleting course ID:", courseToDelete ? courseToDelete.id : "No course selected");
+    if (courseToDelete && courseToDelete.id) {
+      dispatch(deleteDataCourse(courseToDelete.id)).then(() => {
+        setShowDeleteModal(false);
+        // window.location.reload(); // Reload halaman setelah penghapusan berhasil
+      });
+    } else {
+      console.error("Invalid course ID for deletion:", courseToDelete);
+    }
+  };
 
   const filteredCourses = courses.filter(
     (courseType) =>
@@ -116,8 +114,8 @@ const confirmDelete = () => {
             >
               <FaBars className="text-2xl" />
             </button>
+            <HeadInstruktur />
 
-            <h1 className="text-2xl font-bold text-[#0a61aa]">Hi, Instruktur!</h1>
           </div>
 
           {/* Section Data Kelas */}
