@@ -13,7 +13,8 @@ import { python } from "@codemirror/lang-python";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import ProgressBar from "../../components/MyCourse/ProgressBar";
-import { FaArrowLeft, FaCheckCircle } from "react-icons/fa";
+import { FaArrowLeft, FaCheckCircle, } from "react-icons/fa";
+import { IoIosLock  } from "react-icons/io";
 import { Link, useParams } from "react-router-dom";
 import { fetchCertificate } from "../../redux/actions/certificateAction";
 import jsPDF from "jspdf";
@@ -325,7 +326,7 @@ const MulaiKelas = () => {
                 </div>
 
                 {/* Sidebar */}
-                <aside className="col-span-1 bg-white p-6 rounded-lg shadow-lg">
+                <aside className="col-span-1 bg-white p-6 rounded-lg shadow-lg h-screen overflow-y-auto overflow">
                     <h3 className="text-gray-700 text-2xl font-semibold mb-4">
                         Materi Belajar
                     </h3>
