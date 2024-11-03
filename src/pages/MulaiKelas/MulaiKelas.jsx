@@ -119,7 +119,7 @@ const MulaiKelas = () => {
         });
 
         doc.setFillColor(14, 43, 92); // Warna background
-        doc.roundedRect(90, 180, 112, 20, 5, 5, "F");
+        doc.roundedRect(90, 180, 115, 20, 5, 5, "F");
         doc.setFontSize(20);
         doc.setTextColor(255, 255, 255); // Warna teks untuk nomor sertifikat
         doc.setFont("montserrat", "normal");
