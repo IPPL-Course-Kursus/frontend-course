@@ -78,7 +78,7 @@ const InstrukturDataKategori = () => {
               <thead>
                 <tr className="bg-gray-200 text-left text-xs md:text-sm font-semibold">
                   <th className="px-2 md:px-4 py-2">ID</th>
-                  <th className="px-2 md:px-4 py-2">Kode Kategori</th>
+                  {/* <th className="px-2 md:px-4 py-2">Kode Kategori</th> */}
                   <th className="px-2 md:px-4 py-2">Nama Kategori</th>
                   <th className="px-2 md:px-4 py-2">Foto</th>
                 </tr>
@@ -90,9 +90,9 @@ const InstrukturDataKategori = () => {
                   return (
                     <tr key={index} className="border-t text-xs md:text-sm">
                       <td className="px-2 md:px-4 py-2">{rowNumber}</td>
-                      <td className="px-2 md:px-4 py-2">
+                      {/* <td className="px-2 md:px-4 py-2">
                         {category.categoryCode}
-                      </td>
+                      </td> */}
                       <td className="px-2 md:px-4 py-2">
                         {category.categoryName}
                       </td>

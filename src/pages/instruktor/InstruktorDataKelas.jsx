@@ -23,8 +23,8 @@ const InstruktorDataKelas = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [filter, setFilter] = useState("");
 
-  const [currentPage, setCurrentPage] = useState(1); // Halaman saat ini
-  const itemsPerPage = 10; // Jumlah data yang ditampilkan per halaman
+  const [currentPage, setCurrentPage] = useState(1); 
+  const itemsPerPage = 10; 
   const dispatch = useDispatch();
   const courses = useSelector((state) => state.course.courses);
 
@@ -54,22 +54,29 @@ const InstruktorDataKelas = () => {
   };
 
   const confirmDelete = () => {
-    console.log("Deleting course ID:", courseToDelete ? courseToDelete.id : "No course selected");
-    if (courseToDelete && courseToDelete.id) {
-      dispatch(deleteDataCourse(courseToDelete.id)).then(() => {
-        setShowDeleteModal(false);
-        // window.location.reload(); // Reload halaman setelah penghapusan berhasil
-      });
+    if (window.confirm("Are you sure you want to delete this course?")) {
+      console.log("Deleting course ID:", courseToDelete ? courseToDelete.id : "No course selected");
+      if (courseToDelete && courseToDelete.id) {
+        dispatch(deleteDataCourse(courseToDelete.id)).then(() => {
+          setShowDeleteModal(false);
+          dispatch(getAllKelas()); // Refresh the course list after deletion
+        });
+      }
     } else {
-      console.error("Invalid course ID for deletion:", courseToDelete);
+      console.log("Deletion canceled");
     }
   };
 
-  const filteredCourses = courses.filter(
-    (courseType) =>
-      courseType.courseCode.toLowerCase().includes(courseTypeSearch.toLowerCase()) &&
+  const filteredCourses = courses.filter((courseType) => {
+    const courseCode = courseType.courseCode; // Ambil courseCode
+    const search = courseTypeSearch || ""; // Pastikan courseTypeSearch tidak undefined
+
+    return (
+      courseCode &&
+      courseCode.toLowerCase().includes(search.toLowerCase()) && // Pastikan courseCode ada
       (filter === "" || courseType.typeCourse.typeName === filter)
-  );
+    );
+  });
 
   // Menghitung total halaman
   const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
@@ -115,7 +122,6 @@ const InstruktorDataKelas = () => {
               <FaBars className="text-2xl" />
             </button>
             <HeadInstruktur />
-
           </div>
 
           {/* Section Data Kelas */}
@@ -190,8 +196,8 @@ const InstruktorDataKelas = () => {
               </thead>
 
               <tbody>
-                {currentItems.map((courseType, index) => (
-                  <tr key={index} className="border-t text-xs md:text-sm">
+                {currentItems.map((courseType) => (
+                  <tr key={courseType.id} className="border-t text-xs md:text-sm">
                     <td className="px-2 md:px-4 py-2">{courseType.courseCode}</td>
                     <td className="px-2 md:px-4 py-2">{courseType.category.categoryName}</td>
                     <td className="px-2 md:px-4 py-2">{courseType.courseName}</td>
