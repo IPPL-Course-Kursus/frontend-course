@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import KategoriForm from "./KategoriForm";
 import { updateCategory } from "../../redux/actions/adminDataKategoriActions";
 
-const UbahKategori = ({ show, onClose, existingData }) => {
+const UbahKategori = ({ show, onClose, existingData, onSuccess }) => {
   const dispatch = useDispatch();
 
   // Initial form data without categoryCode
@@ -68,6 +68,9 @@ const UbahKategori = ({ show, onClose, existingData }) => {
 
     // Close the popup and reset form data
     handleClose();
+    if (onSuccess) {
+      onSuccess();
+    }
   };
 
   const handleClose = () => {

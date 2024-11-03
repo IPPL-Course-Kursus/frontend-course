@@ -86,7 +86,7 @@ import { useDispatch } from 'react-redux';
 import KategoriForm from './KategoriForm';
 import { addCategory } from '../../redux/actions/adminDataKategoriActions';
 
-const TambahKategori = ({ show, onClose }) => {
+const TambahKategori = ({ show, onClose, onSuccess }) => {
   const dispatch = useDispatch();
 
   const initialFormData = {
@@ -123,6 +123,9 @@ const TambahKategori = ({ show, onClose }) => {
       setImagePreview(null);
       // Close the popup
       handleClose();
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error) {
       // Handle errors
       console.error('Error adding category:', error);

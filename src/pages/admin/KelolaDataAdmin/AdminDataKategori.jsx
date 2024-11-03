@@ -277,7 +277,9 @@ const AdminDataKategori = () => {
             show={showTambahPopup}
             onClose={() => {
               setShowTambahPopup(false);
-              dispatch(fetchAdminCategories()); // Refresh categories after adding
+            }}
+            onSuccess={() => {
+              dispatch(fetchAdminCategories());
             }}
           />
 
@@ -286,7 +288,9 @@ const AdminDataKategori = () => {
             show={showUbahPopup}
             onClose={() => {
               setShowUbahPopup(false);
-              dispatch(fetchAdminCategories()); // Refresh categories after editing
+            }}
+            onSuccess={() => {
+              dispatch(fetchAdminCategories());
             }}
             existingData={selectedCategory}
           />
