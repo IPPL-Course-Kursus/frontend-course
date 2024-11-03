@@ -1,39 +1,54 @@
+
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2"; // Import SweetAlert
 import CardRecommended from "../../components/DetailComponent/CardRecommended";
+import { FaArrowLeft} from "react-icons/fa";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
 import { FaBook } from "react-icons/fa";
 import { GrCertificate } from "react-icons/gr";
-import { IoMdArrowRoundBack } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { getDetailCourse } from "../../redux/actions/detailActions";
 import { createTransaction } from "../../redux/actions/transactionActions";
+import { getUserCourses } from "../../redux/actions/courseActions";
+import { FaRupiahSign } from "react-icons/fa6";
+import Cookies from "js-cookie";
+
+
 
 export const DetailKelas = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const navigate = useNavigate();
   const detail = useSelector((state) => state.course.detail);
+  const userCourses = useSelector((state) => state.course.mycourse || []);
   const [isModalOpen, setModalOpen] = useState(false);
-  const [transactionMessage, setTransactionMessage] = useState('');
+  const [transactionMessage, setTransactionMessage] = useState("");
+  const isCourseEnrolled = () => {
+    return userCourses.some((course) => course.courseId === id);
+  };
+
+  const getEnrolledCourseId = () => {
+    const enrolledCourse = userCourses.find((course) => course.courseId === id);
+    return enrolledCourse ? enrolledCourse.courseId : null;
+  };
 
   useEffect(() => {
     if (id) {
       dispatch(getDetailCourse(id));
     }
+    dispatch(getUserCourses());
   }, [id, dispatch]);
 
   useEffect(() => {
-    // Memuat skrip Midtrans
     const script = document.createElement("script");
     script.src = "https://app.sandbox.midtrans.com/snap/snap.js";
     script.setAttribute("data-client-key", import.meta.env.VITE_PRIVATE_CLIENT_KEY);
     document.body.appendChild(script);
 
     return () => {
-      document.body.removeChild(script); // Bersihkan skrip saat komponen di-unmount
+      document.body.removeChild(script);
     };
   }, []);
 
@@ -53,17 +68,15 @@ export const DetailKelas = () => {
 
         if (data.success) {
           if (data.message === "CourseUser created for free course") {
-            // Tampilkan SweetAlert dan navigasi ke halaman /mycourse
             Swal.fire({
               icon: "success",
               title: "Berhasil!",
               text: "Anda telah terdaftar di kursus gratis ini.",
-              confirmButtonText: "OK"
+              confirmButtonText: "OK",
             }).then(() => {
               navigate("/mycourse");
             });
           } else if (window.snap) {
-            // Menggunakan token dari respons untuk memicu popup Midtrans
             window.snap.pay(data.data.token, {
               onSuccess: function (result) {
                 Swal.fire("Berhasil!", "Pembayaran berhasil!", "success");
@@ -78,7 +91,11 @@ export const DetailKelas = () => {
                 console.log(result);
               },
               onClose: function () {
-                Swal.fire("Dibatalkan!", "Anda menutup popup tanpa menyelesaikan pembayaran.", "warning");
+                Swal.fire(
+                  "Dibatalkan!",
+                  "Anda menutup popup tanpa menyelesaikan pembayaran.",
+                  "warning"
+                );
               },
             });
           } else {
@@ -96,14 +113,42 @@ export const DetailKelas = () => {
     setModalOpen(false);
   };
 
+  const handleButtonClick = () => {
+    const token = Cookies.get("token");
+
+  if (!token) {
+
+    Swal.fire({
+      icon: "warning",
+      title: "Harap Login",
+      text: "Anda perlu login untuk membeli kelas. Silakan login terlebih dahulu.",
+      confirmButtonText: "OK",
+    });
+    return;
+   }
+    if (isCourseEnrolled()) {
+      // Ambil courseId dari kursus yang terdaftar
+      const enrolledCourseId = getEnrolledCourseId();
+      // Navigasi ke halaman mulai kelas jika sudah diambil
+      if (enrolledCourseId) {
+        navigate(`/mulai-kelas/${enrolledCourseId}`); // Gunakan enrolledCourseId untuk navigasi
+      }
+    } else {
+      // Tampilkan modal untuk pembayaran jika belum diambil
+      handleModalOpen();
+    }
+  };
+
   return (
     <>
       <Navbar />
       <div className="w-full h-full">
         <div className="flex flex-row-reverse justify-between mx-3 lg:flex lg:flex-col lg:gap-4">
-          <Link to="/" className="flex items-center gap-2 mx-2 hover:text-color-primary lg:text-lg ">
-            <IoMdArrowRoundBack />
-            <p>Kembali Ke Beranda</p>
+          <Link
+            to="/"
+            className="flex items-center gap-2 mx-2 hover:text-color-primary lg:text-lg"
+          >
+            <FaArrowLeft className="text-gray-700 cursor-pointer my-4" />
           </Link>
         </div>
 
@@ -118,14 +163,14 @@ export const DetailKelas = () => {
                 {detail.intendedFor || "Deskripsi belum tersedia"}
               </p>
               <button
-                onClick={handleModalOpen}
+                onClick={handleButtonClick}
                 className="mt-6 px-4 py-2 bg-[#0a61aa] text-white text-xs font-bold rounded-md"
               >
-                Ikuti Kelas Ini
+                {isCourseEnrolled() ? "Pelajari Kelas" : "Beli Kelas"}
               </button>
             </div>
             <div className="w-full sm:w-[512px] pt-16 pb-16">
-              <img className="w-full h-auto" src={detail.image} alt="Gambar Kelas" />
+              <img className="w-full rounded-xl h-auto" src={detail.image} alt="Gambar Kelas" />
             </div>
           </div>
         </div>
@@ -135,7 +180,9 @@ export const DetailKelas = () => {
           <div className="fixed inset-0 flex items-center justify-center bg-gray-700 bg-opacity-50">
             <div className="bg-white p-8 rounded-lg shadow-lg">
               <h2 className="text-lg font-semibold">Konfirmasi Pembayaran</h2>
-              <p className="mt-4">Apakah Anda yakin ingin melanjutkan ke pembayaran untuk mengikuti kelas ini?</p>
+              <p className="mt-4">
+                Apakah Anda yakin ingin melanjutkan ke pembayaran untuk mengikuti kelas ini?
+              </p>
               <div className="mt-6 flex justify-end gap-4">
                 <button
                   onClick={handleModalClose}
@@ -170,7 +217,7 @@ export const DetailKelas = () => {
                   <FaBook className="w-[50px] h-[50px] mr-4" />
                   <div>
                     <p className="font-medium text-[#151515] text-base leading-5">
-                      {detail.chapters?.length || 0} Materi
+                      {detail.totalContents} Materi
                     </p>
                   </div>
                 </div>
@@ -180,6 +227,12 @@ export const DetailKelas = () => {
                     <p className="font-medium text-[#151515] text-base leading-5">Sertifikat</p>
                   </div>
                 </div>
+                <div className="flex items-center bg-grey p-4 rounded-md">
+      <FaRupiahSign className="w-[50px] h-[50px] mr-4" />
+      <div>
+        <p className="font-medium text-[#151515] text-lg leading-5">{`${detail.promoStatus ? detail.courseDiscountPrice : detail.coursePrice}`}{" "}</p>
+      </div>
+    </div>
               </div>
             </div>
           </div>
@@ -193,25 +246,28 @@ export const DetailKelas = () => {
               {detail.chapters?.length > 0 ? (
                 detail.chapters.map((chapter, index) => (
                   <Link
-                    to={`/course/${id}/chapter/${chapter.id}`}
+                    // to={`/course/${id}/chapter/${chapter.id}`}
                     key={chapter.id}
-                    className="block p-4 bg-[#ebebeb] rounded-md mb-4 hover:bg-grey-dark"
+                    className="block p-2 mb-2 rounded-md bg-gray-200 hover:bg-gray-300"
                   >
-                    {index + 1}. {chapter.chapterTitle}
+                    Chapter {index + 1}: {chapter.chapterTitle}
                   </Link>
                 ))
               ) : (
-                <div className="p-4 bg-grey rounded-md">Data chapter belum tersedia</div>
+                <p>Tidak ada chapter yang tersedia.</p>
               )}
             </div>
           </div>
         </div>
 
-        <div className="mt-12">
-          <CardRecommended />
+        {/* Rekomendasi Kelas */}
+        <div className="mt-8">
+          <CardRecommended className="gap-10" />
         </div>
       </div>
+
       <Footer />
+
       {transactionMessage && <div className="text-red-500">{transactionMessage}</div>}
     </>
   );

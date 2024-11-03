@@ -1,67 +1,77 @@
-// import { combineReducers } from "redux";
-// import {
-//   authReducer,
-//   emailReducer,
-//   loginReducer,
-//   registerReducer,
-//   resetPasswordReducer,
-//   verifyEmailReducer,
-// } from "./authReducers";
-// import courseReducers from "./courseReducers";
-
-// export default combineReducers({
-//   // Auth
-//   // auth: authReducer,
-//   auth: authReducers,
-//   email: emailReducer,
-//   resetPassword: resetPasswordReducer,
-//   verifyEmail: verifyEmailReducer,
-
-//   // Course
-//   course: courseReducers,
-// });
-
 import { combineReducers } from "redux";
 import {
-  authReducer, // Ganti ke authReducer
+  authReducer,
   emailReducer,
   resetPasswordReducer,
   verifyEmailReducer,
   getMeReducer,
   updateProfileReducer,
   changePasswordReducer,
-} from "./authReducers"; // Sesuaikan dengan ekspor dari authReducers
-import courseReducer from "./courseReducers"; // Ganti dari courseReducers ke courseReducer untuk konsistensi
-// import popularReducer from "./popularReducers";
+} from "./authReducers";
+import chapterReducers from "./chapterReducers";
+import courseReducer from "./courseReducers";
 import categoryReducer from "./categoryReducers";
-
-import transactionReducer from "./transactionReducers"; // Menggunakan reducer transaksi
+import contentReducers from "./contentReducers";
+import instructorReducer from "./datainstructorReducers";
+import { transactionReducer } from "./transactionReducers";
 import adminDataKategoriReducer from "./adminDataKategoriReducers";
+import adminDashboardReducer from "./admindashboardreducer";
+import typeCourseReducer from "./typeCourseReducers";
+import instrukturDashboardReducers from "./instrukturDashboardReducers";
+import mulaiKelasReducers from "./mulaiKelasReducers";
+import levelCourseReducer from "./levelCourseReducers";
+import { paymentHistoryReducer } from "./transactionReducers";
+import instrukturReducer from "./instrukturReducer";
+import LoginReducer from "./LoginReducer"
+import certificateReducers from "./certificateReducers";
 
 export default combineReducers({
+
+  //Login
+  login: LoginReducer,
   // Auth
-  auth: authReducer, // Gunakan authReducer yang benar
+  auth: authReducer,
   email: emailReducer,
   resetPassword: resetPasswordReducer,
-
-  // verifyEmail: verifyEmailReducer,
-  veryEmail: verifyEmailReducer,
-
-  // Course
-  // course: courseReducer, // Gunakan courseReducer yang benar
-  course: courseReducer,
-  // popular: popularReducer,
-
-  category: categoryReducer,
-
   verifyEmail: verifyEmailReducer,
   getMe: getMeReducer,
   updateProfile: updateProfileReducer,
   changePassword: changePasswordReducer,
 
+  // Course
+  course: courseReducer,
+  mulaiKelas: mulaiKelasReducers,
+
+  // Category
+  category: categoryReducer,
+
+  // Chapter
+  chapter: chapterReducers,
+
+  //konten
+  content: contentReducers,
+
   // Admin
   adminDataKategori: adminDataKategoriReducer,
+  adminDashboard: adminDashboardReducer,
+  instructors: instructorReducer,
+  typeCourse: typeCourseReducer,
+  levelCourse: levelCourseReducer,
 
   // Transaction
   transaction: transactionReducer,
+  
+  // Payment History
+  paymentHistory: paymentHistoryReducer,
+
+  // Instruktur
+  instrukturDashboard: instrukturDashboardReducers,
+
+  // Mulai Kelas
+  mulaikelas: mulaiKelasReducers,
+  certificate: certificateReducers,
+
+  // Instruktur
+  instruktur: instrukturReducer,
+  
 });

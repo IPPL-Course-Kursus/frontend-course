@@ -1,22 +1,38 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
+import { getDataKonten } from "../../../redux/actions/instruktorActions";
 
-function DataKontenDetail({ show, onClose, existingData }) {
+function DataKontenDetail({ show, onClose, contentId }) {
+  const dispatch = useDispatch();
+  const { content, loading, error } = useSelector((state) => state.content); // Pastikan state ini sesuai dengan state Redux yang mengelola konten
+
   const [formData, setFormData] = useState({
-    Judulmateri: "",
-    videoURL: "",
-    durasi: "",
+    sort: "",
+
+    contentTitle: "",
+    contentUrl: "",
+    duration: "",
   });
 
   useEffect(() => {
-    if (existingData) {
+    if (show && contentId) {
+      dispatch(getDataKonten(contentId)); // Memanggil data API berdasarkan contentId
+      console.log(contentId);
+      
+    }
+  }, [show, contentId, dispatch]);
+
+  useEffect(() => {
+    if (content) {
       setFormData({
-       Judulmateri: existingData.Judulmateri || "Tidak Ada Data",
-        videoURL: existingData.video || "Tidak Ada Data", // Mengubah sesuai dengan data yang diberikan
-        durasi: existingData.durasi || "Tidak Ada Data",
+        sort: content.sort || "Tidak Ada Data",
+        contentTitle: content.contentTitle || "Tidak Ada Data",
+        contentUrl: content.contentUrl || "Tidak Ada Data",
+        duration: content.duration || "Tidak Ada Data",
       });
     }
-  }, [existingData]);
+  }, [content]);
 
   if (!show) return null;
 
@@ -33,17 +49,22 @@ function DataKontenDetail({ show, onClose, existingData }) {
 
         <div className="mb-4">
           <label className="block mb-1 font-semibold">Judul Materi</label>
-          <p className="p-2 border rounded-xl">{formData.Judulmateri}</p>
+          <p className="p-2 border rounded-xl">{formData.contentTitle}</p>
+        </div>
+
+        <div className="mb-4">
+          <label className="block mb-1 font-semibold">Judul Materi</label>
+          <p className="p-2 border rounded-xl">{formData.contentTitle}</p>
         </div>
 
         <div className="mb-4">
           <label className="block mb-1 font-semibold">Video URL</label>
-          <p className="p-2 border rounded-xl">{formData.videoURL}</p>
+          <p className="p-2 border rounded-xl">{formData.contentUrl}</p>
         </div>
 
         <div className="mb-4">
           <label className="block mb-1 font-semibold">Durasi</label>
-          <p className="p-2 border rounded-xl">{formData.durasi}</p>
+          <p className="p-2 border rounded-xl">{formData.duration}</p>
         </div>
 
         <div className="flex justify-center">
@@ -59,7 +80,7 @@ function DataKontenDetail({ show, onClose, existingData }) {
 DataKontenDetail.propTypes = {
   show: PropTypes.bool,
   onClose: PropTypes.func,
-  existingData: PropTypes.object,
+  contentId: PropTypes.number,
 };
 
 export default DataKontenDetail;

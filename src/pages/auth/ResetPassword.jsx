@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { resetPassword } from "../../redux/actions/authActions"; // Import action
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
@@ -26,22 +27,34 @@ const ResetPassword = () => {
       return;
     }
 
+    // Validasi standar untuk password
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      toast.error("Password harus minimal 8 karakter, memiliki huruf besar, huruf kecil, dan angka.");
+      return;
+      // (?=.*[@$!%*?&])
+    }
 
     if (confirmPassword !== password) {
       toast.error("Password harus sama!");
       return;
     }
 
-
     dispatch(resetPassword(oobCode, password, confirmPassword));
-  };
+};
+
 
 
   useEffect(() => {
     console.log(success);
     
     if (success) {
-      toast.success("Password berhasil diubah. Silakan login dengan password baru.");
+      Swal.fire({
+        icon: 'success',
+        title: 'Password Terganti!',
+        text: 'Silakan login kembali.',
+        confirmButtonText: 'OK'
+      });
       navigate("/login");
       localStorage.removeItem("oobCode");
       console.log(success);
@@ -98,12 +111,15 @@ const ResetPassword = () => {
           </div>
           <button
             className="btn w-full text-[14px] font-medium bg-[#0A61AA] text-white py-[10px] rounded-2xl mt-5"
-            disabled={resetting} 
+            disabled={resetting}
           >
             {resetting ? "Menyimpan..." : "Simpan"}
           </button>
-          {error && <p className="text-red-500 mt-3">{error}</p>} 
+          {error && <p className="text-red-500 mt-3">{error}</p>}
         </form>
+      </div>
+      <div className="hidden lg:flex justify-center items-center bg-[#0A61AA] w-[50%] min-h-[100dvh]">
+        <img src="/ETAMCOURSE.png" alt="logo." />
       </div>
     </div>
   );

@@ -8,6 +8,9 @@ import {
   deleteCategoryRequest,
   deleteCategorySuccess,
   deleteCategoryFailure,
+  updateCategoryRequest,
+  updateCategorySuccess,
+  updateCategoryFailure,
   addCategoryRequest,
   addCategorySuccess,
   addCategoryFailure,
@@ -27,50 +30,44 @@ export const fetchAdminCategories = () => async (dispatch) => {
   }
 };
 
-
-
-// // New deleteCategory action
-// export const deleteCategory = (id) => async (dispatch) => {
-//   dispatch(deleteCategoryRequest());
+// WORK
+// export const deleteCategory = (categoryId) => async (dispatch) => {
 //   try {
-//     const token = Cookies.get("token");
+//     dispatch(deleteCategoryRequest());
 
-//     if (!token) {
-//       throw new Error("Token tidak ditemukan. Silakan login kembali.");
-//     }
-//     await axios.delete(`${api_url}category/delete-category/${id}`,
-//     {
-//     headers: { Authorization: Bearer `${token}` },
-//     }
-//     );
-//     dispatch(deleteCategorySuccess(id));
-//     // Optionally refetch categories to update the list
-//     dispatch(fetchAdminCategories());
-//     } catch (error) {
-//     dispatch(deleteCategoryFailure(error.message));
+//     const token = getCookie("token"); // Ambil token dari cookie
+//     const response = await axios.delete(`${api_url}category/delete-category/${categoryId}`, {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     });
+
+//     dispatch(deleteCategorySuccess(response.data));
+//     return response.data;
+//   } catch (error) {
+//     dispatch(deleteCategoryFailure(error.response?.data || "Delete failed"));
+//     throw error;
 //   }
 // };
 
+// MAYBE NOT WORK
 export const deleteCategory = (categoryId) => async (dispatch) => {
-    try {
-        dispatch(deleteCategoryRequest());
+  try {
+    dispatch(deleteCategoryRequest());
 
-        const token = getCookie("token"); // Ambil token dari cookie
-        const response = await axios.delete(
-            `${api_url}category/delete-category/${categoryId}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-        );
+    const token = getCookie("token"); // Retrieve token from cookies
+    await axios.delete(`${api_url}category/delete-category/${categoryId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-        dispatch(deleteCategorySuccess(response.data));
-        return response.data;
-    } catch (error) {
-        dispatch(deleteCategoryFail(error.response?.data || "Delete failed"));
-        throw error;
-    }
+    // Dispatch success action with categoryId as payload
+    dispatch(deleteCategorySuccess(categoryId));
+  } catch (error) {
+    dispatch(deleteCategoryFailure(error.response?.data || "Delete failed"));
+    throw error;
+  }
 };
 
 // export const deleteCategory = (id) => async (dispatch, getState) => {
@@ -80,21 +77,21 @@ export const deleteCategory = (categoryId) => async (dispatch) => {
 //       const {
 //         auth: { token },
 //       } = getState();
-  
+
 //       if (!token) {
 //         throw new Error("Authentication token not found");
 //       }
-  
+
 //       // Set up headers
 //       const config = {
 //         headers: {
 //           Authorization: `Bearer ${token}`,
 //         },
 //       };
-  
+
 //       // Make the DELETE request
 //       const response = await axios.delete(`${api_url}category/delete-category/${id}`, config);
-  
+
 //       if (response.status === 200) {
 //         dispatch(deleteCategorySuccess(id));
 //         // Optionally, refresh the category list
@@ -107,7 +104,6 @@ export const deleteCategory = (categoryId) => async (dispatch) => {
 //       dispatch(deleteCategoryFailure(error.message));
 //     }
 // };
-  
 
 // export const updateCategory = (id, updatedData) => async (dispatch) => {
 //     dispatch(updateCategoryRequest());
@@ -122,35 +118,34 @@ export const deleteCategory = (categoryId) => async (dispatch) => {
 // };
 
 export const updateCategory = (id, updatedData) => async (dispatch) => {
-    dispatch(updateCategoryRequest());
-    try {
-      // Get the token from cookies
-      const token = getCookie("token"); // Ensure you have a getCookie function defined
-  
-      // Set up the config with headers
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          // Include 'Content-Type' if necessary
-          "Content-Type": "multipart/form-data", // Use this if sending FormData with files
-        },
-      };
-  
-      const response = await axios.put(
-        `${api_url}category/update-category/${id}`,
-        updatedData,
-        config
-      );
-  
-      dispatch(updateCategorySuccess(response.data));
-      // Optionally refetch categories to update the list
-      dispatch(fetchAdminCategories());
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message;
-      dispatch(updateCategoryFailure(errorMessage));
-    }
-  };
-  
+  dispatch(updateCategoryRequest());
+  try {
+    // Get the token from cookies
+    const token = getCookie("token"); // Ensure you have a getCookie function defined
+
+    // Set up the config with headers
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        // Include 'Content-Type' if necessary
+        "Content-Type": "multipart/form-data", // Use this if sending FormData with files
+      },
+    };
+
+    const response = await axios.put(
+      `${api_url}category/update-category/${id}`,
+      updatedData,
+      config
+    );
+
+    dispatch(updateCategorySuccess(response.data));
+    // Optionally refetch categories to update the list
+    dispatch(fetchAdminCategories());
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || error.message;
+    dispatch(updateCategoryFailure(errorMessage));
+  }
+};
 
 // export const addCategory = (newCategoryData) => async (dispatch) => {
 //     dispatch(addCategoryRequest());
@@ -174,7 +169,7 @@ export const updateCategory = (id, updatedData) => async (dispatch) => {
 //     try {
 //       // Get the token from cookies
 //       const token = getCookie("token"); // Ensure getCookie function is defined
-  
+
 //       // Set up the config with headers
 //       const config = {
 //         headers: {
@@ -182,13 +177,13 @@ export const updateCategory = (id, updatedData) => async (dispatch) => {
 //           "Content-Type": "multipart/form-data", // Use this if sending FormData with files
 //         },
 //       };
-  
+
 //       const response = await axios.post(
 //         `${api_url}category/create-category`,
 //         newCategoryData,
 //         config
 //       );
-  
+
 //       dispatch(addCategorySuccess(response.data));
 //       dispatch(fetchAdminCategories());
 //     } catch (error) {
@@ -196,32 +191,62 @@ export const updateCategory = (id, updatedData) => async (dispatch) => {
 //       dispatch(addCategoryFailure(errorMessage));
 //     }
 //   };
-  
+
+// export const addCategory = (newCategoryData) => async (dispatch) => {
+//     dispatch(addCategoryRequest());
+//     try {
+//       const token = getCookie("token"); // Ensure getCookie is defined
+
+//       const config = {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//           // Let Axios set the Content-Type header when using FormData
+//         },
+//       };
+
+//       const response = await axios.post(
+//         `${api_url}category/create-category`,
+//         newCategoryData,
+//         config
+//       );
+
+//       dispatch(addCategorySuccess(response.data));
+//       dispatch(fetchAdminCategories());
+//     } catch (error) {
+//       const errorMessage =
+//         error.response?.data?.message || "Add category failed";
+//       dispatch(addCategoryFailure(errorMessage));
+//       throw error;
+//     }
+//   };
+
 export const addCategory = (newCategoryData) => async (dispatch) => {
-    dispatch(addCategoryRequest());
-    try {
-      const token = getCookie("token"); // Ensure getCookie is defined
-  
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          // Let Axios set the Content-Type header when using FormData
-        },
-      };
-  
-      const response = await axios.post(
-        `${api_url}category/create-category`,
-        newCategoryData,
-        config
-      );
-  
-      dispatch(addCategorySuccess(response.data));
-      dispatch(fetchAdminCategories());
-    } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || "Add category failed";
-      dispatch(addCategoryFailure(errorMessage));
-      throw error;
-    }
-  };
-  
+  dispatch(addCategoryRequest());
+  try {
+    // Get the token from cookies
+    const token = getCookie("token");
+
+    // Set up the config with headers
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data", // Set the Content-Type header
+      },
+    };
+
+    // Make the POST request with the FormData
+    const response = await axios.post(
+      `${api_url}category/create-category`,
+      newCategoryData,
+      config
+    );
+
+    dispatch(addCategorySuccess(response.data));
+    dispatch(fetchAdminCategories());
+  } catch (error) {
+    console.error("Add category error:", error.response || error);
+    const errorMessage = error.response?.data?.message || error.message || "Add category failed";
+    dispatch(addCategoryFailure(errorMessage));
+    throw error;
+  }
+};

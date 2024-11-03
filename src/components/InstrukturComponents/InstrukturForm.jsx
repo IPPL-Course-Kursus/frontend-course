@@ -1,29 +1,41 @@
-// File: ../../components/InstrukturComponents/InstrukturForm.jsx
-
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 
-const InstrukturForm = ({ show, onClose, existingData, isEditMode, onSubmit }) => {
+const InstrukturForm = ({
+  show,
+  onClose,
+  existingData,
+  isEditMode,
+  onSubmit,
+}) => {
   const [formData, setFormData] = useState({
-    name: "",
-    photoUrl: "",
+    fullName: "",
+    city: "",
+    phoneNumber: "",
+    tanggalLahir: "",
+    email: "",
+    password: "",
   });
-  const [filePreview, setFilePreview] = useState(null);
 
   useEffect(() => {
     if (existingData) {
       setFormData({
-        id: existingData.id,
-        name: existingData.name,
-        photoUrl: existingData.photoUrl,
+        fullName: existingData.fullName || "",
+        city: existingData.city || "",
+        phoneNumber: existingData.phoneNumber || "",
+        tanggalLahir: existingData.tanggalLahir || "",
+        email: existingData.email || "",
+        password: "", // Tidak ada prefilled untuk password
       });
-      setFilePreview(existingData.photoUrl);
     } else {
       setFormData({
-        name: "",
-        photoUrl: "",
+        fullName: "",
+        city: "",
+        phoneNumber: "",
+        tanggalLahir: "",
+        email: "",
+        password: "",
       });
-      setFilePreview(null);
     }
   }, [existingData]);
 
@@ -35,18 +47,6 @@ const InstrukturForm = ({ show, onClose, existingData, isEditMode, onSubmit }) =
       ...prev,
       [name]: value,
     }));
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const photoUrl = URL.createObjectURL(file);
-      setFormData((prev) => ({
-        ...prev,
-        photoUrl,
-      }));
-      setFilePreview(photoUrl);
-    }
   };
 
   const handleSubmit = (e) => {
@@ -77,39 +77,81 @@ const InstrukturForm = ({ show, onClose, existingData, isEditMode, onSubmit }) =
 
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block mb-1 font-semibold">Nama Instruktur</label>
+            <label className="block mb-1 font-semibold">Nama Lengkap</label>
             <input
               type="text"
-              name="name"
-              value={formData.name}
+              name="fullName"
+              value={formData.fullName}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
-              placeholder="Masukkan nama instruktur"
+              placeholder="Masukkan nama lengkap"
               required
             />
           </div>
 
           <div className="mb-4">
-            <label className="block mb-1 font-semibold">Upload Foto</label>
+            <label className="block mb-1 font-semibold">Kota</label>
             <input
-              type="file"
-              onChange={handleFileChange}
+              type="text"
+              name="city"
+              value={formData.city}
+              onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
-              accept="image/*"
-              required={!isEditMode}
+              placeholder="Masukkan kota"
+              required
             />
           </div>
 
-          {/* Preview gambar */}
-          {filePreview && (
-            <div className="mb-4">
-              <img
-                src={filePreview}
-                alt="Preview"
-                className="w-full h-24 object-contain rounded-md"
-              />
-            </div>
-          )}
+          <div className="mb-4">
+            <label className="block mb-1 font-semibold">Nomor Telepon</label>
+            <input
+              type="text"
+              name="phoneNumber"
+              value={formData.phoneNumber}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-xl"
+              placeholder="Masukkan nomor telepon"
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block mb-1 font-semibold">Tanggal Lahir</label>
+            <input
+              type="date"
+              name="tanggalLahir"
+              value={formData.tanggalLahir}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-xl"
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block mb-1 font-semibold">Email</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-xl"
+              placeholder="Masukkan email"
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block mb-1 font-semibold">Password</label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded-xl"
+              placeholder="Masukkan password"
+              required
+            />
+          </div>
 
           <div className="flex justify-center">
             <button

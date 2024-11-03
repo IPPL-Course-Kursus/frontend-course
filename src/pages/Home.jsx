@@ -1,6 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
 import Navbar from "../components/Navbar";
-// import CardCategory from "../components/HomeComponent/cardCategory";
 import CardCourse from "../components/HomeComponent/CardCourse";
 import CardFree from "../components/HomeComponent/CardFree";
 import imgSection from "../assets/bernadya.jpg";
@@ -29,7 +28,7 @@ const Home = () => {
   return (
     <>
       <Navbar />
-      <div className="w-full h-full  relative">
+      <div className="w-full h-full relative">
         <img
           src="/people_dasboard.png"
           alt="picture"
@@ -60,17 +59,21 @@ const Home = () => {
       <div className="w-full h-auto bg-primary flex justify-center items-center py-12 mt-20">
         <div className="flex flex-col lg:flex-row items-center max-w-6xl px-6 lg:px-12">
           <div className="lg:w-1/2">
-            <img src={imgSection} alt="Freelancer Section" className="w-full h-auto" />
+            <img
+              src="https://images.unsplash.com/photo-1506878206813-92402b8ded23?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="Freelancer Section"
+              className="w-full h-auto"
+            />
           </div>
-          <div className="lg:w-1/2 text-center lg:text-left mt-6 lg:mt-0 lg:pl-12">
-            <h2 className="text-white text-3xl font-semibold mb-4">
+          <div className="lg:w-1/2 mt-6 lg:mt-0 lg:pl-12 text-center lg:text-left">
+            <h2 className="text-white text-2xl font-semibold mb-4">
               Siap Membangun Karir Freelancer Profesional? <br /> Freelance Plus Solusinya
             </h2>
-            <p className="text-white text-base mb-6">
+            <p className="text-white text-base mb-6 text-justify lg:text-left">
               Kuasai strategi menjadi freelancer profesional untuk meningkatkan pendapatan secara
               langsung bersama para ahli berpengalaman.
             </p>
-            <NavLink as={Link} to={"/register"} className="z-10">
+            <NavLink as={Link} to={"/login"} className="z-10">
               <button className="bg-white text-primary text-base font-semibold px-4 py-2 rounded-lg hover:bg-gray-200 hover:text-primary-dark transition duration-300">
                 Daftar Sekarang
               </button>
@@ -78,6 +81,7 @@ const Home = () => {
           </div>
         </div>
       </div>
+
       <CardFree title="Kursus Gratis" free={free} />
       <div className="w-full h-auto bg-gray-100 py-16 mt-10">
         <div className="max-w-3xl mx-auto bg-white px-6 lg:px-12 relative">

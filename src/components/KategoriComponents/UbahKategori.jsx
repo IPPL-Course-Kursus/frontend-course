@@ -1,120 +1,41 @@
-// // File: ../../components/KategoriComponents/UbahKategori.jsx
-
-// import PropTypes from "prop-types";
-// import { useState, useEffect } from "react";
-// import { useDispatch } from "react-redux";
-// import KategoriForm from "./KategoriForm";
-// import { updateCategory } from "../../redux/actions/adminDataKategoriActions";
-
-// const UbahKategori = ({ show, onClose, existingData }) => {
-//   if (!show || !existingData) return null;
-//     const dispatch = useDispatch();
-//     const [formData, setFormData] = useState({
-//       categoryName: "",
-//       image: null,
-//       published: false,
-//       // ...other fields if any...
-//     });
-
-//   // Initialize form data when existingData is available
-//   useEffect(() => {
-//     if (existingData) {
-//       setFormData({
-//         categoryName: existingData.categoryName || "",
-//         image: existingData.image || null,
-//         published: existingData.published || false,
-//         // ...other fields if any...
-//       });
-//     }
-//   }, [existingData]);
-
-//   const handleInputChange = (e) => {
-//     const { name, value, type, checked, files } = e.target;
-
-//     if (type === "checkbox") {
-//       setFormData({ ...formData, [name]: checked });
-//     } else if (type === "file") {
-//       setFormData({ ...formData, [name]: files[0] });
-//     } else {
-//       setFormData({ ...formData, [name]: value });
-//     }
-//   };
-
-//   const handleUpdate = (e) => {
-//     e.preventDefault();
-//     console.log("Updating category with data:", formData);
-
-//     const formDataToSend = new FormData();
-//     formDataToSend.append("categoryName", formData.categoryName);
-//     if (formData.image instanceof File) {
-//       formDataToSend.append("image", formData.image);
-//     }
-//     formDataToSend.append("published", formData.published);
-//     // Append other fields if any
-
-//     dispatch(updateCategory(existingData.id, formDataToSend));
-//     onClose();
-//   };
-
-//   return (
-//     <KategoriForm
-//       show={show}
-//       onClose={onClose}
-//       formData={formData}
-//       handleInputChange={handleInputChange}
-//       handleSubmit={handleUpdate}
-//       isEditMode={true}
-//     />
-//   );
-// };
-
-// UbahKategori.propTypes = {
-//   show: PropTypes.bool.isRequired,
-//   onClose: PropTypes.func.isRequired,
-//   existingData: PropTypes.object, // fix warning
-// };
-
-// export default UbahKategori;
-
-// File: ../../components/KategoriComponents/UbahKategori.jsx
-
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import KategoriForm from "./KategoriForm";
 import { updateCategory } from "../../redux/actions/adminDataKategoriActions";
 
-const UbahKategori = ({ show, onClose, existingData }) => {
+const UbahKategori = ({ show, onClose, existingData, onSuccess }) => {
   const dispatch = useDispatch();
-  const [formData, setFormData] = useState({
+
+  // Initial form data without categoryCode
+  const initialFormData = {
     categoryName: "",
-    published: false,
-    // ...other fields if any...
-  });
+  };
+
+  const [formData, setFormData] = useState(initialFormData);
   const [imagePreview, setImagePreview] = useState(null);
   const [imageFile, setImageFile] = useState(null);
 
-  // Initialize form data when existingData is available
+  // Update formData and imagePreview when popup opens or closes
   useEffect(() => {
-    if (existingData) {
+    if (show && existingData) {
+      // Set form data when the popup opens
       setFormData({
         categoryName: existingData.categoryName || "",
-        published: existingData.published || false,
-        // ...other fields if any...
       });
       setImagePreview(existingData.image || null);
+      setImageFile(null);
+    } else if (!show) {
+      // Reset form data when the popup closes
+      setFormData(initialFormData);
+      setImagePreview(null);
+      setImageFile(null);
     }
-  }, [existingData]);
+  }, [show, existingData]);
 
-  // Handle text input changes and checkbox
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-
-    if (type === "checkbox") {
-      setFormData({ ...formData, [name]: checked });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
   // Handle image upload and preview
@@ -135,27 +56,37 @@ const UbahKategori = ({ show, onClose, existingData }) => {
     e.preventDefault();
     console.log("Updating category with data:", formData);
 
+    // Construct FormData
     const formDataToSend = new FormData();
     formDataToSend.append("categoryName", formData.categoryName);
-    formDataToSend.append("published", formData.published);
 
     if (imageFile) {
       formDataToSend.append("image", imageFile);
     }
 
-    // Append other fields if any
-
     dispatch(updateCategory(existingData.id, formDataToSend));
+
+    // Close the popup and reset form data
+    handleClose();
+    if (onSuccess) {
+      onSuccess();
+    }
+  };
+
+  const handleClose = () => {
+    // Reset form data and image preview
+    setFormData(initialFormData);
+    setImagePreview(null);
+    setImageFile(null);
     onClose();
   };
 
-  // If existingData is null, don't render the form
-  if (!existingData) return null;
+  if (!show || !existingData) return null;
 
   return (
     <KategoriForm
       show={show}
-      onClose={onClose}
+      onClose={handleClose}
       formData={formData}
       handleInputChange={handleInputChange}
       handleImageUpload={handleImageUpload}

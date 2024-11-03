@@ -1,172 +1,83 @@
-import { useState } from "react";
-import { FaSearch, FaFilter, FaBars } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { FaFilter, FaBars } from "react-icons/fa";
 import { IoAddCircleOutline, IoArrowBackCircle, IoArrowForwardCircle } from "react-icons/io5";
 import DataKelasInput from "../../components/InstrukturComponents/DataKelas/DataKelasInput";
 import DataKelasUbah from "../../components/InstrukturComponents/DataKelas/DataKelasUbah";
 import DataKelasDetail from "../../components/InstrukturComponents/DataKelas/DataKelasDetail";
 import { Link } from "react-router-dom";
-import Sidebar from "../../components/Sidebar/SidebarInstruktur";
+import { useDispatch, useSelector } from "react-redux";
+import SidebarInstruktur from "../../components/Sidebar/SidebarInstruktur";
+import { getAllKelas, deleteDataCourse } from "../../redux/actions/instruktorActions";
+import HeadInstruktur from "../../components/InstrukturComponents/HeadInstruktur";
 
 const InstruktorDataKelas = () => {
   const [courseTypeSearch, setCourseTypeSearch] = useState("");
-  const [searchVisible, setSearchVisible] = useState(false);
+  const [searchVisible] = useState(false);
   const [showTambahPopup, setShowTambahPopup] = useState(false);
   const [showUbahPopup, setShowUbahPopup] = useState(false);
   const [showDetailPopup, setShowDetailPopup] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [courseToDelete, setCourseToDelete] = useState(null);
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [filter, setFilter] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1); // Halaman saat ini
   const itemsPerPage = 10; // Jumlah data yang ditampilkan per halaman
+  const dispatch = useDispatch();
+  const courses = useSelector((state) => state.course.courses);
 
-  const toggleSearch = () => {
-    setSearchVisible(!searchVisible);
-  };
+  useEffect(() => {
+    dispatch(getAllKelas());
+  }, [dispatch]);
+
   const handleAddClick = () => {
-    setSelectedCourse(null);
+    setSelectedCourse({});
     setShowTambahPopup(true);
   };
 
-  const handleEditClick = (course) => {
-    setSelectedCourse(course);
+  const handleEditClick = (courses) => {
+    setSelectedCourse(courses);
     setShowUbahPopup(true);
   };
 
-  const handleDetailClick = (course) => {
-    console.log("Selected Course:", course); // Tambahkan ini
-    setSelectedCourse(course);
+  const handleDetailClick = (courses) => {
+    console.log("Selected Course:", courses); // Tambahkan ini
+    setSelectedCourse(courses);
     setShowDetailPopup(true);
   };
-  const [courseType] = useState([
-    {
-      id: "johndoe123",
-      kategori: "UI/UX Design",
-      namaKelas: "Belajar Web Designer dengan Figma",
-      tipeKelas: "Free",
-      level: "Intermediate",
-      harga: 0,
-    },
-    {
-      id: "supermanxx",
-      kategori: "UI/UX Design",
-      namaKelas: "Belajar Web Designer dengan Figma",
-      tipeKelas: "Premium",
-      level: "Beginner",
-      harga: 190000,
-    },
-    {
-      id: "johndoe123",
-      kategori: "UI/UX Design",
-      namaKelas: "Belajar Web Designer dengan Figma",
-      tipeKelas: "Free",
-      level: "Intermediate",
-      harga: 0,
-    },
-    {
-      id: "supermanxx",
-      kategori: "UI/UX Design",
-      namaKelas: "Belajar Web Designer dengan Figma",
-      tipeKelas: "Premium",
-      level: "Beginner",
-      harga: 190000,
-    },
-    {
-      id: "lokiMaster",
-      kategori: "Data Science",
-      namaKelas: "Data Cleaning untuk pemula",
-      tipeKelas: "Free",
-      level: "Advance",
-      harga: 0,
-    },
-    {
-      id: "siapaAjaani",
-      kategori: "Data Science",
-      namaKelas: "Data Cleaning untuk pemula",
-      tipeKelas: "Premium",
-      level: "Intermediate",
-      harga: 190000,
-    },
-    {
-      id: "johndoe123",
-      kategori: "UI/UX Design",
-      namaKelas: "Belajar Web Designer dengan Figma",
-      tipeKelas: "Free",
-      level: "Intermediate",
-      harga: 0,
-    },
-    {
-      id: "supermanxx",
-      kategori: "UI/UX Design",
-      namaKelas: "Belajar Web Designer dengan Figma",
-      tipeKelas: "Premium",
-      level: "Beginner",
-      harga: 190000,
-    },
-    {
-      id: "lokiMaster",
-      kategori: "Data Science",
-      namaKelas: "Data Cleaning untuk pemula",
-      tipeKelas: "Free",
-      level: "Advance",
-      harga: 0,
-    },
-    {
-      id: "siapaAjaani",
-      kategori: "Data Science",
-      namaKelas: "Data Cleaning untuk pemula",
-      tipeKelas: "Premium",
-      level: "Intermediate",
-      harga: 190000,
-    },
-    {
-      id: "johndoe123",
-      kategori: "UI/UX Design",
-      namaKelas: "Belajar Web Designer dengan Figma",
-      tipeKelas: "Free",
-      level: "Intermediate",
-      harga: 0,
-    },
-    {
-      id: "supermanxx",
-      kategori: "UI/UX Design",
-      namaKelas: "Belajar Web Designer dengan Figma",
-      tipeKelas: "Premium",
-      level: "Beginner",
-      harga: 190000,
-    },
-    {
-      id: "lokiMaster",
-      kategori: "Data Science",
-      namaKelas: "Data Cleaning untuk pemula",
-      tipeKelas: "Free",
-      level: "Advance",
-      harga: 0,
-    },
-    {
-      id: "siapaAjaani",
-      kategori: "Data Science",
-      namaKelas: "Data Cleaning untuk pemula",
-      tipeKelas: "Premium",
-      level: "Intermediate",
-      harga: 190000,
-    },
-  ]);
 
-  const filteredCourseType = courseType.filter(
+  const handleDelete = (courses) => {
+    setCourseToDelete(courses); // Pastikan Anda mengatur kursus yang ingin dihapus
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = () => {
+    console.log("Deleting course ID:", courseToDelete ? courseToDelete.id : "No course selected");
+    if (courseToDelete && courseToDelete.id) {
+      dispatch(deleteDataCourse(courseToDelete.id)).then(() => {
+        setShowDeleteModal(false);
+        // window.location.reload(); // Reload halaman setelah penghapusan berhasil
+      });
+    } else {
+      console.error("Invalid course ID for deletion:", courseToDelete);
+    }
+  };
+
+  const filteredCourses = courses.filter(
     (courseType) =>
-      courseType.id.toLowerCase().includes(courseTypeSearch.toLowerCase()) &&
-      (filter === "" || courseType.tipeKelas === filter)
+      courseType.courseCode.toLowerCase().includes(courseTypeSearch.toLowerCase()) &&
+      (filter === "" || courseType.typeCourse.typeName === filter)
   );
 
   // Menghitung total halaman
-  const totalPages = Math.ceil(filteredCourseType.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
 
   // Menentukan data yang akan ditampilkan pada halaman saat ini
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredCourseType.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredCourses.slice(indexOfFirstItem, indexOfLastItem);
 
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
@@ -182,7 +93,7 @@ const InstruktorDataKelas = () => {
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <Sidebar />
+          <SidebarInstruktur />
         </div>
 
         {/* Overlay */}
@@ -203,46 +114,53 @@ const InstruktorDataKelas = () => {
             >
               <FaBars className="text-2xl" />
             </button>
+            <HeadInstruktur />
 
-            <h1 className="text-2xl font-bold text-[#0a61aa]">Hi, Instruktur!</h1>
           </div>
 
           {/* Section Data Kelas */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
-            <h2 className="text-lg md:text-xl font-bold text-[#0a61aa]">Data Kelas</h2>
+            <h2 className="flex items-center py-2 px-4 bg-gradient-to-r from-[#FF5722] to-[#FF9800] text-white font-semibold rounded-md text-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl mb-4">
+              Data Kelas
+            </h2>
 
             <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
               {/* Tombol tambah kelas */}
-              <div className="relative">
-                <button
-                  className="py-1 px-4 bg-[#0a61aa] text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center"
-                  onClick={handleAddClick}
-                >
-                  <IoAddCircleOutline className="mr-2" />
-                  Tambah
-                </button>
-              </div>
+              <div className="flex items-center space-x-4">
+                {/* Tombol Tambah */}
+                <div className="relative inline-block">
+                  <button
+                    className="flex items-center py-2 px-4 bg-[#0a61aa] text-white font-semibold rounded-md text-sm transition-transform duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#0a61aa] focus:ring-opacity-50"
+                    onClick={handleAddClick}
+                  >
+                    <IoAddCircleOutline className="mr-2 text-2xl" />
+                    <span className="font-bold">Tambah</span>
+                  </button>
+                </div>
 
-              {/* Dropdown filter */}
-              <div className="relative">
-                <select
-                  value={filter}
-                  onChange={handleFilterChange}
-                  className="p-1 border border-[#0a61aa] rounded-full text-sm text-[#0a61aa]"
-                >
-                  <option value="">Filter</option>
-                  <option value="Free">Free</option>
-                  <option value="Premium">Premium</option>
-                </select>
-                <FaFilter className="absolute right-4 top-2 text-[#0a61aa] text-sm" />
+                {/* Dropdown Filter */}
+                <div className="relative inline-block">
+                  <select
+                    value={filter}
+                    onChange={handleFilterChange}
+                    className="flex items-center py-2 pl-10 pr-4 bg-[#0a61aa] text-white font-semibold rounded-md text-sm transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#0a61aa] focus:ring-opacity-50"
+                  >
+                    <option value="" className="text-gray-500">
+                      Filter
+                    </option>
+                    <option value="Free">Free</option>
+                    <option value="Premium">Premium</option>
+                  </select>
+                  <FaFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-sm" />
+                </div>
               </div>
 
               {/* Pencarian */}
               <div className="relative w-full md:w-auto flex items-center">
-                <FaSearch
+                {/* <FaSearch
                   className="text-[#173D94] text-lg cursor-pointer"
                   onClick={toggleSearch}
-                />
+                /> */}
                 <input
                   type="text"
                   value={courseTypeSearch}
@@ -257,11 +175,11 @@ const InstruktorDataKelas = () => {
           </div>
 
           {/* Tabel Data Kelas */}
-          <div className="overflow-x-auto bg-white p-4">
+          <div className="overflow-x-auto bg-white p-4 rounded-lg shadow-md">
             <table className="min-w-full table-auto">
               <thead>
-                <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
-                  <th className="px-2 md:px-4 py-2">ID</th>
+                <tr className="bg-gray-200 text-left text-xs md:text-sm font-semibold">
+                  <th className="px-2 md:px-4 py-2">Kode</th>
                   <th className="px-2 md:px-4 py-2">Kategori</th>
                   <th className="px-2 md:px-4 py-2">Nama Kelas</th>
                   <th className="px-2 md:px-4 py-2">Tipe Kelas</th>
@@ -270,41 +188,52 @@ const InstruktorDataKelas = () => {
                   <th className="px-2 md:px-4 py-2">Aksi</th>
                 </tr>
               </thead>
+
               <tbody>
                 {currentItems.map((courseType, index) => (
                   <tr key={index} className="border-t text-xs md:text-sm">
-                    <td className="px-2 md:px-4 py-2">{courseType.id}</td>
-                    <td className="px-2 md:px-4 py-2">{courseType.kategori}</td>
-                    <td className="px-2 md:px-4 py-2">{courseType.namaKelas}</td>
+                    <td className="px-2 md:px-4 py-2">{courseType.courseCode}</td>
+                    <td className="px-2 md:px-4 py-2">{courseType.category.categoryName}</td>
+                    <td className="px-2 md:px-4 py-2">{courseType.courseName}</td>
                     <td
                       className={`px-2 md:px-4 py-2 font-bold ${
-                        courseType.tipeKelas === "Free" ? "text-success" : "text-failed"
+                        courseType.typeCourse.typeName === "Free" ? "text-success" : "text-failed"
                       }`}
                     >
-                      {courseType.tipeKelas}
+                      {courseType.typeCourse.typeName}
                     </td>
-                    <td className="px-2 md:px-4 py-2">{courseType.level}</td>
-                    <td className="px-2 md:px-4 py-2">{courseType.harga}</td>
+                    <td className="px-2 md:px-4 py-2">{courseType.courseLevel.levelName}</td>
+                    <td className="px-2 md:px-4 py-2">{courseType.coursePrice}</td>
                     <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
-                      <Link to="/inst/data-module">
-                        <button className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2">
+                      <Link
+                        to={`/inst/data-chapter/
+                        ${courseType.id}`}
+                      >
+                        {/* <Link to="/inst/data-module"> */}
+                        <button className="py-1 px-2 md:px-4 bg-blue-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2">
                           Kelola
                         </button>
                       </Link>
                       <button
-                        className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                        className="py-1 px-2 md:px-4 bg-green-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
                         onClick={() => handleEditClick(courseType)}
                       >
                         Ubah
                       </button>
                       <button
-                        className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                        className="py-1 px-2 md:px-4 bg-yellow-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
                         onClick={() => handleDetailClick(courseType)}
                       >
                         Detail
                       </button>
-                      <button className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2">
+                      <button className="py-1 px-2 md:px-4 bg-blue-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2">
                         Promo
+                      </button>
+                      <button
+                        className="py-1 px-2 md:px-4 bg-blue-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                        onClick={() => handleDelete(courseType)}
+                      >
+                        Delete
                       </button>
                     </td>
                   </tr>
@@ -360,6 +289,28 @@ const InstruktorDataKelas = () => {
             onClose={() => setShowDetailPopup(false)}
             existingData={selectedCourse} // Pastikan data ini valid
           />
+
+          {showDeleteModal && (
+            <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+              <div className="bg-white p-6 rounded-3xl shadow-lg relative w-80">
+                <h2 className="text-xl font-bold text-center mb-4">Yakin hapus data?</h2>
+                <div className="flex justify-around mt-6">
+                  <button
+                    className="bg-red-600 text-white px-6 py-2 rounded-full font-bold"
+                    onClick={confirmDelete}
+                  >
+                    Hapus
+                  </button>
+                  <button
+                    className="bg-gray-300 px-6 py-2 rounded-full font-bold"
+                    onClick={() => setShowDeleteModal(false)}
+                  >
+                    Batal
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </>
