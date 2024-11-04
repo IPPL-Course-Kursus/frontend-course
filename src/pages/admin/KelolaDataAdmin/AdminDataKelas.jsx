@@ -220,10 +220,10 @@ const AdminDataKelas = () => {
   };
 
   const filteredCourses = courses.filter(
-    (course) =>
-      course?.courseCode?.toLowerCase().includes(courseTypeSearch.toLowerCase()) && // Tambahkan optional chaining
-      (filter === '' || course?.typeCourse?.typeName === filter) // Tambahkan optional chaining
-  );
+  (course) =>
+    course?.courseCode?.toLowerCase().includes(courseTypeSearch.toLowerCase()) && // Tambahkan optional chaining
+    (filter === '' || course?.typeCourse?.typeName === filter) // Tambahkan optional chaining
+);
 
   const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
