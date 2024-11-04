@@ -3,13 +3,13 @@ import { getCookie } from 'cookies-next';
 import { mulaiKelasRequest, mulaiKelasSuccess, mulaiKelasFailure, runCodeSuccess } from '../reducers/mulaiKelasReducers';
 
 
-const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
+const apiUrl = import.meta.env.VITE_REACT_API_ADDRESS;
 
 export const fetchMulaiKelas = (courseId) => async (dispatch) => {
   try {
     dispatch(mulaiKelasRequest());
     const token = getCookie('token');
-    const response = await axios.get(`${api_url}course-user/detail/${courseId}`, {
+    const response = await axios.get(`${apiUrl}course-user/detail/${courseId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -29,7 +29,7 @@ export const updateContentProgress = (courseUserId, contentId) => async (dispatc
   try {
     dispatch(mulaiKelasRequest());
     const token = getCookie('token');
-    await axios.put(`${api_url}course-user/${courseUserId}/progress/content/${contentId}`, {}, {
+    await axios.put(`${apiUrl}course-user/${courseUserId}/progress/content/${contentId}`, {}, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -45,7 +45,7 @@ export const updateContentProgress = (courseUserId, contentId) => async (dispatc
 export const runCode = (language, sourceCode) => async (dispatch) => {
   try {
       dispatch(mulaiKelasRequest());
-      const response = await axios.post(`${api_url}compiler/compile`, {
+      const response = await axios.post(`${apiUrl}compiler/compile`, {
           language,
           sourceCode,
       });
@@ -61,4 +61,3 @@ export const runCode = (language, sourceCode) => async (dispatch) => {
       dispatch(mulaiKelasFailure(error.message));
   }
 };
-
