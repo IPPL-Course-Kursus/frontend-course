@@ -302,8 +302,7 @@ export const deleteDataModule = (chapterId) => async (dispatch) => {
     dispatch(deleteChapter(response.data));
     return response.data;
   } catch (error) {
-    console.error("Delete error:", error.response ? error.response.data : error.message);
-    dispatch(deleteChapterFailure(error.response?.data || "Delete failed"));
+    dispatch(deleteContentFailure(error.response?.data || "Delete failed"));
     throw error;
   }
 };

@@ -192,20 +192,19 @@
 // };
 
 // export default AdminDataKelas;
-import React, { useEffect, useState } from 'react';
-import { FaSearch, FaFilter, FaBars } from 'react-icons/fa';
-import { IoArrowBackCircle, IoArrowForwardCircle } from 'react-icons/io5';
-import { useDispatch, useSelector } from 'react-redux';
-import { getAllKelas } from '../../../redux/actions/adminDataKelasActions';
-import Sidebar from '../../../components/Sidebar/SidebarAdmin';
+import { useEffect, useState } from "react";
+import { FaSearch, FaFilter, FaBars } from "react-icons/fa";
+import { IoArrowBackCircle, IoArrowForwardCircle } from "react-icons/io5";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllKelas } from "../../../redux/actions/adminDataKelasActions";
+import Sidebar from "../../../components/Sidebar/SidebarAdmin";
 
 const AdminDataKelas = () => {
-  const [courseTypeSearch, setCourseTypeSearch] = useState('');
+  const [courseTypeSearch, setCourseTypeSearch] = useState("");
   const [searchVisible, setSearchVisible] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState(null);
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [filter, setFilter] = useState('');
+  const [filter, setFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const dispatch = useDispatch();
@@ -219,11 +218,14 @@ const AdminDataKelas = () => {
     setSearchVisible(!searchVisible);
   };
 
-  const filteredCourses = courses.filter(
-    (course) =>
-      course?.courseCode?.toLowerCase().includes(courseTypeSearch.toLowerCase()) && // Tambahkan optional chaining
-      (filter === '' || course?.typeCourse?.typeName === filter) // Tambahkan optional chaining
-  );
+  const filteredCourses = courses.filter((courseType) => {
+    const search = courseTypeSearch || ""; // Pastikan courseTypeSearch tidak undefined
+
+    return (
+      courseType.typeCourse.typeName.toLowerCase().includes(search.toLowerCase()) && // Gunakan typeName untuk penyaringan
+      (filter === "" || courseType.typeCourse.typeName === filter)
+    );
+  });
 
   const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -239,7 +241,7 @@ const AdminDataKelas = () => {
     <div className="flex">
       <div
         className={`fixed inset-0 z-50 transition-transform transform bg-white md:relative md:translate-x-0 md:bg-transparent ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <Sidebar />
@@ -276,16 +278,13 @@ const AdminDataKelas = () => {
               <FaFilter className="absolute right-4 top-2 text-[#0a61aa] text-sm" />
             </div>
             <div className="relative w-full md:w-auto flex items-center">
-              <FaSearch
-                className="text-[#173D94] text-lg cursor-pointer"
-                onClick={toggleSearch}
-              />
+              <FaSearch className="text-[#173D94] text-lg cursor-pointer" onClick={toggleSearch} />
               <input
                 type="text"
                 value={courseTypeSearch}
                 onChange={(e) => setCourseTypeSearch(e.target.value)}
                 className={`transition-all duration-300 ease-in-out border border-[#173D94] rounded-full ml-2 p-1 ${
-                  searchVisible ? 'w-40 opacity-100' : 'w-0 opacity-0 pointer-events-none'
+                  searchVisible ? "w-40 opacity-100" : "w-0 opacity-0 pointer-events-none"
                 }`}
                 placeholder="Cari Id..."
               />
@@ -297,7 +296,7 @@ const AdminDataKelas = () => {
           <table className="min-w-full table-auto">
             <thead>
               <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
-                <th className="px-2 md:px-4 py-2">ID</th>
+                <th className="px-2 md:px-4 py-2">Urutan</th>
                 <th className="px-2 md:px-4 py-2">Kategori</th>
                 <th className="px-2 md:px-4 py-2">Nama Kelas</th>
                 <th className="px-2 md:px-4 py-2">Tipe Kelas</th>
@@ -306,22 +305,21 @@ const AdminDataKelas = () => {
               </tr>
             </thead>
             <tbody>
-              {currentItems.map((course, index) => (
-                <tr key={index} className="border-t text-xs md:text-sm">
-                  <td className="px-2 md:px-4 py-2">{course.courseCode}</td>
-                  <td className="px-2 md:px-4 py-2">{course.category.categoryName}</td>
-                  <td className="px-2 md:px-4 py-2">{course.courseName}</td>
+              {currentItems.map((courseType, index) => (
+                <tr key={courseType.id} className="border-t text-xs md:text-sm">
+                  {/* Gunakan index + 1 untuk membuat urutan dari 1 */}
+                  <td className="px-2 md:px-4 py-2">{index + 1}</td>
+                  <td className="px-2 md:px-4 py-2">{courseType.category.categoryName}</td>
+                  <td className="px-2 md:px-4 py-2">{courseType.courseName}</td>
                   <td
                     className={`px-2 md:px-4 py-2 font-bold ${
-                      course.typeCourse.typeName === 'Free' ? 'text-success' : 'text-failed'
+                      courseType.typeCourse.typeName === "Free" ? "text-success" : "text-failed"
                     }`}
                   >
-                    {course.typeCourse.typeName}
+                    {courseType.typeCourse.typeName}
                   </td>
-                  <td className="px-2 md:px-4 py-2">{course.courseLevel.levelName}</td>
-                  <td className="px-2 md:px-4 py-2">{course.coursePrice}</td>
-                  <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
-                  </td>
+                  <td className="px-2 md:px-4 py-2">{courseType.courseLevel.levelName}</td>
+                  <td className="px-2 md:px-4 py-2">{courseType.coursePrice}</td>
                 </tr>
               ))}
             </tbody>
@@ -331,7 +329,7 @@ const AdminDataKelas = () => {
         <div className="flex justify-between items-center mt-4">
           <button
             className={`flex items-center py-2 px-4 rounded-lg ${
-              currentPage === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#0a61aa] text-white'
+              currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-[#0a61aa] text-white"
             } transition-all duration-300 hover:scale-105`}
             onClick={() => setCurrentPage(currentPage - 1)}
             disabled={currentPage === 1}
@@ -346,7 +344,9 @@ const AdminDataKelas = () => {
 
           <button
             className={`flex items-center py-2 px-4 rounded-lg ${
-              currentPage === totalPages ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#0a61aa] text-white'
+              currentPage === totalPages
+                ? "bg-gray-300 cursor-not-allowed"
+                : "bg-[#0a61aa] text-white"
             } transition-all duration-300 hover:scale-105`}
             onClick={() => setCurrentPage(currentPage + 1)}
             disabled={currentPage === totalPages}
