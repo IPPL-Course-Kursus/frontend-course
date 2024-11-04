@@ -71,19 +71,19 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
     ],
   };
 
-    const courseSliderSettings = {
-      dots: false,
-      infinite: true,
-      speed: 500,
-      slidesToShow: 3,
-      slidesToScroll: 1,
-      nextArrow: <NextArrow />,
-      prevArrow: <PrevArrow />,
-      responsive: [
-        { breakpoint: 1024, settings: { slidesToShow: 2, slidesToScroll: 1 } },
-        { breakpoint: 600, settings: { slidesToShow: 1, slidesToScroll: 1 } },
-      ],
-    };
+  const courseSliderSettings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
+    responsive: [
+      { breakpoint: 1024, settings: { slidesToShow: 2, slidesToScroll: 1 } },
+      { breakpoint: 600, settings: { slidesToShow: 1, slidesToScroll: 1 } },
+    ],
+  };
 
   return (
     <>
@@ -137,9 +137,13 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
           selectCategoryId === null ? (
             <Slider {...courseSliderSettings}>
               {filteredCoursePopular.map((val) => (
-                <div key={val.id} className="p-2">
+                <div
+                  key={val.id}
+                  onClick={() => (window.location.href = `/course-detail/${val.id}`)}
+                  className="p-2"
+                >
                   <div
-                    className={`w-full bg-white shadow-xl rounded-xl overflow-hidden pb-3 h-full flex flex-col ${
+                    className={`w-full bg-white shadow-xl rounded-xl overflow-hidden pb-3 h-full flex flex-col transition-all duration-300 hover:scale-105  ${
                       val.isPurchased ? "bg-green-50" : ""
                     }`}
                   >
@@ -178,12 +182,12 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
                         <div className="my-2 flex-grow">
                           <ProgressBar />
                           <div className="my-2">
-                            <Link
-                              to={`/course-detail/${val.id}`} // Link to course detail page
-                              className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
+                            <button
+                              // to={`/course-detail/${val.id}`} // Link to course detail page
+                              className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs"
                             >
                               Mulai Kelas
-                            </Link>
+                            </button>
                           </div>
                         </div>
                       ) : (
@@ -191,26 +195,26 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
                           <div className="flex items-center">
                             {val.coursePrice > 0 ? (
                               <>
-                                <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
-                                  {formatCurrency(val.coursePrice)}{" "}
+                                <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs flex items-center justify-center mr-2">
+                                  {formatCurrency(val.coursePrice)}
                                 </button>
-                                <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
+                                <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs flex items-center justify-center mr-2">
                                   <Gem size={16} className="mr-2" /> Premium
                                 </button>
                               </>
                             ) : (
-                              <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
+                              <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs flex items-center justify-center mr-2">
                                 <Gem size={16} className="mr-2" /> Free
                               </button>
                             )}
                           </div>
                           <div className="my-2">
-                            <Link
-                              to={`/course-detail/${val.id}`} // Link to course detail page
-                              className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
+                            <button
+                              // to={`/course-detail/${val.id}`} // Link to course detail page
+                              className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs"
                             >
                               Lihat Kelas
-                            </Link>
+                            </button>
                           </div>
                         </div>
                       )}

@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { getCategory } from "../../redux/actions/categoryActions";
 import { useEffect, useRef } from "react";
 import Slider from "react-slick";
@@ -67,9 +67,12 @@ const CardCategory = () => {
       <div className="flex w-full justify-center items-center max-w-[1060px] flex-col pt-[26px] pb-[14px] gap-5 container">
         <div className="flex justify-between w-full px-6">
           <h2 className="text-2xl font-bold text-gray-800">Kategori Belajar</h2>
-          <Link to="/topik-kelas" className="text-sm font-semibold text-blue-600 hover:underline">
+          <NavLink
+            to="/topik-kelas"
+            className="text-sm font-semibold text-blue-600 hover:underline"
+          >
             Lihat Semua
-          </Link>
+          </NavLink>
         </div>
 
         <div className="relative w-full px-6">
@@ -81,7 +84,7 @@ const CardCategory = () => {
             <Slider ref={sliderRef} {...sliderSettings}>
               {category.length > 0 ? (
                 category.map((kategori, i) => (
-                  <Link
+                  <NavLink
                     key={i}
                     to={`/topik-kelas?category=${kategori.categoryName}`} // Pass the category name in the URL
                     className="justify-center items-center flex flex-col pl-1.5 pr-2.5"
@@ -94,7 +97,7 @@ const CardCategory = () => {
                     <div className="text-black text-center text-xs font-semibold leading-9 whitespace-nowrap">
                       {kategori.categoryName}
                     </div>
-                  </Link>
+                  </NavLink>
                 ))
               ) : (
                 <p>Tidak ada kategori yang tersedia.</p>
