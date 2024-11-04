@@ -209,7 +209,7 @@ const AdminDataKelas = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const dispatch = useDispatch();
-  const courses = useSelector((state) => state.course.courses);
+  const courses = useSelector((state) => state.course.courses || []);
 
   useEffect(() => {
     dispatch(getAllKelas());
@@ -221,8 +221,8 @@ const AdminDataKelas = () => {
 
   const filteredCourses = courses.filter(
     (course) =>
-      course.courseCode.toLowerCase().includes(courseTypeSearch.toLowerCase()) &&
-      (filter === '' || course.typeCourse.typeName === filter)
+      course?.courseCode?.toLowerCase().includes(courseTypeSearch.toLowerCase()) && // Tambahkan optional chaining
+      (filter === '' || course?.typeCourse?.typeName === filter) // Tambahkan optional chaining
   );
 
   const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
