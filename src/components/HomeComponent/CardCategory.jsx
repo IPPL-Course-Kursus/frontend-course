@@ -64,7 +64,7 @@ const CardCategory = () => {
 
   return (
     <div className="flex justify-center mt-20">
-      <div className="flex w-full justify-center items-center max-w-[1060px] flex-col pt-[26px] pb-[14px] gap-5 container">
+      <div className="flex w-full justify-center items-center max-w-[1060px] flex-col pl-4 pr-4 lg:pr-0 lg:pl-0 pt-[26px] pb-[14px] gap-5 ">
         <div className="flex justify-between w-full px-6">
           <h2 className="text-2xl font-bold text-gray-800">Kategori Belajar</h2>
           <NavLink
