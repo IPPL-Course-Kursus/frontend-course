@@ -26,13 +26,13 @@ export const DetailKelas = () => {
     const isCourseEnrolled = () => {
         return userCourses.some((course) => course.courseId === id);
     };
-
     const getEnrolledCourseId = () => {
-        const enrolledCourse = userCourses.find(
-            (course) => course.courseId === id
-        );
-        return enrolledCourse ? enrolledCourse.courseId : null;
-    };
+      const enrolledCourse = userCourses.find(
+          (course) => course.courseId === id
+      );
+      return enrolledCourse ? enrolledCourse.id : null; // Menggunakan 'id' dari userCourses
+  };
+  
 
     const handleExpandChapter = (chapterId) => {
         setExpandedChapter(expandedChapter === chapterId ? null : chapterId);
@@ -135,29 +135,30 @@ export const DetailKelas = () => {
     };
 
     const handleButtonClick = () => {
-        const token = Cookies.get("token");
-
-        if (!token) {
-            Swal.fire({
-                icon: "warning",
-                title: "Harap Login",
-                text: "Anda perlu login untuk membeli kelas. Silakan login terlebih dahulu.",
-                confirmButtonText: "OK",
-            });
-            return;
-        }
-        if (isCourseEnrolled()) {
-            // Ambil courseId dari kursus yang terdaftar
-            const enrolledCourseId = getEnrolledCourseId();
-            // Navigasi ke halaman mulai kelas jika sudah diambil
-            if (enrolledCourseId) {
-                navigate(`/mulai-kelas/${enrolledCourseId}`); // Gunakan enrolledCourseId untuk navigasi
-            }
-        } else {
-            // Tampilkan modal untuk pembayaran jika belum diambil
-            handleModalOpen();
-        }
-    };
+      const token = Cookies.get("token");
+  
+      if (!token) {
+          Swal.fire({
+              icon: "warning",
+              title: "Harap Login",
+              text: "Anda perlu login untuk membeli kelas. Silakan login terlebih dahulu.",
+              confirmButtonText: "OK",
+          });
+          return;
+      }
+      if (isCourseEnrolled()) {
+          // Ambil id dari data userCourses yang sudah diambil
+          const enrolledCourseId = getEnrolledCourseId();
+          // Navigasi ke halaman mulai kelas jika sudah diambil
+          if (enrolledCourseId) {
+              navigate(`/mulai-kelas/${enrolledCourseId}`); // Gunakan id dari userCourses untuk navigasi
+          }
+      } else {
+          // Tampilkan modal untuk pembayaran jika belum diambil
+          handleModalOpen();
+      }
+  };
+  
 
     return (
         <>
