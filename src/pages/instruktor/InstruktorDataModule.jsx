@@ -55,12 +55,25 @@ const InstruktorDataModule = () => {
   };
 
   const confirmDelete = () => {
+    if (!chapterToDelete?.id) {
+      console.error("Chapter ID is required."); // Pastikan ID chapter ada
+      return; // Hentikan proses jika id chapter tidak ada
+    }
+
     console.log("Menghapus chapter dengan ID:", chapterToDelete.id); // Debugging line
-    dispatch(deleteDataModule(chapterToDelete.id)).then(() => {
-      setShowDeleteModal(false);
-      window.location.reload(); // Reload halaman setelah penghapusan berhasil
-    });
+
+    dispatch(deleteDataModule(chapterToDelete.id))
+      .then(() => {
+        setShowDeleteModal(false); // Tutup modal setelah berhasil
+        window.location.reload(); // Reload halaman setelah penghapusan berhasil
+      })
+      .catch((error) => {
+        console.error("Error deleting chapter:", error);
+        setShowDeleteModal(false);
+      });
   };
+
+  
 
   const handleDetailClick = (course) => {
     console.log("Detail clicked for:", course);
