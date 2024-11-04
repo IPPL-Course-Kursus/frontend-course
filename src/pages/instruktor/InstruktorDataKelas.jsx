@@ -67,15 +67,14 @@ const InstruktorDataKelas = () => {
     }
   };
 
- const filteredCourses = courses.filter((courseType) => {
-   const search = courseTypeSearch || ""; // Pastikan courseTypeSearch tidak undefined
+  const filteredCourses = courses.filter((courseType) => {
+    const search = courseTypeSearch || ""; // Pastikan courseTypeSearch tidak undefined
 
-   return (
-     courseType.typeCourse.typeName.toLowerCase().includes(search.toLowerCase()) && // Gunakan typeName untuk penyaringan
-     (filter === "" || courseType.typeCourse.typeName === filter)
-   );
- });
-
+    return (
+      courseType.typeCourse.typeName.toLowerCase().includes(search.toLowerCase()) && // Gunakan typeName untuk penyaringan
+      (filter === "" || courseType.typeCourse.typeName === filter)
+    );
+  });
 
   // Menghitung total halaman
   const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
@@ -84,6 +83,14 @@ const InstruktorDataKelas = () => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredCourses.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
 
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
@@ -195,9 +202,10 @@ const InstruktorDataKelas = () => {
               </thead>
 
               <tbody>
-                {currentItems.map((courseType) => (
+                {currentItems.map((courseType, index) => (
                   <tr key={courseType.id} className="border-t text-xs md:text-sm">
-                    <td className="px-2 md:px-4 py-2">{courseType.courseCode}</td>
+                    {/* Gunakan index + 1 untuk membuat urutan dari 1 */}
+                    <td className="px-2 md:px-4 py-2">{index + 1}</td>
                     <td className="px-2 md:px-4 py-2">{courseType.category.categoryName}</td>
                     <td className="px-2 md:px-4 py-2">{courseType.courseName}</td>
                     <td
@@ -210,11 +218,7 @@ const InstruktorDataKelas = () => {
                     <td className="px-2 md:px-4 py-2">{courseType.courseLevel.levelName}</td>
                     <td className="px-2 md:px-4 py-2">{courseType.coursePrice}</td>
                     <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
-                      <Link
-                        to={`/inst/data-chapter/
-                        ${courseType.id}`}
-                      >
-                        {/* <Link to="/inst/data-module"> */}
+                      <Link to={`/inst/data-chapter/${courseType.id}`}>
                         <button className="py-1 px-2 md:px-4 bg-blue-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2">
                           Kelola
                         </button>
@@ -253,7 +257,7 @@ const InstruktorDataKelas = () => {
               className={`flex items-center py-2 px-4 rounded-lg ${
                 currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-[#0a61aa] text-white"
               } transition-all duration-300 hover:scale-105`}
-              onClick={() => setCurrentPage(currentPage - 1)}
+              onClick={handlePreviousPage}
               disabled={currentPage === 1}
             >
               <IoArrowBackCircle className="mr-2 text-xl" />
@@ -270,7 +274,7 @@ const InstruktorDataKelas = () => {
                   ? "bg-gray-300 cursor-not-allowed"
                   : "bg-[#0a61aa] text-white"
               } transition-all duration-300 hover:scale-105`}
-              onClick={() => setCurrentPage(currentPage + 1)}
+              onClick={handleNextPage}
               disabled={currentPage === totalPages}
             >
               Next
