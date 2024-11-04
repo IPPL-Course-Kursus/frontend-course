@@ -3,7 +3,7 @@ import { getCookie } from 'cookies-next';
 import { mulaiKelasRequest, mulaiKelasSuccess, mulaiKelasFailure, runCodeSuccess } from '../reducers/mulaiKelasReducers';
 
 
-const apiUrl = import.meta.env.VITE_REACT_API_ADDRESS;
+const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
 
 export const fetchMulaiKelas = (courseId) => async (dispatch) => {
   try {
@@ -61,3 +61,34 @@ export const runCode = (language, sourceCode) => async (dispatch) => {
       dispatch(mulaiKelasFailure(error.message));
   }
 };
+
+export const addInterpreter = (interpreterData) => async (dispatch) => {
+  try {
+    const response = await axios.post(`${api_url}api/interpreters`, interpreterData);
+    console.log('Added interpreter:', response.data);
+    // Dispatch to Redux state if needed
+  } catch (error) {
+    console.error('Error adding interpreter:', error.response ? error.response.data : error.message);
+  }
+};
+
+export const updateInterpreter = (interpreterId, interpreterData) => async (dispatch) => {
+  try {
+    const response = await axios.put(`${api_url}api/interpreters/${interpreterId}`, interpreterData);
+    console.log(`Updated interpreter with ID ${interpreterId}:`, response.data);
+    // Dispatch to Redux state if needed
+  } catch (error) {
+    console.error('Error updating interpreter:', error.response ? error.response.data : error.message);
+  }
+};
+
+export const deleteInterpreter = (interpreterId) => async (dispatch) => {
+  try {
+    const response = await axios.delete(`${api_url}api/interpreters/${interpreterId}`);
+    console.log(`Deleted interpreter with ID ${interpreterId}:`, response.data);
+    // Dispatch to Redux state if needed
+  } catch (error) {
+    console.error('Error deleting interpreter:', error.response ? error.response.data : error.message);
+  }
+};
+
