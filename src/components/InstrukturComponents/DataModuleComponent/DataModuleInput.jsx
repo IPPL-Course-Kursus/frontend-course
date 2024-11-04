@@ -2,11 +2,13 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addDataModule, getDataModule } from "../../../redux/actions/instruktorActions";
+import LoadSpinner from "../../Spinner/LoadSpinner";
 
 const DataModuleInput = ({ show, onClose, courseId }) => {
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [sortError, setSortError] = useState(null);
+  const [chapterTitleError, setChapterTitleError] = useState(null);
   const [formData, setFormData] = useState({
     sort: "",
     chapterTitle: "",
@@ -16,45 +18,64 @@ const DataModuleInput = ({ show, onClose, courseId }) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: name === "sort" ? Number(value) : value,
+      [name]: name === "sort" ? value : value,
     }));
+    // Reset error messages when the user starts typing
+    if (name === "sort") {
+      setSortError(null);
+    } else if (name === "chapterTitle") {
+      setChapterTitleError(null);
+    }
   };
 
   const handleAdd = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
-    const { sort, chapterTitle } = formData;
-    if (!sort || !chapterTitle) {
-      alert("Please fill in all required fields.");
-      setLoading(false);
-      return;
+    // Reset error messages
+    setSortError(null);
+    setChapterTitleError(null);
+
+    let hasError = false;
+
+    if (!formData.sort) {
+      setSortError("Silahkan isi urutan");
+      hasError = true;
+    } else if (isNaN(formData.sort)) {
+      setSortError("Urutan harus berupa angka!");
+      hasError = true;
     }
 
-    const requestData = {
-      sort: Number(sort),
-      chapterTitle,
-    };
+    if (!formData.chapterTitle) {
+      setChapterTitleError("Silahkan isi judul materi");
+      hasError = true;
+    }
 
+    if (hasError) return; // Jika ada error, jangan lanjut
+
+    setLoading(true); // Set loading true sebelum proses async dimulai
     try {
+      const requestData = {
+        sort: Number(formData.sort),
+        chapterTitle: formData.chapterTitle,
+      };
+
+      // Dispatch action untuk menambahkan modul
       await dispatch(addDataModule(requestData, courseId));
       console.log("Data module berhasil ditambahkan");
 
       setLoading(false);
-      onClose();
-      await fetchData(); // Panggil fetchData di sini untuk memperbarui state
+      onClose(); // Tutup modal setelah berhasil menambahkan
+      await fetchData(); // Panggil fetchData untuk memperbarui data di state
     } catch (err) {
       setLoading(false);
-      setError(err.response?.data?.message || "Error adding content");
+      setSortError(err.response?.data?.message || "Error adding content");
       console.error("Error detail:", err);
     }
   };
 
-  // Modifikasi fetchData dengan pengecekan tambahan
   const fetchData = async () => {
     try {
-      await dispatch(getDataModule(courseId)); // Pastikan untuk memanggil getDataModule
-      // console.log("Chapters fetched:", chapters); // Log chapter setelah di-fetch
+      await dispatch(getDataModule(courseId));
     } catch (err) {
       console.error("Error fetching data:", err);
     }
@@ -73,12 +94,6 @@ const DataModuleInput = ({ show, onClose, courseId }) => {
         </button>
         <h2 className="text-xl font-bold text-[#0a61aa] mb-4 text-center">Tambah Kategori</h2>
 
-        {/* Display loading indicator */}
-        {loading && <div className="mb-4 text-center text-blue-600">Loading...</div>}
-
-        {/* Display error message */}
-        {error && <div className="mb-4 text-center text-red-600">{error}</div>}
-
         <form onSubmit={handleAdd}>
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Urutan</label>
@@ -86,10 +101,15 @@ const DataModuleInput = ({ show, onClose, courseId }) => {
               type="text"
               name="sort"
               value={formData.sort}
+              autoComplete="tel"
               onChange={handleInputChange}
-              className="w-full p-2 border rounded-xl"
+              className={`w-full p-2 border rounded-xl ${
+                sortError ? "border-red-600" : "border-gray-300"
+              }`}
               placeholder="ex 1"
             />
+            {sortError && <div className="text-red-600 mt-1">{sortError}</div>}{" "}
+            {/* Tampilkan error untuk sort */}
           </div>
 
           <div className="mb-4">
@@ -99,9 +119,13 @@ const DataModuleInput = ({ show, onClose, courseId }) => {
               name="chapterTitle"
               value={formData.chapterTitle}
               onChange={handleInputChange}
-              className="w-full p-2 border rounded-xl"
+              className={`w-full p-2 border rounded-xl ${
+                chapterTitleError ? "border-red-600" : "border-gray-300"
+              }`}
               placeholder="Masukkan judul kelas"
             />
+            {chapterTitleError && <div className="text-red-600 mt-1">{chapterTitleError}</div>}{" "}
+            {/* Tampilkan error untuk chapterTitle */}
           </div>
 
           <div className="flex justify-end space-x-2">
@@ -114,9 +138,19 @@ const DataModuleInput = ({ show, onClose, courseId }) => {
             </button>
             <button
               type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold"
+              className={`bg-blue-600 text-white px-4 py-2 rounded-md font-semibold transition-colors duration-300 ${
+                loading ? "cursor-not-allowed bg-gray-500" : "hover:bg-blue-700 active:bg-blue-800"
+              }`}
+              disabled={loading}
             >
-              Tambah
+              {loading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <LoadSpinner size={24} color="white" />
+                  <span>Loading...</span>
+                </div>
+              ) : (
+                "Tambah"
+              )}
             </button>
           </div>
         </form>

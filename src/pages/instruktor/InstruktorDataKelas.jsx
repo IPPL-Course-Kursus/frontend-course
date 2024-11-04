@@ -33,6 +33,7 @@ const InstruktorDataKelas = () => {
   }, [dispatch]);
 
   const handleAddClick = () => {
+    console.log("Add button clicked");
     setSelectedCourse({});
     setShowTambahPopup(true);
   };
@@ -191,7 +192,7 @@ const InstruktorDataKelas = () => {
             <table className="min-w-full table-auto">
               <thead>
                 <tr className="bg-gray-200 text-left text-xs md:text-sm font-semibold">
-                  <th className="px-2 md:px-4 py-2">Kode</th>
+                  <th className="px-2 md:px-4 py-2">Urutan</th>
                   <th className="px-2 md:px-4 py-2">Kategori</th>
                   <th className="px-2 md:px-4 py-2">Nama Kelas</th>
                   <th className="px-2 md:px-4 py-2">Tipe Kelas</th>
@@ -281,57 +282,36 @@ const InstruktorDataKelas = () => {
               <IoArrowForwardCircle className="ml-2 text-xl" />
             </button>
           </div>
+
+          {/* Popups for Add, Edit, Detail, and Delete Modals */}
+          <DataKelasInput show={showTambahPopup} onClose={() => setShowTambahPopup(false)} />
+          <DataKelasUbah show={showUbahPopup} onClose={() => setShowUbahPopup(false)} />
+          <DataKelasDetail show={showDetailPopup} onClose={() => setShowDetailPopup(false)} />
+
+          {showDeleteModal && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+              <div className="bg-white p-4 rounded shadow-lg">
+                <h2 className="text-lg font-semibold">Confirm Deletion</h2>
+                <p>Are you sure you want to delete this course?</p>
+                <div className="flex justify-end mt-4">
+                  <button
+                    className="py-1 px-2 bg-red-500 text-white rounded"
+                    onClick={confirmDelete}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    className="py-1 px-2 bg-gray-300 rounded ml-2"
+                    onClick={() => setShowDeleteModal(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Popups for Add, Edit, Detail, and Delete Confirmation */}
-      {showTambahPopup && (
-        <DataKelasInput
-          onClose={() => setShowTambahPopup(false)}
-          onSave={() => {
-            setShowTambahPopup(false);
-            dispatch(getAllKelas()); // Refresh course list
-          }}
-        />
-      )}
-
-      {showUbahPopup && selectedCourse && (
-        <DataKelasUbah
-          course={selectedCourse}
-          onClose={() => setShowUbahPopup(false)}
-          onSave={() => {
-            setShowUbahPopup(false);
-            dispatch(getAllKelas()); // Refresh course list
-          }}
-        />
-      )}
-
-      {showDetailPopup && selectedCourse && (
-        <DataKelasDetail course={selectedCourse} onClose={() => setShowDetailPopup(false)} />
-      )}
-
-      {showDeleteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h3 className="text-lg font-semibold mb-4">Konfirmasi Hapus</h3>
-            <p>Apakah Anda yakin ingin menghapus kursus ini?</p>
-            <div className="flex justify-end mt-4 space-x-4">
-              <button
-                className="py-1 px-4 bg-gray-300 text-gray-700 rounded-md font-semibold"
-                onClick={() => setShowDeleteModal(false)}
-              >
-                Batal
-              </button>
-              <button
-                className="py-1 px-4 bg-red-500 text-white rounded-md font-semibold"
-                onClick={confirmDelete}
-              >
-                Hapus
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 };
