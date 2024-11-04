@@ -188,7 +188,6 @@ const AdminDataKategori = () => {
                   <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
                     <th className="px-2 md:px-4 py-2">Nomor</th>
                     <th className="px-2 md:px-4 py-2">Nama Kategori</th>
-                    <th className="px-2 md:px-4 py-2">Kode Kategori</th>
                     <th className="px-2 md:px-4 py-2">Foto</th>
                     <th className="px-2 md:px-4 py-2">Aksi</th>
                   </tr>
@@ -206,9 +205,6 @@ const AdminDataKategori = () => {
                         <td className="px-2 md:px-4 py-2">{rowNumber}</td>
                         <td className="px-2 md:px-4 py-2">
                           {category.categoryName}
-                        </td>
-                        <td className="px-2 md:px-4 py-2">
-                          {category.categoryCode}
                         </td>
                         <td className="px-2 md:px-4 py-2">
                           <img
@@ -242,44 +238,48 @@ const AdminDataKategori = () => {
           </div>
 
           {/* Pagination Controls */}
-          <div className="flex justify-between items-center mt-4">
-            <button
-              className={`flex items-center py-2 px-4 rounded-lg ${
-                adjustedCurrentPage === 1
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-[#0a61aa] text-white"
-              } transition-all duration-300 hover:scale-105`}
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={adjustedCurrentPage === 1}
-            >
-              <IoArrowBackCircle className="mr-2 text-xl" />
-              Previous
-            </button>
+          {filteredCategories.length > itemsPerPage && (
+            <div className="flex justify-between items-center mt-4">
+              <button
+                className={`flex items-center py-2 px-4 rounded-lg ${
+                  adjustedCurrentPage === 1
+                    ? "bg-gray-300 cursor-not-allowed"
+                    : "bg-[#0a61aa] text-white"
+                } transition-all duration-300 hover:scale-105`}
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={adjustedCurrentPage === 1}
+              >
+                <IoArrowBackCircle className="mr-2 text-xl" />
+                Previous
+              </button>
 
-            <span className="text-lg font-semibold">
-              Page {adjustedCurrentPage} of {totalPages}
-            </span>
+              <span className="text-lg font-semibold">
+                Page {adjustedCurrentPage} of {totalPages}
+              </span>
 
-            <button
-              className={`flex items-center py-2 px-4 rounded-lg ${
-                adjustedCurrentPage === totalPages
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-[#0a61aa] text-white"
-              } transition-all duration-300 hover:scale-105`}
-              onClick={() => setCurrentPage((prev) => prev + 1)}
-              disabled={adjustedCurrentPage === totalPages}
-            >
-              Next
-              <IoArrowForwardCircle className="ml-2 text-xl" />
-            </button>
-          </div>
+              <button
+                className={`flex items-center py-2 px-4 rounded-lg ${
+                  adjustedCurrentPage === totalPages
+                    ? "bg-gray-300 cursor-not-allowed"
+                    : "bg-[#0a61aa] text-white"
+                } transition-all duration-300 hover:scale-105`}
+                onClick={() => setCurrentPage((prev) => prev + 1)}
+                disabled={adjustedCurrentPage === totalPages}
+              >
+                Next
+                <IoArrowForwardCircle className="ml-2 text-xl" />
+              </button>
+            </div>
+          )}
 
           {/* Pop-up for Add Category */}
           <TambahKategori
             show={showTambahPopup}
             onClose={() => {
               setShowTambahPopup(false);
-              dispatch(fetchAdminCategories()); // Refresh categories after adding
+            }}
+            onSuccess={() => {
+              dispatch(fetchAdminCategories());
             }}
           />
 
@@ -288,7 +288,9 @@ const AdminDataKategori = () => {
             show={showUbahPopup}
             onClose={() => {
               setShowUbahPopup(false);
-              dispatch(fetchAdminCategories()); // Refresh categories after editing
+            }}
+            onSuccess={() => {
+              dispatch(fetchAdminCategories());
             }}
             existingData={selectedCategory}
           />

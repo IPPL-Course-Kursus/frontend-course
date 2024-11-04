@@ -23,8 +23,8 @@ const InstruktorDataKelas = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [filter, setFilter] = useState("");
 
-  const [currentPage, setCurrentPage] = useState(1); 
-  const itemsPerPage = 10; 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   const dispatch = useDispatch();
   const courses = useSelector((state) => state.course.courses);
 
@@ -67,16 +67,15 @@ const InstruktorDataKelas = () => {
     }
   };
 
-  const filteredCourses = courses.filter((courseType) => {
-    const courseCode = courseType.courseCode; // Ambil courseCode
-    const search = courseTypeSearch || ""; // Pastikan courseTypeSearch tidak undefined
+ const filteredCourses = courses.filter((courseType) => {
+   const search = courseTypeSearch || ""; // Pastikan courseTypeSearch tidak undefined
 
-    return (
-      courseCode &&
-      courseCode.toLowerCase().includes(search.toLowerCase()) && // Pastikan courseCode ada
-      (filter === "" || courseType.typeCourse.typeName === filter)
-    );
-  });
+   return (
+     courseType.typeCourse.typeName.toLowerCase().includes(search.toLowerCase()) && // Gunakan typeName untuk penyaringan
+     (filter === "" || courseType.typeCourse.typeName === filter)
+   );
+ });
+
 
   // Menghitung total halaman
   const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
@@ -278,47 +277,57 @@ const InstruktorDataKelas = () => {
               <IoArrowForwardCircle className="ml-2 text-xl" />
             </button>
           </div>
-
-          {/* Pop-up untuk tambah kelas */}
-          <DataKelasInput show={showTambahPopup} onClose={() => setShowTambahPopup(false)} />
-
-          {/* Pop-up untuk ubah kelas */}
-          <DataKelasUbah
-            show={showUbahPopup}
-            onClose={() => setShowUbahPopup(false)}
-            existingData={selectedCourse}
-          />
-
-          {/* Pop-up untuk detail kelas */}
-          <DataKelasDetail
-            show={showDetailPopup}
-            onClose={() => setShowDetailPopup(false)}
-            existingData={selectedCourse} // Pastikan data ini valid
-          />
-
-          {showDeleteModal && (
-            <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-              <div className="bg-white p-6 rounded-3xl shadow-lg relative w-80">
-                <h2 className="text-xl font-bold text-center mb-4">Yakin hapus data?</h2>
-                <div className="flex justify-around mt-6">
-                  <button
-                    className="bg-red-600 text-white px-6 py-2 rounded-full font-bold"
-                    onClick={confirmDelete}
-                  >
-                    Hapus
-                  </button>
-                  <button
-                    className="bg-gray-300 px-6 py-2 rounded-full font-bold"
-                    onClick={() => setShowDeleteModal(false)}
-                  >
-                    Batal
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
+
+      {/* Popups for Add, Edit, Detail, and Delete Confirmation */}
+      {showTambahPopup && (
+        <DataKelasInput
+          onClose={() => setShowTambahPopup(false)}
+          onSave={() => {
+            setShowTambahPopup(false);
+            dispatch(getAllKelas()); // Refresh course list
+          }}
+        />
+      )}
+
+      {showUbahPopup && selectedCourse && (
+        <DataKelasUbah
+          course={selectedCourse}
+          onClose={() => setShowUbahPopup(false)}
+          onSave={() => {
+            setShowUbahPopup(false);
+            dispatch(getAllKelas()); // Refresh course list
+          }}
+        />
+      )}
+
+      {showDetailPopup && selectedCourse && (
+        <DataKelasDetail course={selectedCourse} onClose={() => setShowDetailPopup(false)} />
+      )}
+
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h3 className="text-lg font-semibold mb-4">Konfirmasi Hapus</h3>
+            <p>Apakah Anda yakin ingin menghapus kursus ini?</p>
+            <div className="flex justify-end mt-4 space-x-4">
+              <button
+                className="py-1 px-4 bg-gray-300 text-gray-700 rounded-md font-semibold"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                Batal
+              </button>
+              <button
+                className="py-1 px-4 bg-red-500 text-white rounded-md font-semibold"
+                onClick={confirmDelete}
+              >
+                Hapus
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

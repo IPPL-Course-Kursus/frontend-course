@@ -219,12 +219,13 @@ export const getDataModule = (chapterId) => async (dispatch) => {
       throw new Error("Token tidak ditemukan di cookies");
     }
 
+    console.log("Requesting chapter with ID:", chapterId);
     const response = await axios.get(`${api_url}chapter/course/${chapterId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log("datamodule: ", response.data.data);
+    console.log("API response:", response.data);
 
     if (response.data && response.data.data) {
       dispatch(fetchChaptersSuccess(response.data.data));

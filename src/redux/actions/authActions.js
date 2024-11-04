@@ -173,7 +173,6 @@ export const sendEmail = (email) => async (dispatch) => {
 
     const response = await axios.post(
       `${api_url}auth/forgot-password`,
-
       { email }
     );
 
@@ -183,7 +182,11 @@ export const sendEmail = (email) => async (dispatch) => {
       throw new Error("Gagal mengirim email");
     }
   } catch (error) {
-    dispatch(sendEmailFailure(error.message));
+    // Cek apakah error memiliki status response 404
+    const errorMessage = error.response && error.response.status === 404 
+      ? { status: 404, message: "Email tidak ditemukan" } 
+      : { message: error.message };
+    dispatch(sendEmailFailure(errorMessage));
   }
 };
 

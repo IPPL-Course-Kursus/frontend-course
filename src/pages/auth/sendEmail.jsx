@@ -1,29 +1,40 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { sendEmail } from "../../redux/actions/authActions"; 
 import { resetEmailSuccess } from "../../redux/reducers/authReducers";
+import Swal from 'sweetalert2';
 
 const SendEmail = () => {
   const [email, setEmail] = useState("");
-  const navigate = useNavigate();
+
   const dispatch = useDispatch();
 
   const { sending, success, error } = useSelector((state) => state.email);
 
-  // Pindahkan navigasi ke dalam useEffect
   useEffect(() => {
     if (success) {
-      navigate("/login"); // Navigasi hanya setelah render dan jika sukses
-      console.log(success);
+      Swal.fire({
+        icon: 'success',
+        title: 'Email Terkirim!',
+        text: 'Silakan cek email Anda untuk tautan reset password.',
+        confirmButtonText: 'OK'
+      });
       dispatch(resetEmailSuccess());
+    } else if (error && error.status === 404) {
+      // Menampilkan alert jika terjadi error 404
+      Swal.fire({
+        icon: 'error',
+        title: 'Email Tidak Ditemukan',
+        text: 'Email yang Anda masukkan belum terdaftar. Silakan coba lagi.',
+        confirmButtonText: 'OK'
+      });
     }
-  }, [success, navigate, dispatch]);
+  }, [success, error, dispatch]);
 
   const handleSend = (e) => {
     e.preventDefault();
     dispatch(sendEmail(email)); 
-  };  
+  };
 
   return (
     <div className="flex min-h-screen">
@@ -45,15 +56,14 @@ const SendEmail = () => {
           </div>
           <button
             className="btn w-full text-[14px] font-medium bg-[#0A61AA] text-white py-[10px] rounded-2xl mt-5"
-            disabled={sending} // Disable button saat mengirim email
+            disabled={sending}
           >
-            {sending ? "Mengirim..." : "Kirim"} {/* Ubah teks saat loading */}
+            {sending ? "Mengirim..." : "Kirim"}
           </button>
-          {error && <p className="text-red-500 mt-3">{error}</p>} {/* Tampilkan error jika ada */}
+          {error && error.status !== 404 && <p className="text-red-500 mt-3">{error.message}</p>}
         </form>
       </div>
 
-      {/* Gambar Kanan */}
       <div className="hidden lg:flex justify-center items-center bg-[#0A61AA] w-[50%] min-h-[100dvh]">
         <img src="/ETAMCOURSE.png" alt="logo" className="" />
       </div>

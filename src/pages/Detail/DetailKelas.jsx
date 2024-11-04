@@ -11,19 +11,34 @@ import { GrCertificate } from "react-icons/gr";
 import { useDispatch, useSelector } from "react-redux";
 import { getDetailCourse } from "../../redux/actions/detailActions";
 import { createTransaction } from "../../redux/actions/transactionActions";
+import { getUserCourses } from "../../redux/actions/courseActions";
+import { FaRupiahSign } from "react-icons/fa6";
+import Cookies from "js-cookie";
+
+
 
 export const DetailKelas = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const navigate = useNavigate();
   const detail = useSelector((state) => state.course.detail);
+  const userCourses = useSelector((state) => state.course.mycourse || []);
   const [isModalOpen, setModalOpen] = useState(false);
   const [transactionMessage, setTransactionMessage] = useState("");
+  const isCourseEnrolled = () => {
+    return userCourses.some((course) => course.courseId === id);
+  };
+
+  const getEnrolledCourseId = () => {
+    const enrolledCourse = userCourses.find((course) => course.courseId === id);
+    return enrolledCourse ? enrolledCourse.courseId : null;
+  };
 
   useEffect(() => {
     if (id) {
       dispatch(getDetailCourse(id));
     }
+    dispatch(getUserCourses());
   }, [id, dispatch]);
 
   useEffect(() => {
@@ -99,9 +114,25 @@ export const DetailKelas = () => {
   };
 
   const handleButtonClick = () => {
-    if (detail.isEnrolled) {
-      // Navigasi ke halaman kelas jika sudah diambil
-      navigate(`/course/${id}/chapter`);
+    const token = Cookies.get("token");
+
+  if (!token) {
+
+    Swal.fire({
+      icon: "warning",
+      title: "Harap Login",
+      text: "Anda perlu login untuk membeli kelas. Silakan login terlebih dahulu.",
+      confirmButtonText: "OK",
+    });
+    return;
+   }
+    if (isCourseEnrolled()) {
+      // Ambil courseId dari kursus yang terdaftar
+      const enrolledCourseId = getEnrolledCourseId();
+      // Navigasi ke halaman mulai kelas jika sudah diambil
+      if (enrolledCourseId) {
+        navigate(`/mulai-kelas/${enrolledCourseId}`); // Gunakan enrolledCourseId untuk navigasi
+      }
     } else {
       // Tampilkan modal untuk pembayaran jika belum diambil
       handleModalOpen();
@@ -115,12 +146,9 @@ export const DetailKelas = () => {
         <div className="flex flex-row-reverse justify-between mx-3 lg:flex lg:flex-col lg:gap-4">
           <Link
             to="/"
-            className="flex items-center gap-2 mx-2 hover:text-color-primary lg:text-lg "
+            className="flex items-center gap-2 mx-2 hover:text-color-primary lg:text-lg"
           >
             <FaArrowLeft className="text-gray-700 cursor-pointer my-4" />
-                                {/* <h1 className="text-xl font-bold text-gray-800">
-                                    Kembali ke halaman utama
-                                </h1> */}
           </Link>
         </div>
 
@@ -138,7 +166,7 @@ export const DetailKelas = () => {
                 onClick={handleButtonClick}
                 className="mt-6 px-4 py-2 bg-[#0a61aa] text-white text-xs font-bold rounded-md"
               >
-                {detail.isEnrolled ? "Mulai Kelas" : "Beli Kelas"}
+                {isCourseEnrolled() ? "Pelajari Kelas" : "Beli Kelas"}
               </button>
             </div>
             <div className="w-full sm:w-[512px] pt-16 pb-16">
@@ -199,6 +227,12 @@ export const DetailKelas = () => {
                     <p className="font-medium text-[#151515] text-base leading-5">Sertifikat</p>
                   </div>
                 </div>
+                <div className="flex items-center bg-grey p-4 rounded-md">
+      <FaRupiahSign className="w-[50px] h-[50px] mr-4" />
+      <div>
+        <p className="font-medium text-[#151515] text-lg leading-5">{`${detail.promoStatus ? detail.courseDiscountPrice : detail.coursePrice}`}{" "}</p>
+      </div>
+    </div>
               </div>
             </div>
           </div>
@@ -228,7 +262,7 @@ export const DetailKelas = () => {
 
         {/* Rekomendasi Kelas */}
         <div className="mt-8">
-          <CardRecommended />
+          <CardRecommended className="gap-10" />
         </div>
       </div>
 
