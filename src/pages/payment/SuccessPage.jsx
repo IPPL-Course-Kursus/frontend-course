@@ -24,7 +24,7 @@ const SuccessPage = () => {
   return (
     <>
       <Navbar />
-      <main className="max-w-sm md:max-w-5xl mx-auto mt-10 p-4">
+      <main className="max-w-sm md:max-w-5xl mx-auto mt-10 p-4 container">
         <div className="bg-green-500 text-white p-2 rounded-lg text-center font-semibold mb-14">
           Terimakasih atas pembayaran transaksi
         </div>

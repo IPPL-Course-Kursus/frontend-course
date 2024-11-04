@@ -192,7 +192,7 @@
 // };
 
 // export default AdminDataKelas;
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaSearch, FaFilter, FaBars } from "react-icons/fa";
 import { IoArrowBackCircle, IoArrowForwardCircle } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
@@ -208,7 +208,7 @@ const AdminDataKelas = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const dispatch = useDispatch();
-  const courses = useSelector((state) => state.course.courses);
+  const courses = useSelector((state) => state.course.courses || []);
 
   useEffect(() => {
     dispatch(getAllKelas());
@@ -218,15 +218,14 @@ const AdminDataKelas = () => {
     setSearchVisible(!searchVisible);
   };
 
-   const filteredCourses = courses.filter((courseType) => {
-     const search = courseTypeSearch || ""; // Pastikan courseTypeSearch tidak undefined
+  const filteredCourses = courses.filter((courseType) => {
+    const search = courseTypeSearch || ""; // Pastikan courseTypeSearch tidak undefined
 
-     return (
-       courseType.typeCourse.typeName.toLowerCase().includes(search.toLowerCase()) && // Gunakan typeName untuk penyaringan
-       (filter === "" || courseType.typeCourse.typeName === filter)
-     );
-   });
-
+    return (
+      courseType.typeCourse.typeName.toLowerCase().includes(search.toLowerCase()) && // Gunakan typeName untuk penyaringan
+      (filter === "" || courseType.typeCourse.typeName === filter)
+    );
+  });
 
   const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;

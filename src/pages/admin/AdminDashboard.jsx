@@ -76,7 +76,7 @@ const AdminDashboard = () => {
   return (
     <div className="flex">
       <div
-        className={`fixed inset-0 z-50 h-full transition-transform transform bg-white md:relative md:translate-x-0 md:bg-transparent flex flex-col transition-transform transform ${
+        className={`fixed inset-0 z-50 h-full bg-white md:relative md:translate-x-0 md:bg-transparent flex flex-col transition-transform transform ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
