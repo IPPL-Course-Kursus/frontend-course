@@ -91,7 +91,9 @@ function AppRoutes() {
   }, [location, navigate]);
 
   return (
+    
     <Routes>
+      
       {/* <Route element={<ProtectedRouteUser />}> */}
       <Route path="/" element={<Home />} />
       {/* </Protected> */}

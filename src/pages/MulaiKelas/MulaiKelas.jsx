@@ -162,7 +162,8 @@ const MulaiKelas = () => {
     return (
         <>
             <Navbar />
-            <div className="grid grid-cols-1 lg:grid-cols-4 max-w-screen-xl mx-auto mt-10 p-4 gap-6">
+            <div className="container"> 
+            <div className="grid grid-cols-1 lg:grid-cols-4 mx-auto mt-10 p-4 gap-6">
                 {/* Main Content */}
                 <div className="col-span-3">
                     {/* Header Section */}
@@ -431,6 +432,7 @@ const MulaiKelas = () => {
                 </button>
             </div> */}
                 </aside>
+            </div>
             </div>
             <Footer />
         </>

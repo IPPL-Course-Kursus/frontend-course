@@ -70,7 +70,7 @@ const CoursesPage = () => {
   return (
     <>
       <Navbar />
-      <div className="bg-[#F3F7FB]">
+      <div className="bg-[#F3F7FB] container">
         <main className="container mx-auto px-4 py-10">
           <div className="flex justify-between items-center mb-4">
           <h2 className="text-4xl font-bold text-gray-900">Kelas Saya</h2>

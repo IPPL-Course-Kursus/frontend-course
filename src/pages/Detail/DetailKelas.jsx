@@ -142,8 +142,9 @@ export const DetailKelas = () => {
   return (
     <>
       <Navbar />
-      <div className="w-full h-full">
-        <div className="flex flex-row-reverse justify-between mx-3 lg:flex lg:flex-col lg:gap-4">
+
+      <div className="w-full h-full container">
+        <div className="flex flex-row-reverse justify-between lg:flex lg:flex-col lg:gap-4">
           <Link
             to="/"
             className="flex items-center gap-2 mx-2 hover:text-color-primary lg:text-lg"
@@ -154,7 +155,7 @@ export const DetailKelas = () => {
 
         {/* Bagian Judul dan Deskripsi */}
         <div className="w-full bg-[#f3f7fb]">
-          <div className="max-w-screen-lg mx-auto px-4 flex flex-col sm:flex-row sm:items-start sm:justify-between">
+          <div className="max-w-screen-xl mx-auto px-4 flex flex-col sm:flex-row sm:items-start sm:justify-between">
             <div className="w-full sm:w-1/2 pt-16 pb-16 pr-8">
               <h1 className="text-[#151515] text-[24px] sm:text-[32px] font-semibold leading-normal">
                 {detail.courseName || "Loading..."}
@@ -202,7 +203,7 @@ export const DetailKelas = () => {
         )}
 
         {/* Bagian Tentang Kelas dan Detail Kelas */}
-        <div className="max-w-screen-lg mx-auto px-4 mt-8">
+        <div className=" mx-auto px-4 mt-8">
           <div className="flex flex-col sm:flex-row w-full">
             <div className="w-full sm:w-2/3 p-4 bg-secondary rounded-md border border-solid border-[#d1d1d1]">
               <h2 className="text-xl font-semibold text-[#151515]">Tentang Kelas</h2>
@@ -239,7 +240,7 @@ export const DetailKelas = () => {
         </div>
 
         {/* Bagian Chapter */}
-        <div className="max-w-screen-lg mx-auto px-4 mt-8">
+        <div className=" mx-auto px-4 mt-8">
           <div className="p-4 bg-secondary rounded-md border border-solid border-[#d1d1d1]">
             <h2 className="text-xl font-semibold text-[#151515]">Chapter</h2>
             <div className="mt-4">
@@ -265,6 +266,7 @@ export const DetailKelas = () => {
           <CardRecommended className="gap-10" />
         </div>
       </div>
+
 
       <Footer />
 
