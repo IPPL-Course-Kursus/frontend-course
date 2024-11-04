@@ -4,28 +4,34 @@ import { useDispatch } from "react-redux";
 import KategoriForm from "./KategoriForm";
 import { updateCategory } from "../../redux/actions/adminDataKategoriActions";
 
-const UbahKategori = ({ show, onClose, existingData }) => {
+const UbahKategori = ({ show, onClose, existingData, onSuccess }) => {
   const dispatch = useDispatch();
-  const [formData, setFormData] = useState({
+
+  // Initial form data without categoryCode
+  const initialFormData = {
     categoryName: "",
-    categoryCode: "",
-    // Remove published from initial state
-  });
+  };
+
+  const [formData, setFormData] = useState(initialFormData);
   const [imagePreview, setImagePreview] = useState(null);
   const [imageFile, setImageFile] = useState(null);
 
-  // Initialize form data when existingData is available
+  // Update formData and imagePreview when popup opens or closes
   useEffect(() => {
-    if (existingData) {
+    if (show && existingData) {
+      // Set form data when the popup opens
       setFormData({
         categoryName: existingData.categoryName || "",
-        categoryCode: existingData.categoryCode || "",
-        // Remove published
       });
       setImagePreview(existingData.image || null);
+      setImageFile(null);
+    } else if (!show) {
+      // Reset form data when the popup closes
+      setFormData(initialFormData);
+      setImagePreview(null);
+      setImageFile(null);
     }
-  }, [existingData]);
-
+  }, [show, existingData]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -53,23 +59,34 @@ const UbahKategori = ({ show, onClose, existingData }) => {
     // Construct FormData
     const formDataToSend = new FormData();
     formDataToSend.append("categoryName", formData.categoryName);
-    formDataToSend.append("categoryCode", formData.categoryCode);
 
     if (imageFile) {
       formDataToSend.append("image", imageFile);
     }
 
     dispatch(updateCategory(existingData.id, formDataToSend));
+
+    // Close the popup and reset form data
+    handleClose();
+    if (onSuccess) {
+      onSuccess();
+    }
+  };
+
+  const handleClose = () => {
+    // Reset form data and image preview
+    setFormData(initialFormData);
+    setImagePreview(null);
+    setImageFile(null);
     onClose();
   };
 
-
-  if (!existingData) return null;
+  if (!show || !existingData) return null;
 
   return (
     <KategoriForm
       show={show}
-      onClose={onClose}
+      onClose={handleClose}
       formData={formData}
       handleInputChange={handleInputChange}
       handleImageUpload={handleImageUpload}

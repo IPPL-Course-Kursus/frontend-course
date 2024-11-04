@@ -17,9 +17,10 @@ const TopikKelas = () => {
   const [selectedFilter, setSelectedFilter] = useState("All");
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 9;
+  const itemsPerPage = 6;
 
   const [filterChecked, setFilterChecked] = useState({});
+  const [scrollPosition, setScrollPosition] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const {
     category = [],
@@ -59,6 +60,18 @@ const TopikKelas = () => {
     }
   }, [filterChecked]);
 
+    useEffect(() => {
+      const params = new URLSearchParams(location.search);
+      const categoryFromUrl = params.get("category");
+      if (categoryFromUrl) {
+        setFilterChecked((prev) => ({
+          ...prev,
+          [categoryFromUrl]: true, // Set the checked state for the selected category
+        }));
+        setSelectedFilter(categoryFromUrl); // Update selected filter
+      }
+    }, [location.search]);
+
   const handleCheckboxChange = (label) => {
     const updatedChecked = {
       ...filterChecked,
@@ -66,7 +79,7 @@ const TopikKelas = () => {
     };
 
     setFilterChecked(updatedChecked);
-    setCurrentPage(1);
+    setScrollPosition(window.scrollY);
 
     const filters = {
       isNewest: updatedChecked["Paling Baru"] || false,
@@ -81,7 +94,7 @@ const TopikKelas = () => {
           key !== "Promo"
       ),
       levels: Object.keys(updatedChecked).filter(
-        (key) => courseLevel.some((level) => level.levelName === key && updatedChecked[key]) // Filter berdasarkan level
+        (key) => courseLevel.every((level) => level.levelName === key && updatedChecked[key]) // Filter berdasarkan level
       ),
     };
 
@@ -96,6 +109,12 @@ const TopikKelas = () => {
         dispatch(getAllCourse()); // If no filters, get all courses
       }
   };
+  useEffect(() => {
+    if (scrollPosition !== 0) {
+      window.scrollTo(0, scrollPosition);
+    }
+  }, [filterChecked, scrollPosition]);
+  
 
   const handleFilterClick = (filter) => {
     setSelectedFilter(filter);
@@ -107,31 +126,31 @@ const TopikKelas = () => {
     }
   };
 
-  const filteredCourses = () => {
-    const activeFilters = Object.keys(filterChecked).filter((key) => filterChecked[key]);
+const filteredCourses = () => {
+  const activeFilters = Object.keys(filterChecked).filter((key) => filterChecked[key]);
 
-    let filteredCourses = courses.filter((course) => {
-      const matchesSearch =
-        course.courseName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        course.category.categoryName.toLowerCase().includes(searchQuery.toLowerCase());
+  let filteredCourses = courses.filter((course) => {
+    const matchesSearch =
+      course.courseName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.category.categoryName.toLowerCase().includes(searchQuery.toLowerCase());
 
-      if (selectedFilter === "Premium" && course.coursePrice === 0) return false;
-      if (selectedFilter === "Free" && course.coursePrice !== 0) return false;
+    if (selectedFilter === "Premium" && course.coursePrice === 0) return false;
+    if (selectedFilter === "Free" && course.coursePrice !== 0) return false;
 
-      return matchesSearch;
-    });
+    return matchesSearch;
+  });
 
     if (activeFilters.length > 0) {
       filteredCourses = filteredCourses.filter((course) =>
-        activeFilters.some(
+        activeFilters.every(
           (filter) =>
             course.category.categoryName === filter || course.courseLevel.levelName === filter
         )
       );
     }
 
-    return filteredCourses;
-  };
+  return filteredCourses;
+};
 
   const clearFilters = () => {
     const clearedFilterState = {
@@ -144,11 +163,20 @@ const TopikKelas = () => {
       }, {}),
     };
 
-    setFilterChecked(clearedFilterState); // Reset semua filter
-    setSelectedFilter("All"); // Reset filter yang dipilih
+    const currentScrollPosition = window.scrollY;
+    setScrollPosition(currentScrollPosition);
+
+    setFilterChecked(clearedFilterState);
+    setSelectedFilter("All");
     window.location.hash = "";
 
-    dispatch(getAllCourse()); // Dispatch untuk mendapatkan semua kursus
+    dispatch(getAllCourse());
+  };
+
+  const [showFilters, setShowFilters] = useState(false);
+
+  const toggleFilters = () => {
+    setShowFilters(!showFilters);
   };
 
   const filteredCourseType = filteredCourses();
@@ -160,6 +188,15 @@ const TopikKelas = () => {
   return (
     <>
       <Navbar />
+      {/* Button kembali ke Home*/}
+      <div className="flex justify-start mt-4 px-20">
+        <Link to="/">
+          <button className="px-5 py-4 bg-blue-500 text-white font-bold rounded-badge">
+            Home
+          </button>
+        </Link>
+      </div>
+
       <main className="w-full bg-blue-50 pb-4">
         <section className="w-full text-center bg-white py-12 mt-4">
           <div className="max-w-screen-lg mx-auto">
@@ -179,7 +216,7 @@ const TopikKelas = () => {
           </div>
 
           <div className="flex gap-2 flex-grow lg:relative justify-center">
-            <div className="form-control relative hidden lg:block w-full mt-10 lg:w-[30rem]">
+            <div className="form-control relative w-full max-w-md mt-10 lg:w-[30rem]">
               <input
                 type="text"
                 placeholder="Find a Course"
@@ -209,12 +246,14 @@ const TopikKelas = () => {
               TOPIK KELAS
             </h3>
 
+            
+
             {/* Container tombol ditengah */}
             <div className="flex flex-wrap justify-center w-full md:w-auto mx-auto gap-3">
               {" "}
               {/* Buat tombol berada di tengah */}
               <button
-                className={`filter-btn px-6 py-2 w-full md:w-auto rounded-full font-bold text-xs ${
+                className={`filter-btn px-6 py-2 max-w-xs md:w-auto rounded-full font-bold text-xs ${
                   selectedFilter === "All"
                     ? "bg-blue-600 text-white"
                     : "bg-white text-black hover:bg-gray-200"
@@ -230,7 +269,7 @@ const TopikKelas = () => {
                     (
                       <button
                         key={i}
-                        className={`filter-btn px-6 py-2 w-full md:w-auto rounded-full font-bold text-xs ${
+                        className={`filter-btn px-6 py-2 max-w-xs md:w-auto rounded-full font-bold text-xs ${
                           selectedFilter === type.typeName
                             ? "bg-blue-600 text-white"
                             : "bg-white text-black hover:bg-gray-200"
@@ -246,9 +285,16 @@ const TopikKelas = () => {
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row md:space-x-6 pr-4 md:pr-10">
-          <div className="md:block md:w-1/4">
-            <div className="bg-white shadow-md rounded-md p-4">
+        <div className="flex flex-col md:flex-row md:space-x-6 pr-4 md:pr-10 ml-10">
+        <div className="md:block md:w-1/4">
+          <button
+            onClick={toggleFilters}
+            className="bg-blue-600 text-white px-4 py-2 rounded mb-4 md:hidden"
+          >
+            {showFilters ? "Hide Filters" : "Show Filters"}
+          </button>
+
+          <div className={`bg-white shadow-md rounded-md p-4 ${showFilters ? "" : "hidden md:block"}`}>
               <h3 className="text-xl font-bold text-gray-800 mb-4">Filter</h3>
               {["Paling Baru", "Paling Populer", "Promo"].map((label, index) => (
                 <div className="flex items-center mb-2" key={index}>
@@ -266,41 +312,36 @@ const TopikKelas = () => {
               ))}
 
               <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">Kategori</h3>
-              {category &&
-                category.map((kategori, i) => (
-                  <div className="flex items-center mb-2" key={i}>
-                    <input
-                      type="checkbox"
-                      id={`filter-${kategori.categoryName}`}
-                      checked={filterChecked[kategori.categoryName] || false}
-                      onChange={() => handleCheckboxChange(kategori.categoryName)}
-                      className="mr-2 checkbox-custom"
-                    />
-                    <label
-                      htmlFor={`filter-${kategori.categoryName}`}
-                      className="text-sm md:text-base"
-                    >
-                      {kategori.categoryName}
-                    </label>
-                  </div>
-                ))}
+              {category && category.map((kategori, i) => (
+                <div className="flex items-center mb-2" key={i}>
+                  <input
+                    type="checkbox"
+                    id={`filter-${kategori.categoryName}`}
+                    checked={filterChecked[kategori.categoryName] || false}
+                    onChange={() => handleCheckboxChange(kategori.categoryName)}
+                    className="mr-2 checkbox-custom"
+                  />
+                  <label htmlFor={`filter-${kategori.categoryName}`} className="text-sm md:text-base">
+                    {kategori.categoryName}
+                  </label>
+                </div>
+              ))}
 
               <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">Level Kesulitan</h3>
-              {courseLevel &&
-                courseLevel.map((level, i) => (
-                  <div className="flex items-center mb-2" key={i}>
-                    <input
-                      type="checkbox"
-                      id={`filter-${level.levelName}`}
-                      checked={filterChecked[level.levelName] || false}
-                      onChange={() => handleCheckboxChange(level.levelName)}
-                      className="mr-2 checkbox-custom"
-                    />
-                    <label htmlFor={`filter-${level.levelName}`} className="text-sm md:text-base">
-                      {level.levelName}
-                    </label>
-                  </div>
-                ))}
+              {courseLevel && courseLevel.map((level, i) => (
+                <div className="flex items-center mb-2" key={i}>
+                  <input
+                    type="checkbox"
+                    id={`filter-${level.levelName}`}
+                    checked={filterChecked[level.levelName] || false}
+                    onChange={() => handleCheckboxChange(level.levelName)}
+                    className="mr-2 checkbox-custom"
+                  />
+                  <label htmlFor={`filter-${level.levelName}`} className="text-sm md:text-base">
+                    {level.levelName}
+                  </label>
+                </div>
+              ))}
 
               <button
                 onClick={clearFilters}
@@ -313,23 +354,22 @@ const TopikKelas = () => {
 
           <div className="md:w-3/4">
             <div className="grid mt-2 gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-              {currentItems.map((course) => (
-                <div key={course.id} className="bg-white shadow-xl rounded-xl overflow-hidden">
-                  <img
-                    src={course.image}
-                    alt={course.courseName}
-                    className="w-full h-28 object-cover"
+              {currentItems.length > 0 ? (
+                currentItems.map((course) => (
+                  <div key={course.id} className="bg-white shadow-xl rounded-xl overflow-hidden">
+                    <img
+                      src={course.image}
+                      alt={course.courseName}
+                      className="w-full h-28 object-cover"
                   />
                   <div className="mx-2 md:mx-4 flex flex-col mt-1 md:mt-2">
-                    <h1 className="text-color-primary font-bold text-sm lg:text-base">
+                    {/* <h1 className="text-color-primary font-bold text-sm lg:text-base">
                       {course.category.categoryName}
-                    </h1>
-                    <p className="text-sm text-gray-600">{course.courseName}</p>
+                    </h1> */}
+                    <p className="font-bold text-sm lg:text-base truncate">{course.courseName}</p>
                     <div className="flex justify-between items-center my-2">
-                      <p className="text-black text-sm font-semibold">
-                        <p className="text-black text-sm font-semibold">
-                          Instructor: {course.user.fullName}
-                        </p>
+                      <p className="text-gray-600 text-sm font-semibold flex-shrink-0">
+                        Instructor: {course.user.fullName}
                       </p>
                     </div>
                     <div className="mt-3 flex justify-between flex-wrap">
@@ -357,10 +397,16 @@ const TopikKelas = () => {
                     </div>
                   </div>
                 </div>
-              ))}
+              ))
+              ) : (
+                <div className="col-span-3 text-2xl text-center text-gray-700 font-bold py-4">
+                  No courses found for you
+                </div>
+              )}
             </div>
 
-            {/*Pagination */}
+            {/* Pagination */}
+            {filteredCourseType.length > itemsPerPage && (
             <div className="flex justify-between items-center mt-8">
               <button
                 className={`flex items-center py-2 px-4 rounded-lg ${
@@ -390,9 +436,10 @@ const TopikKelas = () => {
                 <IoArrowForwardCircle className="ml-2 text-xl" />
               </button>
             </div>
-          </div>
+          )}
         </div>
-      </main>
+      </div>
+    </main>
       <Footer />
     </>
   );

@@ -31,6 +31,7 @@ export const getUserCourses = () => async (dispatch) => {
 
     const token = getCookie("token");
     if (!token) {
+        
         dispatch(setError("User not authenticated"));
         dispatch(setLoading(false));
         return;

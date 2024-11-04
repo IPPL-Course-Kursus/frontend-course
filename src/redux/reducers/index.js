@@ -13,15 +13,17 @@ import courseReducer from "./courseReducers";
 import categoryReducer from "./categoryReducers";
 import contentReducers from "./contentReducers";
 import instructorReducer from "./datainstructorReducers";
-import transactionReducer from "./transactionReducers"; // Menggunakan reducer transaksi
+import { transactionReducer } from "./transactionReducers";
 import adminDataKategoriReducer from "./adminDataKategoriReducers";
 import adminDashboardReducer from "./admindashboardreducer";
 import typeCourseReducer from "./typeCourseReducers";
 import instrukturDashboardReducers from "./instrukturDashboardReducers";
 import mulaiKelasReducers from "./mulaiKelasReducers";
 import levelCourseReducer from "./levelCourseReducers";
+import { paymentHistoryReducer } from "./transactionReducers";
 import instrukturReducer from "./instrukturReducer";
 import LoginReducer from "./LoginReducer"
+import certificateReducers from "./certificateReducers";
 
 export default combineReducers({
 
@@ -58,12 +60,16 @@ export default combineReducers({
 
   // Transaction
   transaction: transactionReducer,
+  
+  // Payment History
+  paymentHistory: paymentHistoryReducer,
 
   // Instruktur
   instrukturDashboard: instrukturDashboardReducers,
 
   // Mulai Kelas
   mulaikelas: mulaiKelasReducers,
+  certificate: certificateReducers,
 
   // Instruktur
   instruktur: instrukturReducer,

@@ -67,7 +67,7 @@ const CardCategory = () => {
       <div className="flex w-full justify-center items-center max-w-[1060px] flex-col pt-[26px] pb-[14px] gap-5 container">
         <div className="flex justify-between w-full px-6">
           <h2 className="text-2xl font-bold text-gray-800">Kategori Belajar</h2>
-          <Link to="/class" className="text-sm font-semibold text-blue-600 hover:underline">
+          <Link to="/topik-kelas" className="text-sm font-semibold text-blue-600 hover:underline">
             Lihat Semua
           </Link>
         </div>
@@ -81,16 +81,20 @@ const CardCategory = () => {
             <Slider ref={sliderRef} {...sliderSettings}>
               {category.length > 0 ? (
                 category.map((kategori, i) => (
-                  <div key={i} className="justify-center items-center flex flex-col pl-1.5 pr-2.5">
+                  <Link
+                    key={i}
+                    to={`/topik-kelas?category=${kategori.categoryName}`} // Pass the category name in the URL
+                    className="justify-center items-center flex flex-col pl-1.5 pr-2.5"
+                  >
                     <img
                       src={kategori.image}
-                      alt={kategori.categoryName} // Tambahkan alt untuk aksesibilitas
+                      alt={kategori.categoryName}
                       className="aspect-[1.6] object-cover object-center w-[140px] rounded-xl shadow-md hover:cursor-pointer"
                     />
                     <div className="text-black text-center text-xs font-semibold leading-9 whitespace-nowrap">
                       {kategori.categoryName}
                     </div>
-                  </div>
+                  </Link>
                 ))
               ) : (
                 <p>Tidak ada kategori yang tersedia.</p>

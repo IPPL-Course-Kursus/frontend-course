@@ -1,14 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
+const initialtransactionState = {
     transaction: {},
+    loading: false,
+    error: null,
+};
+
+const initialpaymentHistoryState = {
+    paymentHistory: [],
     loading: false,
     error: null,
 };
 
 const transactionSlice = createSlice({
     name: "transaction",
-    initialState,
+    initialState: initialtransactionState,
     reducers: {
         setTransaction: (state, action) => {
             state.transaction = action.payload;
@@ -27,6 +33,28 @@ const transactionSlice = createSlice({
     },
 });
 
+const paymentHistorySlice = createSlice({
+    name: "paymentHistory",
+    initialState : initialpaymentHistoryState,
+    reducers: {
+        paymentHistoryRequest: (state) => {
+            state.loading = true;
+        },
+        paymentHistorySuccess: (state, action) => {
+            state.loading = false;
+            state.paymentHistory = action.payload || [];
+        },
+        paymentHistoryFail: (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+        },
+        // clearPaymentHistory: (state) => {
+        //     state.paymentHistory = [];
+        //     state.error = null;
+        // },
+    },
+});
+
 export const {
     setTransaction,
     transactionRequest,
@@ -34,4 +62,12 @@ export const {
     transactionFail,
 } = transactionSlice.actions;
 
-export default transactionSlice.reducer;
+export const {
+    paymentHistoryRequest,
+    paymentHistorySuccess,
+    paymentHistoryFail,
+    // clearPaymentHistory,
+} = paymentHistorySlice.actions;
+
+export const transactionReducer = transactionSlice.reducer;
+export const paymentHistoryReducer = paymentHistorySlice.reducer;

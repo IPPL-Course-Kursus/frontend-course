@@ -1,33 +1,27 @@
 import { useState, useEffect } from "react";
+import Sidebar from "../../../components/Sidebar/SidebarInstruktur";
 import { FaBars } from "react-icons/fa";
 import { IoArrowBackCircle, IoArrowForwardCircle } from "react-icons/io5";
+// Import Redux hooks and actions
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAdminCategories } from "../../../redux/actions/adminDataKategoriActions";
-import SidebarInstruktur from "../../../components/Sidebar/SidebarInstruktur";
+import { getAllTypeCourses } from "../../../redux/actions/typeCourseActions";
 
-const InstrukturDataKategori = () => {
+const InstrukturDataType = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const dispatch = useDispatch();
-
-  // Fetch categories from Redux store
-  const { categories } = useSelector((state) => state.adminDataKategori);
+  const { typeCourses, loading, error } = useSelector(
+    (state) => state.typeCourse
+  );
 
   useEffect(() => {
-    dispatch(fetchAdminCategories());
+    dispatch(getAllTypeCourses());
   }, [dispatch]);
 
-  // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 7;
 
-  // Sidebar state for mobile
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  // Pagination logic: slicing categories for the current page
-  const totalPages = Math.ceil(categories?.length / itemsPerPage);
-  const currentItems = categories?.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const totalPages = Math.ceil(typeCourses?.length / itemsPerPage);
 
   return (
     <>
@@ -38,7 +32,7 @@ const InstrukturDataKategori = () => {
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <SidebarInstruktur />
+          <Sidebar />
         </div>
 
         {/* Overlay */}
@@ -65,51 +59,41 @@ const InstrukturDataKategori = () => {
             </h1>
           </div>
 
-          {/* Section Data Kategori */}
+          {/* Section Data Type */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
             <h2 className="text-lg md:text-xl font-bold text-[#0a61aa]">
-              Data Kategori Kelas
+              Data Type
             </h2>
           </div>
 
-          {/* Tabel Data Kategori */}
-          <div className="overflow-x-auto bg-white p-4 rounded-lg shadow-md">
-            <table className="min-w-full table-auto">
-              <thead>
-                <tr className="bg-gray-200 text-left text-xs md:text-sm font-semibold">
-                  <th className="px-2 md:px-4 py-2">ID</th>
-                  <th className="px-2 md:px-4 py-2">Kode Kategori</th>
-                  <th className="px-2 md:px-4 py-2">Nama Kategori</th>
-                  <th className="px-2 md:px-4 py-2">Foto</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentItems?.map((category, index) => {
-                  const rowNumber =
-                    (currentPage - 1) * itemsPerPage + index + 1;
-                  return (
-                    <tr key={index} className="border-t text-xs md:text-sm">
-                      <td className="px-2 md:px-4 py-2">{rowNumber}</td>
-                      <td className="px-2 md:px-4 py-2">
-                        {category.categoryCode}
-                      </td>
-                      <td className="px-2 md:px-4 py-2">
-                        {category.categoryName}
-                      </td>
-                      <td className="px-2 md:px-4 py-2">
-                        <img
-                          src={category.image}
-                          alt={category.categoryName}
-                          className="w-16 h-16 object-cover rounded-md"
-                        />
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+          {/* Tabel Data Type */}
+          <div className="overflow-x-auto bg-white p-4">
+            {loading ? (
+              <p>Loading...</p>
+            ) : error ? (
+              <p className="text-red-500">{error}</p>
+            ) : (
+              <table className="min-w-full table-auto">
+                <thead>
+                  <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
+                    <th className="px-2 md:px-4 py-2">ID</th>
+                    <th className="px-2 md:px-4 py-2">Tipe Kelas</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {typeCourses.map((type, index) => {
+                    const rowNumber = index + 1;
+                    return (
+                      <tr key={type.id} className="border-t text-xs md:text-sm">
+                        <td className="px-2 md:px-4 py-2">{rowNumber}</td>
+                        <td className="px-2 md:px-4 py-2">{type.typeName}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            )}
           </div>
-
           {/* Pagination Controls */}
           <div className="flex justify-between items-center mt-4">
             <button
@@ -148,4 +132,4 @@ const InstrukturDataKategori = () => {
   );
 };
 
-export default InstrukturDataKategori;
+export default InstrukturDataType;

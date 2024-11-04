@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaSearch, FaFilter, FaBars } from "react-icons/fa";
+import { FaFilter, FaBars } from "react-icons/fa";
 import { IoAddCircleOutline, IoArrowBackCircle, IoArrowForwardCircle } from "react-icons/io5";
 import DataKelasInput from "../../components/InstrukturComponents/DataKelas/DataKelasInput";
 import DataKelasUbah from "../../components/InstrukturComponents/DataKelas/DataKelasUbah";
@@ -8,10 +8,11 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import SidebarInstruktur from "../../components/Sidebar/SidebarInstruktur";
 import { getAllKelas, deleteDataCourse } from "../../redux/actions/instruktorActions";
+import HeadInstruktur from "../../components/InstrukturComponents/HeadInstruktur";
 
 const InstruktorDataKelas = () => {
   const [courseTypeSearch, setCourseTypeSearch] = useState("");
-  const [searchVisible, setSearchVisible] = useState(false);
+  const [searchVisible] = useState(false);
   const [showTambahPopup, setShowTambahPopup] = useState(false);
   const [showUbahPopup, setShowUbahPopup] = useState(false);
   const [showDetailPopup, setShowDetailPopup] = useState(false);
@@ -31,9 +32,6 @@ const InstruktorDataKelas = () => {
     dispatch(getAllKelas());
   }, [dispatch]);
 
-  const toggleSearch = () => {
-    setSearchVisible(!searchVisible);
-  };
   const handleAddClick = () => {
     setSelectedCourse({});
     setShowTambahPopup(true);
@@ -55,19 +53,17 @@ const InstruktorDataKelas = () => {
     setShowDeleteModal(true);
   };
 
-const confirmDelete = () => {
-  console.log("Deleting course ID:", courseToDelete ? courseToDelete.id : "No course selected");
-  if (courseToDelete && courseToDelete.id) {
-    dispatch(deleteDataCourse(courseToDelete.id)).then(() => {
-      setShowDeleteModal(false); 
-      // window.location.reload(); // Reload halaman setelah penghapusan berhasil
-    });
-  } else {
-    console.error("Invalid course ID for deletion:", courseToDelete);
-  }
-};
-
-
+  const confirmDelete = () => {
+    console.log("Deleting course ID:", courseToDelete ? courseToDelete.id : "No course selected");
+    if (courseToDelete && courseToDelete.id) {
+      dispatch(deleteDataCourse(courseToDelete.id)).then(() => {
+        setShowDeleteModal(false);
+        // window.location.reload(); // Reload halaman setelah penghapusan berhasil
+      });
+    } else {
+      console.error("Invalid course ID for deletion:", courseToDelete);
+    }
+  };
 
   const filteredCourses = courses.filter(
     (courseType) =>
@@ -118,8 +114,8 @@ const confirmDelete = () => {
             >
               <FaBars className="text-2xl" />
             </button>
+            <HeadInstruktur />
 
-            <h1 className="text-2xl font-bold text-[#0a61aa]">Hi, Instruktur!</h1>
           </div>
 
           {/* Section Data Kelas */}
@@ -130,28 +126,33 @@ const confirmDelete = () => {
 
             <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
               {/* Tombol tambah kelas */}
-              <div className="relative">
-                <button
-                  className="py-1 px-4 bg-[#0a61aa] text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center"
-                  onClick={handleAddClick}
-                >
-                  <IoAddCircleOutline className="mr-2 text-2xl" />
-                  <span className="font-bold">Tambah</span>
-                </button>
-              </div>
+              <div className="flex items-center space-x-4">
+                {/* Tombol Tambah */}
+                <div className="relative inline-block">
+                  <button
+                    className="flex items-center py-2 px-4 bg-[#0a61aa] text-white font-semibold rounded-md text-sm transition-transform duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#0a61aa] focus:ring-opacity-50"
+                    onClick={handleAddClick}
+                  >
+                    <IoAddCircleOutline className="mr-2 text-2xl" />
+                    <span className="font-bold">Tambah</span>
+                  </button>
+                </div>
 
-              {/* Dropdown filter */}
-              <div className="relative">
-                <select
-                  value={filter}
-                  onChange={handleFilterChange}
-                  className=" py-1 px-4 bg-[#0a61aa] text-white font-semibold rounded-md text-sm transition-all duration-300 hover:scale-105 flex items-center justify-center"
-                >
-                  <option value="">Filter</option>
-                  <option value="Free">Free</option>
-                  <option value="Premium">Premium</option>
-                </select>
-                <FaFilter className="absolute right-10 top-2 text-[#0a61aa] text-sm" />
+                {/* Dropdown Filter */}
+                <div className="relative inline-block">
+                  <select
+                    value={filter}
+                    onChange={handleFilterChange}
+                    className="flex items-center py-2 pl-10 pr-4 bg-[#0a61aa] text-white font-semibold rounded-md text-sm transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#0a61aa] focus:ring-opacity-50"
+                  >
+                    <option value="" className="text-gray-500">
+                      Filter
+                    </option>
+                    <option value="Free">Free</option>
+                    <option value="Premium">Premium</option>
+                  </select>
+                  <FaFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-sm" />
+                </div>
               </div>
 
               {/* Pencarian */}
@@ -177,7 +178,7 @@ const confirmDelete = () => {
           <div className="overflow-x-auto bg-white p-4 rounded-lg shadow-md">
             <table className="min-w-full table-auto">
               <thead>
-                <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
+                <tr className="bg-gray-200 text-left text-xs md:text-sm font-semibold">
                   <th className="px-2 md:px-4 py-2">Kode</th>
                   <th className="px-2 md:px-4 py-2">Kategori</th>
                   <th className="px-2 md:px-4 py-2">Nama Kelas</th>
