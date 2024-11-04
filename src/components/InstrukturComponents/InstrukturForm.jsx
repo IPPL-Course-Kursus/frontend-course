@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 
 const InstrukturForm = ({
   show,
@@ -16,6 +17,9 @@ const InstrukturForm = ({
     email: "",
     password: "",
   });
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [phoneError, setPhoneError] = useState("");
 
   useEffect(() => {
     if (existingData) {
@@ -43,17 +47,40 @@ const InstrukturForm = ({
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    // Only allow numbers for phoneNumber
+    if (name === "phoneNumber" && !/^\d*$/.test(value)) {
+      return; // Ignore non-numeric input
+    }
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
+
+    // Validate phone number length
+    if (name === "phoneNumber") {
+      if (value.length < 10) {
+        setPhoneError("Nomor telepon harus minimal 10 karakter.");
+      } else if (value.length > 15) {
+        setPhoneError("Nomor telepon maksimal 15 karakter.");
+      } else {
+        setPhoneError("");
+      }
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (phoneError) return; // Prevent submission if there's an error
     onSubmit(formData);
     onClose();
   };
+
+  const togglePassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  // Check if the button should be disabled
+  const isSubmitDisabled = phoneError;
 
   return (
     <div
@@ -109,10 +136,13 @@ const InstrukturForm = ({
               name="phoneNumber"
               value={formData.phoneNumber}
               onChange={handleInputChange}
-              className="w-full p-2 border rounded-xl"
+              className={`w-full p-2 border rounded-xl ${phoneError ? 'border-red-500' : ''}`}
               placeholder="Masukkan nomor telepon"
               required
             />
+            {phoneError && (
+              <p className="text-red-500 font-medium text-sm mt-1">{phoneError}</p>
+            )}
           </div>
 
           <div className="mb-4">
@@ -142,21 +172,32 @@ const InstrukturForm = ({
 
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-xl"
-              placeholder="Masukkan password"
-              required
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded-xl"
+                placeholder="Masukkan password"
+                required
+              />
+              <button
+                type="button"
+                aria-label="toggle password visibility"
+                onClick={togglePassword}
+                className="absolute top-1/2 right-2 transform -translate-y-1/2 px-3 py-1 border rounded-lg"
+              >
+                {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+              </button>
+            </div>
           </div>
 
-          <div className="flex justify-center">
+          <div className="flex justify-end">
             <button
               type="submit"
-              className="py-2 px-6 bg-[#0a61aa] text-white rounded-xl"
+              className={`py-2 px-6 bg-[#0a61aa] text-white rounded-xl transition-colors duration-300 ${isSubmitDisabled ? "bg-gray-400 cursor-not-allowed" : "hover:bg-[#1A73E8] active:bg-[#084D8C]"}`}
+              disabled={isSubmitDisabled} // Disable if there's an error
             >
               {isEditMode ? "Update" : "Tambah"}
             </button>

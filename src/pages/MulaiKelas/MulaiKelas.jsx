@@ -325,7 +325,7 @@ const MulaiKelas = () => {
                 </div>
 
                 {/* Sidebar */}
-                <aside className="col-span-1 bg-white p-6 rounded-lg shadow-lg h-screen overflow-y-auto overflow">
+                <aside className="col-span-1 bg-white p-6 rounded-lg shadow-lg h-screen overflow-y-auto max-h-[calc(100vh-2rem)]"> {/* Adjust height */}
                     <h3 className="text-gray-700 text-2xl font-semibold mb-4">
                         Materi Belajar
                     </h3>
@@ -336,9 +336,6 @@ const MulaiKelas = () => {
                             <h4 className="text-blue-600 font-bold mb-2">
                                 Progres Belajar
                             </h4>
-                            {/* <span className="text-sm text-gray-500">
-                                {percentage}
-                            </span> */}
                         </div>
                         <ProgressBar contentFinish={contentFinish} />
                     </div>
@@ -353,94 +350,59 @@ const MulaiKelas = () => {
                             </span>
                         </div>
                         <ul className="space-y-4 mt-4">
-                            {data?.data?.course?.chapters?.map(
-                                (chapter, chapterIndex) => {
-                                    const previousChapterCompleted =
-                                        chapterIndex === 0 ||
-                                        data.data.course.chapters[
-                                            chapterIndex - 1
-                                        ].contents.every((content) =>
-                                            content.userContentProgress.some(
-                                                (progress) =>
-                                                    progress.contentStatus ===
-                                                    true
-                                            )
-                                        );
+                            {data?.data?.course?.chapters?.map((chapter, chapterIndex) => {
+                                const previousChapterCompleted =
+                                    chapterIndex === 0 ||
+                                    data.data.course.chapters[chapterIndex - 1].contents.every((content) =>
+                                        content.userContentProgress.some(
+                                            (progress) => progress.contentStatus === true
+                                        )
+                                    );
 
-                                    return (
-                                        <div key={chapter.id} className="mb-4">
-                                            <h5
-                                                className={`${
-                                                    previousChapterCompleted
-                                                        ? "text-blue-800"
-                                                        : "text-gray-400"
-                                                } font-semibold`}
-                                            >
-                                                Chapter {chapter.sort}{" "}
-                                                {chapter.chapterTitle}
-                                            </h5>
-                                            {chapter.contents?.map(
-                                                (content, index) => {
-                                                    const isLocked =
-                                                        !previousChapterCompleted;
-                                                    const isSelected =
-                                                        selectedContent?.id ===
-                                                        content.id;
-                                                    const isCompleted =
-                                                        content.userContentProgress.some(
-                                                            (progress) =>
-                                                                progress.contentStatus ===
-                                                                true
-                                                        );
+                                return (
+                                    <details key={chapter.id} className="mb-4">
+                                        <summary
+                                            className={`${
+                                                previousChapterCompleted ? "text-blue-600" : "text-gray-400"
+                                            } font-semibold cursor-pointer`}
+                                        >
+                                            Chapter {chapter.sort} {chapter.chapterTitle}
+                                        </summary>
+
+                                        <div className="pl-4 mt-2">
+                                            <ul>
+                                                {chapter.contents?.map((content, index) => {
+                                                    const isLocked = !previousChapterCompleted;
+                                                    const isSelected = selectedContent?.id === content.id;
+                                                    const isCompleted = content.userContentProgress.some(
+                                                        (progress) => progress.contentStatus === true
+                                                    );
 
                                                     return (
                                                         <li
                                                             key={content.id}
-                                                            onClick={() =>
-                                                                !isLocked &&
-                                                                handleContentClick(
-                                                                    content
-                                                                )
-                                                            }
+                                                            onClick={() => !isLocked && handleContentClick(content)}
                                                             className={`flex justify-between items-center cursor-pointer
-                                    ${
-                                        isLocked
-                                            ? "text-gray-400"
-                                            : "text-gray-700"
-                                    }
-                                    ${
-                                        isSelected
-                                            ? "bg-blue-100"
-                                            : "hover:bg-gray-100"
-                                    }
-                                    transition-colors duration-200 p-2 rounded-lg
-                                `}
+                                                            ${isLocked ? "text-gray-400" : "text-gray-700"}
+                                                            ${isSelected ? "bg-blue-100" : "hover:bg-gray-100"}
+                                                            transition-colors duration-200 p-2 rounded-lg`}
                                                         >
                                                             <div className="flex items-center gap-2">
                                                                 <span
-                                                                    className={`rounded-full h-4 w-4 flex items-center justify-center text-lg font-semibold mr-2 p-4
-                                            ${
-                                                isLocked
-                                                    ? "bg-gray-200 text-gray-400"
-                                                    : "bg-blue-200 text-blue-800"
-                                            }
-                                        `}
+                                                                    className={`rounded-full h-8 w-8 flex items-center justify-center text-lg font-semibold mr-2 p-4
+                                                                    ${isLocked ? "bg-gray-200 text-gray-400" : "bg-blue-200 text-blue-800"}`}
                                                                 >
                                                                     {index + 1}
                                                                 </span>
                                                                 <span
                                                                     className={`${
-                                                                        isSelected
-                                                                            ? "text-blue-800 font-semibold"
-                                                                            : ""
-                                                                    }`}
+                                                                        isSelected ? "text-blue-800 font-semibold" : ""
+                                                                    } flex items-center`}
                                                                 >
-                                                                    {
-                                                                        content.contentTitle
-                                                                    }
+                                                                    {content.contentTitle}
                                                                 </span>
                                                             </div>
-                                                            {/* Icon untuk centang atau gembok */}
+
                                                             <div className="flex items-center">
                                                                 {isCompleted ? (
                                                                     <FaCheckCircle className="w-4 h-4 text-green-500" />
@@ -450,12 +412,12 @@ const MulaiKelas = () => {
                                                             </div>
                                                         </li>
                                                     );
-                                                }
-                                            )}
+                                                })}
+                                            </ul>
                                         </div>
-                                    );
-                                }
-                            )}
+                                    </details>
+                                );
+                            })}
                         </ul>
                     </div>
 
