@@ -14,6 +14,10 @@ const CoursesPage = () => {
   const [isMobileDropdownVisible, setMobileDropdownVisible] = useState(false);
   const [filterChecked, setFilterChecked] = useState({});
   const [courseStatusFilter, setCourseStatusFilter] = useState('all'); // State untuk status kursus
+  const {
+    category = [],
+    courseLevel = [],
+} = useSelector((state) => state.category);
   
 
   useEffect(() => {
@@ -35,36 +39,48 @@ const CoursesPage = () => {
     setCourseStatusFilter(status);
   };
   
+  const activeFilters = Object.keys(filterChecked).filter((key) => filterChecked[key]);
+  console.log(activeFilters); // Log the active filters
 
   const filteredCourses = () => {
     const activeFilters = Object.keys(filterChecked).filter((key) => filterChecked[key]);
-  
-    return mycourse.filter((course) => {
-      const courseCategory = course.course.category.categoryName;
-      const courseLevel = course.course.courseLevel.levelName;
-  
-      const matchesCategoryFilter = activeFilters.includes(courseCategory);
-      const matchesLevelFilter = activeFilters.includes(courseLevel);
-  
-      const matchesStatus =
-        courseStatusFilter === "all" ||
-        (courseStatusFilter === "notStarted" && course.contentFinish === 0) ||
-        (courseStatusFilter === "inProgress" &&
-          course.contentFinish > 0 &&
-          course.contentFinish < 100) ||
-        (courseStatusFilter === "completed" && course.contentFinish === 100);
-        
-        const matchesAllFilters = matchesStatus && 
-        (activeFilters.length === 0 || // Jika tidak ada filter aktif, tampilkan semua kursus
-        (activeFilters.length === 1 && (matchesCategoryFilter || matchesLevelFilter)) || // Jika satu filter aktif
-        (activeFilters.length > 1 && matchesCategoryFilter && matchesLevelFilter) || // Jika dua filter aktif
-        (activeFilters.length === 2 && matchesCategoryFilter && matchesLevelFilter)); // Pastikan kedua filter terpenuhi jika ada dua filter aktif
-  
-      return matchesAllFilters; // Kembalikan true jika kursus memenuhi semua syarat
+ 
+    let filteredCourses = mycourse.filter((courseItem) => {
+        const matchesStatus =
+            courseStatusFilter === "all" ||
+            (courseStatusFilter === "notStarted" && courseItem.contentFinish === 0) ||
+            (courseStatusFilter === "inProgress" &&
+                courseItem.contentFinish > 0 &&
+                courseItem.contentFinish < 100) ||
+            (courseStatusFilter === "completed" && courseItem.contentFinish === 100);
+ 
+        return matchesStatus;
     });
-  };
-  
-
+ 
+    if (activeFilters.length > 0) {
+        const categoryFilters = activeFilters.filter((filter) =>
+            category.some((cat) => cat.categoryName === filter)
+        );
+        const levelFilters = activeFilters.filter((filter) =>
+          ["Beginner", "Intermediate", "Advanced"].includes(filter)
+      );
+      
+        filteredCourses = filteredCourses.filter((courseItem) => {
+            const matchesCategory =
+                categoryFilters.length === 0 ||
+                (courseItem.course.category &&
+                    categoryFilters.includes(courseItem.course.category.categoryName));
+            const matchesLevel =
+                levelFilters.length === 0 ||
+                (courseItem.course.courseLevel &&
+                    levelFilters.includes(courseItem.course.courseLevel.levelName));
+ 
+            return matchesCategory && matchesLevel;
+        });
+    }
+ 
+    return filteredCourses;
+ };
 
 
   return (
@@ -258,7 +274,7 @@ const CoursesPage = () => {
                         className="h-5 w-5 mr-2"
                         viewBox="0 0 24 24"
                         fill="none"
-                        stroke="#32CD32"
+                        stroke="black"                         
                         strokeWidth="2"
                       >
                         <path d="M3 5C6 3 10 3 12 5V19C10 17 6 17 3 19V5Z" />
@@ -277,7 +293,7 @@ const CoursesPage = () => {
                             className="h-5 w-5 mr-2"
                             viewBox="0 0 24 24"
                             fill="none"
-                            stroke="#32CD32"
+                            stroke="black"                             
                             strokeWidth="2"
                           >
                             <path d="M12 2L4 6V12C4 17.5 7.5 21 12 22C16.5 21 20 17.5 20 12V6L12 2Z" />
@@ -295,7 +311,7 @@ const CoursesPage = () => {
                             className="h-5 w-5 mr-2"
                             fill="none"
                             viewBox="0 0 24 24"
-                            stroke="#32CD32"
+                            stroke="black" 
                             strokeWidth="2"
                           >
                             <path
@@ -309,24 +325,23 @@ const CoursesPage = () => {
 
                         {/* Progress Bar di bawah durasi */}
                         <div className="w-full bg-gray-300 rounded-full h-6 mb-2">
-  <div
-    className="bg-indigo-500 rounded-full h-full flex items-center justify-center"
-    style={{
-      width: `${courseItem.contentFinish}%`,
-    }}
-  >
-    <span className="text-white text-xs font-bold pl-9">
-      {Math.round(courseItem.contentFinish) }%
-    </span>
-  </div>
-</div>
+                          <div
+                            className="bg-indigo-500 rounded-full h-full flex items-center justify-center"
+                            style={{
+                              width: `${courseItem.contentFinish}%`,
+                            }}
+                          >
+                            <span className="text-white text-xs font-bold pl-9">
+                              {Math.round(courseItem.contentFinish) }%
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   );
                 })
               ) : (
                 <p className="text-2xl font-bold text-gray-700 text-center mt-4">No courses found for you</p>
-
               )}
             </div>
           </div>

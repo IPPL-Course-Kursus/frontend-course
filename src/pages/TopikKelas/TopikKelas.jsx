@@ -303,7 +303,7 @@ const TopikKelas = () => {
                                 {courseTypes &&
                                     courseTypes.map(
                                         (type, i) => (
-                                            console.log(courseTypes),
+                                            console.log(courseTypes,"tes"),
                                             (
                                                 <button
                                                     key={i}
