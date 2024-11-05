@@ -177,6 +177,7 @@ const handleUpdate = async (e) => {
               type="number"
               name="sort"
               value={formData.sort}
+              disabled
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl" // Hapus bg-gray-200 dan cursor-not-allowed
               placeholder="ex 1"

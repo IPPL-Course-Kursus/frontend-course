@@ -4,7 +4,11 @@ import {
     transactionRequest,
     transactionSuccess,
     transactionFail,
+    paymentHistoryRequest,
+    paymentHistorySuccess,
+    paymentHistoryFail
 } from "../reducers/transactionReducers";
+
 
 const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
 
@@ -53,3 +57,50 @@ export const postSuccessPayment = (orderId) => async (dispatch) => {
         throw error;
     }
 };
+
+export const fetchPaymentHistory = () => async (dispatch) => {
+    try {
+        dispatch(paymentHistoryRequest());
+
+        const token = getCookie("token");
+        const response = await axios.get(`${api_url}transaction/user`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        dispatch(paymentHistorySuccess(response.data.data || []));
+        return response.data;
+    } catch (error) {
+        dispatch(paymentHistoryFail(error.response?.data || "Something went wrong"));
+        throw error;
+    }
+};
+
+export const resumeTransaction = (orderId) => async (dispatch) => {
+    try {
+        dispatch(transactionRequest());
+
+        const token = getCookie("token");
+        const response = await axios.get(
+            `${api_url}transaction/resume/${orderId}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        if (response.data.success) {
+            // Pastikan Anda mengembalikan response.data
+            return response.data; // Mengembalikan data dari API
+        }
+
+        dispatch(transactionFail("Failed to resume transaction"));
+    } catch (error) {
+        dispatch(transactionFail(error.response?.data || "Failed to resume transaction"));
+        throw error;
+    }
+};
+
+

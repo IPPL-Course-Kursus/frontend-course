@@ -9,7 +9,7 @@ const InstrukturDataKategori = () => {
   const dispatch = useDispatch();
 
   // Fetch categories from Redux store
-  const { loading, categories, error } = useSelector((state) => state.adminDataKategori);
+  const { categories } = useSelector((state) => state.adminDataKategori);
 
   useEffect(() => {
     dispatch(fetchAdminCategories());
@@ -60,35 +60,42 @@ const InstrukturDataKategori = () => {
               <FaBars className="text-2xl" />
             </button>
 
-            <h1 className="text-2xl font-bold text-[#0a61aa]">Hi, Admin!</h1>
+            <h1 className="text-2xl font-bold text-[#0a61aa]">
+              Hi, Instruktur!
+            </h1>
           </div>
 
           {/* Section Data Kategori */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
-            <h2 className="text-lg md:text-xl font-bold text-[#0a61aa]">Data Kategori Kelas</h2>
+            <h2 className="text-lg md:text-xl font-bold text-[#0a61aa]">
+              Data Kategori Kelas
+            </h2>
           </div>
 
           {/* Tabel Data Kategori */}
-          <div className="overflow-x-auto bg-white p-4">
-            {loading ? (
-              <p>Loading...</p>
-            ) : error ? (
-              <p>Error: {error}</p>
-            ) : (
-              <table className="min-w-full table-auto">
-                <thead>
-                  <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
-                    <th className="px-2 md:px-4 py-2">ID</th>
-                    <th className="px-2 md:px-4 py-2">Nama Kategori</th>
-                    <th className="px-2 md:px-4 py-2">Foto</th>
-                    <th className="px-2 md:px-4 py-2">Published</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentItems?.map((category, index) => (
+          <div className="overflow-x-auto bg-white p-4 rounded-lg shadow-md">
+            <table className="min-w-full table-auto">
+              <thead>
+                <tr className="bg-gray-200 text-left text-xs md:text-sm font-semibold">
+                  <th className="px-2 md:px-4 py-2">ID</th>
+                  {/* <th className="px-2 md:px-4 py-2">Kode Kategori</th> */}
+                  <th className="px-2 md:px-4 py-2">Nama Kategori</th>
+                  <th className="px-2 md:px-4 py-2">Foto</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentItems?.map((category, index) => {
+                  const rowNumber =
+                    (currentPage - 1) * itemsPerPage + index + 1;
+                  return (
                     <tr key={index} className="border-t text-xs md:text-sm">
-                      <td className="px-2 md:px-4 py-2">{category.id}</td>
-                      <td className="px-2 md:px-4 py-2">{category.categoryName}</td>
+                      <td className="px-2 md:px-4 py-2">{rowNumber}</td>
+                      {/* <td className="px-2 md:px-4 py-2">
+                        {category.categoryCode}
+                      </td> */}
+                      <td className="px-2 md:px-4 py-2">
+                        {category.categoryName}
+                      </td>
                       <td className="px-2 md:px-4 py-2">
                         <img
                           src={category.image}
@@ -96,19 +103,20 @@ const InstrukturDataKategori = () => {
                           className="w-16 h-16 object-cover rounded-md"
                         />
                       </td>
-                      <td className="px-2 md:px-4 py-2">{category.published ? "True" : "False"}</td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
 
           {/* Pagination Controls */}
           <div className="flex justify-between items-center mt-4">
             <button
               className={`flex items-center py-2 px-4 rounded-lg ${
-                currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-[#0a61aa] text-white"
+                currentPage === 1
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-[#0a61aa] text-white"
               } transition-all duration-300 hover:scale-105`}
               onClick={() => setCurrentPage(currentPage - 1)}
               disabled={currentPage === 1}

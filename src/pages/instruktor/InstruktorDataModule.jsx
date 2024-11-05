@@ -11,7 +11,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import SideBar from "../../components/Sidebar/SidebarInstruktur";
 import UbahModule from "../../components/InstrukturComponents/DataModuleComponent/UbahModule";
 import { deleteDataModule, getDataModule } from "../../redux/actions/instruktorActions";
-import DataModuleInput from "../../components/InstrukturComponents/DataModuleInput";
+import DataModuleInput from "../../components/InstrukturComponents/DataModuleComponent/DataModuleInput";
+import HeadInstruktur from "../../components/InstrukturComponents/HeadInstruktur";
 
 const InstruktorDataModule = () => {
   const [showTambahPopup, setShowTambahPopup] = useState(false);
@@ -27,14 +28,16 @@ const InstruktorDataModule = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { chapter, loading, error } = useSelector((state) => state.chapter);
+  const { chapter } = useSelector((state) => state.chapter);
 
   const { id } = useParams();
 
   // Ambil data chapter dari Redux store
   useEffect(() => {
-    dispatch(getDataModule(id)); // Menggunakan courseId sebagai parameter
+    dispatch(getDataModule(id));
   }, [dispatch, id]);
+
+  console.log("Chapter data:", chapter); // Tambahkan ini untuk debugging
 
   const handleAddClick = () => {
     setSelectedChapter({});
@@ -52,12 +55,25 @@ const InstruktorDataModule = () => {
   };
 
   const confirmDelete = () => {
+    if (!chapterToDelete?.id) {
+      console.error("Chapter ID is required."); // Pastikan ID chapter ada
+      return; // Hentikan proses jika id chapter tidak ada
+    }
+
     console.log("Menghapus chapter dengan ID:", chapterToDelete.id); // Debugging line
-    dispatch(deleteDataModule(chapterToDelete.id)).then(() => {
-      setShowDeleteModal(false);
-      window.location.reload(); // Reload halaman setelah penghapusan berhasil
-    });
+
+    dispatch(deleteDataModule(chapterToDelete.id))
+      .then(() => {
+        setShowDeleteModal(false); // Tutup modal setelah berhasil
+        window.location.reload(); // Reload halaman setelah penghapusan berhasil
+      })
+      .catch((error) => {
+        console.error("Error deleting chapter:", error);
+        setShowDeleteModal(false);
+      });
   };
+
+  
 
   const handleDetailClick = (course) => {
     console.log("Detail clicked for:", course);
@@ -67,8 +83,12 @@ const InstruktorDataModule = () => {
     navigate(-1);
   };
 
-  const totalPages = Math.ceil(chapter.length / itemsPerPage);
-  const currentItems = chapter.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const totalPages =
+    chapter && Array.isArray(chapter) ? Math.ceil(chapter.length / itemsPerPage) : 0;
+  const currentItems =
+    chapter && Array.isArray(chapter)
+      ? chapter.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+      : [];
 
   return (
     <>
@@ -97,7 +117,7 @@ const InstruktorDataModule = () => {
               <FaBars className="text-2xl" />
             </button>
 
-            <h1 className="text-3xl font-bold text-[#0a61aa] tracking-wide">Hi, Instruktur!</h1>
+            <HeadInstruktur />
           </div>
 
           <button
@@ -128,50 +148,45 @@ const InstruktorDataModule = () => {
           </div>
 
           {/* Kondisi loading dan error */}
-          {loading ? (
-            <p>Loading...</p>
-          ) : error ? (
-            <p>Error: {error}</p>
-          ) : (
-            <div className="overflow-x-auto bg-white p-4 rounded-lg shadow-md">
-              <table className="min-w-full table-auto">
-                <thead>
-                  <tr className="bg-gray-200 text-left text-xs md:text-sm font-semibold border-b">
-                    <th className="px-4 py-3">ID</th>
-                    <th className="px-4 py-3">Judul Chapter</th>
-                    <th className="px-4 py-3">Aksi</th>
+
+          <div className="overflow-x-auto bg-white p-4 rounded-lg shadow-md">
+            <table className="min-w-full table-auto">
+              <thead>
+                <tr className="bg-gray-200 text-left text-xs md:text-sm font-semibold border-b">
+                  <th className="px-4 py-3">ID</th>
+                  <th className="px-4 py-3">Judul Chapter</th>
+                  <th className="px-4 py-3">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentItems.map((chapter, index) => (
+                  <tr key={index} className="border-b text-xs md:text-sm hover:bg-gray-50">
+                    <td className="px-4 py-2">{chapter.sort}</td>
+                    <td className="px-4 py-2">{chapter.chapterTitle}</td>
+                    <td className="px-4 py-2 flex space-x-2">
+                      <Link to={`/inst/data-konten/${chapter.id}`}>
+                        <button className="py-1 px-2 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2">
+                          Kelola
+                        </button>
+                      </Link>
+                      <button
+                        className="py-1 px-2 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                        onClick={() => handleEditClick(chapter)}
+                      >
+                        Ubah
+                      </button>
+                      <button
+                        className="py-1 px-2 bg-red-700 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                        onClick={() => handleDelete(chapter)}
+                      >
+                        Hapus
+                      </button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {currentItems.map((chapter, index) => (
-                    <tr key={index} className="border-b text-xs md:text-sm hover:bg-gray-50">
-                      <td className="px-4 py-2">{chapter.sort}</td>
-                      <td className="px-4 py-2">{chapter.chapterTitle}</td>
-                      <td className="px-4 py-2 flex space-x-2">
-                        <Link to={`/inst/data-konten/${chapter.id}`}>
-                          <button className="py-1 px-2 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2">
-                            Kelola
-                          </button>
-                        </Link>
-                        <button
-                          className="py-1 px-2 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
-                          onClick={() => handleEditClick(chapter)}
-                        >
-                          Ubah
-                        </button>
-                        <button
-                          className="py-1 px-2 bg-red-700 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
-                          onClick={() => handleDelete(chapter)}
-                        >
-                          Hapus
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           {/* Pagination */}
           <div className="flex justify-between items-center mt-4">
@@ -220,18 +235,21 @@ const InstruktorDataModule = () => {
           />
 
           {showDeleteModal && (
-            <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-              <div className="bg-white p-6 rounded-3xl shadow-lg relative w-80">
-                <h2 className="text-xl font-bold text-center mb-4">Yakin hapus data?</h2>
-                <div className="flex justify-around mt-6">
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-70">
+              {" "}
+              {/* Ubah warna latar belakang */}
+              <div className="bg-white p-6 rounded-lg shadow-lg">
+                <h2 className="text-lg font-semibold mb-4">Konfirmasi Hapus</h2>
+                <p className="mb-4">Apakah Anda yakin ingin menghapus konten ini?</p>
+                <div className="flex justify-end space-x-4">
                   <button
-                    className="bg-red-600 text-white px-6 py-2 rounded-full font-bold"
+                    className="py-2 px-4 bg-red-500 text-white rounded-md"
                     onClick={confirmDelete}
                   >
                     Hapus
                   </button>
                   <button
-                    className="bg-gray-300 px-6 py-2 rounded-full font-bold"
+                    className="py-2 px-4 bg-gray-300 rounded-md"
                     onClick={() => setShowDeleteModal(false)}
                   >
                     Batal

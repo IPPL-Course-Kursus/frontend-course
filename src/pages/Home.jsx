@@ -2,9 +2,6 @@ import { Link, NavLink } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import CardCourse from "../components/HomeComponent/CardCourse";
 import CardFree from "../components/HomeComponent/CardFree";
-import imgSection from "../assets/bernadya.jpg";
-import profilePic from "../assets/profil.png";
-import { IoIosArrowForward } from "react-icons/io";
 import "swiper/css";
 import "swiper/css/navigation";
 import Footer from "../components/Footer";
@@ -13,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getFreeCourse, getPopularCourse } from "../redux/actions/courseActions";
 import { getCategory } from "../redux/actions/categoryActions";
+import Content from "../components/HomeComponent/Content";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -59,13 +57,17 @@ const Home = () => {
       <div className="w-full h-auto bg-primary flex justify-center items-center py-12 mt-20">
         <div className="flex flex-col lg:flex-row items-center max-w-6xl px-6 lg:px-12">
           <div className="lg:w-1/2">
-            <img src={imgSection} alt="Freelancer Section" className="w-full h-auto" />
+            <img
+              src="https://images.unsplash.com/photo-1506878206813-92402b8ded23?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="Freelancer Section"
+              className="w-full h-auto"
+            />
           </div>
-          <div className="lg:w-1/2 text-center lg:text-left mt-6 lg:mt-0 lg:pl-12">
-            <h2 className="text-white text-3xl font-semibold mb-4">
+          <div className="lg:w-1/2 mt-6 lg:mt-0 lg:pl-12 text-center lg:text-left">
+            <h2 className="text-white text-2xl font-semibold mb-4">
               Siap Membangun Karir Freelancer Profesional? <br /> Freelance Plus Solusinya
             </h2>
-            <p className="text-white text-base mb-6">
+            <p className="text-white text-base mb-6 text-justify lg:text-left">
               Kuasai strategi menjadi freelancer profesional untuk meningkatkan pendapatan secara
               langsung bersama para ahli berpengalaman.
             </p>
@@ -77,38 +79,9 @@ const Home = () => {
           </div>
         </div>
       </div>
+
       <CardFree title="Kursus Gratis" free={free} />
-      <div className="w-full h-auto bg-gray-100 py-16 mt-10">
-        <div className="max-w-3xl mx-auto bg-white px-6 lg:px-12 relative">
-          <div className="flex flex-col  items-center lg:flex-row lg:items-center">
-            <div className="lg:w-1/2 mb-8 lg:mb-0">
-              <blockquote className="text-gray-700 py-10 px-4 text-justify text-md font-semibold">
-                {`"Lorem Ipsum is simply dummy text of the printing and
-                                typesetting industry. Lorem Ipsum has been the
-                                industry's standard dummy text ever since the 1500s,
-                                when an unknown printer took a galley of type and
-                                scrambled it to make a type specimen book. It has
-                                survived not only five centuries, but also the leap into
-                                electronic typesetting, remaining essentially unchanged."`}
-              </blockquote>
-            </div>
-            <div className="flex flex-col  items-center lg:justify-end lg:w-1/2 ">
-              <img
-                src={profilePic}
-                alt="Profile Picture"
-                className="w-24 h-24 rounded-full mb-4 lg:mb-0 lg:mr-6"
-              />
-              <div>
-                <h3 className="text-xl font-semibold">Muhamad Saman</h3>
-                <p className="text-gray-500 ml-10">Mahasiswa</p>
-              </div>
-            </div>
-            <div className="relative mt-10 lg:absolute -right-0 lg:-right-6 w-12 h-12 bg-neutral rounded-full">
-              <IoIosArrowForward className="w-10 h-10 text-white absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2" />
-            </div>
-          </div>
-        </div>
-      </div>
+      <Content />
       <Footer />
     </>
   );

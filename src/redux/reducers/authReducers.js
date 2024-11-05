@@ -144,6 +144,9 @@ const emailSlice = createSlice({
       state.success = false;
       state.error = action.payload;
     },
+    resetEmailSuccess: (state) => {
+      state.success = false; 
+    },
   },
 });
 
@@ -279,7 +282,7 @@ export const {
 export const { resetPasswordStart, resetPasswordSuccess, resetPasswordFailure } =
   resetPasswordSlice.actions;
 
-export const { sendEmailStart, sendEmailSuccess, sendEmailFailure } = emailSlice.actions;
+export const { sendEmailStart, sendEmailSuccess, sendEmailFailure, resetEmailSuccess } = emailSlice.actions;
 
 export const { verifyEmailStart, verifyEmailSuccess, verifyEmailFailure } =
   verifyEmailSlice.actions;

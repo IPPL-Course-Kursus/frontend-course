@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -76,7 +76,7 @@ const CardFree = ({ title = "Kelas Free" }) => {
   };
 
   const courseSliderSettings = {
-    dots: true,
+    dots: false,
     infinite: true,
     speed: 500,
     slidesToShow: 3,
@@ -92,17 +92,21 @@ const CardFree = ({ title = "Kelas Free" }) => {
   return (
     <>
       <div className="flex justify-center">
-        <div className="flex flex-col items-center max-w-[1060px] container gap-5 pt-[26px] pb-[53px]">
+        <div className="flex flex-col items-center max-w-[1060px] pl-4 pr-4 lg:pr-0 lg:pl-0 container gap-5 pt-[26px] pb-[53px]">
           {/* Header Section */}
           <div className="flex justify-between w-full px-6">
             <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
-            <Link to="/class" className="text-sm font-semibold text-blue-600 hover:underline">
+            <NavLink
+              to="/topik-kelas"
+              className="text-sm font-semibold text-blue-600 hover:underline"
+            >
               Lihat Semua
-            </Link>
+            </NavLink>
           </div>
 
           {/* Category Carousel Section */}
-          <div className="relative w-full">
+          <div className="relative w-full px-6">
+            {/* Add padding here */}
             <Slider ref={sliderRef} {...categorySliderSettings}>
               <button
                 onClick={() => handleFilterClick(null)} // Change to null for "All"
@@ -141,9 +145,9 @@ const CardFree = ({ title = "Kelas Free" }) => {
           selectCategoryId === null ? ( // Menampilkan slider jika "All" dipilih
             <Slider {...courseSliderSettings}>
               {filteredCoursePopular.map((val) => (
-                <div key={val.id} className="p-2">
+                <div key={val.id} onClick={() => window.location(`/course/${val.id}`)} className="p-2">
                   <div
-                    className={`w-full bg-white shadow-xl rounded-xl overflow-hidden pb-3 h-full flex flex-col ${
+                    className={`w-full bg-white shadow-xl rounded-xl overflow-hidden pb-3 h-full flex flex-col transition-all duration-300 hover:scale-105 ${
                       val.isPurchased ? "bg-green-50" : ""
                     }`}
                   >
@@ -211,7 +215,7 @@ const CardFree = ({ title = "Kelas Free" }) => {
                           <div className="my-2">
                             <Link
                               to={`/course-detail/${val.id}`} // Link to course detail page
-                              className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
+                              className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs "
                             >
                               Lihat Kelas
                             </Link>
@@ -225,9 +229,9 @@ const CardFree = ({ title = "Kelas Free" }) => {
             </Slider>
           ) : (
             // Tampilan grid untuk kategori yang dipilih
-            <div className="grid mt-2 gap-2 grid-cols-1 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:mt-4">
+            <div className="flex mt-2 overflow-x-auto space-x-4">
               {filteredCoursePopular.map((val) => (
-                <div key={val.id} className="p-2">
+                <div key={val.id} className="flex-none w-1/3 p-2">
                   <div
                     className={`w-full bg-white shadow-xl rounded-xl overflow-hidden pb-3 h-full flex flex-col ${
                       val.isPurchased ? "bg-green-50" : ""
@@ -299,7 +303,7 @@ const CardFree = ({ title = "Kelas Free" }) => {
                               to={`/course-detail/${val.id}`} // Link to course detail page
                               className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
                             >
-                              Lihat Kelas
+                              Lihat Detail
                             </Link>
                           </div>
                         </div>
@@ -311,7 +315,9 @@ const CardFree = ({ title = "Kelas Free" }) => {
             </div>
           )
         ) : (
-          <div className="text-center text-gray-500 mt-10">Tidak ada kursus tersedia.</div>
+          <div className="flex justify-center items-center">
+            <p className="text-gray-500">Tidak ada kursus yang tersedia.</p>
+          </div>
         )}
       </div>
     </>

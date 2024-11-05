@@ -1,18 +1,27 @@
 // src/components/SidebarAdmin.jsx
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { logout } from "../../redux/actions/authActions";
 
 const SidebarInstruktur = () => {
   const [isDataMenuOpen, setIsDataMenuOpen] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const toggleDataMenu = () => {
     setIsDataMenuOpen(!isDataMenuOpen);
   };
 
+  const handleLogout = () => {
+    dispatch(logout()); // Dispatch action logout
+    navigate("/login"); // Arahkan pengguna ke halaman login
+  };
+
   return (
-    <div className="h-screen w-64 bg-blue-900 text-white flex flex-col">
+    <div className="min-h-screen h-fullw w-64 bg-blue-900 text-white flex flex-col">
       <div className="flex items-center justify-center h-20">
-        <h1 className="text-2xl font-bold">LOGO</h1>
+        <h1 className="text-2xl font-bold">Etam Course</h1>
       </div>
       <nav className="flex-1 px-2 py-4 space-y-2">
         <Link to="/inst/dashboard">
@@ -46,6 +55,16 @@ const SidebarInstruktur = () => {
                   Data Kategori
                 </span>
               </Link>
+              <Link to="/inst/data-level">
+                <span className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
+                  Data Level
+                </span>
+              </Link>
+              <Link to="/inst/data-type">
+                <span className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
+                  Data Type
+                </span>
+              </Link>
             </div>
           )}
         </div>
@@ -56,9 +75,12 @@ const SidebarInstruktur = () => {
             </span>
           </Link>
         </div>
-        <a href="#" className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
+        <button
+          onClick={handleLogout}
+          className="w-full text-left py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700 flex justify-between items-center"
+        >
           Keluar
-        </a>
+        </button>
       </nav>
     </div>
   );

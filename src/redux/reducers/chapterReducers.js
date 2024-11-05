@@ -28,7 +28,7 @@ const chapterSlice = createSlice({
 
     fetchChaptersSuccess: (state, action) => {
       console.log("Data received in reducer:", action.payload); // Log data yang diterima
-      state.chapter = action.payload;
+      state.chapter = action.payload; // Pastikan payload di sini sesuai
       state.loading = false;
     },
     fetchChaptersFailure: (state, action) => {

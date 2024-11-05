@@ -27,6 +27,10 @@ const AdminDataKategori = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
 
+  // State for popup notification
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState("");
+
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 7;
@@ -56,7 +60,7 @@ const AdminDataKategori = () => {
   const dispatch = useDispatch();
 
   // Fetch categories from Redux store
-  const { loading, categories, error } = useSelector(
+  const { loading, categories = [], error } = useSelector(
     (state) => state.adminDataKategori
   );
 
@@ -64,21 +68,51 @@ const AdminDataKategori = () => {
     dispatch(fetchAdminCategories());
   }, [dispatch]);
 
-  // Pagination logic: slicing categories for the current page
-  const totalPages = Math.ceil(categories?.length / itemsPerPage);
-  const currentItems = categories?.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
   const confirmDelete = () => {
     dispatch(deleteCategory(categoryToDelete.id));
     setShowDeleteModal(false);
+    showPopupNotification("Kategori berhasil dihapus");
   };
 
-  const filteredCategories = currentItems?.filter((category) =>
-    category.categoryName.toLowerCase().includes(searchValue.toLowerCase())
+  // Remove undefined or null categories
+  const validCategories = categories.filter(
+    (category) => category && typeof category.categoryName === "string"
   );
+
+  // 1. Filter categories based on searchValue before pagination
+  const filteredCategories = validCategories.filter((category) => {
+    const categoryName = category.categoryName.toLowerCase();
+    const searchTerm = (searchValue || "").toLowerCase();
+    return categoryName.includes(searchTerm);
+  });
+
+  // 2. Calculate total pages based on filtered categories
+  const totalPages = Math.ceil(filteredCategories.length / itemsPerPage) || 1;
+
+  // 3. Adjust currentPage if it exceeds totalPages
+  const adjustedCurrentPage = Math.min(currentPage, totalPages);
+
+  // 4. Slice the filtered categories for the current page
+  const currentItems = filteredCategories.slice(
+    (adjustedCurrentPage - 1) * itemsPerPage,
+    adjustedCurrentPage * itemsPerPage
+  );
+
+  // 5. Update currentPage when totalPages changes
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
+
+  // Show notification popup
+  const showPopupNotification = (message) => {
+    setNotificationMessage(message);
+    setShowNotification(true);
+    setTimeout(() => {
+      setShowNotification(false);
+    }, 3000);
+  };
 
   return (
     <>
@@ -141,7 +175,10 @@ const AdminDataKategori = () => {
                 <input
                   type="text"
                   value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
+                  onChange={(e) => {
+                    setSearchValue(e.target.value ?? "");
+                    setCurrentPage(1); // Reset to first page on search
+                  }}
                   className={`transition-all duration-300 ease-in-out border border-[#173D94] rounded-full ml-2 p-1 ${
                     searchVisible
                       ? "w-40 opacity-100"
@@ -163,96 +200,114 @@ const AdminDataKategori = () => {
               <table className="min-w-full table-auto">
                 <thead>
                   <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
-                    <th className="px-2 md:px-4 py-2">ID</th>
+                    <th className="px-2 md:px-4 py-2">Nomor</th>
                     <th className="px-2 md:px-4 py-2">Nama Kategori</th>
-                    <th className="px-2 md:px-4 py-2">Kode Kategori</th>
                     <th className="px-2 md:px-4 py-2">Foto</th>
                     <th className="px-2 md:px-4 py-2">Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredCategories?.map((category, index) => (
-                    <tr key={index} className="border-t text-xs md:text-sm">
-                      <td className="px-2 md:px-4 py-2">{category.id}</td>
-                      <td className="px-2 md:px-4 py-2">
-                        {category.categoryName}
-                      </td>
-                      <td className="px-2 md:px-4 py-2">
-                        {category.categoryCode}
-                      </td>
-                      <td className="px-2 md:px-4 py-2">
-                        <img
-                          src={category.image}
-                          alt={category.categoryName}
-                          className="w-16 h-16 object-cover rounded-md"
-                        />
-                      </td>
-                      <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
-                        {/* Edit Button */}
-                        <button
-                          className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
-                          onClick={() => handleEditClick(category)}
-                        >
-                          Ubah
-                        </button>
-                        {/* Delete Button */}
-                        <button
-                          className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
-                          onClick={() => handleDelete(category)}
-                        >
-                          Hapus
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                  {currentItems?.map((category, index) => {
+                    if (!category || !category.categoryName) return null; // Skip undefined categories
+                    const rowNumber =
+                      (adjustedCurrentPage - 1) * itemsPerPage + index + 1;
+                    return (
+                      <tr
+                        key={category.id}
+                        className="border-t text-xs md:text-sm"
+                      >
+                        <td className="px-2 md:px-4 py-2">{rowNumber}</td>
+                        <td className="px-2 md:px-4 py-2">
+                          {category.categoryName}
+                        </td>
+                        <td className="px-2 md:px-4 py-2">
+                          <img
+                            src={category.image}
+                            alt={category.categoryName}
+                            className="w-16 h-16 object-cover rounded-md"
+                          />
+                        </td>
+                        <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
+                          {/* Edit Button */}
+                          <button
+                            className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                            onClick={() => handleEditClick(category)}
+                          >
+                            Ubah
+                          </button>
+                          {/* Delete Button */}
+                          <button
+                            className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                            onClick={() => handleDelete(category)}
+                          >
+                            Hapus
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             )}
           </div>
 
           {/* Pagination Controls */}
-          <div className="flex justify-between items-center mt-4">
-            <button
-              className={`flex items-center py-2 px-4 rounded-lg ${
-                currentPage === 1
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-[#0a61aa] text-white"
-              } transition-all duration-300 hover:scale-105`}
-              onClick={() => setCurrentPage(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              <IoArrowBackCircle className="mr-2 text-xl" />
-              Previous
-            </button>
+          {filteredCategories.length > itemsPerPage && (
+            <div className="flex justify-between items-center mt-4">
+              <button
+                className={`flex items-center py-2 px-4 rounded-lg ${
+                  adjustedCurrentPage === 1
+                    ? "bg-gray-300 cursor-not-allowed"
+                    : "bg-[#0a61aa] text-white"
+                } transition-all duration-300 hover:scale-105`}
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={adjustedCurrentPage === 1}
+              >
+                <IoArrowBackCircle className="mr-2 text-xl" />
+                Previous
+              </button>
 
-            <span className="text-lg font-semibold">
-              Page {currentPage} of {totalPages}
-            </span>
+              <span className="text-lg font-semibold">
+                Page {adjustedCurrentPage} of {totalPages}
+              </span>
 
-            <button
-              className={`flex items-center py-2 px-4 rounded-lg ${
-                currentPage === totalPages
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-[#0a61aa] text-white"
-              } transition-all duration-300 hover:scale-105`}
-              onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              Next
-              <IoArrowForwardCircle className="ml-2 text-xl" />
-            </button>
-          </div>
+              <button
+                className={`flex items-center py-2 px-4 rounded-lg ${
+                  adjustedCurrentPage === totalPages
+                    ? "bg-gray-300 cursor-not-allowed"
+                    : "bg-[#0a61aa] text-white"
+                } transition-all duration-300 hover:scale-105`}
+                onClick={() => setCurrentPage((prev) => prev + 1)}
+                disabled={adjustedCurrentPage === totalPages}
+              >
+                Next
+                <IoArrowForwardCircle className="ml-2 text-xl" />
+              </button>
+            </div>
+          )}
 
           {/* Pop-up for Add Category */}
           <TambahKategori
             show={showTambahPopup}
-            onClose={() => setShowTambahPopup(false)}
+            onClose={() => {
+              setShowTambahPopup(false);
+            }}
+            onSuccess={() => {
+              dispatch(fetchAdminCategories());
+              showPopupNotification("Kategori berhasil ditambahkan");
+            }}
           />
 
           {/* Pop-up for Edit Category */}
           <UbahKategori
             show={showUbahPopup}
-            onClose={() => setShowUbahPopup(false)}
+            onClose={() => {
+              setShowUbahPopup(false);
+            }}
+            onSuccess={() => {
+              dispatch(fetchAdminCategories());
+              showPopupNotification("Kategori berhasil diubah");
+            }}
             existingData={selectedCategory}
           />
 
@@ -278,6 +333,13 @@ const AdminDataKategori = () => {
                   </button>
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* Notification Popup */}
+          {showNotification && (
+            <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 mb-10 bg-red-500 text-white px-4 py-2 rounded-md shadow-lg transition-all duration-500 ease-in-out transform ${showNotification ? 'translate-y-0' : 'translate-y-full'}`">
+              {notificationMessage}
             </div>
           )}
         </div>
