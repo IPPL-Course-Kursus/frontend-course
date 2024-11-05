@@ -8,7 +8,7 @@ import { getAllLevelCourses } from "../../../redux/actions/levelCourseActions";
 
 const DataKelasUbah = ({ show, onClose, existingData }) => {
   const dispatch = useDispatch();
-  const [requestData, setRequestData] = useState({
+  const [formData, setFormData] = useState({
     categoryId: "",
     courseName: "",
     typeCourseId: "",
@@ -20,6 +20,7 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
     intendedFor: "",
     aboutCourse: "",
   });
+  // console.log("existingData:", existingData);
 
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -32,28 +33,29 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
     dispatch(getAllTypeCourses());
     dispatch(getAllLevelCourses());
 
-    // If existingData is available, set the initial requestData
     if (existingData) {
-      setRequestData({
-        categoryId: existingData.categoryId,
-        courseName: existingData.courseName,
-        typeCourseId: existingData.typeCourseId,
-        courseLevelId: existingData.courseLevelId,
-        coursePrice: existingData.coursePrice,
+      setFormData({
+        categoryId: existingData.categoryId || "",
+        courseName: existingData.courseName || "",
+        typeCourseId: existingData.typeCourseId || "",
+        courseLevelId: existingData.courseLevelId || "",
+        coursePrice: existingData.coursePrice || "",
         courseDiscountPercent: existingData.courseDiscountPercent || "",
-        publish: existingData.publish,
-        certificateStatus: existingData.certificateStatus,
-        intendedFor: existingData.intendedFor,
-        aboutCourse: existingData.aboutCourse,
+        publish: existingData.publish || true,
+        certificateStatus: existingData.certificateStatus || true,
+        intendedFor: existingData.intendedFor || "",
+        aboutCourse: existingData.aboutCourse || "",
       });
-      setImagePreview(existingData.imageUrl); // Assuming existingData has an imageUrl field
+      setImagePreview(existingData.image || null);
     }
   }, [dispatch, existingData]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
 
-    setRequestData((prevFormData) => ({
+    console.log("Input changed:", name, value);
+
+    setFormData((prevFormData) => ({
       ...prevFormData,
       [name]:
         name === "categoryId" ||
@@ -77,38 +79,35 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
       reader.readAsDataURL(file);
     } else {
       setImageFile(null);
-      setImagePreview(null);
+      setImagePreview(existingData.image || null); // Reset ke gambar lama jika tidak ada file baru
     }
   };
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    console.log("Updating course with data:", requestData); // Perbarui log agar menunjukkan requestData
+    if (!existingData || !existingData.id) {
+      console.error("existingData atau ID tidak ditemukan");
+      return;
+    }
+
+    const updatedData = {
+      ...formData,
+      image: imageFile,
+    };
 
     try {
-      // Buat payload menggunakan data dari requestData
-      const payload = {
-        categoryId: requestData.categoryId,
-        courseName: requestData.courseName,
-        typeCourseId: requestData.typeCourseId,
-        courseLevelId: requestData.courseLevelId,
-        coursePrice: requestData.coursePrice,
-        courseDiscountPercent: requestData.courseDiscountPercent || 0, // Jika tidak ada, set default ke 0
-        publish: requestData.publish,
-        certificateStatus: requestData.certificateStatus,
-        intendedFor: requestData.intendedFor,
-        aboutCourse: requestData.aboutCourse,
-        imageFile: imageFile, // Sertakan imageFile jika ada
-      };
+      const courseId = existingData.id;
+      console.log("this is response", courseId);
 
-      console.log("Payload to update:", payload); // Log payload sebelum dikirim
-
-      await dispatch(updateDataCourse(existingData.id, payload));
-      onClose();
-      // window.location.reload();
+      const response = await dispatch(updateDataCourse(courseId, updatedData));
+      console.log("this is response", response);
+      // if (response.success) {
+      //   onClose();
+      // } else {
+      //   console.error("Failed to update course:", response.message);
+      // }
     } catch (error) {
-      console.error("Failed to update data:", error);
-      // Tambahkan error handling jika diperlukan
+      console.error(error);
     }
   };
 
@@ -138,7 +137,7 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
             <input
               type="file"
               accept="image/*"
-              name="imageFile"
+              name="image"
               onChange={handleImageUpload}
               className="w-full p-2 border rounded-xl"
             />
@@ -149,7 +148,7 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
             <label className="block mb-1 font-semibold">Kategori</label>
             <select
               name="categoryId"
-              value={requestData.categoryId}
+              value={formData.categoryId}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
             >
@@ -166,10 +165,10 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
 
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Judul Kelas</label>
-            <inputC
+            <input
               type="text"
               name="courseName"
-              value={requestData.courseName}
+              value={formData.courseName}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
               placeholder="Masukkan judul kelas"
@@ -181,7 +180,7 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
             <label className="block mb-1 font-semibold">Tipe Kelas</label>
             <select
               name="typeCourseId"
-              value={requestData.typeCourseId}
+              value={formData.typeCourseId}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
             >
@@ -200,7 +199,7 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
             <label className="block mb-1 font-semibold">Level Kelas</label>
             <select
               name="courseLevelId"
-              value={requestData.courseLevelId}
+              value={formData.courseLevelId}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
             >
@@ -220,7 +219,7 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
             <input
               type="number"
               name="coursePrice"
-              value={requestData.coursePrice}
+              value={formData.coursePrice}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
               placeholder="Rp"
@@ -233,7 +232,7 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
             <input
               type="number"
               name="courseDiscountPercent"
-              value={requestData.courseDiscountPercent}
+              value={formData.courseDiscountPercent}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
             />
@@ -243,7 +242,7 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
             <label className="block mb-1 font-semibold">Status Publish</label>
             <select
               name="publish"
-              value={requestData.publish}
+              value={formData.publish}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
             >
@@ -257,7 +256,7 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
             <label className="block mb-1 font-semibold">Status Sertifikat</label>
             <select
               name="certificateStatus"
-              value={requestData.certificateStatus}
+              value={formData.certificateStatus}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
             >
@@ -272,7 +271,7 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
             <input
               type="text"
               name="intendedFor"
-              value={requestData.intendedFor}
+              value={formData.intendedFor}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
               placeholder="Siapa yang diperuntukkan?"
@@ -284,7 +283,7 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
             <label className="block mb-1 font-semibold">Deskripsi Kelas</label>
             <textarea
               name="aboutCourse"
-              value={requestData.aboutCourse}
+              value={formData.aboutCourse}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
               placeholder="Deskripsi tentang kelas"
@@ -308,7 +307,7 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
 DataKelasUbah.propTypes = {
   show: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  existingData: PropTypes.object.isRequired,
+  existingData: PropTypes.object,
 };
 
 export default DataKelasUbah;

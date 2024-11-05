@@ -224,7 +224,7 @@ function DataKontenUbah({ show, onClose, existingData }) {
     try {
       await dispatch(updateDataKonten(existingData.id, payload));
       toast.success("Module berhasil diperbarui");
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       console.error("Update error:", error);
       setError(`Error: ${error.message}`);

@@ -34,6 +34,9 @@ import {
   fetchUserCoursesStart,
   fetchUserCoursesSuccess,
   setCourse,
+  updateCourseFailure,
+  updateCourseRequest,
+  updateCourseSuccess,
 } from "../reducers/courseReducers";
 
 const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
@@ -102,9 +105,6 @@ export const addDataKelas = (requestData, imageFile) => async (dispatch) => {
       formData.append("image", imageFile);
     }
 
-    console.log(requestData);
-    console.log(imageFile);
-
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -123,37 +123,61 @@ export const addDataKelas = (requestData, imageFile) => async (dispatch) => {
 };
 
 export const updateDataCourse = (courseId, updatedData) => async (dispatch) => {
+  dispatch(updateCourseRequest());
   try {
+    if (!courseId || typeof courseId !== "string" || courseId.trim() === "") {
+      const errorMessage = "Invalid course ID";
+      console.log(errorMessage);
+      dispatch(updateCourseFailure(errorMessage));
+      return;
+    }
+
     const token = getCookie("token");
+    const formData = new FormData();
+    const categoryId = parseInt(updatedData.categoryId, 10);
+    const courseLevelId = parseInt(updatedData.courseLevelId);
+    const typeCourseId = parseInt(updatedData.typeCourseId, 10);
+
+    formData.append("categoryId", !isNaN(categoryId) ? categoryId : null);
+    formData.append("courseLevelId", !isNaN(courseLevelId) ? courseLevelId : null);
+    formData.append("typeCourseId", !isNaN(typeCourseId) ? typeCourseId : null);
+    formData.append("courseName", updatedData.courseName || "");
+    formData.append("aboutCourse", updatedData.aboutCourse || "");
+    formData.append("intendedFor", updatedData.intendedFor || "");
+    formData.append("coursePrice", parseFloat(updatedData.coursePrice) || 0);
+    formData.append("courseDiscountPercent", parseFloat(updatedData.courseDiscountPercent) || 0);
+    formData.append("certificateStatus", updatedData.certificateStatus);
+    formData.append("publish", updatedData.publish);
+
+    if (updatedData.image) {
+      formData.append("image", updatedData.image);
+    }
 
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
       },
     };
 
-    console.log("API URL:", `${api_url}course/update-course/${courseId}`);
-    console.log("Updated Data:", updatedData);
-
     const response = await axios.put(
       `${api_url}course/update-course/${courseId}`,
-      updatedData,
+      formData,
       config
     );
 
-    console.log("Response Status:", response.status); // Log status
-    dispatch(addCourseSuccess(response.data.message));
-    dispatch(fetchUserCourses());
-    return response.data.message;
+    console.log(response.data);
+
+    dispatch(updateCourseSuccess(response.data));
+    dispatch(fetchUserCourses()); // Memperbarui kursus pengguna setelah pembaruan
+    return response.data;
   } catch (error) {
-    console.error("Error Details:", error); // Log error detail
+    console.log(error);
     const errorMessage =
       error.response?.data?.message || error.message || "Update data kelas failed";
-    dispatch(addCourseFailure(errorMessage));
+    dispatch(updateCourseFailure(errorMessage)); // Dispatch kegagalan
   }
 };
-
 
 export const deleteDataCourse = (courseId) => async (dispatch) => {
   dispatch(deleteCourseRequest()); // Memulai proses penghapusan

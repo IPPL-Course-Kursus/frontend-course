@@ -188,17 +188,9 @@ const TopikKelas = () => {
     <>
       <Navbar />
       {/* Button kembali ke Home*/}
-      <div className="container">
-        <div className="flex justify-start mt-4 px-20">
-          {/* <Link to="/">
-          <button className="px-5 py-4 bg-blue-500 text-white font-bold rounded-badge">
-            Home
-          </button>
-        </Link> */}
-        </div>
-
-        <main className="w-full bg-blue-50 pb-4">
-          <section className="w-full text-center bg-white py-12 mt-4">
+      <div className="flex justify-center bg-blue-50 pb-10">
+        <main className="w-full bg-blue-50 pb-4 container">
+          <section className="w-full text-center bg-white py-12 mt-4 rounded-lg">
             <div className="max-w-screen-lg mx-auto">
               <h1
                 className="text-[25px] font-semibold"
@@ -376,7 +368,10 @@ const TopikKelas = () => {
                         <p className="font-bold text-sm lg:text-base truncate">
                           {course.courseName}
                         </p>
-                        <div className="flex justify-between items-center my-2">
+                        <p className="font-semibold text-gray-500 text-sm truncate my-1">
+                          {course.category?.categoryName}
+                        </p>
+                        <div className="flex justify-between items-center ">
                           <p className="text-gray-600 text-sm font-semibold flex-shrink-0">
                             Instructor: {course.user.fullName}
                           </p>

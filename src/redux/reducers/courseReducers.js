@@ -23,6 +23,10 @@ const coursesSlice = createSlice({
       state.loading = true;
       state.error = null;
     },
+    updateCourseRequest(state) {
+      state.loading = true;
+      state.error = null;
+    },
     addCourseSuccess(state, action) {
       state.courses.push(action.payload);
       state.loading = false;
@@ -78,6 +82,25 @@ const coursesSlice = createSlice({
       state.popular = action.payload;
     },
 
+    updateCourseSuccess(state, action) {
+      const updatedCourse = action.payload;
+      console.log("Updated Course:", updatedCourse); // Log untuk debug
+      const index = state.courses.findIndex((course) => course.id === updatedCourse.id);
+      if (index !== -1) {
+        console.log("Updating course at index:", index); // Log untuk debug
+        state.courses[index] = updatedCourse; // Ganti kursus yang diperbarui
+      } else {
+        console.warn("Course not found for update:", updatedCourse.id); // Log jika tidak ditemukan
+      }
+      state.loading = false;
+      state.error = null;
+    },
+
+    updateCourseFailure(state, action) {
+      state.error = action.payload;
+      state.loading = false;
+    },
+
     // Tambahkan aksi baru untuk delete course
     deleteCourseRequest(state) {
       state.loading = true;
@@ -92,6 +115,7 @@ const coursesSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
+
     // Aksi baru untuk fetch user courses
     fetchUserCoursesStart: (state) => {
       state.loading = true; // Set loading to true when starting fetch
@@ -127,12 +151,15 @@ export const {
   fetchCourseStart,
   fetchCourseSuccess,
   fetchCourseFailure,
-  deleteCourseRequest, // Ekspor aksi delete course
+  deleteCourseRequest,
   deleteCourseSuccess,
   deleteCourseFailure,
   fetchUserCoursesStart,
   fetchUserCoursesSuccess,
   fetchUserCoursesFailure,
+  updateCourseRequest,
+  updateCourseSuccess,
+  updateCourseFailure,
 } = coursesSlice.actions;
 
 export const selectMyCourse = createSelector(
