@@ -321,6 +321,7 @@ const CoursesPage = () => {
                             />
                           </svg>
                           <span>{courseItem.course.totalDuration} menit</span>
+                          <span>{courseItem.course.totalDuration} menit</span>
                         </div>
 
                         {/* Progress Bar di bawah durasi */}
