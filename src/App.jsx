@@ -25,7 +25,7 @@ import MulaiKelas from "./pages/MulaiKelas/MulaiKelas";
 // ADMIN
 import AdminDashboard from "./pages/admin/AdminDashboard";
 //ADMIN KELOLA DATA
-import AdminDataKelas from "./pages/admin/KelolaDataAdmin/AdminDataKelas";
+
 import AdminDataKategori from "./pages/admin/KelolaDataAdmin/AdminDataKategori";
 import AdminDataLevel from "./pages/admin/KelolaDataAdmin/AdminDataLevel";
 import AdminDataType from "./pages/admin/KelolaDataAdmin/AdminDataType";
