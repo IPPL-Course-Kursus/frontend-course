@@ -27,10 +27,23 @@ const AdminDataLevel = () => {
     levelName: "",
   });
 
+  // State for popup notification
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState("");
+
   // Fetch level courses on component mount
   useEffect(() => {
     dispatch(getAllLevelCourses());
   }, [dispatch]);
+
+  // Show notification popup
+  const showPopupNotification = (message) => {
+    setNotificationMessage(message);
+    setShowNotification(true);
+    setTimeout(() => {
+      setShowNotification(false);
+    }, 3000);
+  };
 
   // Handle form input change
   const handleInputChange = (e) => {
@@ -38,25 +51,44 @@ const AdminDataLevel = () => {
   };
 
   // Handle add level
-  const handleAddLevel = () => {
-    dispatch(createLevelCourse(formData.levelName));
-    setFormData({ levelName: "" });
-    setShowModal(false);
+  const handleAddLevel = async () => {
+    if (levelCourses.some((level) => level.levelName.toLowerCase() === formData.levelName.toLowerCase())) {
+      showPopupNotification("Level sudah ada");
+      return;
+    }
+    try {
+      await dispatch(createLevelCourse(formData.levelName));
+      setFormData({ levelName: "" });
+      setShowModal(false);
+      showPopupNotification("Level berhasil ditambahkan");
+    } catch (err) {
+      showPopupNotification("Terjadi kesalahan saat menambahkan level");
+    }
   };
 
   // Handle edit level
-  const handleEditLevel = () => {
-    dispatch(updateLevelCourseById(selectedLevel.id, formData.levelName));
-    setFormData({ levelName: "" });
-    setSelectedLevel(null);
-    setIsEditMode(false);
-    setShowModal(false);
+  const handleEditLevel = async () => {
+    try {
+      await dispatch(updateLevelCourseById(selectedLevel.id, formData.levelName));
+      setFormData({ levelName: "" });
+      setSelectedLevel(null);
+      setIsEditMode(false);
+      setShowModal(false);
+      showPopupNotification("Level berhasil diubah");
+    } catch (err) {
+      showPopupNotification("Terjadi kesalahan saat mengubah level");
+    }
   };
 
   // Handle delete level
-  const handleDeleteLevel = (id) => {
+  const handleDeleteLevel = async (id) => {
     if (window.confirm("Are you sure you want to delete this level?")) {
-      dispatch(deleteLevelCourseById(id));
+      try {
+        await dispatch(deleteLevelCourseById(id));
+        showPopupNotification("Level berhasil dihapus");
+      } catch (err) {
+        showPopupNotification("Terjadi kesalahan saat menghapus level");
+      }
     }
   };
 
@@ -227,6 +259,17 @@ const AdminDataLevel = () => {
                   </div>
                 </form>
               </div>
+            </div>
+          )}
+
+          {/* Notification Popup */}
+          {showNotification && (
+            <div
+              className={`fixed bottom-0 left-1/2 transform -translate-x-1/2 mb-10 bg-red-500 text-white px-4 py-2 rounded-md shadow-lg transition-transform duration-500 ease-in-out ${
+                showNotification ? "translate-y-0" : "translate-y-full"
+              }`}
+            >
+              {notificationMessage}
             </div>
           )}
         </div>
