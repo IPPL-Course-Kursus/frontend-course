@@ -20,6 +20,8 @@ export const fetchMulaiKelas = (courseId) => async (dispatch) => {
 
     // Dispatch success with updated data
     dispatch(mulaiKelasSuccess({ ...response.data, courseStatus, contentFinish }));
+    console.log("Response data:", response.data);
+    
   } catch (error) {
     dispatch(mulaiKelasFailure(error.message));
   }
@@ -42,14 +44,14 @@ export const updateContentProgress = (courseUserId, contentId) => async (dispatc
   }
 };
 
-export const runCode = (language, sourceCode) => async (dispatch) => {
+export const runCode = (languageInterpreterId, sourceCode) => async (dispatch) => {
   try {
       dispatch(mulaiKelasRequest());
       const response = await axios.post(`${apiUrl}compiler/compile`, {
-          language,
+          languageInterpreterId,
           sourceCode,
       });
-      console.log("Respons dari server:", response.data);  // untuk debug
+      // console.log("Respons dari server:", response.data);  // untuk debug
       dispatch(runCodeSuccess({ output: response.data.run.stdout }));
 
       // // Tambahkan delay sebelum mereset output (misalnya 5 detik)
