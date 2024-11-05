@@ -88,7 +88,7 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
   return (
     <>
       <div className="flex justify-center">
-        <div className="flex flex-col items-center max-w-[1060px] container gap-5 pt-[26px] pb-[53px]">
+        <div className="flex flex-col items-center max-w-[1060px] pl-4 pr-4 lg:pr-0 lg:pl-0 container gap-5 pt-[26px] pb-[53px]">
           {/* Header Section */}
           <div className="flex justify-between w-full px-6">
             <h2 className="text-2xl font-bold text-gray-800">{title}</h2>

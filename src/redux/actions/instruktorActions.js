@@ -30,6 +30,9 @@ import {
   deleteCourseFailure,
   deleteCourseRequest,
   deleteCourseSuccess,
+  fetchUserCoursesFailure,
+  fetchUserCoursesStart,
+  fetchUserCoursesSuccess,
   setCourse,
 } from "../reducers/courseReducers";
 
@@ -50,89 +53,29 @@ export const getAllKelas = () => async (dispatch) => {
   }
 };
 
-// export const addDataKelas = (requestData) => async (dispatch) => {
-//   dispatch(addCourseRequest()); // Set loading state
+export const fetchUserCourses = () => async (dispatch) => {
+  dispatch(fetchUserCoursesStart()); // Indicate the start of the fetch process
+  try {
+    const token = getCookie("token");
 
-//   try {
-//     // Ambil token dari cookies
-//     const token = getCookie("token");
+    if (!token) {
+      throw new Error("Token tidak ditemukan di cookies");
+    }
 
-//     // Konversi tipe data ke format yang diharapkan
-//     const formattedData = {
-//       ...requestData,
-//       categoryId: parseInt(requestData.categoryId, 10),
-//       courseLevelId: parseInt(requestData.courseLevelId, 10),
-//       typeCourseId: parseInt(requestData.typeCourseId, 10),
-//       totalDuration: parseInt(requestData.totalDuration, 10),
-//       certificateStatus: Boolean(requestData.certificateStatus),
-//     };
+    const response = await axios.get(`${api_url}course/user`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-//     // Set up config untuk header
-//     const config = {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//         "Content-Type": "multipart/form-data",
-//       },
-//     };
+    // Dispatch success action with the fetched data
+    dispatch(fetchUserCoursesSuccess(response.data));
+  } catch (error) {
+    // Dispatch failure action with error message
+    dispatch(fetchUserCoursesFailure(error.message));
+  }
+};
 
-//     // Lakukan POST request dengan FormData
-//     const response = await axios.post(`${api_url}course/createCourse`, formattedData, config);
-
-//     dispatch(addCourseSuccess(response.data.message)); // Sesuaikan dengan response API Anda
-//     console.log(response.data.message);
-//     dispatch(getAllKelas());
-//   } catch (error) {
-//     console.error("Error adding data kelas:", error.response || error);
-//     const errorMessage = error.response?.data?.message || error.message || "Add data kelas failed";
-//     dispatch(addCourseFailure(errorMessage)); // Dispatch action failure
-//   }
-// };
-
-// export const addDataKelas = (requestData) => async (dispatch) => {
-//   dispatch(addCourseRequest());
-
-//   try {
-//     // Get token from cookies
-//     const token = getCookie("token");
-
-//     // Create FormData and manually format each field
-//     const formData = new FormData();
-
-//     formData.append("categoryId", JSON.stringify(parseInt(requestData.categoryId, 10)));
-//     formData.append("courseLevelId", JSON.stringify(parseInt(requestData.courseLevelId, 10)));
-//     formData.append("typeCourseId", JSON.stringify(parseInt(requestData.typeCourseId, 10)));
-//     formData.append("courseName", requestData.courseName || "");
-//     formData.append("aboutCourse", requestData.aboutCourse || "");
-//     formData.append("intendedFor", requestData.intendedFor || "");
-//     formData.append("coursePrice", JSON.stringify(parseFloat(requestData.coursePrice) || 0));
-//     formData.append(
-//       "courseDiscountPercent",
-//       JSON.stringify(parseFloat(requestData.courseDiscountPercent) || 0)
-//     );
-//     formData.append("totalDuration", JSON.stringify(parseFloat(requestData.totalDuration) || 0));
-//     formData.append("certificateStatus", JSON.stringify(Boolean(requestData.certificateStatus)));
-//     formData.append("publish", JSON.stringify(Boolean(requestData.publish)));
-
-//     if (requestData.image) {
-//       formData.append("image", requestData.image);
-//     }
-
-//     const config = {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//         "Content-Type": "multipart/form-data",
-//       },
-//     };
-
-//     const response = await axios.post(`${api_url}course/createCourse`, formData, config);
-
-//     dispatch(addCourseSuccess(response.data.message));
-//     dispatch(getAllKelas());
-//   } catch (error) {
-//     const errorMessage = error.response?.data?.message || error.message || "Add data kelas failed";
-//     dispatch(addCourseFailure(errorMessage));
-//   }
-// };
 export const addDataKelas = (requestData, imageFile) => async (dispatch) => {
   dispatch(addCourseRequest());
 
@@ -178,6 +121,39 @@ export const addDataKelas = (requestData, imageFile) => async (dispatch) => {
     dispatch(addCourseFailure(errorMessage));
   }
 };
+
+export const updateDataCourse = (courseId, updatedData) => async (dispatch) => {
+  try {
+    const token = getCookie("token");
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    console.log("API URL:", `${api_url}course/update-course/${courseId}`);
+    console.log("Updated Data:", updatedData);
+
+    const response = await axios.put(
+      `${api_url}course/update-course/${courseId}`,
+      updatedData,
+      config
+    );
+
+    console.log("Response Status:", response.status); // Log status
+    dispatch(addCourseSuccess(response.data.message));
+    dispatch(fetchUserCourses());
+    return response.data.message;
+  } catch (error) {
+    console.error("Error Details:", error); // Log error detail
+    const errorMessage =
+      error.response?.data?.message || error.message || "Update data kelas failed";
+    dispatch(addCourseFailure(errorMessage));
+  }
+};
+
 
 export const deleteDataCourse = (courseId) => async (dispatch) => {
   dispatch(deleteCourseRequest()); // Memulai proses penghapusan

@@ -17,7 +17,7 @@ const coursesSlice = createSlice({
   initialState,
   reducers: {
     setCourse: (state, action) => {
-      state.courses = action.payload; 
+      state.courses = action.payload;
     },
     addCourseRequest(state) {
       state.loading = true;
@@ -92,11 +92,23 @@ const coursesSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
+    // Aksi baru untuk fetch user courses
+    fetchUserCoursesStart: (state) => {
+      state.loading = true; // Set loading to true when starting fetch
+      state.error = null; // Clear previous errors
+    },
+    fetchUserCoursesSuccess: (state, action) => {
+      state.mycourse = action.payload; // Save fetched courses to mycourse
+      state.loading = false; // Set loading to false after fetching
+    },
+    fetchUserCoursesFailure: (state, action) => {
+      state.error = action.payload; // Save error message
+      state.loading = false; // Set loading to false
+    },
   },
 });
 
 const selectCourses = (state) => state.course;
-
 
 export const {
   setCourse,
@@ -118,10 +130,14 @@ export const {
   deleteCourseRequest, // Ekspor aksi delete course
   deleteCourseSuccess,
   deleteCourseFailure,
+  fetchUserCoursesStart,
+  fetchUserCoursesSuccess,
+  fetchUserCoursesFailure,
 } = coursesSlice.actions;
 
 export const selectMyCourse = createSelector(
   [selectCourses],
   (coursesState) => coursesState.mycourse
 );
+
 export default coursesSlice.reducer;
