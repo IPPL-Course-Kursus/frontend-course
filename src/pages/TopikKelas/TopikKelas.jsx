@@ -109,7 +109,7 @@ const TopikKelas = () => {
             ),
             levels: Object.keys(updatedChecked).filter(
                 (key) =>
-                    courseLevel.every(
+                    courseLevel.some(
                         (level) =>
                             level.levelName === key && updatedChecked[key]
                     ) // Filter berdasarkan level
@@ -147,34 +147,41 @@ const TopikKelas = () => {
         const activeFilters = Object.keys(filterChecked).filter(
             (key) => filterChecked[key]
         );
-
+    
         let filteredCourses = courses.filter((course) => {
             const matchesSearch =
-                course.courseName
-                    .toLowerCase()
-                    .includes(searchQuery.toLowerCase()) ||
-                course.category.categoryName
-                    .toLowerCase()
-                    .includes(searchQuery.toLowerCase());
-
+                course.courseName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                course.category.categoryName.toLowerCase().includes(searchQuery.toLowerCase());
+    
             if (selectedFilter === "Premium" && course.coursePrice === 0)
                 return false;
             if (selectedFilter === "Free" && course.coursePrice !== 0)
                 return false;
-
+    
             return matchesSearch;
         });
-
+    
         if (activeFilters.length > 0) {
-            filteredCourses = filteredCourses.filter((course) =>
-                activeFilters.every(
-                    (filter) =>
-                        course.category.categoryName === filter ||
-                        course.courseLevel.levelName === filter
-                )
+            const categoryFilters = activeFilters.filter(filter => 
+                category.some(cat => cat.categoryName === filter)
             );
+            const levelFilters = activeFilters.filter(filter => 
+                courseLevel.some(level => level.levelName === filter)
+            );
+    
+            filteredCourses = filteredCourses.filter((course) => {
+                const matchesCategory = categoryFilters.length === 0 || categoryFilters.some(filter => 
+                    course.category.categoryName === filter
+                );
+    
+                const matchesLevel = levelFilters.length === 0 || levelFilters.some(filter => 
+                    course.courseLevel.levelName === filter
+                );
+    
+                return matchesCategory && matchesLevel; // Memastikan kedua kondisi terpenuhi
+            });
         }
-
+    
         return filteredCourses;
     };
 
