@@ -10,6 +10,7 @@ import { getMe } from "../../redux/actions/authActions";
 import CodeMirror from "@uiw/react-codemirror";
 import { githubLight } from "@uiw/codemirror-theme-github";
 import { python } from "@codemirror/lang-python";
+import { javascript } from '@codemirror/lang-javascript';
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import ProgressBar from "../../components/MyCourse/ProgressBar";
@@ -159,6 +160,11 @@ const MulaiKelas = () => {
 
     const contentFinish = data?.data?.contentFinish || 0;
 
+    const getCodeMirrorExtensions = () => {
+        return language === 1 ? [python()] : language === 2 ? [javascript()] : [];
+        
+    };
+
     return (
         <>
             <Navbar />
@@ -280,48 +286,48 @@ const MulaiKelas = () => {
                     {/* Code Editor Section */}
                     {selectedContent && selectedContent.interpreterStatus && (
                         <section className="bg-white p-6 rounded-lg shadow-lg mb-10">
-                            <h3 className="text-gray-700 text-2xl font-semibold mb-4">
-                                Editor Kode
-                            </h3>
-                            <CodeMirror
-                                id="code"
-                                value={sourceCode}
-                                theme={githubLight}
-                                height="400px"
-                                extensions={[python()]}
-                                onChange={(value) => setCode(value)}
-                                className="w-full p-3 border border-gray-600 rounded-lg mb-4"
-                            ></CodeMirror>
-                            <div className="flex space-x-4">
-                                <button
-                                    className="bg-green-500 text-white py-2 px-4 rounded-lg"
-                                    onClick={handleRunCode}
-                                    disabled={loading}
-                                >
-                                    {loading ? "Running..." : "Run Code"}
-                                </button>
-
-                                <button
-                                    className="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg"
-                                    onClick={copyCode}
-                                >
-                                    Copy Code
-                                </button>
-                                <button
-                                    className="bg-red-600 text-white py-2 px-4 rounded-lg"
-                                    onClick={resetCode}
-                                >
-                                    Reset Code
-                                </button>
-                            </div>
-
-                            <div className="mt-4 p-4 bg-gray-100 rounded-lg">
-                                <h4 className="text-gray-700 font-semibold">
-                                    Output:
-                                </h4>
-                                <p className="text-gray-600 mt-2">{output}</p>
-                            </div>
-                        </section>
+                        <h3 className="text-gray-700 text-2xl font-semibold mb-4">
+                            Editor Kode
+                        </h3>
+                        <CodeMirror
+                            id="code"
+                            value={sourceCode}
+                            theme={githubLight}
+                            height="400px"
+                            extensions={getCodeMirrorExtensions()}
+                            onChange={(value) => setCode(value)}
+                            className="w-full p-3 border border-gray-600 rounded-lg mb-4"
+                        ></CodeMirror>
+                        <div className="flex space-x-4">
+                            <button
+                                className="bg-green-500 text-white py-2 px-4 rounded-lg"
+                                onClick={handleRunCode}
+                                disabled={loading}
+                            >
+                                {loading ? "Running..." : "Run Code"}
+                            </button>
+            
+                            <button
+                                className="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg"
+                                onClick={copyCode}
+                            >
+                                Copy Code
+                            </button>
+                            <button
+                                className="bg-red-600 text-white py-2 px-4 rounded-lg"
+                                onClick={resetCode}
+                            >
+                                Reset Code
+                            </button>
+                        </div>
+            
+                        <div className="mt-4 p-4 bg-gray-100 rounded-lg">
+                            <h4 className="text-gray-700 font-semibold">
+                                Output:
+                            </h4>
+                            <p className="text-gray-600 mt-2">{output}</p>
+                        </div>
+                    </section>
                     )}
                 </div>
 

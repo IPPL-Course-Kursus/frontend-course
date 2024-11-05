@@ -51,7 +51,7 @@ export const runCode = (languageInterpreterId, sourceCode) => async (dispatch) =
           languageInterpreterId,
           sourceCode,
       });
-      console.log("Respons dari server:", response.data);  // untuk debug
+      // console.log("Respons dari server:", response.data);  // untuk debug
       dispatch(runCodeSuccess({ output: response.data.run.stdout }));
 
       // // Tambahkan delay sebelum mereset output (misalnya 5 detik)
