@@ -47,7 +47,7 @@ const MulaiKelas = () => {
                 if (selectedContent && selectedContent.interpreterStatus) {
                     setCode(selectedContent?.interpreter?.sourceCode || "");
                     setLanguage(
-                        selectedContent?.interpreter?.languageInterpreter || ""
+                        selectedContent?.interpreter?.languageInterpreterId || ""
                     );
                 }
             }
