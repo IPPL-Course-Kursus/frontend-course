@@ -2,7 +2,7 @@ import axios from "axios";
 // import { fetchCourseFailure, fetchCourseStart, fetchCourseSuccess, setCourse } from "../reducers/courseReducers";
 import {
   deleteChapter,
-  deleteChapterFailure,
+  // deleteChapterFailure,
   fetchChapterRequest,
   fetchChaptersFailure,
   fetchChaptersStart,
@@ -133,26 +133,16 @@ export const getAllKelas = () => async (dispatch) => {
 //     dispatch(addCourseFailure(errorMessage));
 //   }
 // };
-export const addDataKelas = (requestData) => async (dispatch) => {
+export const addDataKelas = (requestData, imageFile) => async (dispatch) => {
   dispatch(addCourseRequest());
 
   try {
-    // Get token from cookies
     const token = getCookie("token");
-
-    // Log requestData to see what it contains
-    console.log("Request Data:", requestData);
-
-    // Create FormData and manually format each field
     const formData = new FormData();
 
-    // Parse and append each field
     const categoryId = parseInt(requestData.categoryId, 10);
-    const courseLevelId = parseInt(requestData.courseLevelId, 10);
+    const courseLevelId = parseInt(requestData.courseLevelId);
     const typeCourseId = parseInt(requestData.typeCourseId, 10);
-
-    // Log parsed values to debug
-    console.log("Parsed Values:", { categoryId, courseLevelId, typeCourseId });
 
     formData.append("categoryId", !isNaN(categoryId) ? categoryId : null);
     formData.append("courseLevelId", !isNaN(courseLevelId) ? courseLevelId : null);
@@ -162,14 +152,15 @@ export const addDataKelas = (requestData) => async (dispatch) => {
     formData.append("intendedFor", requestData.intendedFor || "");
     formData.append("coursePrice", parseFloat(requestData.coursePrice) || 0);
     formData.append("courseDiscountPercent", parseFloat(requestData.courseDiscountPercent) || 0);
-    formData.append("totalDuration", parseFloat(requestData.totalDuration) || 0);
-    formData.append("certificateStatus", Boolean(requestData.certificateStatus));
-    formData.append("publish", Boolean(requestData.publish));
+    formData.append("certificateStatus", requestData.certificateStatus);
+    formData.append("publish", requestData.publish);
 
-    // If there is an image, append it to FormData
-    if (requestData.image) {
-      formData.append("image", requestData.image);
+    if (imageFile) {
+      formData.append("image", imageFile);
     }
+
+    console.log(requestData);
+    console.log(imageFile);
 
     const config = {
       headers: {
@@ -181,7 +172,6 @@ export const addDataKelas = (requestData) => async (dispatch) => {
     const response = await axios.post(`${api_url}course/createCourse`, formData, config);
     dispatch(addCourseSuccess(response.data.message));
     dispatch(getAllKelas());
-    console.log(formData);
   } catch (error) {
     console.log(error);
     const errorMessage = error.response?.data?.message || error.message || "Add data kelas failed";
