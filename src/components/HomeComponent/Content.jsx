@@ -46,7 +46,7 @@ const Content = () => {
           <h2 className="text-primary text-4xl font-extrabold mb-6 text-center">
             Testimoni Inspiratif
           </h2>
-          <div className="relative w-full shadow-2xl rounded-lg bg-white overflow-hidden">
+          <div className="relative w-full shadow-2xl rounded-lg  overflow-hidden">
             <Slider ref={sliderRef} {...carouselSettings}>
               {cardData.length > 0 ? (
                 cardData.map((card) => (
