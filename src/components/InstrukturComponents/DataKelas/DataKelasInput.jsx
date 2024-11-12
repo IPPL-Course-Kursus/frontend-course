@@ -5,6 +5,7 @@ import { getCategory } from "../../../redux/actions/categoryActions";
 import { getAllTypeCourses } from "../../../redux/actions/typeCourseActions";
 import { getAllLevelCourses } from "../../../redux/actions/levelCourseActions";
 import { addDataKelas, fetchUserCourses } from "../../../redux/actions/instruktorActions";
+import LoadSpinner from "../../Spinner/LoadSpinner";
 
 const DataKelasInput = ({ show, onClose }) => {
   const dispatch = useDispatch();
@@ -68,6 +69,7 @@ const DataKelasInput = ({ show, onClose }) => {
       setImagePreview(null);
     }
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form submitted:", requestData); // Debug log
@@ -87,21 +89,18 @@ const DataKelasInput = ({ show, onClose }) => {
     }
     // Lanjutkan dengan validasi field lainnya jika perlu
 
-    if (hasError) return;
+    if (hasError) return; // Jika ada error, jangan lanjut
 
     setLoading(true); // Set loading true sebelum proses async dimulai
     try {
       const response = await dispatch(addDataKelas(requestData, imageFile));
-
       if (response && response.data) {
-        await dispatch(fetchUserCourses());
         console.log("Data kelas berhasil ditambahkan");
+        await dispatch(fetchUserCourses()); // Pastikan data diperbarui di Redux
       }
-
-      onClose(); // Tutup form setelah berhasil menambahkan
+      onClose(); // Tutup form setelah menambah data
     } catch (err) {
       setError(err.response?.data?.message || "Error adding class");
-      console.error("Error detail:", err);
     } finally {
       setLoading(false);
     }
@@ -289,8 +288,21 @@ const DataKelasInput = ({ show, onClose }) => {
             />
           </div>
 
-          <button type="submit" className="w-full p-2 bg-[#0a61aa] text-white rounded-lg">
-            Tambah Kelas
+          <button
+            type="submit"
+            className={`bg-blue-600 text-white px-4 py-2 rounded-md font-semibold transition-colors duration-300 ${
+              loading ? "cursor-not-allowed bg-gray-500" : "hover:bg-blue-700 active:bg-blue-800"
+            }`}
+            disabled={loading}
+          >
+            {loading ? (
+              <div className="flex items-center justify-center gap-2">
+                <LoadSpinner size={24} color="white" />
+                <span>Loading...</span>
+              </div>
+            ) : (
+              "Tambah"
+            )}
           </button>
         </form>
       </div>
@@ -304,3 +316,51 @@ DataKelasInput.propTypes = {
 };
 
 export default DataKelasInput;
+
+
+  // const fetchData = async () => {
+  //   try {
+  //     await dispatch(fetchUserCourses()); // Pastikan fetchUserCourses tidak memerlukan courseId
+  //   } catch (err) {
+  //     console.error("Error fetching data:", err);
+  //   }
+  // };
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   console.log("Form submitted:", requestData); // Debug log
+
+  //   setError(null); // Reset error messages
+
+  //   let hasError = false;
+
+  //   // Validasi input requestData jika perlu
+  //   if (!requestData.categoryId) {
+  //     setError("Silahkan isi kategori");
+  //     hasError = true;
+  //   }
+  //   if (!requestData.courseName) {
+  //     setError("Silahkan isi judul kelas");
+  //     hasError = true;
+  //   }
+  //   // Lanjutkan dengan validasi field lainnya jika perlu
+
+  //   if (hasError) return;
+
+  //   setLoading(true); // Set loading true sebelum proses async dimulai
+  //   try {
+  //     const response = await dispatch(addDataKelas(requestData, imageFile));
+
+  //     if (response && response.data) {
+  //       await dispatch(fetchUserCourses());
+  //       console.log("Data kelas berhasil ditambahkan");
+  //     }
+
+  //     onClose(); // Tutup form setelah berhasil menambahkan
+  //   } catch (err) {
+  //     setError(err.response?.data?.message || "Error adding class");
+  //     console.error("Error detail:", err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
