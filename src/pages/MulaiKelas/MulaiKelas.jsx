@@ -10,6 +10,7 @@ import { getMe } from "../../redux/actions/authActions";
 import CodeMirror from "@uiw/react-codemirror";
 import { githubLight } from "@uiw/codemirror-theme-github";
 import { python } from "@codemirror/lang-python";
+import { javascript } from '@codemirror/lang-javascript';
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import ProgressBar from "../../components/MyCourse/ProgressBar";
@@ -39,6 +40,7 @@ const MulaiKelas = () => {
     });
   };
 
+<<<<<<< HEAD
   useEffect(() => {
     if (id) {
       dispatch(fetchMulaiKelas(id));
@@ -46,6 +48,19 @@ const MulaiKelas = () => {
         if (selectedContent && selectedContent.interpreterStatus) {
           setCode(selectedContent?.interpreter?.sourceCode || "");
           setLanguage(selectedContent?.interpreter?.languageInterpreter || "");
+=======
+    useEffect(() => {
+        if (id) {
+            dispatch(fetchMulaiKelas(id));
+            {
+                if (selectedContent && selectedContent.interpreterStatus) {
+                    setCode(selectedContent?.interpreter?.sourceCode || "");
+                    setLanguage(
+                        selectedContent?.interpreter?.languageInterpreterId || ""
+                    );
+                }
+            }
+>>>>>>> 2e3ca91d9916d8a0091a5aa7ced5d4266c9b4e66
         }
       }
     }
@@ -144,6 +159,7 @@ const MulaiKelas = () => {
 
   const contentFinish = data?.data?.contentFinish || 0;
 
+<<<<<<< HEAD
   return (
     <>
       <Navbar />
@@ -160,6 +176,31 @@ const MulaiKelas = () => {
                   <h1 className="text-xl font-bold text-gray-800">Kelas Lainnya</h1>
                 </div>
               </Link>
+=======
+    const getCodeMirrorExtensions = () => {
+        return language === 1 ? [python()] : language === 2 ? [javascript()] : [];
+        
+    };
+
+    return (
+        <>
+            <Navbar />
+            <div className="container"> 
+            <div className="grid grid-cols-1 lg:grid-cols-4 mx-auto mt-10 p-4 gap-6">
+                {/* Main Content */}
+                <div className="col-span-3">
+                    {/* Header Section */}
+                    <header className="bg-blue-50 p-6 rounded-lg shadow-sm mb-6">
+                        {/* Back button */}
+                        <Link to="/mycourse">
+                            <div className="flex items-center gap-4">
+                                <FaArrowLeft className="text-gray-500 cursor-pointer" />
+                                <h1 className="text-xl font-bold text-gray-800">
+                                    Kelas Lainnya
+                                </h1>
+                            </div>
+                        </Link>
+>>>>>>> 2e3ca91d9916d8a0091a5aa7ced5d4266c9b4e66
 
               {/* Main class information */}
               <div className="mt-4">
@@ -247,6 +288,7 @@ const MulaiKelas = () => {
               )}
             </section>
 
+<<<<<<< HEAD
             {/* Code Editor Section */}
             {selectedContent && selectedContent.interpreterStatus && (
               <section className="bg-white p-6 rounded-lg shadow-lg mb-10">
@@ -281,6 +323,54 @@ const MulaiKelas = () => {
                   >
                     Reset Code
                   </button>
+=======
+                    {/* Code Editor Section */}
+                    {selectedContent && selectedContent.interpreterStatus && (
+                        <section className="bg-white p-6 rounded-lg shadow-lg mb-10">
+                        <h3 className="text-gray-700 text-2xl font-semibold mb-4">
+                            Editor Kode
+                        </h3>
+                        <CodeMirror
+                            id="code"
+                            value={sourceCode}
+                            theme={githubLight}
+                            height="400px"
+                            extensions={getCodeMirrorExtensions()}
+                            onChange={(value) => setCode(value)}
+                            className="w-full p-3 border border-gray-600 rounded-lg mb-4"
+                        ></CodeMirror>
+                        <div className="flex space-x-4">
+                            <button
+                                className="bg-green-500 text-white py-2 px-4 rounded-lg"
+                                onClick={handleRunCode}
+                                disabled={loading}
+                            >
+                                {loading ? "Running..." : "Run Code"}
+                            </button>
+            
+                            <button
+                                className="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg"
+                                onClick={copyCode}
+                            >
+                                Copy Code
+                            </button>
+                            <button
+                                className="bg-red-600 text-white py-2 px-4 rounded-lg"
+                                onClick={resetCode}
+                            >
+                                Reset Code
+                            </button>
+                        </div>
+            
+                        <div className="mt-4 p-4 bg-gray-100 rounded-lg">
+                            <h4 className="text-gray-700 font-semibold">
+                                Output:
+                            </h4>
+                            <p className="text-gray-600 mt-2">{output}</p>
+                        </div>
+                    </section>
+                    )}
+>>>>>>> 2e3ca91d9916d8a0091a5aa7ced5d4266c9b4e66
                 </div>
 
                 <div className="mt-4 p-4 bg-gray-100 rounded-lg">

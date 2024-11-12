@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // // File: AdminDataKelas.jsx
 
 // import { useState, useEffect } from "react";
@@ -206,6 +207,17 @@ const AdminDataKelas = () => {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [filter, setFilter] = useState('');
+=======
+import { useEffect, useState } from "react";
+import { FaFilter, FaBars } from "react-icons/fa";
+import { IoArrowBackCircle, IoArrowForwardCircle } from "react-icons/io5";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllKelas } from "../../../redux/actions/adminDataKelasActions";
+import Sidebar from "../../../components/Sidebar/SidebarAdmin";
+
+const AdminDataKelas = () => {
+  const [filter, setFilter] = useState("");
+>>>>>>> 2e3ca91d9916d8a0091a5aa7ced5d4266c9b4e66
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const dispatch = useDispatch();
@@ -215,20 +227,34 @@ const AdminDataKelas = () => {
     dispatch(getAllKelas());
   }, [dispatch]);
 
-  const toggleSearch = () => {
-    setSearchVisible(!searchVisible);
-  };
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
+<<<<<<< HEAD
   const filteredCourses = courses.filter(
     (course) =>
       course.courseCode.toLowerCase().includes(courseTypeSearch.toLowerCase()) &&
       (filter === '' || course.typeCourse.typeName === filter)
   );
+=======
+  const filteredCourses = courses.filter((courseType) => {
+    return (
+      (filter === "" || courseType.typeCourse.typeName === filter)
+    );
+  });
+>>>>>>> 2e3ca91d9916d8a0091a5aa7ced5d4266c9b4e66
 
   const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredCourses.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
 
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
@@ -275,6 +301,7 @@ const AdminDataKelas = () => {
               </select>
               <FaFilter className="absolute right-4 top-2 text-[#0a61aa] text-sm" />
             </div>
+<<<<<<< HEAD
             <div className="relative w-full md:w-auto flex items-center">
               <FaSearch
                 className="text-[#173D94] text-lg cursor-pointer"
@@ -290,6 +317,8 @@ const AdminDataKelas = () => {
                 placeholder="Cari Id..."
               />
             </div>
+=======
+>>>>>>> 2e3ca91d9916d8a0091a5aa7ced5d4266c9b4e66
           </div>
         </div>
 
@@ -306,11 +335,19 @@ const AdminDataKelas = () => {
               </tr>
             </thead>
             <tbody>
+<<<<<<< HEAD
               {currentItems.map((course, index) => (
                 <tr key={index} className="border-t text-xs md:text-sm">
                   <td className="px-2 md:px-4 py-2">{course.courseCode}</td>
                   <td className="px-2 md:px-4 py-2">{course.category.categoryName}</td>
                   <td className="px-2 md:px-4 py-2">{course.courseName}</td>
+=======
+              {currentItems.map((courseType, index) => (
+                <tr key={courseType.id} className="border-t text-xs md:text-sm">
+                  <td className="px-2 md:px-4 py-2">{indexOfFirstItem + index + 1}</td>
+                  <td className="px-2 md:px-4 py-2">{courseType.category.categoryName}</td>
+                  <td className="px-2 md:px-4 py-2">{courseType.courseName}</td>
+>>>>>>> 2e3ca91d9916d8a0091a5aa7ced5d4266c9b4e66
                   <td
                     className={`px-2 md:px-4 py-2 font-bold ${
                       course.typeCourse.typeName === 'Free' ? 'text-success' : 'text-failed'
@@ -333,7 +370,7 @@ const AdminDataKelas = () => {
             className={`flex items-center py-2 px-4 rounded-lg ${
               currentPage === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#0a61aa] text-white'
             } transition-all duration-300 hover:scale-105`}
-            onClick={() => setCurrentPage(currentPage - 1)}
+            onClick={handlePreviousPage}
             disabled={currentPage === 1}
           >
             <IoArrowBackCircle className="mr-2 text-xl" />
@@ -348,7 +385,7 @@ const AdminDataKelas = () => {
             className={`flex items-center py-2 px-4 rounded-lg ${
               currentPage === totalPages ? 'bg-gray-300 cursor-not-allowed' : 'bg-[#0a61aa] text-white'
             } transition-all duration-300 hover:scale-105`}
-            onClick={() => setCurrentPage(currentPage + 1)}
+            onClick={handleNextPage}
             disabled={currentPage === totalPages}
           >
             Next

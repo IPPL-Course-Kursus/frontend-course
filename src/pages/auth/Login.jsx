@@ -60,7 +60,7 @@ const Login = () => {
                 <input
                   type="email"
                   className="border shadow-sm w-full p-2 rounded-xl"
-                  placeholder="Contoh: etamcode@mail.com"
+                  placeholder="Contoh: etamcode@gmail.com"
                   value={email}
                   autoComplete="current-email"
                   onChange={(e) => {
