@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { addDataKonten } from "../../../redux/actions/instruktorActions";
+import { addDataKonten, getDataKonten } from "../../../redux/actions/instruktorActions";
 import CodeMirror from "@uiw/react-codemirror"; // Adjust import if necessary
 import { githubLight } from "@uiw/codemirror-theme-github";
 import { python } from "@codemirror/lang-python";
@@ -23,6 +23,13 @@ const DataKontenModule = ({ show, onClose, chapterId }) => {
     interpreterStatus: false,
   });
 
+  const [sortError, setSortError] = useState(null);
+  const [contentTitleError, setContentTitleError] = useState(null);
+  const [teksError, setTeksError] = useState(null);
+  const [contentUrlError, setContentUrlError] = useState(null);
+  const [durationError, setDurationError] = useState(null);
+  const [interpreterError, setInterpreterError] = useState(null);
+
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prevData) => ({
@@ -34,47 +41,98 @@ const DataKontenModule = ({ show, onClose, chapterId }) => {
     if (error) setError(null);
   };
 
-  const handleAdd = (e) => {
-    e.preventDefault();
-    setLoading(true);
+  
+ const handleAdd = async (e) => {
+  e.preventDefault();
 
-    const { sort, contentTitle, teks, contentUrl, duration, interpreterStatus } = formData;
+  // Reset error messages
+  setSortError(null);
+  setContentTitleError(null);
+  setTeksError(null);
+  setContentUrlError(null);
+  setDurationError(null);
+  setInterpreterError(null);
 
-    if (!sort || !contentTitle || !teks || !contentUrl || !duration) {
-      setError("Please fill in all required fields.");
-      setLoading(false);
-      return;
-    }
+  let hasError = false;
 
-    // Pastikan jika interpreterStatus true, maka sourceCode dan language juga harus ada
-    if (interpreterStatus && (!sourceCode || !language)) {
-      setError("Interpreter must be active and both source code and language must be filled.");
-      setLoading(false);
-      return;
-    }
+  // Validasi input `sort`
+  if (!formData.sort) {
+    setSortError("Silahkan isi urutan");
+    hasError = true;
+  } else if (isNaN(formData.sort)) {
+    setSortError("Urutan harus berupa angka!");
+    hasError = true;
+  }
 
+  // Validasi input `contentTitle`
+  if (!formData.contentTitle) {
+    setContentTitleError("Silahkan isi judul konten");
+    hasError = true;
+  }
+
+  // Validasi input `teks`
+  if (!formData.teks) {
+    setTeksError("Silahkan isi teks konten");
+    hasError = true;
+  }
+
+  // Validasi input `contentUrl`
+  if (!formData.contentUrl) {
+    setContentUrlError("Silahkan isi URL konten");
+    hasError = true;
+  }
+
+  // Validasi input `duration`
+  if (!formData.duration) {
+    setDurationError("Silahkan isi durasi");
+    hasError = true;
+  } else if (isNaN(formData.duration)) {
+    setDurationError("Durasi harus berupa angka!");
+    hasError = true;
+  }
+
+  // Validasi `interpreterStatus` jika aktif
+  if (formData.interpreterStatus && (!sourceCode || !language)) {
+    setInterpreterError("Interpreter harus aktif dan kode sumber serta bahasa harus diisi.");
+    hasError = true;
+  }
+
+  if (hasError) return; // Jika ada error, hentikan eksekusi
+
+  setLoading(true); // Set loading true sebelum proses async dimulai
+  try {
     const requestData = {
-      sort: Number(sort),
-      contentTitle,
-      teks,
-      contentUrl,
-      duration: Number(duration),
-      interpreterStatus,
-      sourceCode: interpreterStatus ? sourceCode : null, // Set to null if not filled
-      language: interpreterStatus ? language : null, // Set to null if not filled
+      sort: Number(formData.sort),
+      contentTitle: formData.contentTitle,
+      teks: formData.teks,
+      contentUrl: formData.contentUrl,
+      duration: Number(formData.duration),
+      interpreterStatus: formData.interpreterStatus,
+      sourceCode: formData.interpreterStatus ? sourceCode : null,
+      language: formData.interpreterStatus ? language : null,
     };
 
-    dispatch(addDataKonten(requestData, chapterId))
-      .then(() => {
-        setLoading(false);
-        onClose();
-        window.location.reload();
-      })
-      .catch((err) => {
-        setLoading(false);
-        setError(err.response?.data?.message || "Error adding content");
-      });
-  };
+    // Dispatch action untuk menambahkan konten
+    await dispatch(addDataKonten(requestData, chapterId));
+    console.log("Data konten berhasil ditambahkan");
+
+    setLoading(false);
+    onClose(); // Tutup modal setelah berhasil menambahkan
+    await fetchData(); // Panggil fetchData untuk memperbarui data di state tanpa refresh halaman
+  } catch (err) {
+    setLoading(false);
+    setSortError(err.response?.data?.message || "Error adding content");
+    console.error("Error detail:", err);
+  }
+};
+
+const fetchData = async () => {
+  try {
+    await dispatch(getDataKonten(chapterId));
+  } catch (err) {
+    console.error("Error fetching data:", err);
+  }
+};
 
   const handleRunCode = () => {
     dispatch(runCode(language, sourceCode)).catch((error) => {

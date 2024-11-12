@@ -17,9 +17,13 @@ const coursesSlice = createSlice({
   initialState,
   reducers: {
     setCourse: (state, action) => {
-      state.courses = action.payload; 
+      state.courses = action.payload;
     },
     addCourseRequest(state) {
+      state.loading = true;
+      state.error = null;
+    },
+    updateCourseRequest(state) {
       state.loading = true;
       state.error = null;
     },
@@ -78,6 +82,25 @@ const coursesSlice = createSlice({
       state.popular = action.payload;
     },
 
+    updateCourseSuccess(state, action) {
+      const updatedCourse = action.payload;
+      console.log("Updated Course:", updatedCourse); // Log untuk debug
+      const index = state.courses.findIndex((course) => course.id === updatedCourse.id);
+      if (index !== -1) {
+        console.log("Updating course at index:", index); // Log untuk debug
+        state.courses[index] = updatedCourse; // Ganti kursus yang diperbarui
+      } else {
+        console.warn("Course not found for update:", updatedCourse.id); // Log jika tidak ditemukan
+      }
+      state.loading = false;
+      state.error = null;
+    },
+
+    updateCourseFailure(state, action) {
+      state.error = action.payload;
+      state.loading = false;
+    },
+
     // Tambahkan aksi baru untuk delete course
     deleteCourseRequest(state) {
       state.loading = true;
@@ -92,11 +115,24 @@ const coursesSlice = createSlice({
       state.error = action.payload;
       state.loading = false;
     },
+
+    // Aksi baru untuk fetch user courses
+    fetchUserCoursesStart: (state) => {
+      state.loading = true; // Set loading to true when starting fetch
+      state.error = null; // Clear previous errors
+    },
+    fetchUserCoursesSuccess: (state, action) => {
+      state.mycourse = action.payload; // Save fetched courses to mycourse
+      state.loading = false; // Set loading to false after fetching
+    },
+    fetchUserCoursesFailure: (state, action) => {
+      state.error = action.payload; // Save error message
+      state.loading = false; // Set loading to false
+    },
   },
 });
 
 const selectCourses = (state) => state.course;
-
 
 export const {
   setCourse,
@@ -115,13 +151,20 @@ export const {
   fetchCourseStart,
   fetchCourseSuccess,
   fetchCourseFailure,
-  deleteCourseRequest, // Ekspor aksi delete course
+  deleteCourseRequest,
   deleteCourseSuccess,
   deleteCourseFailure,
+  fetchUserCoursesStart,
+  fetchUserCoursesSuccess,
+  fetchUserCoursesFailure,
+  updateCourseRequest,
+  updateCourseSuccess,
+  updateCourseFailure,
 } = coursesSlice.actions;
 
 export const selectMyCourse = createSelector(
   [selectCourses],
   (coursesState) => coursesState.mycourse
 );
+
 export default coursesSlice.reducer;
