@@ -3,28 +3,40 @@ import { FaFacebook, FaGithub, FaInstagram, FaTwitter, FaTwitch } from "react-ic
 const sections = [
   {
     title: "Solutions",
-    items: ["Marketing", "Analytics", "Commerce", "Data", "Cloud"],
+    items: [
+      "Course Catalog",
+      "Instructor Portal",
+      "Online Classes",
+      "Certificate Programs",
+      "Learning Paths",
+    ],
   },
   {
     title: "Support",
-    items: ["Pricing", "Documentation", "Guides", "API Status"],
+    items: ["Pricing", "Documentation", "Guides", "FAQ", "Contact Support"],
   },
   {
     title: "Company",
-    items: ["About", "Blog", "Jobs", "Press", "Partners"],
+    items: ["About Us", "Blog", "Careers", "Press", "Partners"],
   },
   {
     title: "Legal",
-    items: ["Claims", "Privacy", "Terms", "Policies", "Conditions"],
+    items: [
+      "Privacy Policy",
+      "Terms of Service",
+      "Cookies Policy",
+      "Refund Policy",
+      "User Agreement",
+    ],
   },
 ];
 
 const items = [
-  { name: "Facebook", icon: FaFacebook, link: "https://www.facebook.com/" },
-  { name: "Instagram", icon: FaInstagram, link: "https://www.instagram.com/" },
-  { name: "Twitter", icon: FaTwitter, link: "https://twitter.com/" },
-  { name: "Twitch", icon: FaTwitch, link: "https://www.twitch.tv/" },
-  { name: "Github", icon: FaGithub, link: "https://github.com/" },
+  { name: "Facebook", icon: FaFacebook, link: "https://www.facebook.com/etamcode" },
+  { name: "Instagram", icon: FaInstagram, link: "https://www.instagram.com/etamcode" },
+  { name: "Twitter", icon: FaTwitter, link: "https://twitter.com/etamcode" },
+  { name: "Twitch", icon: FaTwitch, link: "https://www.twitch.tv/etamcode" },
+  { name: "Github", icon: FaGithub, link: "https://github.com/etamcode" },
 ];
 
 const Footer = () => {
@@ -45,10 +57,11 @@ const Footer = () => {
         ))}
 
         <div className="col-span-2 pt-8 md:pt-2">
-          <button className="font-bold uppercase">EtamCode</button>
+          <button className="font-bold uppercase">Etam Code</button>
           <p className="py-4">
-            Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum
-            Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum.
+            Etam Code menawarkan kursus online yang terjangkau dan berkualitas untuk meningkatkan
+            keterampilan digital Anda. Bergabunglah dengan kami untuk mendapatkan pengetahuan
+            terbaru dalam dunia teknologi dan pengembangan digital.
           </p>
           {/* <form className="flex flex-col sm:flex-row">
             <input
@@ -62,10 +75,20 @@ const Footer = () => {
       </div>
 
       <div className="flex flex-col max-w-[1240px] px-2 py-4 mx-auto justify-between sm:flex-row text-center text-gray-500">
-        <p className="py-4">2024 Etam-Code Kursus</p>
+        <p className="py-4">© 2024 Etam Code | Kursus Online Terpercaya</p>
         <div className="flex justify-between sm:w-[300px] pt-4 text-2xl">
           {items.map((x, index) => {
-            return <x.icon key={index} className="hover:text-white" />;
+            return (
+              <a
+                key={index}
+                href={x.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white"
+              >
+                <x.icon />
+              </a>
+            );
           })}
         </div>
       </div>

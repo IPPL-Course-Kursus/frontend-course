@@ -81,7 +81,6 @@ const TopikKelas = () => {
     setFilterChecked(updatedChecked);
     setScrollPosition(window.scrollY);
 
-<<<<<<< HEAD
     const filters = {
       isNewest: updatedChecked["Paling Baru"] || false,
       isPopular: updatedChecked["Paling Populer"] || false,
@@ -95,31 +94,9 @@ const TopikKelas = () => {
           key !== "Promo"
       ),
       levels: Object.keys(updatedChecked).filter(
-        (key) => courseLevel.every((level) => level.levelName === key && updatedChecked[key]) // Filter berdasarkan level
+        (key) => courseLevel.some((level) => level.levelName === key && updatedChecked[key]) // Filter berdasarkan level
       ),
     };
-=======
-        const filters = {
-            isNewest: updatedChecked["Paling Baru"] || false,
-            isPopular: updatedChecked["Paling Populer"] || false,
-            promoStatus: updatedChecked["Promo"] || false,
-            // Jika Anda ingin menambah kategori
-            categories: Object.keys(updatedChecked).filter(
-                (key) =>
-                    updatedChecked[key] &&
-                    key !== "Paling Baru" &&
-                    key !== "Paling Populer" &&
-                    key !== "Promo"
-            ),
-            levels: Object.keys(updatedChecked).filter(
-                (key) =>
-                    courseLevel.some(
-                        (level) =>
-                            level.levelName === key && updatedChecked[key]
-                    ) // Filter berdasarkan level
-            ),
-        };
->>>>>>> 2e3ca91d9916d8a0091a5aa7ced5d4266c9b4e66
 
     if (
       updatedChecked["Promo"] ||
@@ -163,12 +140,24 @@ const TopikKelas = () => {
     });
 
     if (activeFilters.length > 0) {
-      filteredCourses = filteredCourses.filter((course) =>
-        activeFilters.every(
-          (filter) =>
-            course.category.categoryName === filter || course.courseLevel.levelName === filter
-        )
+      const categoryFilters = activeFilters.filter((filter) =>
+        category.some((cat) => cat.categoryName === filter)
       );
+      const levelFilters = activeFilters.filter((filter) =>
+        courseLevel.some((level) => level.levelName === filter)
+      );
+
+      filteredCourses = filteredCourses.filter((course) => {
+        const matchesCategory =
+          categoryFilters.length === 0 ||
+          categoryFilters.some((filter) => course.category.categoryName === filter);
+
+        const matchesLevel =
+          levelFilters.length === 0 ||
+          levelFilters.some((filter) => course.courseLevel.levelName === filter);
+
+        return matchesCategory && matchesLevel; // Memastikan kedua kondisi terpenuhi
+      });
     }
 
     return filteredCourses;
@@ -185,7 +174,6 @@ const TopikKelas = () => {
       }, {}),
     };
 
-<<<<<<< HEAD
     const currentScrollPosition = window.scrollY;
     setScrollPosition(currentScrollPosition);
 
@@ -207,49 +195,6 @@ const TopikKelas = () => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredCourseType.slice(indexOfFirstItem, indexOfLastItem);
-=======
-    const filteredCourses = () => {
-        const activeFilters = Object.keys(filterChecked).filter(
-            (key) => filterChecked[key]
-        );
-    
-        let filteredCourses = courses.filter((course) => {
-            const matchesSearch =
-                course.courseName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                course.category.categoryName.toLowerCase().includes(searchQuery.toLowerCase());
-    
-            if (selectedFilter === "Premium" && course.coursePrice === 0)
-                return false;
-            if (selectedFilter === "Free" && course.coursePrice !== 0)
-                return false;
-    
-            return matchesSearch;
-        });
-    
-        if (activeFilters.length > 0) {
-            const categoryFilters = activeFilters.filter(filter => 
-                category.some(cat => cat.categoryName === filter)
-            );
-            const levelFilters = activeFilters.filter(filter => 
-                courseLevel.some(level => level.levelName === filter)
-            );
-    
-            filteredCourses = filteredCourses.filter((course) => {
-                const matchesCategory = categoryFilters.length === 0 || categoryFilters.some(filter => 
-                    course.category.categoryName === filter
-                );
-    
-                const matchesLevel = levelFilters.length === 0 || levelFilters.some(filter => 
-                    course.courseLevel.levelName === filter
-                );
-    
-                return matchesCategory && matchesLevel; // Memastikan kedua kondisi terpenuhi
-            });
-        }
-    
-        return filteredCourses;
-    };
->>>>>>> 2e3ca91d9916d8a0091a5aa7ced5d4266c9b4e66
 
   return (
     <>
@@ -257,46 +202,47 @@ const TopikKelas = () => {
       {/* Button kembali ke Home*/}
       <div className="flex justify-center bg-blue-50 pb-10">
         <main className="w-full bg-blue-50 pb-4 container">
-          <section className="w-full text-center bg-white py-12 mt-4 rounded-lg">
-            <div className="max-w-screen-lg mx-auto">
+          <section className="w-full text-center bg-white py-16 mt-8 rounded-xl shadow-lg">
+            <div className="px-6 lg:px-0">
               <h1
-                className="text-[25px] font-semibold"
+                className="text-3xl font-bold mb-4"
                 style={{
                   fontFamily: "Poppins, sans-serif",
-                  color: "#000000",
+                  color: "#1E3A8A", // Elegant deep blue color
                 }}
               >
                 Katalog Kelas
               </h1>
-              <p className="text-gray-600 font-montserrat max-w-2xl mx-auto">
+              <p className="text-gray-500 font-montserrat text-lg max-w-xl mx-auto leading-relaxed">
                 Etam Code menyediakan berbagai macam kelas yang sudah berbasis industri untuk
                 meningkatkan keterampilan digital kamu.
               </p>
             </div>
 
-            <div className="flex gap-2 flex-grow lg:relative justify-center">
-              <div className="form-control relative w-full max-w-md mt-10 lg:w-[30rem]">
+            <div className="flex justify-center mt-12">
+              <div className="relative w-full max-w-md lg:w-[30rem] transition-all duration-200 ease-in-out">
                 <input
                   type="text"
-                  placeholder="Find a Course"
-                  className="input w-full text-sm rounded-2xl border-black pr-12"
+                  placeholder="Cari Kelas..."
+                  className="w-full py-3 pl-5 pr-14 text-gray-800 bg-white rounded-full border border-gray-300 shadow focus:outline-none focus:ring-2 focus:ring-blue-800 focus:border-transparent transition-all duration-200 ease-in-out hover:shadow-md"
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value.toLowerCase());
                     setCurrentPage(1);
                   }}
                 />
-                <button className="absolute top-1/2 right-4 -translate-y-1/2">
-                  <IoIosSearch className="w-5 h-5 lg:w-6 lg:h-6" />
+                <button className="absolute top-1/2 right-4 -translate-y-1/2 text-blue-800 hover:text-blue-600 transition-transform duration-200 ease-in-out transform hover:scale-110">
+                  <IoIosSearch className="w-6 h-6" />
                 </button>
               </div>
             </div>
           </section>
+
           <div className="py-8 px-4 md:px-10">
             <div className="flex flex-col md:flex-row items-center w-full">
               {/* Heading TOPIK KELAS rata kiri */}
               <h3
-                className="text-[32px] font-bold mb-4 md:mb-0"
+                className="text-3xl font-bold mb-6 md:mb-0 md:mr-auto"
                 style={{
                   fontFamily: "'Red Rose', sans-serif",
                   color: "#000000",
@@ -305,39 +251,41 @@ const TopikKelas = () => {
                 TOPIK KELAS
               </h3>
 
-              {/* Container tombol ditengah */}
-              <div className="flex flex-wrap justify-center w-full md:w-auto mx-auto gap-3">
-                {" "}
-                {/* Buat tombol berada di tengah */}
+              {/* Container tombol di tengah */}
+              <div className="flex flex-wrap justify-center w-full md:w-auto mx-auto gap-4">
+                {/* Tombol All */}
                 <button
-                  className={`filter-btn px-6 py-2 max-w-xs md:w-auto rounded-full font-bold text-xs ${
+                  className={`filter-btn px-6 py-2 md:px-8 md:py-3 rounded-xl font-semibold text-sm transition-all duration-300 ease-in-out shadow-md ${
                     selectedFilter === "All"
-                      ? "bg-blue-600 text-white"
-                      : "bg-white text-black hover:bg-gray-200"
+                      ? "bg-blue-800 text-white shadow-xl transform scale-105"
+                      : "bg-white text-gray-800 border border-gray-200 hover:bg-gray-100"
                   }`}
                   onClick={() => handleFilterClick("All")}
+                  style={{
+                    fontFamily: "'Poppins', sans-serif",
+                  }}
                 >
                   All
                 </button>
+
+                {/* Map tombol untuk setiap tipe kelas */}
                 {courseTypes &&
-                  courseTypes.map(
-                    (type, i) => (
-                      console.log(courseTypes),
-                      (
-                        <button
-                          key={i}
-                          className={`filter-btn px-6 py-2 max-w-xs md:w-auto rounded-full font-bold text-xs ${
-                            selectedFilter === type.typeName
-                              ? "bg-blue-600 text-white"
-                              : "bg-white text-black hover:bg-gray-200"
-                          }`}
-                          onClick={() => handleFilterClick(type.typeName)}
-                        >
-                          {type.typeName}
-                        </button>
-                      )
-                    )
-                  )}
+                  courseTypes.map((type, i) => (
+                    <button
+                      key={i}
+                      className={`filter-btn px-6 py-2 md:px-8 md:py-3 rounded-xl font-semibold text-sm transition-all duration-300 ease-in-out shadow-md ${
+                        selectedFilter === type.typeName
+                          ? "bg-blue-800 text-white shadow-xl transform scale-105"
+                          : "bg-white text-gray-800 border border-gray-200 hover:bg-gray-100"
+                      }`}
+                      onClick={() => handleFilterClick(type.typeName)}
+                      style={{
+                        fontFamily: "'Poppins', sans-serif",
+                      }}
+                    >
+                      {type.typeName}
+                    </button>
+                  ))}
               </div>
             </div>
           </div>
@@ -435,10 +383,7 @@ const TopikKelas = () => {
                         <p className="font-bold text-sm lg:text-base truncate">
                           {course.courseName}
                         </p>
-                        <p className="font-semibold text-gray-500 text-sm truncate my-1">
-                          {course.category?.categoryName}
-                        </p>
-                        <div className="flex justify-between items-center ">
+                        <div className="flex justify-between items-center my-2">
                           <p className="text-gray-600 text-sm font-semibold flex-shrink-0">
                             Instructor: {course.user.fullName}
                           </p>
@@ -480,7 +425,7 @@ const TopikKelas = () => {
 
               {/* Pagination */}
               {filteredCourseType.length > itemsPerPage && (
-                <div className="flex justify-between items-center mt-8">
+                <div className="flex flex-col sm:flex-row justify-between items-center mt-8 space-y-4 sm:space-y-0 sm:space-x-4 w-full">
                   <button
                     className={`flex items-center py-2 px-4 rounded-lg ${
                       currentPage === 1
@@ -494,8 +439,14 @@ const TopikKelas = () => {
                     Previous
                   </button>
 
+                  {/* Responsive Page Text */}
                   <span className="text-lg font-semibold">
-                    Page {currentPage} of {totalPages}
+                    <span className="hidden sm:inline">
+                      Page {currentPage} of {totalPages}
+                    </span>
+                    <span className="inline sm:hidden">
+                      {currentPage} / {totalPages}
+                    </span>
                   </span>
 
                   <button
