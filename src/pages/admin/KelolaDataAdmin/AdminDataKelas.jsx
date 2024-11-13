@@ -10,7 +10,7 @@ const AdminDataKelas = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const dispatch = useDispatch();
-  const courses = useSelector((state) => state.course.courses || []);
+  const courses = useSelector((state) => state.course.courses);
 
   useEffect(() => {
     dispatch(getAllKelas());
@@ -19,9 +19,7 @@ const AdminDataKelas = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const filteredCourses = courses.filter((courseType) => {
-    return (
-      (filter === "" || courseType.typeCourse.typeName === filter)
-    );
+    return filter === "" || courseType.typeCourse.typeName === filter;
   });
 
   const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
@@ -89,7 +87,7 @@ const AdminDataKelas = () => {
           <table className="min-w-full table-auto">
             <thead>
               <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
-                <th className="px-2 md:px-4 py-2">Urutan</th>
+                <th className="px-2 md:px-4 py-2">ID</th>
                 <th className="px-2 md:px-4 py-2">Kategori</th>
                 <th className="px-2 md:px-4 py-2">Nama Kelas</th>
                 <th className="px-2 md:px-4 py-2">Tipe Kelas</th>
@@ -98,20 +96,21 @@ const AdminDataKelas = () => {
               </tr>
             </thead>
             <tbody>
-              {currentItems.map((courseType, index) => (
-                <tr key={courseType.id} className="border-t text-xs md:text-sm">
-                  <td className="px-2 md:px-4 py-2">{indexOfFirstItem + index + 1}</td>
-                  <td className="px-2 md:px-4 py-2">{courseType.category.categoryName}</td>
-                  <td className="px-2 md:px-4 py-2">{courseType.courseName}</td>
+              {currentItems.map((course, index) => (
+                <tr key={index} className="border-t text-xs md:text-sm">
+                  <td className="px-2 md:px-4 py-2">{course.courseCode}</td>
+                  <td className="px-2 md:px-4 py-2">{course.category.categoryName}</td>
+                  <td className="px-2 md:px-4 py-2">{course.courseName}</td>
                   <td
                     className={`px-2 md:px-4 py-2 font-bold ${
-                      courseType.typeCourse.typeName === "Free" ? "text-success" : "text-failed"
+                      course.typeCourse.typeName === "Free" ? "text-success" : "text-failed"
                     }`}
                   >
-                    {courseType.typeCourse.typeName}
+                    {course.typeCourse.typeName}
                   </td>
-                  <td className="px-2 md:px-4 py-2">{courseType.courseLevel.levelName}</td>
-                  <td className="px-2 md:px-4 py-2">{courseType.coursePrice}</td>
+                  <td className="px-2 md:px-4 py-2">{course.courseLevel.levelName}</td>
+                  <td className="px-2 md:px-4 py-2">{course.coursePrice}</td>
+                  <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2"></td>
                 </tr>
               ))}
             </tbody>

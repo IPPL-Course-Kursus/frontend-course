@@ -69,6 +69,12 @@ const Sidebar = () => {
               >
                 Data Type
               </a>
+              <a
+                href="/admin/data-interpreter"
+                className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700"
+              >
+                Data Bahasa Interpreter
+              </a>
             </div>
           )}
         </div>

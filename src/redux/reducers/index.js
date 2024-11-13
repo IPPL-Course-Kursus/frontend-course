@@ -22,8 +22,9 @@ import mulaiKelasReducers from "./mulaiKelasReducers";
 import levelCourseReducer from "./levelCourseReducers";
 import { paymentHistoryReducer } from "./transactionReducers";
 import instrukturReducer from "./instrukturReducer";
-import LoginReducer from "./LoginReducer"
+import LoginReducer from "./LoginReducer";
 import certificateReducers from "./certificateReducers";
+import adminDataInterLangReducer from "./adminDataInterLangReducers";
 
 export default combineReducers({
 
@@ -57,6 +58,7 @@ export default combineReducers({
   instructors: instructorReducer,
   typeCourse: typeCourseReducer,
   levelCourse: levelCourseReducer,
+  interpreterLanguages: adminDataInterLangReducer,
 
   // Transaction
   transaction: transactionReducer,
