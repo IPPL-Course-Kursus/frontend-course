@@ -10,11 +10,10 @@ const CoursesPage = () => {
   const dispatch = useDispatch();
   const mycourse = useSelector(selectMyCourse);
   const { loading, error } = useSelector((state) => state.course || {});
-  
+
   const [isMobileDropdownVisible, setMobileDropdownVisible] = useState(false);
   const [filterChecked, setFilterChecked] = useState({});
-  const [courseStatusFilter, setCourseStatusFilter] = useState('all'); // State untuk status kursus
-  
+  const [courseStatusFilter, setCourseStatusFilter] = useState("all"); // State untuk status kursus
 
   useEffect(() => {
     dispatch(getUserCourses());
@@ -34,18 +33,17 @@ const CoursesPage = () => {
   const handleStatusFilterChange = (status) => {
     setCourseStatusFilter(status);
   };
-  
 
   const filteredCourses = () => {
     const activeFilters = Object.keys(filterChecked).filter((key) => filterChecked[key]);
-  
+
     return mycourse.filter((course) => {
       const courseCategory = course.course.category.categoryName;
       const courseLevel = course.course.courseLevel.levelName;
-  
+
       const matchesCategoryFilter = activeFilters.includes(courseCategory);
       const matchesLevelFilter = activeFilters.includes(courseLevel);
-  
+
       const matchesStatus =
         courseStatusFilter === "all" ||
         (courseStatusFilter === "notStarted" && course.contentFinish === 0) ||
@@ -53,27 +51,25 @@ const CoursesPage = () => {
           course.contentFinish > 0 &&
           course.contentFinish < 100) ||
         (courseStatusFilter === "completed" && course.contentFinish === 100);
-        
-        const matchesAllFilters = matchesStatus && 
+
+      const matchesAllFilters =
+        matchesStatus &&
         (activeFilters.length === 0 || // Jika tidak ada filter aktif, tampilkan semua kursus
-        (activeFilters.length === 1 && (matchesCategoryFilter || matchesLevelFilter)) || // Jika satu filter aktif
-        (activeFilters.length > 1 && matchesCategoryFilter && matchesLevelFilter) || // Jika dua filter aktif
-        (activeFilters.length === 2 && matchesCategoryFilter && matchesLevelFilter)); // Pastikan kedua filter terpenuhi jika ada dua filter aktif
-  
+          (activeFilters.length === 1 && (matchesCategoryFilter || matchesLevelFilter)) || // Jika satu filter aktif
+          (activeFilters.length > 1 && matchesCategoryFilter && matchesLevelFilter) || // Jika dua filter aktif
+          (activeFilters.length === 2 && matchesCategoryFilter && matchesLevelFilter)); // Pastikan kedua filter terpenuhi jika ada dua filter aktif
+
       return matchesAllFilters; // Kembalikan true jika kursus memenuhi semua syarat
     });
   };
-  
-
-
 
   return (
     <>
       <Navbar />
-      <div className="bg-[#F3F7FB]">
-        <main className="container mx-auto px-4 py-10">
+      <div className="bg-blue-50 flex justify-center">
+        <main className="container mx-auto  py-10 bg-blue-50">
           <div className="flex justify-between items-center mb-4">
-          <h2 className="text-4xl font-bold text-gray-900">Kelas Saya</h2>
+            <h2 className="text-4xl font-bold text-gray-900">Kelas Saya</h2>
             <button
               onClick={toggleMobileDropdown}
               className="md:hidden bg-blue-500 text-white px-2 py-2 rounded"
@@ -97,10 +93,10 @@ const CoursesPage = () => {
           {/* Tombol Filter Status */}
           <div className="mb-4 flex flex-wrap justify-center">
             <button
-              onClick={() => handleStatusFilterChange('all')}
+              onClick={() => handleStatusFilterChange("all")}
               className={`w-40 font-bold text-sm md:text-base mx-1 mt-2 px-3 py-1 rounded-md ${
-                courseStatusFilter === 'all' 
-                  ? "bg-blue-500 text-white" 
+                courseStatusFilter === "all"
+                  ? "bg-blue-500 text-white"
                   : "bg-white text-gray-800 hover:bg-gray-400"
               }`}
             >
@@ -108,10 +104,10 @@ const CoursesPage = () => {
             </button>
 
             <button
-              onClick={() => handleStatusFilterChange('notStarted')}
+              onClick={() => handleStatusFilterChange("notStarted")}
               className={`w-40 font-bold text-sm md:text-base mx-1 mt-2 px-3 py-1 rounded-md ${
-                courseStatusFilter === 'notStarted' 
-                  ? "bg-blue-500 text-white" 
+                courseStatusFilter === "notStarted"
+                  ? "bg-blue-500 text-white"
                   : "bg-white text-gray-800 hover:bg-gray-400"
               }`}
             >
@@ -119,10 +115,10 @@ const CoursesPage = () => {
             </button>
 
             <button
-              onClick={() => handleStatusFilterChange('inProgress')}
+              onClick={() => handleStatusFilterChange("inProgress")}
               className={`w-40 font-bold text-sm md:text-base mx-1 mt-2 px-3 py-1 rounded-md ${
-                courseStatusFilter === 'inProgress' 
-                  ? "bg-blue-500 text-white" 
+                courseStatusFilter === "inProgress"
+                  ? "bg-blue-500 text-white"
                   : "bg-white text-gray-800 hover:bg-gray-400"
               }`}
             >
@@ -130,10 +126,10 @@ const CoursesPage = () => {
             </button>
 
             <button
-              onClick={() => handleStatusFilterChange('completed')}
+              onClick={() => handleStatusFilterChange("completed")}
               className={`w-40 font-bold text-sm md:text-base mx-1 mt-2 px-3 py-1 rounded-md ${
-                courseStatusFilter === 'completed' 
-                  ? "bg-blue-500 text-white" 
+                courseStatusFilter === "completed"
+                  ? "bg-blue-500 text-white"
                   : "bg-white text-gray-800 hover:bg-gray-400"
               }`}
             >
@@ -147,7 +143,11 @@ const CoursesPage = () => {
               <div className="hidden md:block bg-white shadow-md rounded-md p-4">
                 <h3 className="text-xl font-bold text-gray-800 mb-3">Filter</h3>
                 {/* Filter Konten */}
-                {[...new Set(mycourse?.map((courseItem) => courseItem.course.category.categoryName))].map((categoryName, index) => (
+                {[
+                  ...new Set(
+                    mycourse?.map((courseItem) => courseItem.course.category.categoryName)
+                  ),
+                ].map((categoryName, index) => (
                   <div className="flex items-center mb-2" key={index}>
                     <input
                       type="checkbox"
@@ -176,29 +176,36 @@ const CoursesPage = () => {
                         {label}
                       </label>
                     </div>
-                  ))} 
+                  ))}
                 </div>
               </div>
 
               {/* Filter untuk Mobile (dropdown toggle) */}
-              <div className={`md:hidden ${isMobileDropdownVisible ? "block" : "hidden"} bg-white shadow-md rounded-md p-4 mb-4`}>
+              <div
+                className={`md:hidden ${
+                  isMobileDropdownVisible ? "block" : "hidden"
+                } bg-white shadow-md rounded-md p-4 mb-4`}
+              >
                 <h3 className="text-xl font-bold text-gray-800 mb-4">Filter</h3>
                 {/* Filter Konten untuk Mobile */}
                 <div>
-                {[...new Set(mycourse?.map((courseItem) => courseItem.course.category.categoryName))].map((categoryName, index) => (
-                  <div className="flex items-center mb-2" key={index}>
-                    <input
-                      type="checkbox"
-                      id={`filter-${categoryName}`}
-                      className="mr-2 checkbox-custom"
-                      onChange={() => handleCheckboxChange(categoryName)}
-                    />
-                    <label htmlFor={`filter-${categoryName}`} className="text-sm md:text-base">
-                      {categoryName}
-                    </label>
-                  </div>
-                ))}
-
+                  {[
+                    ...new Set(
+                      mycourse?.map((courseItem) => courseItem.course.category.categoryName)
+                    ),
+                  ].map((categoryName, index) => (
+                    <div className="flex items-center mb-2" key={index}>
+                      <input
+                        type="checkbox"
+                        id={`filter-${categoryName}`}
+                        className="mr-2 checkbox-custom"
+                        onChange={() => handleCheckboxChange(categoryName)}
+                      />
+                      <label htmlFor={`filter-${categoryName}`} className="text-sm md:text-base">
+                        {categoryName}
+                      </label>
+                    </div>
+                  ))}
                 </div>
                 <h3 className="text-xl font-bold text-gray-800 mb-3 mt-6">Level Kesulitan</h3>
                 {/* Filter Konten */}
@@ -213,14 +220,14 @@ const CoursesPage = () => {
                       />
                       <label htmlFor={`filter-${label}`} className="text-sm md:text-base">
                         {label}
-                      </label> 
+                      </label>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
 
-           {/* Main Courses Display */}
+            {/* Main Courses Display */}
             <div className="md:w-3/4 pl-0 md:pl-4">
               {loading && <p>Loading courses...</p>}
               {error && <p>Error: {error}</p>}
@@ -228,7 +235,7 @@ const CoursesPage = () => {
               {filteredCourses().length > 0 ? (
                 filteredCourses().map((courseItem, index) => {
                   console.log(courseItem); // Menampilkan di console
-                  console.log(courseItem.course.category.categoryName)
+                  console.log(courseItem.course.category.categoryName);
 
                   return (
                     <div
@@ -246,31 +253,32 @@ const CoursesPage = () => {
                             {courseItem.course.courseName}
                           </h3>
                           <Link to={`/mulai-kelas/${courseItem.id}`}>
-                          <button className="bg-blue-500 hover:bg-slate-400 text-white mt-3 px-2 py-1 md:px-3 md:py-2 text-wrap rounded-md">
-                            Lihat Detail Kelas
-                          </button>
+                            <button className="bg-blue-500 hover:bg-slate-400 text-white mt-3 px-2 py-1 md:px-3 md:py-2 text-wrap rounded-md">
+                              Lihat Detail Kelas
+                            </button>
                           </Link>
                         </div>
 
                         <div className="flex items-center mb-2">
-                        <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 mr-2"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="#32CD32"
-                        strokeWidth="2"
-                      >
-                        <path d="M3 5C6 3 10 3 12 5V19C10 17 6 17 3 19V5Z" />
-                        <path d="M21 5C18 3 14 3 12 5V19C14 17 18 17 21 19V5Z" />
-                        <line x1="12" y1="5" x2="12" y2="19" strokeLinecap="round" />
-                      </svg>
-                        <span>
-                          {typeof courseItem.course._count.chapters === "number" 
-                            ? courseItem.course._count.chapters 
-                            : 0} Chapters
-                        </span>
-                      </div>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5 mr-2"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#32CD32"
+                            strokeWidth="2"
+                          >
+                            <path d="M3 5C6 3 10 3 12 5V19C10 17 6 17 3 19V5Z" />
+                            <path d="M21 5C18 3 14 3 12 5V19C14 17 18 17 21 19V5Z" />
+                            <line x1="12" y1="5" x2="12" y2="19" strokeLinecap="round" />
+                          </svg>
+                          <span>
+                            {typeof courseItem.course._count.chapters === "number"
+                              ? courseItem.course._count.chapters
+                              : 0}{" "}
+                            Chapters
+                          </span>
+                        </div>
                         <div className="flex items-center mb-2">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -309,24 +317,25 @@ const CoursesPage = () => {
 
                         {/* Progress Bar di bawah durasi */}
                         <div className="w-full bg-gray-300 rounded-full h-6 mb-2">
-  <div
-    className="bg-indigo-500 rounded-full h-full flex items-center justify-center"
-    style={{
-      width: `${courseItem.contentFinish}%`,
-    }}
-  >
-    <span className="text-white text-xs font-bold pl-9">
-      {Math.round(courseItem.contentFinish) }%
-    </span>
-  </div>
-</div>
+                          <div
+                            className="bg-indigo-500 rounded-full h-full flex items-center justify-center"
+                            style={{
+                              width: `${courseItem.contentFinish}%`,
+                            }}
+                          >
+                            <span className="text-white text-xs font-bold pl-9">
+                              {Math.round(courseItem.contentFinish)}%
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   );
                 })
               ) : (
-                <p className="text-2xl font-bold text-gray-700 text-center mt-4">No courses found for you</p>
-
+                <p className="text-2xl font-bold text-gray-700 text-center mt-4">
+                  No courses found for you
+                </p>
               )}
             </div>
           </div>

@@ -21,6 +21,7 @@ const InstrukturProfile = () => {
     email: "",
   });
 
+  const [isDirty, setIsDirty] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const profile = useSelector(selectProfile);
@@ -56,6 +57,7 @@ const InstrukturProfile = () => {
       ...prev,
       [name]: value,
     }));
+    setIsDirty(true); // Mark as dirty on input change
   };
 
   const handleSave = () => {
@@ -90,9 +92,9 @@ const InstrukturProfile = () => {
       const reader = new FileReader();
       reader.onload = () => {
         setImagePreview(reader.result);
+        setIsDirty(true); // Mark as dirty on image change
       };
       reader.readAsDataURL(file);
-
       setImageFile(file); // Set the file state
     }
   };
@@ -230,7 +232,12 @@ const InstrukturProfile = () => {
               <div className="flex justify-center p-8">
                 <button
                   onClick={handleSave}
-                  className="btn bg-[#0a61aa] text-white rounded-3xl w-full max-w-xs"
+                  className={`btn rounded-3xl w-full max-w-xs ${
+                    isDirty
+                      ? "bg-primary text-white  hover:bg-primary"
+                      : "bg-gray-300 text-gray-500 opacity-50 cursor-not-allowed"
+                  }`}
+                  disabled={!isDirty} // Disable button if no changes
                 >
                   Simpan Profil Saya
                 </button>

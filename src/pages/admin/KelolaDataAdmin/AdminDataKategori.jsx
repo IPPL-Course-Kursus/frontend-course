@@ -27,6 +27,10 @@ const AdminDataKategori = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
 
+  // State for popup notification
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState("");
+
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 7;
@@ -67,6 +71,7 @@ const AdminDataKategori = () => {
   const confirmDelete = () => {
     dispatch(deleteCategory(categoryToDelete.id));
     setShowDeleteModal(false);
+    showPopupNotification("Kategori berhasil dihapus");
   };
 
   // Remove undefined or null categories
@@ -99,6 +104,15 @@ const AdminDataKategori = () => {
       setCurrentPage(totalPages);
     }
   }, [currentPage, totalPages]);
+
+  // Show notification popup
+  const showPopupNotification = (message) => {
+    setNotificationMessage(message);
+    setShowNotification(true);
+    setTimeout(() => {
+      setShowNotification(false);
+    }, 3000);
+  };
 
   return (
     <>
@@ -280,6 +294,7 @@ const AdminDataKategori = () => {
             }}
             onSuccess={() => {
               dispatch(fetchAdminCategories());
+              showPopupNotification("Kategori berhasil ditambahkan");
             }}
           />
 
@@ -291,6 +306,7 @@ const AdminDataKategori = () => {
             }}
             onSuccess={() => {
               dispatch(fetchAdminCategories());
+              showPopupNotification("Kategori berhasil diubah");
             }}
             existingData={selectedCategory}
           />
@@ -317,6 +333,13 @@ const AdminDataKategori = () => {
                   </button>
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* Notification Popup */}
+          {showNotification && (
+            <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 mb-10 bg-red-500 text-white px-4 py-2 rounded-md shadow-lg transition-all duration-500 ease-in-out transform ${showNotification ? 'translate-y-0' : 'translate-y-full'}`">
+              {notificationMessage}
             </div>
           )}
         </div>

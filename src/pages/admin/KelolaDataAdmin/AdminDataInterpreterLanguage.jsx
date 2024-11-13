@@ -4,36 +4,37 @@ import { FaBars } from "react-icons/fa";
 import { IoAddCircleOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getAllLevelCourses,
-  createLevelCourse,
-  updateLevelCourseById,
-  deleteLevelCourseById,
-} from "../../../redux/actions/levelCourseActions";
+  fetchLanguages,
+  createLanguage,
+  updateLanguage,
+  deleteLanguage,
+} from "../../../redux/actions/adminDataInterLangActions";
 
-const AdminDataLevel = () => {
+const AdminDataInterpreterLanguage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Redux dispatch and selector
   const dispatch = useDispatch();
-  const { levelCourses, loading, error, successMessage } = useSelector(
-    (state) => state.levelCourse
+  const { languages, loading, error, successMessage } = useSelector(
+    (state) => state.interpreterLanguages
   );
 
   // State for modal visibility and form data
   const [showModal, setShowModal] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedLevel, setSelectedLevel] = useState(null);
+  const [selectedLanguage, setSelectedLanguage] = useState(null);
   const [formData, setFormData] = useState({
-    levelName: "",
+    languageInterpreter: "",
+    version: "",
   });
 
   // State for popup notification
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
 
-  // Fetch level courses on component mount
+  // Fetch languages on component mount
   useEffect(() => {
-    dispatch(getAllLevelCourses());
+    dispatch(fetchLanguages());
   }, [dispatch]);
 
   // Show notification popup
@@ -47,64 +48,83 @@ const AdminDataLevel = () => {
 
   // Handle form input change
   const handleInputChange = (e) => {
-    setFormData({ ...formData, levelName: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
-  // Handle add level
-  const handleAddLevel = async () => {
-    if (levelCourses.some((level) => level.levelName.toLowerCase() === formData.levelName.toLowerCase())) {
-      showPopupNotification("Level sudah ada");
+  // Handle add language
+  const handleAddLanguage = async () => {
+    if (
+      languages.some(
+        (lang) =>
+          lang.languageInterpreter.toLowerCase() ===
+          formData.languageInterpreter.toLowerCase()
+      )
+    ) {
+      showPopupNotification("Bahasa sudah ada");
       return;
     }
     try {
-      await dispatch(createLevelCourse(formData.levelName));
-      setFormData({ levelName: "" });
+      await dispatch(createLanguage(formData));
+      setFormData({
+        languageInterpreter: "",
+        version: "",
+      });
       setShowModal(false);
-      showPopupNotification("Level berhasil ditambahkan");
+      showPopupNotification("Bahasa berhasil ditambahkan");
     } catch (err) {
-      showPopupNotification("Terjadi kesalahan saat menambahkan level");
+      showPopupNotification("Terjadi kesalahan saat menambahkan bahasa");
     }
   };
 
-  // Handle edit level
-  const handleEditLevel = async () => {
+  // Handle edit language
+  const handleEditLanguage = async () => {
     try {
-      await dispatch(updateLevelCourseById(selectedLevel.id, formData.levelName));
-      setFormData({ levelName: "" });
-      setSelectedLevel(null);
+      await dispatch(updateLanguage(selectedLanguage.id, formData));
+      setFormData({
+        languageInterpreter: "",
+        version: "",
+      });
+      setSelectedLanguage(null);
       setIsEditMode(false);
       setShowModal(false);
-      showPopupNotification("Level berhasil diubah");
+      showPopupNotification("Bahasa berhasil diubah");
     } catch (err) {
-      showPopupNotification("Terjadi kesalahan saat mengubah level");
+      showPopupNotification("Terjadi kesalahan saat mengubah bahasa");
     }
   };
 
-  // Handle delete level
-  const handleDeleteLevel = async (id) => {
-    if (window.confirm("Are you sure you want to delete this level?")) {
+  // Handle delete language
+  const handleDeleteLanguage = async (id) => {
+    if (window.confirm("Anda yakin ingin menghapus bahasa ini?")) {
       try {
-        await dispatch(deleteLevelCourseById(id));
-        showPopupNotification("Level berhasil dihapus");
+        await dispatch(deleteLanguage(id));
+        showPopupNotification("Bahasa berhasil dihapus");
       } catch (err) {
-        showPopupNotification("Terjadi kesalahan saat menghapus level");
+        showPopupNotification("Terjadi kesalahan saat menghapus bahasa");
       }
     }
   };
 
-  // Open modal for adding new level
+  // Open modal for adding new language
   const openAddModal = () => {
     setIsEditMode(false);
-    setFormData({ levelName: "" });
-    setSelectedLevel(null);
+    setFormData({
+      languageInterpreter: "",
+      version: "",
+    });
+    setSelectedLanguage(null);
     setShowModal(true);
   };
 
-  // Open modal for editing level
-  const openEditModal = (level) => {
+  // Open modal for editing language
+  const openEditModal = (language) => {
     setIsEditMode(true);
-    setSelectedLevel(level);
-    setFormData({ levelName: level.levelName });
+    setSelectedLanguage(language);
+    setFormData({
+      languageInterpreter: language.languageInterpreter,
+      version: language.version,
+    });
     setShowModal(true);
   };
 
@@ -142,14 +162,14 @@ const AdminDataLevel = () => {
             <h1 className="text-2xl font-bold text-[#0a61aa]">Hi, Admin!</h1>
           </div>
 
-          {/* Section Data Level */}
+          {/* Section Data Interpreter Language */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
             <h2 className="text-lg md:text-xl font-bold text-[#0a61aa]">
-              Data Level Kelas
+              Data Bahasa Interpreter
             </h2>
 
             <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
-              {/* Tambah Level Button */}
+              {/* Tambah Bahasa Button */}
               <div className="relative">
                 <button
                   className="py-1 px-4 bg-[#0a61aa] text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center"
@@ -168,7 +188,7 @@ const AdminDataLevel = () => {
           )}
           {error && <p className="text-red-500 mb-4">{error}</p>}
 
-          {/* Tabel Data Level */}
+          {/* Tabel Data Bahasa Interpreter */}
           <div className="overflow-x-auto bg-white p-4">
             {loading ? (
               <p>Loading...</p>
@@ -177,29 +197,33 @@ const AdminDataLevel = () => {
                 <thead>
                   <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
                     <th className="px-2 md:px-4 py-2">Nomor</th>
-                    <th className="px-2 md:px-4 py-2">Level</th>
+                    <th className="px-2 md:px-4 py-2">Bahasa Interpreter</th>
+                    <th className="px-2 md:px-4 py-2">Versi</th>
                     <th className="px-2 md:px-4 py-2">Aksi</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {levelCourses.map((level, index) => {
+                  {languages.map((language, index) => {
                     const rowNumber = index + 1;
                     return (
                       <tr key={index} className="border-t text-xs md:text-sm">
                         <td className="px-2 md:px-4 py-2">{rowNumber}</td>
-                        <td className="px-2 md:px-4 py-2">{level.levelName}</td>
+                        <td className="px-2 md:px-4 py-2">
+                          {language.languageInterpreter}
+                        </td>
+                        <td className="px-2 md:px-4 py-2">{language.version}</td>
                         <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
                           {/* Tombol Ubah */}
                           <button
                             className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
-                            onClick={() => openEditModal(level)}
+                            onClick={() => openEditModal(language)}
                           >
                             Ubah
                           </button>
                           {/* Tombol Hapus */}
                           <button
                             className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
-                            onClick={() => handleDeleteLevel(level.id)}
+                            onClick={() => handleDeleteLanguage(language.id)}
                           >
                             Hapus
                           </button>
@@ -212,7 +236,7 @@ const AdminDataLevel = () => {
             )}
           </div>
 
-          {/* Modal for Adding and Editing Level */}
+          {/* Modal for Adding and Editing Language */}
           {showModal && (
             <div
               className="fixed inset-0 flex justify-center items-center z-50"
@@ -226,25 +250,43 @@ const AdminDataLevel = () => {
                   &times;
                 </button>
                 <h2 className="text-xl font-bold text-[#0a61aa] mb-4 text-center">
-                  {isEditMode ? "Ubah Level Kelas" : "Tambah Level Kelas"}
+                  {isEditMode
+                    ? "Ubah Bahasa Interpreter"
+                    : "Tambah Bahasa Interpreter"}
                 </h2>
 
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
-                    isEditMode ? handleEditLevel() : handleAddLevel();
+                    isEditMode ? handleEditLanguage() : handleAddLanguage();
                   }}
                 >
-                  {/* Level Name Input */}
+                  {/* Language Interpreter Input */}
                   <div className="mb-4">
-                    <label className="block mb-1 font-semibold">Level Kelas</label>
+                    <label className="block mb-1 font-semibold">
+                      Bahasa Interpreter
+                    </label>
                     <input
                       type="text"
-                      name="levelName"
-                      value={formData.levelName}
+                      name="languageInterpreter"
+                      value={formData.languageInterpreter}
                       onChange={handleInputChange}
                       className="w-full p-2 border rounded-xl"
-                      placeholder="Masukkan Nama Level"
+                      placeholder="Masukkan Bahasa Interpreter"
+                      required
+                    />
+                  </div>
+
+                  {/* Version Input */}
+                  <div className="mb-4">
+                    <label className="block mb-1 font-semibold">Versi</label>
+                    <input
+                      type="text"
+                      name="version"
+                      value={formData.version}
+                      onChange={handleInputChange}
+                      className="w-full p-2 border rounded-xl"
+                      placeholder="Masukkan Versi"
                       required
                     />
                   </div>
@@ -278,4 +320,4 @@ const AdminDataLevel = () => {
   );
 };
 
-export default AdminDataLevel;
+export default AdminDataInterpreterLanguage;

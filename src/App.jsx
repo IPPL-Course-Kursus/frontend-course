@@ -25,10 +25,12 @@ import MulaiKelas from "./pages/MulaiKelas/MulaiKelas";
 // ADMIN
 import AdminDashboard from "./pages/admin/AdminDashboard";
 //ADMIN KELOLA DATA
+
 import AdminDataKategori from "./pages/admin/KelolaDataAdmin/AdminDataKategori";
 import AdminDataLevel from "./pages/admin/KelolaDataAdmin/AdminDataLevel";
 import AdminDataType from "./pages/admin/KelolaDataAdmin/AdminDataType";
 import AdminDataKelas from "./pages/admin/KelolaDataAdmin/AdminDataKelas";
+import AdminDataInterpreterLanguage from "./pages/admin/KelolaDataAdmin/AdminDataInterpreterLanguage";
 
 //KELOLA INSTRUKTUR ADMIN
 import AdminDataInstruktur from "./pages/admin/KelolaInstrukturAdmin/AdminDataInstruktur";
@@ -91,7 +93,9 @@ function AppRoutes() {
   }, [location, navigate]);
 
   return (
+    
     <Routes>
+      
       {/* <Route element={<ProtectedRouteUser />}> */}
       <Route path="/" element={<Home />} />
       {/* </Protected> */}
@@ -149,6 +153,7 @@ function AppRoutes() {
         <Route path="/admin/data-level" element={<AdminDataLevel />} />
         <Route path="/admin/data-Type" element={<AdminDataType />} />
         <Route path="/admin/data-kelas" element={<AdminDataKelas />} />
+        <Route path="/admin/data-interpreter" element={<AdminDataInterpreterLanguage />} />
       </Route>
 
       {/* Kelola Instruktur ADMIN */}

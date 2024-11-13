@@ -76,3 +76,31 @@ export const fetchPaymentHistory = () => async (dispatch) => {
         throw error;
     }
 };
+
+export const resumeTransaction = (orderId) => async (dispatch) => {
+    try {
+        dispatch(transactionRequest());
+
+        const token = getCookie("token");
+        const response = await axios.get(
+            `${api_url}transaction/resume/${orderId}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        if (response.data.success) {
+            // Pastikan Anda mengembalikan response.data
+            return response.data; // Mengembalikan data dari API
+        }
+
+        dispatch(transactionFail("Failed to resume transaction"));
+    } catch (error) {
+        dispatch(transactionFail(error.response?.data || "Failed to resume transaction"));
+        throw error;
+    }
+};
+
+

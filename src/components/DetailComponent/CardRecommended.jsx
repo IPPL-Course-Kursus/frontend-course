@@ -10,8 +10,8 @@ const CardRecommended = ({ title = "Kelas rekomendasi" }) => {
   console.log(recommendedCourses); // Debugging: pastikan recommendedCourses berisi data
 
   return (
-    <div className="flex justify-center max-w-screen-lg mx-auto px-4 lg:p-4">
-      <div className="flex flex-col items-center max-w-[1060px] container gap-5 pt-[26px] pb-[53px]">
+    <div className="flex justify-center mx-auto px-4 lg:p-4">
+      <div className="flex flex-col items-center container gap-5 pt-[26px] pb-[53px]">
         {/* Header Section */}
         <div className="flex justify-between w-full px-6">
           <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
@@ -21,7 +21,7 @@ const CardRecommended = ({ title = "Kelas rekomendasi" }) => {
         </div>
 
         {/* Card Course Section */}
-        <div className="grid mt-2 gap-2 grid-cols-1 md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:mt-4">
+        <div className="grid mt-2 gap-2 grid-cols-1 w-full md:grid-cols-2 md:gap-6 lg:grid-cols-3 lg:mt-4">
         {recommendedCourses.length > 0 ? (
   recommendedCourses.slice(0, 3).map((course) => (
     <div key={course.id} className="bg-white shadow-xl rounded-xl overflow-hidden pb-3">

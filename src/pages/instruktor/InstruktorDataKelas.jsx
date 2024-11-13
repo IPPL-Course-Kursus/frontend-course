@@ -7,7 +7,7 @@ import DataKelasDetail from "../../components/InstrukturComponents/DataKelas/Dat
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import SidebarInstruktur from "../../components/Sidebar/SidebarInstruktur";
-import { getAllKelas, deleteDataCourse } from "../../redux/actions/instruktorActions";
+import { deleteDataCourse, fetchUserCourses } from "../../redux/actions/instruktorActions";
 import HeadInstruktur from "../../components/InstrukturComponents/HeadInstruktur";
 
 const InstruktorDataKelas = () => {
@@ -23,53 +23,98 @@ const InstruktorDataKelas = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [filter, setFilter] = useState("");
 
-  const [currentPage, setCurrentPage] = useState(1); // Halaman saat ini
-  const itemsPerPage = 10; // Jumlah data yang ditampilkan per halaman
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 7;
   const dispatch = useDispatch();
-  const courses = useSelector((state) => state.course.courses);
+  const { mycourse } = useSelector((state) => state.course);
+
+  console.log("mycourse:", mycourse);
+
+  // useEffect(() => {
+  //   const fetchCourses = async () => {
+  //     try {
+  //       await dispatch(fetchUserCourses());
+  //     } catch (error) {
+  //       console.error("Failed to fetch courses:", error);
+  //     }
+  //   };
+  //   fetchCourses();
+  // }, [dispatch]);
 
   useEffect(() => {
-    dispatch(getAllKelas());
-  }, [dispatch]);
+    const fetchCourses = async () => {
+      try {
+        await dispatch(fetchUserCourses());
+      } catch (error) {
+        console.error("Failed to fetch courses:", error);
+      }
+    };
+    fetchCourses();
+  }, [dispatch, mycourse]); // Tambahkan mycourse sebagai dependency
 
   const handleAddClick = () => {
     setSelectedCourse({});
     setShowTambahPopup(true);
   };
 
-  const handleEditClick = (courses) => {
-    setSelectedCourse(courses);
+  const handleEditClick = (mycourse) => {
+    setSelectedCourse(mycourse);
     setShowUbahPopup(true);
   };
 
-  const handleDetailClick = (courses) => {
-    console.log("Selected Course:", courses); // Tambahkan ini
-    setSelectedCourse(courses);
+  const handleDetailClick = (mycourse) => {
+    console.log("Selected Course:", mycourse); // Tambahkan ini
+    setSelectedCourse(mycourse);
     setShowDetailPopup(true);
   };
 
-  const handleDelete = (courses) => {
-    setCourseToDelete(courses); // Pastikan Anda mengatur kursus yang ingin dihapus
+  const handleDelete = (mycourse) => {
+    setCourseToDelete(mycourse); // Pastikan Anda mengatur kursus yang ingin dihapus
     setShowDeleteModal(true);
   };
 
   const confirmDelete = () => {
-    console.log("Deleting course ID:", courseToDelete ? courseToDelete.id : "No course selected");
-    if (courseToDelete && courseToDelete.id) {
-      dispatch(deleteDataCourse(courseToDelete.id)).then(() => {
-        setShowDeleteModal(false);
-        // window.location.reload(); // Reload halaman setelah penghapusan berhasil
-      });
-    } else {
-      console.error("Invalid course ID for deletion:", courseToDelete);
+    // Check if courseToDelete has a valid ID
+    if (!courseToDelete?.id) {
+      console.error("Course ID is required.");
+      return; // Don't proceed if there's no valid course ID
     }
+
+    // Dispatch the delete action
+    dispatch(deleteDataCourse(courseToDelete.id))
+      .then(() => {
+        setShowDeleteModal(false); // Close the modal after successful deletion
+        dispatch(fetchUserCourses()); // Refresh the course list after deletion
+      })
+      .catch((error) => {
+        console.error("Error deleting course:", error);
+        setShowDeleteModal(false); // Close the modal even if there's an error
+      });
   };
 
-  const filteredCourses = courses.filter(
-    (courseType) =>
-      courseType.courseCode.toLowerCase().includes(courseTypeSearch.toLowerCase()) &&
-      (filter === "" || courseType.typeCourse.typeName === filter)
-  );
+  // const confirmDelete = () => {
+  //   if (window.confirm("Are you sure you want to delete this course?")) {
+  //     console.log("Deleting course ID:", courseToDelete ? courseToDelete.id : "No course selected");
+  //     if (courseToDelete && courseToDelete.id) {
+  //       dispatch(deleteDataCourse(courseToDelete.id)).then(() => {
+  //         setShowDeleteModal(false);
+  //         dispatch(getAllKelas()); // Refresh the course list after deletion
+  //       });
+  //     }
+  //   } else {
+  //     console.log("Deletion canceled");
+  //   }
+  // };
+
+  const filteredCourses = Array.isArray(mycourse)
+    ? mycourse.filter((courseType) => {
+        const search = courseTypeSearch || "";
+        return (
+          courseType.typeCourse.typeName.toLowerCase().includes(search.toLowerCase()) &&
+          (filter === "" || courseType.typeCourse.typeName === filter)
+        );
+      })
+    : [];
 
   // Menghitung total halaman
   const totalPages = Math.ceil(filteredCourses.length / itemsPerPage);
@@ -78,6 +123,14 @@ const InstruktorDataKelas = () => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredCourses.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
 
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
@@ -115,7 +168,6 @@ const InstruktorDataKelas = () => {
               <FaBars className="text-2xl" />
             </button>
             <HeadInstruktur />
-
           </div>
 
           {/* Section Data Kelas */}
@@ -179,11 +231,13 @@ const InstruktorDataKelas = () => {
             <table className="min-w-full table-auto">
               <thead>
                 <tr className="bg-gray-200 text-left text-xs md:text-sm font-semibold">
-                  <th className="px-2 md:px-4 py-2">Kode</th>
+                  <th className="px-2 md:px-4 py-2">Urutan</th>
+                  <th className="px-2 md:px-4 py-2">Image</th>
                   <th className="px-2 md:px-4 py-2">Kategori</th>
                   <th className="px-2 md:px-4 py-2">Nama Kelas</th>
                   <th className="px-2 md:px-4 py-2">Tipe Kelas</th>
                   <th className="px-2 md:px-4 py-2">Level</th>
+                  <th className="px-2 md:px-4 py-2">Publish</th>
                   <th className="px-2 md:px-4 py-2">Harga</th>
                   <th className="px-2 md:px-4 py-2">Aksi</th>
                 </tr>
@@ -191,8 +245,14 @@ const InstruktorDataKelas = () => {
 
               <tbody>
                 {currentItems.map((courseType, index) => (
-                  <tr key={index} className="border-t text-xs md:text-sm">
-                    <td className="px-2 md:px-4 py-2">{courseType.courseCode}</td>
+                  <tr key={courseType.id} className="border-t text-xs md:text-sm">
+                    {/* Nomor urutan */}
+                    <td className="px-2 md:px-4 py-2">
+                      {(currentPage - 1) * itemsPerPage + index + 1}
+                    </td>
+                    <td className="px-2 md:px-4 py-2">
+                      <img src={courseType.image} className="w-16 object-cover h-16 rounded-lg" />
+                    </td>
                     <td className="px-2 md:px-4 py-2">{courseType.category.categoryName}</td>
                     <td className="px-2 md:px-4 py-2">{courseType.courseName}</td>
                     <td
@@ -203,13 +263,12 @@ const InstruktorDataKelas = () => {
                       {courseType.typeCourse.typeName}
                     </td>
                     <td className="px-2 md:px-4 py-2">{courseType.courseLevel.levelName}</td>
+                    <td className="px-2 md:px-4 py-2">
+                      {courseType.publish ? "Published" : "Unpublished"}
+                    </td>
                     <td className="px-2 md:px-4 py-2">{courseType.coursePrice}</td>
                     <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
-                      <Link
-                        to={`/inst/data-chapter/
-                        ${courseType.id}`}
-                      >
-                        {/* <Link to="/inst/data-module"> */}
+                      <Link to={`/inst/data-chapter/${courseType.id}`}>
                         <button className="py-1 px-2 md:px-4 bg-blue-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2">
                           Kelola
                         </button>
@@ -226,14 +285,11 @@ const InstruktorDataKelas = () => {
                       >
                         Detail
                       </button>
-                      <button className="py-1 px-2 md:px-4 bg-blue-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2">
-                        Promo
-                      </button>
                       <button
-                        className="py-1 px-2 md:px-4 bg-blue-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                        className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
                         onClick={() => handleDelete(courseType)}
                       >
-                        Delete
+                        Hapus
                       </button>
                     </td>
                   </tr>
@@ -241,21 +297,20 @@ const InstruktorDataKelas = () => {
               </tbody>
             </table>
           </div>
-
           {/* Pagination */}
           <div className="flex justify-between items-center mt-4">
             <button
               className={`flex items-center py-2 px-4 rounded-lg ${
-                currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-[#0a61aa] text-white"
-              } transition-all duration-300 hover:scale-105`}
-              onClick={() => setCurrentPage(currentPage - 1)}
+                currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-blue-500 text-white"
+              }`}
+              onClick={handlePreviousPage}
               disabled={currentPage === 1}
             >
-              <IoArrowBackCircle className="mr-2 text-xl" />
+              <IoArrowBackCircle className="mr-2" />
               Previous
             </button>
 
-            <span className="text-lg font-semibold">
+            <span>
               Page {currentPage} of {totalPages}
             </span>
 
@@ -263,46 +318,72 @@ const InstruktorDataKelas = () => {
               className={`flex items-center py-2 px-4 rounded-lg ${
                 currentPage === totalPages
                   ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-[#0a61aa] text-white"
-              } transition-all duration-300 hover:scale-105`}
-              onClick={() => setCurrentPage(currentPage + 1)}
+                  : "bg-blue-500 text-white"
+              }`}
+              onClick={handleNextPage}
               disabled={currentPage === totalPages}
             >
               Next
-              <IoArrowForwardCircle className="ml-2 text-xl" />
+              <IoArrowForwardCircle className="ml-2" />
             </button>
           </div>
 
-          {/* Pop-up untuk tambah kelas */}
-          <DataKelasInput show={showTambahPopup} onClose={() => setShowTambahPopup(false)} />
+          {/* Pagination
+          // <div className="flex justify-between items-center mt-4">
+          //   <button
+          //     className={`flex items-center py-2 px-4 rounded-lg ${
+          //       currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-[#0a61aa] text-white"
+          //     } transition-all duration-300 hover:scale-105`}
+          //     onClick={handlePreviousPage}
+          //     disabled={currentPage === 1}
+          //   >
+          //     <IoArrowBackCircle className="mr-2 text-xl" />
+          //     Previous
+          //   </button>
 
-          {/* Pop-up untuk ubah kelas */}
+          //   <span className="text-lg font-semibold">
+          //     Page {currentPage} of {totalPages}
+          //   </span>
+
+          //   <button
+          //     className={`flex items-center py-2 px-4 rounded-lg ${
+          //       currentPage === totalPages
+          //         ? "bg-gray-300 cursor-not-allowed"
+          //         : "bg-[#0a61aa] text-white"
+          //     } transition-all duration-300 hover:scale-105`}
+          //     onClick={handleNextPage}
+          //     disabled={currentPage === totalPages}
+          //   >
+          //     Next
+          //     <IoArrowForwardCircle className="ml-2 text-xl" />
+          //   </button>
+          // </div> */}
+
+          {/* Popups for Add, Edit, Detail, and Delete Modals */}
+          <DataKelasInput show={showTambahPopup} onClose={() => setShowTambahPopup(false)} />
           <DataKelasUbah
             show={showUbahPopup}
             onClose={() => setShowUbahPopup(false)}
             existingData={selectedCourse}
           />
-
-          {/* Pop-up untuk detail kelas */}
-          <DataKelasDetail
-            show={showDetailPopup}
-            onClose={() => setShowDetailPopup(false)}
-            existingData={selectedCourse} // Pastikan data ini valid
-          />
+          <DataKelasDetail show={showDetailPopup} onClose={() => setShowDetailPopup(false)} />
 
           {showDeleteModal && (
-            <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-              <div className="bg-white p-6 rounded-3xl shadow-lg relative w-80">
-                <h2 className="text-xl font-bold text-center mb-4">Yakin hapus data?</h2>
-                <div className="flex justify-around mt-6">
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-70">
+              {" "}
+              {/* Ubah warna latar belakang */}
+              <div className="bg-white p-6 rounded-lg shadow-lg">
+                <h2 className="text-lg font-semibold mb-4">Konfirmasi Hapus</h2>
+                <p className="mb-4">Apakah Anda yakin ingin menghapus konten ini?</p>
+                <div className="flex justify-end space-x-4">
                   <button
-                    className="bg-red-600 text-white px-6 py-2 rounded-full font-bold"
+                    className="py-2 px-4 bg-red-500 text-white rounded-md"
                     onClick={confirmDelete}
                   >
                     Hapus
                   </button>
                   <button
-                    className="bg-gray-300 px-6 py-2 rounded-full font-bold"
+                    className="py-2 px-4 bg-gray-300 rounded-md"
                     onClick={() => setShowDeleteModal(false)}
                   >
                     Batal
