@@ -41,6 +41,7 @@ import InstruktorDataModule from "./pages/instruktor/InstruktorDataModule";
 
 import InstrukturPorofile from "./pages/instruktor/InstrukturPorofile";
 import InstrukturDataKategori from "./pages/instruktor/KeolaData/InstrukturDataKategori";
+import InstrukturDataLanguage from "./pages/instruktor/KeolaData/InstrukturDataInterpreter";
 import InstrukturDataLevel from "./pages/instruktor/KeolaData/InstrukturDataLevel";
 import InstrukturDataType from "./pages/instruktor/KeolaData/InstrukturDataType";
 import InstruktorDataKelas from "./pages/instruktor/InstruktorDataKelas";
@@ -193,6 +194,7 @@ function AppRoutes() {
         <Route path="/inst/data-level" element={<InstrukturDataLevel />} />
         <Route path="/inst/data-type" element={<InstrukturDataType />} />
         <Route path="/inst/profile" element={<InstrukturPorofile />} />
+        <Route path="/inst/data-interpreter" element={<InstrukturDataLanguage />} />
       </Route>
 
       {/* NotFound */}
