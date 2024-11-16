@@ -65,6 +65,11 @@ const SidebarInstruktur = () => {
                   Data Type
                 </span>
               </Link>
+              <Link to="/inst/data-interpreter">
+                <span className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
+                Data Bahasa Interpreter
+                </span>
+              </Link>
             </div>
           )}
         </div>

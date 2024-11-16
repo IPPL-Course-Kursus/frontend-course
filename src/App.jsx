@@ -24,6 +24,7 @@ import AdminDataKategori from "./pages/admin/KelolaDataAdmin/AdminDataKategori";
 import AdminDataLevel from "./pages/admin/KelolaDataAdmin/AdminDataLevel";
 import AdminDataType from "./pages/admin/KelolaDataAdmin/AdminDataType";
 import AdminDataKelas from "./pages/admin/KelolaDataAdmin/AdminDataKelas";
+import AdminDataInterpreterLanguage from "./pages/admin/KelolaDataAdmin/AdminDataInterpreterLanguage";
 
 //KELOLA INSTRUKTUR ADMIN
 import AdminDataInstruktur from "./pages/admin/KelolaInstrukturAdmin/AdminDataInstruktur";
@@ -31,11 +32,11 @@ import AdminRegisterInstruktur from "./pages/admin/KelolaInstrukturAdmin/AdminRe
 // INSTRUKTUR
 import InstruktorDashboard from "./pages/instruktor/InstruktorDashboard";
 import InstruktorDataModule from "./pages/instruktor/InstruktorDataModule";
-
 import InstrukturPorofile from "./pages/instruktor/InstrukturPorofile";
 import InstrukturDataKategori from "./pages/instruktor/KeolaData/InstrukturDataKategori";
 import InstrukturDataLevel from "./pages/instruktor/KeolaData/instrukturDataLevel";
 import InstrukturDataType from "./pages/instruktor/KeolaData/instrukturDataType";
+import InstrukturDataLanguage from "./pages/instruktor/KeolaData/InstrukturDataInterpreter";
 import InstruktorDataKelas from "./pages/instruktor/InstruktorDataKelas";
 import InstruktorDataKonten from "./pages/instruktor/InstruktorDataKonten";
 import { ProtectedRouteUser } from "./security/ProtectRoleUser";
@@ -186,6 +187,14 @@ function AppRoutes() {
             </NoAccesToken>
           }
         />
+        <Route
+          path="/admin/data-interpreter"
+          element={
+            <NoAccesToken>
+              <AdminDataInterpreterLanguage />
+            </NoAccesToken>
+          }
+        />
       </Route>
 
       {/* Kelola Instruktur*/}
@@ -270,6 +279,14 @@ function AppRoutes() {
           element={
             <NoAccesToken>
               <InstrukturPorofile />
+            </NoAccesToken>
+          }
+        />
+        <Route
+          path="/inst/data-interpreter"
+          element={
+            <NoAccesToken>
+              <InstrukturDataLanguage />
             </NoAccesToken>
           }
         />
