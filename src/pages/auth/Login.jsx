@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 // import toast from "react-hot-toast";
 import { login } from "../../redux/actions/authActions";
 import LoadSpinner from "../../components/Spinner/LoadSpinner";
+import Cookies from "js-cookie"; // Menambahkan js-cookie untuk pengecekan token
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -16,6 +17,14 @@ const Login = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  // Cek jika token sudah ada, jika iya arahkan ke halaman dashboard
+  useEffect(() => {
+    const token = Cookies.get("token"); // Menggunakan js-cookie untuk mengambil token dari cookies
+    if (token) {
+      navigate("/*"); // Gantilah dengan rute halaman yang sesuai setelah login
+    }
+  }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -40,7 +49,7 @@ const Login = () => {
     }
     setIsLoading(true);
     // Jika validasi lolos, lakukan login
-   await dispatch(login(email, password, navigate));
+    await dispatch(login(email, password, navigate));
     setIsLoading(false);
   };
 
