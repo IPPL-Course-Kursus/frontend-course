@@ -3,6 +3,7 @@ import Sidebar from "../../../components/Sidebar/SidebarInstruktur";
 import { FaBars } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchLanguages } from "../../../redux/actions/adminDataInterLangActions";
+import HeadInstruktur from "../../../components/InstrukturComponents/HeadInstruktur";
 
 const InstrukturDataInterpreter = () => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -38,22 +39,21 @@ const InstrukturDataInterpreter = () => {
             )}
 
             <div className="flex-1 p-4 md:p-6 bg-secondary min-h-screen font-poppins">
-                {/* Header */}
+                {/* header */}
                 <div className="bg-[#F3F7FB] p-4 flex justify-between items-center mb-4 shadow-sm">
+                    {/* menu button on mobile */}
                     <button
                         className="text-[#0a61aa] md:hidden"
                         onClick={() => setSidebarOpen(!sidebarOpen)}
-                    >
+                        >
                         <FaBars className="text-2xl" />
                     </button>
-                    <h1 className="text-2xl font-bold text-[#0a61aa]">
-                        Hi, Admin!
-                    </h1>
+                    <HeadInstruktur />
                 </div>
 
                 {/* Section Data Interpreter Language */}
                 <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
-                    <h2 className="text-lg md:text-xl font-bold text-[#0a61aa]">
+                    <h2 className="flex items-center py-2 px-4 bg-gradient-to-r from-[#FF5722] to-[#FF9800] text-white font-semibold rounded-md text-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl mb-4">
                         Data Bahasa Interpreter
                     </h2>
                 </div>
