@@ -1,10 +1,4 @@
-import {
-  BrowserRouter,
-  Route,
-  Routes,
-  useNavigate,
-  useLocation,
-} from "react-router-dom";
+import { BrowserRouter, Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import Home from "./pages/Home";
@@ -40,8 +34,8 @@ import InstruktorDataModule from "./pages/instruktor/InstruktorDataModule";
 
 import InstrukturPorofile from "./pages/instruktor/InstrukturPorofile";
 import InstrukturDataKategori from "./pages/instruktor/KeolaData/InstrukturDataKategori";
-import InstrukturDataLevel from "./pages/instruktor/KeolaData/InstrukturDataLevel";
-import InstrukturDataType from "./pages/instruktor/KeolaData/InstrukturDataType";
+import InstrukturDataLevel from "./pages/instruktor/KeolaData/instrukturDataLevel";
+import InstrukturDataType from "./pages/instruktor/KeolaData/instrukturDataType";
 import InstruktorDataKelas from "./pages/instruktor/InstruktorDataKelas";
 import InstruktorDataKonten from "./pages/instruktor/InstruktorDataKonten";
 import { ProtectedRouteUser } from "./security/ProtectRoleUser";
@@ -49,7 +43,7 @@ import ProtectedRouteAdmin from "./security/ProtectRoleAdmin";
 import { ProtectedRouteInstruktur } from "./security/ProtectRoleInstruktur";
 
 import NoAccesToken from "./components/Protecd/NoAccesToken";
-// import Protected from "./components/Protecd/NoAccesToken";
+// import ProtecdToken from "./components/Protecd/Proctected";
 
 function App() {
   return (
@@ -92,50 +86,62 @@ function AppRoutes() {
   }, [location, navigate]);
 
   return (
-    
     <Routes>
-      
-      {/* <Route element={<ProtectedRouteUser />}> */}
       <Route path="/" element={<Home />} />
-      {/* </Protected> */}
-      {/* </Route> */}
 
       {/* Auth */}
-      <Route
-        path="/login"
-        element={
-          <NoAccesToken>
-            <Login />
-          </NoAccesToken>
-        }
-      />
+      <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/reset" element={<ResetPassword />} />
       <Route path="/send-email" element={<SendEmail />} />
       <Route path="/verify-email" element={<VerifyEmail />} />
       <Route element={<ProtectedRouteUser />}>
-        {/* Profile */}
-        <Route path="/profile" element={<MainProfile />} />
+        <Route
+          path="/profile"
+          element={
+            <NoAccesToken>
+              <MainProfile />
+            </NoAccesToken>
+          }
+        />
         <Route
           path="/mycourse"
           element={
-            // <Protected>
-            <MyCourse />
-            // </Protected>
+            <NoAccesToken>
+              <MyCourse />
+            </NoAccesToken>
           }
         />
-        <Route path="/mulai-kelas" element={<MulaiKelas />} />
-        <Route path="/success-payment" element={<SuccessPage />} />
-        <Route path="/payment" element={<PaymentPage />} />
+
+        <Route
+          path="/success-payment"
+          element={
+            <NoAccesToken>
+              <SuccessPage />
+            </NoAccesToken>
+          }
+        />
+        <Route
+          path="/payment"
+          element={
+            <NoAccesToken>
+              <PaymentPage />
+            </NoAccesToken>
+          }
+        />
       </Route>
-      {/* Course */}
+
+      <Route
+        path="/mulai-kelas/:id"
+        element={
+          <NoAccesToken>
+            <MulaiKelas />
+          </NoAccesToken>
+        }
+      />
 
       <Route path="/course-detail/:id" element={<DetailKelas />} />
-
       <Route path="/topik-kelas" element={<TopikKelas />} />
-      <Route path="/mulai-kelas/:id" element={<MulaiKelas />} />
-
-      {/* Payment */}
 
       {/* Admin */}
       <Route element={<ProtectedRouteAdmin />}>
@@ -143,29 +149,73 @@ function AppRoutes() {
           exact
           path="/admin/dashboard"
           element={
-            // <NoAccesToken>
-            <AdminDashboard />
-            // </NoAccesToken>
+            <NoAccesToken>
+              <AdminDashboard />
+            </NoAccesToken>
           }
         />
-        <Route path="/admin/data-kategori" element={<AdminDataKategori />} />
-        <Route path="/admin/data-level" element={<AdminDataLevel />} />
-        <Route path="/admin/data-Type" element={<AdminDataType />} />
-        <Route path="/admin/data-kelas" element={<AdminDataKelas />} />
+        <Route
+          path="/admin/data-kategori"
+          element={
+            <NoAccesToken>
+              <AdminDataKategori />
+            </NoAccesToken>
+          }
+        />
+        <Route
+          path="/admin/data-level"
+          element={
+            <NoAccesToken>
+              <AdminDataLevel />
+            </NoAccesToken>
+          }
+        />
+        <Route
+          path="/admin/data-Type"
+          element={
+            <NoAccesToken>
+              <AdminDataType />
+            </NoAccesToken>
+          }
+        />
+        <Route
+          path="/admin/data-kelas"
+          element={
+            <NoAccesToken>
+              <AdminDataKelas />
+            </NoAccesToken>
+          }
+        />
       </Route>
 
-      {/* Kelola Instruktur ADMIN */}
+      {/* Kelola Instruktur*/}
       <Route element={<ProtectedRouteInstruktur />}>
         <Route
           path="/admin/data-instruktur"
-          element={<AdminDataInstruktur />}
+          element={
+            <NoAccesToken>
+              <AdminDataInstruktur />
+            </NoAccesToken>
+          }
         />
         <Route
           path="/admin/regis-instruktur"
-          element={<AdminRegisterInstruktur />}
+          element={
+            <NoAccesToken>
+              <AdminRegisterInstruktur />
+            </NoAccesToken>
+          }
         />
 
         {/* Instruktor */}
+        <Route
+          path="/inst/data-kelas"
+          element={
+            <NoAccesToken>
+              <InstruktorDataKelas />
+            </NoAccesToken>
+          }
+        />
         <Route
           exact
           path="/inst/dashboard"
@@ -175,22 +225,54 @@ function AppRoutes() {
             </NoAccesToken>
           }
         />
-        <Route path="/inst/data-kelas" element={<InstruktorDataKelas />} />
         <Route
           path="/inst/data-konten/:id"
-          element={<InstruktorDataKonten />}
+          element={
+            <NoAccesToken>
+              <InstruktorDataKonten />
+            </NoAccesToken>
+          }
         />
         <Route
           path="/inst/data-chapter/:id"
-          element={<InstruktorDataModule />}
+          element={
+            <NoAccesToken>
+              <InstruktorDataModule />
+            </NoAccesToken>
+          }
         />
         <Route
           path="/inst/data-kategori"
-          element={<InstrukturDataKategori />}
+          element={
+            <NoAccesToken>
+              <InstrukturDataKategori />
+            </NoAccesToken>
+          }
         />
-        <Route path="/inst/data-level" element={<InstrukturDataLevel />} />
-        <Route path="/inst/data-type" element={<InstrukturDataType />} />
-        <Route path="/inst/profile" element={<InstrukturPorofile />} />
+        <Route
+          path="/inst/data-level"
+          element={
+            <NoAccesToken>
+              <InstrukturDataLevel />
+            </NoAccesToken>
+          }
+        />
+        <Route
+          path="/inst/data-type"
+          element={
+            <NoAccesToken>
+              <InstrukturDataType />
+            </NoAccesToken>
+          }
+        />
+        <Route
+          path="/inst/profile"
+          element={
+            <NoAccesToken>
+              <InstrukturPorofile />
+            </NoAccesToken>
+          }
+        />
       </Route>
 
       {/* NotFound */}

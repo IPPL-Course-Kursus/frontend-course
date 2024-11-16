@@ -30,17 +30,6 @@ const InstruktorDataKelas = () => {
 
   console.log("mycourse:", mycourse);
 
-  // useEffect(() => {
-  //   const fetchCourses = async () => {
-  //     try {
-  //       await dispatch(fetchUserCourses());
-  //     } catch (error) {
-  //       console.error("Failed to fetch courses:", error);
-  //     }
-  //   };
-  //   fetchCourses();
-  // }, [dispatch]);
-
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -63,7 +52,6 @@ const InstruktorDataKelas = () => {
   };
 
   const handleDetailClick = (mycourse) => {
-    console.log("Selected Course:", mycourse); // Tambahkan ini
     setSelectedCourse(mycourse);
     setShowDetailPopup(true);
   };
@@ -91,20 +79,6 @@ const InstruktorDataKelas = () => {
         setShowDeleteModal(false); // Close the modal even if there's an error
       });
   };
-
-  // const confirmDelete = () => {
-  //   if (window.confirm("Are you sure you want to delete this course?")) {
-  //     console.log("Deleting course ID:", courseToDelete ? courseToDelete.id : "No course selected");
-  //     if (courseToDelete && courseToDelete.id) {
-  //       dispatch(deleteDataCourse(courseToDelete.id)).then(() => {
-  //         setShowDeleteModal(false);
-  //         dispatch(getAllKelas()); // Refresh the course list after deletion
-  //       });
-  //     }
-  //   } else {
-  //     console.log("Deletion canceled");
-  //   }
-  // };
 
   const filteredCourses = Array.isArray(mycourse)
     ? mycourse.filter((courseType) => {
@@ -328,37 +302,6 @@ const InstruktorDataKelas = () => {
             </button>
           </div>
 
-          {/* Pagination
-          // <div className="flex justify-between items-center mt-4">
-          //   <button
-          //     className={`flex items-center py-2 px-4 rounded-lg ${
-          //       currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-[#0a61aa] text-white"
-          //     } transition-all duration-300 hover:scale-105`}
-          //     onClick={handlePreviousPage}
-          //     disabled={currentPage === 1}
-          //   >
-          //     <IoArrowBackCircle className="mr-2 text-xl" />
-          //     Previous
-          //   </button>
-
-          //   <span className="text-lg font-semibold">
-          //     Page {currentPage} of {totalPages}
-          //   </span>
-
-          //   <button
-          //     className={`flex items-center py-2 px-4 rounded-lg ${
-          //       currentPage === totalPages
-          //         ? "bg-gray-300 cursor-not-allowed"
-          //         : "bg-[#0a61aa] text-white"
-          //     } transition-all duration-300 hover:scale-105`}
-          //     onClick={handleNextPage}
-          //     disabled={currentPage === totalPages}
-          //   >
-          //     Next
-          //     <IoArrowForwardCircle className="ml-2 text-xl" />
-          //   </button>
-          // </div> */}
-
           {/* Popups for Add, Edit, Detail, and Delete Modals */}
           <DataKelasInput show={showTambahPopup} onClose={() => setShowTambahPopup(false)} />
           <DataKelasUbah
@@ -366,7 +309,11 @@ const InstruktorDataKelas = () => {
             onClose={() => setShowUbahPopup(false)}
             existingData={selectedCourse}
           />
-          <DataKelasDetail show={showDetailPopup} onClose={() => setShowDetailPopup(false)} />
+          <DataKelasDetail
+            show={showDetailPopup}
+            onClose={() => setShowDetailPopup(false)}
+            existingData={selectedCourse}
+          />
 
           {showDeleteModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-70">
