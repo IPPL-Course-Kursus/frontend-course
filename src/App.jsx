@@ -13,7 +13,7 @@ import Login from "./pages/auth/Login";
 import ResetPassword from "./pages/auth/ResetPassword";
 import Register from "./pages/auth/Register";
 import SendEmail from "./pages/auth/sendEmail";
-import SuccessPage from "./pages/Payment/SuccessPage";
+import SuccessPage from "./pages/payment/SuccessPage";
 import PaymentPage from "./pages/payment/PaymentPage";
 import DetailKelas from "./pages/Detail/DetailKelas";
 import MainProfile from "./pages/Profile/MainProfile";
@@ -41,8 +41,8 @@ import InstruktorDataModule from "./pages/instruktor/InstruktorDataModule";
 
 import InstrukturPorofile from "./pages/instruktor/InstrukturPorofile";
 import InstrukturDataKategori from "./pages/instruktor/KeolaData/InstrukturDataKategori";
-import InstrukturDataLevel from "./pages/instruktor/KeolaData/InstrukturDataLevel";
-import InstrukturDataType from "./pages/instruktor/KeolaData/InstrukturDataType";
+import InstrukturDataLevel from "./pages/instruktor/KeolaData/instrukturDataLevel";
+import InstrukturDataType from "./pages/instruktor/KeolaData/instrukturDataType";
 import InstruktorDataKelas from "./pages/instruktor/InstruktorDataKelas";
 import InstruktorDataKonten from "./pages/instruktor/InstruktorDataKonten";
 import { ProtectedRouteUser } from "./security/ProtectRoleUser";
@@ -93,9 +93,7 @@ function AppRoutes() {
   }, [location, navigate]);
 
   return (
-    
     <Routes>
-      
       {/* <Route element={<ProtectedRouteUser />}> */}
       <Route path="/" element={<Home />} />
       {/* </Protected> */}
@@ -153,7 +151,10 @@ function AppRoutes() {
         <Route path="/admin/data-level" element={<AdminDataLevel />} />
         <Route path="/admin/data-Type" element={<AdminDataType />} />
         <Route path="/admin/data-kelas" element={<AdminDataKelas />} />
-        <Route path="/admin/data-interpreter" element={<AdminDataInterpreterLanguage />} />
+        <Route
+          path="/admin/data-interpreter"
+          element={<AdminDataInterpreterLanguage />}
+        />
       </Route>
 
       {/* Kelola Instruktur ADMIN */}
