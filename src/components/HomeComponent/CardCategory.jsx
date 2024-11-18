@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import { IoIosArrowDroprightCircle, IoIosArrowDropleftCircle } from "react-icons/io";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import LoadSpinner from "../Spinner/LoadSpinner";
 
 const CardCategory = () => {
   const dispatch = useDispatch();
@@ -67,8 +68,8 @@ const CardCategory = () => {
 
   return (
     <div className="flex justify-center mt-10">
-      <div className="w-full max-w-[1680px] px-6 lg:px-20 flex flex-col gap-6">
-        <div className="flex justify-between w-full">
+      <div className="w-full max-w-[1680px] px-6 lg:px-20 flex flex-col gap-8">
+        <div className="flex justify-between items-center w-full">
           <h2 className="text-2xl font-bold text-gray-800">Kategori Belajar</h2>
           <NavLink
             to="/topik-kelas"
@@ -90,20 +91,26 @@ const CardCategory = () => {
                   <NavLink
                     key={i}
                     to={`/topik-kelas?category=${kategori.categoryName}`}
-                    className="flex flex-col items-center gap-3 p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-transform duration-300 ease-in-out hover:scale-105 border border-transparent hover:border-blue-500"
+                    className="flex flex-col items-center gap-4 p-4 bg-white rounded-lg shadow-lg hover:shadow-xl transition-transform duration-300 ease-in-out hover:scale-105 border border-gray-200 mr-4" // Menambahkan margin kanan
+                    style={{
+                      outline: "none", // Menghapus garis biru
+                    }}
                   >
                     <img
                       src={kategori.image}
                       alt={kategori.categoryName}
-                      className="aspect-[1.6] w-[140px] h-[100px] object-cover rounded-lg"
+                      className="aspect-video w-[140px] h-[100px] object-cover rounded-lg shadow-md"
                     />
-                    <div className="text-center text-sm font-medium text-gray-800 truncate max-w-[140px] ">
+                    <div className="text-center text-sm font-medium text-gray-700 truncate max-w-[140px]">
                       {kategori.categoryName}
                     </div>
                   </NavLink>
                 ))
               ) : (
-                <p className="text-gray-500">Tidak ada kategori yang tersedia.</p>
+                <div className="flex justify-center items-center w-full  px-10">
+                  {/* Menambahkan padding */}
+                  <LoadSpinner size={80} color="blue" />
+                </div>
               )}
             </Slider>
           )}
