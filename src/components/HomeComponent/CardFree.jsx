@@ -10,6 +10,7 @@ import { IoIosArrowDroprightCircle, IoIosArrowDropleftCircle } from "react-icons
 import { useDispatch, useSelector } from "react-redux";
 import { getFreeCourse } from "../../redux/actions/courseActions";
 import { getCategory } from "../../redux/actions/categoryActions";
+import LoadSpinner from "../Spinner/LoadSpinner";
 
 const CardFree = ({ title = "Kelas Free" }) => {
   const [selectCategoryId, setSelectCategoryId] = useState(null);
@@ -117,7 +118,7 @@ const CardFree = ({ title = "Kelas Free" }) => {
               >
                 All
               </button>
-              {category.length > 0 ? (
+              {category.length > 0 &&
                 category.map((kategori) => (
                   <div key={kategori.id} className="ml-0">
                     <div
@@ -133,10 +134,7 @@ const CardFree = ({ title = "Kelas Free" }) => {
                       </span>
                     </div>
                   </div>
-                ))
-              ) : (
-                <p className="text-gray-500">Tidak ada kategori yang tersedia.</p>
-              )}
+                ))}
             </Slider>
           </div>
 
@@ -320,8 +318,8 @@ const CardFree = ({ title = "Kelas Free" }) => {
                 </div>
               )
             ) : (
-              <div className="flex justify-center items-center">
-                <p className="text-gray-500">Tidak ada kursus yang tersedia.</p>
+              <div className="flex justify-center items-center h-32">
+                <LoadSpinner size={80} color="blue" />
               </div>
             )}
           </div>
