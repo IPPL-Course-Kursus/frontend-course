@@ -38,6 +38,8 @@ import {
   updateCourseRequest,
   updateCourseSuccess,
 } from "../reducers/courseReducers";
+import { compileFailure, compileStart, compileSuccess } from "../reducers/compileReducers";
+import toast from "react-hot-toast";
 
 const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
 
@@ -398,5 +400,24 @@ export const deleteDataKonten = (contentId) => async (dispatch) => {
   } catch (error) {
     dispatch(deleteContentFailure(error.response?.data || "Delete failed"));
     throw error;
+  }
+};
+
+export const compileCode = (compileData) => async (dispatch) => {
+  dispatch(compileStart());
+
+  try {
+    const response = await axios.put(`${api_url}compiler/compile`, compileData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    dispatch(compileSuccess(response.data));
+    toast.success("Code compiled successfully!");
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || "Failed to compile code.";
+    dispatch(compileFailure(errorMessage));
+    toast.error(errorMessage);
   }
 };

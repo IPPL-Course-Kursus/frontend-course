@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import { selectProfile } from "../../redux/reducers/authReducers";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import LoadSpinner from "../../components/Spinner/LoadSpinner";
 
 const InstrukturProfile = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -22,6 +23,7 @@ const InstrukturProfile = () => {
   });
 
   const [isDirty, setIsDirty] = useState(false);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const profile = useSelector(selectProfile);
@@ -60,31 +62,39 @@ const InstrukturProfile = () => {
     setIsDirty(true); // Mark as dirty on input change
   };
 
-  const handleSave = () => {
-    // Validate if any field is empty
-    if (!form.fullName || !form.phoneNumber || !form.city || !form.tanggalLahir) {
-      toast.error("Data tidak boleh kosong"); // Notification error
-      return;
-    }
+const handleSave = () => {
+  if (!form.fullName || !form.phoneNumber || !form.city || !form.tanggalLahir) {
+    toast.error("Data tidak boleh kosong");
+    return;
+  }
 
-    const formData = new FormData();
-    formData.append("fullName", form.fullName);
-    formData.append("phoneNumber", form.phoneNumber);
-    formData.append("city", form.city);
-    formData.append("tanggalLahir", form.tanggalLahir);
+  const formData = new FormData();
+  formData.append("fullName", form.fullName);
+  formData.append("phoneNumber", form.phoneNumber);
+  formData.append("city", form.city);
+  formData.append("tanggalLahir", form.tanggalLahir);
 
-    if (imageFile) {
-      formData.append("image", imageFile);
-    }
+  if (imageFile) {
+    formData.append("image", imageFile);
+  }
 
-    // Dispatch action to update profile
-    dispatch(updateProfile(formData)).then(() => {
+  setLoading(true);
+
+  dispatch(updateProfile(formData))
+    .then(() => {
       dispatch(getMe());
+      toast.success("Profil berhasil diperbarui");
       setTimeout(() => {
         navigate("/inst/profile");
       }, 1000);
+    })
+    .catch((error) => {
+      toast.error("Gagal memperbarui profil: " + (error?.message || "Terjadi kesalahan"));
+    })
+    .finally(() => {
+      setLoading(false);
     });
-  };
+};
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -193,10 +203,17 @@ const InstrukturProfile = () => {
                       <span className="label-text">Nomor Telepon</span>
                     </div>
                     <input
-                      type="tel"
-                      name="phoneNumber" // Pastikan nama ini sesuai dengan state form
-                      value={form.phoneNumber} // Menggunakan form.phoneNumber
-                      onChange={handleInputChange}
+                      type="text" // Tetap sebagai text
+                      name="phoneNumber"
+                      value={form.phoneNumber}
+                      onChange={(e) => {
+                        // Hanya mengizinkan angka
+                        const value = e.target.value;
+                        if (/^\d*$/.test(value)) {
+                          // Validasi hanya angka
+                          handleInputChange(e);
+                        }
+                      }}
                       placeholder="Masukkan Nomor Telepon"
                       className="input input-bordered placeholder:text-[12px] placeholder:text-[#8A8A8A] w-full rounded-2xl"
                     />
@@ -231,15 +248,23 @@ const InstrukturProfile = () => {
 
               <div className="flex justify-center p-8">
                 <button
+                  type="button"
                   onClick={handleSave}
-                  className={`btn rounded-3xl w-full max-w-xs ${
-                    isDirty
-                      ? "bg-primary text-white  hover:bg-primary"
-                      : "bg-gray-300 text-gray-500 opacity-50 cursor-not-allowed"
+                  className={`btn rounded-3xl w-full max-w-xs font-semibold transition-colors duration-300 ${
+                    isDirty && !loading
+                      ? "bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
-                  disabled={!isDirty} // Disable button if no changes
+                  disabled={!isDirty || loading} // Disabled jika tidak ada perubahan atau sedang loading
                 >
-                  Simpan Profil Saya
+                  {loading ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <LoadSpinner size={24} color="white" />
+                      <span>Loading...</span>
+                    </div>
+                  ) : (
+                    "Simpan Profil Saya"
+                  )}
                 </button>
               </div>
             </div>

@@ -25,6 +25,10 @@ export const fetchAdminCategories = () => async (dispatch) => {
   try {
     const response = await axios.get(`${api_url}category/`);
     dispatch(fetchCategoriesSuccess(response.data));
+
+
+    console.log(response.data);
+    
   } catch (error) {
     dispatch(fetchCategoriesFailure(error.message));
   }
