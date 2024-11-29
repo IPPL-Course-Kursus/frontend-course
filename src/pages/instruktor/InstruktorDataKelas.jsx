@@ -30,17 +30,6 @@ const InstruktorDataKelas = () => {
 
   console.log("mycourse:", mycourse);
 
-  // useEffect(() => {
-  //   const fetchCourses = async () => {
-  //     try {
-  //       await dispatch(fetchUserCourses());
-  //     } catch (error) {
-  //       console.error("Failed to fetch courses:", error);
-  //     }
-  //   };
-  //   fetchCourses();
-  // }, [dispatch]);
-
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -63,7 +52,6 @@ const InstruktorDataKelas = () => {
   };
 
   const handleDetailClick = (mycourse) => {
-    console.log("Selected Course:", mycourse); // Tambahkan ini
     setSelectedCourse(mycourse);
     setShowDetailPopup(true);
   };
@@ -73,38 +61,40 @@ const InstruktorDataKelas = () => {
     setShowDeleteModal(true);
   };
 
+  // const confirmDelete = () => {
+  //   // Check if courseToDelete has a valid ID
+  //   if (!courseToDelete?.id) {
+  //     console.error("Course ID is required.");
+  //     return; // Don't proceed if there's no valid course ID
+  //   }
+
+  //   // Dispatch the delete action
+  //   dispatch(deleteDataCourse(courseToDelete.id))
+  //     .then(() => {
+  //       setShowDeleteModal(false); // Close the modal after successful deletion
+  //       dispatch(fetchUserCourses()); // Refresh the course list after deletion
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error deleting course:", error);
+  //       setShowDeleteModal(false); // Close the modal even if there's an error
+  //     });
+  // };
   const confirmDelete = () => {
-    // Check if courseToDelete has a valid ID
     if (!courseToDelete?.id) {
       console.error("Course ID is required.");
-      return; // Don't proceed if there's no valid course ID
+      return;
     }
 
-    // Dispatch the delete action
     dispatch(deleteDataCourse(courseToDelete.id))
       .then(() => {
-        setShowDeleteModal(false); // Close the modal after successful deletion
-        dispatch(fetchUserCourses()); // Refresh the course list after deletion
+        setShowDeleteModal(false);
+        dispatch(fetchUserCourses());
       })
       .catch((error) => {
         console.error("Error deleting course:", error);
-        setShowDeleteModal(false); // Close the modal even if there's an error
+        alert("Gagal menghapus kelas. Silakan coba lagi.");
       });
   };
-
-  // const confirmDelete = () => {
-  //   if (window.confirm("Are you sure you want to delete this course?")) {
-  //     console.log("Deleting course ID:", courseToDelete ? courseToDelete.id : "No course selected");
-  //     if (courseToDelete && courseToDelete.id) {
-  //       dispatch(deleteDataCourse(courseToDelete.id)).then(() => {
-  //         setShowDeleteModal(false);
-  //         dispatch(getAllKelas()); // Refresh the course list after deletion
-  //       });
-  //     }
-  //   } else {
-  //     console.log("Deletion canceled");
-  //   }
-  // };
 
   const filteredCourses = Array.isArray(mycourse)
     ? mycourse.filter((courseType) => {
@@ -266,7 +256,14 @@ const InstruktorDataKelas = () => {
                     <td className="px-2 md:px-4 py-2">
                       {courseType.publish ? "Published" : "Unpublished"}
                     </td>
-                    <td className="px-2 md:px-4 py-2">{courseType.coursePrice}</td>
+                    {/* <td className="px-2 md:px-4 py-2">{courseType.coursePrice}</td> */}
+                    <td className="px-2 md:px-4 py-2">
+                      {new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                      }).format(courseType.coursePrice)}
+                    </td>
+
                     <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
                       <Link to={`/inst/data-chapter/${courseType.id}`}>
                         <button className="py-1 px-2 md:px-4 bg-blue-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2">
@@ -328,37 +325,6 @@ const InstruktorDataKelas = () => {
             </button>
           </div>
 
-          {/* Pagination
-          // <div className="flex justify-between items-center mt-4">
-          //   <button
-          //     className={`flex items-center py-2 px-4 rounded-lg ${
-          //       currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-[#0a61aa] text-white"
-          //     } transition-all duration-300 hover:scale-105`}
-          //     onClick={handlePreviousPage}
-          //     disabled={currentPage === 1}
-          //   >
-          //     <IoArrowBackCircle className="mr-2 text-xl" />
-          //     Previous
-          //   </button>
-
-          //   <span className="text-lg font-semibold">
-          //     Page {currentPage} of {totalPages}
-          //   </span>
-
-          //   <button
-          //     className={`flex items-center py-2 px-4 rounded-lg ${
-          //       currentPage === totalPages
-          //         ? "bg-gray-300 cursor-not-allowed"
-          //         : "bg-[#0a61aa] text-white"
-          //     } transition-all duration-300 hover:scale-105`}
-          //     onClick={handleNextPage}
-          //     disabled={currentPage === totalPages}
-          //   >
-          //     Next
-          //     <IoArrowForwardCircle className="ml-2 text-xl" />
-          //   </button>
-          // </div> */}
-
           {/* Popups for Add, Edit, Detail, and Delete Modals */}
           <DataKelasInput show={showTambahPopup} onClose={() => setShowTambahPopup(false)} />
           <DataKelasUbah
@@ -366,7 +332,11 @@ const InstruktorDataKelas = () => {
             onClose={() => setShowUbahPopup(false)}
             existingData={selectedCourse}
           />
-          <DataKelasDetail show={showDetailPopup} onClose={() => setShowDetailPopup(false)} />
+          <DataKelasDetail
+            show={showDetailPopup}
+            onClose={() => setShowDetailPopup(false)}
+            existingData={selectedCourse}
+          />
 
           {showDeleteModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-70">
