@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../../redux/actions/authActions";
+import Swal from "sweetalert2";
 
 const SidebarInstruktur = () => {
   const [isDataMenuOpen, setIsDataMenuOpen] = useState(false);
@@ -14,12 +15,26 @@ const SidebarInstruktur = () => {
   };
 
   const handleLogout = () => {
-    dispatch(logout()); // Dispatch action logout
-    navigate("/login"); // Arahkan pengguna ke halaman login
+    Swal.fire({
+      title: "Konfirmasi Logout",
+      text: "Apakah Anda yakin ingin keluar?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, Logout",
+      cancelButtonText: "Batal",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(logout()); // Dispatch action logout
+        navigate("/login"); // Arahkan pengguna ke halaman login
+        Swal.fire("Berhasil!", "Anda telah logout.", "success");
+      }
+    });
   };
 
   return (
-    <div className="min-h-screen h-fullw w-64 bg-blue-900 text-white flex flex-col">
+    <div className="h-full min-h-screen h-fullw w-64 bg-blue-900 text-white flex flex-col">
       <div className="flex items-center justify-center h-20">
         <h1 className="text-2xl font-bold">Etam Course</h1>
       </div>
