@@ -67,9 +67,9 @@ const CardCategory = () => {
   };
 
   return (
-    <div className="flex justify-center mt-10">
+    <div className="flex justify-center">
       <div className="w-full max-w-[1680px] px-6 lg:px-20 flex flex-col gap-8">
-        <div className="flex justify-between items-center w-full">
+        <div className="flex justify-between items-center w-full mt-10">
           <h2 className="text-2xl font-bold text-gray-800">Kategori Belajar</h2>
           <NavLink
             to="/topik-kelas"
@@ -101,7 +101,7 @@ const CardCategory = () => {
                       alt={kategori.categoryName}
                       className="aspect-video w-[140px] h-[100px] object-cover rounded-lg shadow-md"
                     />
-                    <div className="text-center text-sm font-medium text-gray-700 truncate max-w-[140px]">
+                    <div className="text-center text-sm font-medium text-gray-700 truncate max-w-[140px] mt-2">
                       {kategori.categoryName}
                     </div>
                   </NavLink>

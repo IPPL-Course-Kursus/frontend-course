@@ -7,7 +7,7 @@ import Login from "./pages/auth/Login";
 import ResetPassword from "./pages/auth/ResetPassword";
 import Register from "./pages/auth/Register";
 import SendEmail from "./pages/auth/sendEmail";
-import SuccessPage from "./pages/Payment/SuccessPage";
+import SuccessPage from "./pages/payment/SuccessPage";
 import PaymentPage from "./pages/payment/PaymentPage";
 import DetailKelas from "./pages/Detail/DetailKelas";
 import MainProfile from "./pages/Profile/MainProfile";
@@ -108,16 +108,16 @@ function AppRoutes() {
         <Route
           path="/mycourse"
           element={
-            <NoAccesToken>
+            // <NoAccesToken>
               <MyCourse />
-            </NoAccesToken>
+            // </NoAccesToken>
           }
         />
 
         <Route
           path="/success-payment"
           element={
-            <NoAccesToken>
+            <NoAccesToken>  
               <SuccessPage />
             </NoAccesToken>
           }
@@ -135,9 +135,9 @@ function AppRoutes() {
       <Route
         path="/mulai-kelas/:id"
         element={
-          <NoAccesToken>
+          // <NoAccesToken>
             <MulaiKelas />
-          </NoAccesToken>
+          // </NoAccesToken>
         }
       />
 
