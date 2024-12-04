@@ -20,7 +20,6 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
     intendedFor: "",
     aboutCourse: "",
   });
-  // console.log("existingData:", existingData);
 
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -63,7 +62,9 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
         name === "coursePrice" ||
         name === "courseDiscountPercent" ||
         name === "typeCourseId"
-          ? parseInt(value, 10)
+          ? value === "" // Jika kosong, set sebagai 0 atau tetap kosong
+            ? 0
+            : parseInt(value, 10) // Jika ada angka, lakukan parsing
           : value,
     }));
   };
@@ -217,10 +218,17 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Harga Kelas</label>
             <input
-              type="number"
+              type="text" // Tetap sebagai teks agar tidak muncul panah
               name="coursePrice"
               value={formData.coursePrice}
-              onChange={handleInputChange}
+              onChange={(e) => {
+                const value = e.target.value;
+
+                // Validasi hanya angka dan string kosong
+                if (/^\d*$/.test(value)) {
+                  handleInputChange(e); // Perbarui state dengan nilai yang valid
+                }
+              }}
               className="w-full p-2 border rounded-xl"
               placeholder="Rp"
               required
@@ -230,11 +238,19 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Discount Kelas</label>
             <input
-              type="number"
+              type="text"
               name="courseDiscountPercent"
               value={formData.courseDiscountPercent}
-              onChange={handleInputChange}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^\d*$/.test(value)) {
+                  // Validasi hanya angka
+                  handleInputChange(e); // Perbarui state
+                }
+              }}
               className="w-full p-2 border rounded-xl"
+              placeholder="%"
+              required
             />
           </div>
 

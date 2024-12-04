@@ -15,7 +15,7 @@ const AdminDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchVisible, setSearchVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
 
   useEffect(() => {
     dispatch(fetchStats());

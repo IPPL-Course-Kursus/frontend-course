@@ -66,6 +66,9 @@ export const instfetchPayments = () => async (dispatch) => {
     }
     const data = await response.json();
 
+    console.log(response.json);
+    
+
     dispatch({ type: "FETCH_payments_SUCCESS", payload: data });
   } catch (error) {
     dispatch({ type: "FETCH_payments_FAILURE", payload: error.message });

@@ -4,6 +4,7 @@ import { IoArrowBackCircle, IoArrowForwardCircle } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllKelas } from "../../../redux/actions/adminDataKelasActions";
 import Sidebar from "../../../components/Sidebar/SidebarAdmin";
+import NavbarAdmin from "../../../components/NavbarAdmin";
 
 const AdminDataKelas = () => {
   const [filter, setFilter] = useState("");
@@ -58,15 +59,10 @@ const AdminDataKelas = () => {
       )}
 
       <div className="flex-1 p-4 md:p-6 bg-secondary min-h-screen font-poppins">
-        <div className="bg-[#F3F7FB] p-4 flex justify-between items-center mb-4 shadow-sm">
-          <button className="text-[#0a61aa] md:hidden" onClick={() => setSidebarOpen(!sidebarOpen)}>
-            <FaBars className="text-2xl" />
-          </button>
-          <h1 className="text-2xl font-bold text-[#0a61aa]">Hi, Admin!</h1>
-        </div>
+      <NavbarAdmin setSidebarOpen={setSidebarOpen} />
 
         <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
-          <h2 className="text-lg md:text-xl font-bold text-[#0a61aa]">Data Kelas</h2>
+          <h2 className="flex items-center py-2 px-4 mt-4 bg-gradient-to-r from-[#FF5722] to-[#FF9800] text-white font-semibold rounded-md text-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl mb-4">Data Kelas</h2>
           <div className="flex items-center space-x-4">
             <div className="relative">
               <select

@@ -25,7 +25,12 @@ const UbahModule = ({ show, onClose, existingData }) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]:
+        name === "sort"
+          ? value === "" // Jika kosong, set sebagai 0 atau tetap kosong
+            ? 0
+            : parseInt(value, 10) // Jika ada angka, lakukan parsing
+          : value,
     }));
   };
 
@@ -65,11 +70,17 @@ const UbahModule = ({ show, onClose, existingData }) => {
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Urutan</label>
             <input
-              type="number"
+              type="text"
               name="sort"
               value={formData.sort}
-              disabled
-              onChange={handleInputChange}
+              // disabled
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^\d*$/.test(value)) {
+                  // Validasi hanya angka
+                  handleInputChange(e); // Perbarui state
+                }
+              }}
               className="w-full p-2 border rounded-xl" // Hapus bg-gray-200 dan cursor-not-allowed
               placeholder="ex 1"
             />

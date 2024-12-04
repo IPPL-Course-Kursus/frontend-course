@@ -12,9 +12,10 @@ export const getCategory = () => async (dispatch) => {
 
     dispatch(setCategory(data));
   } catch (error) {
-    alert(error.message);
+    console.error("Error fetching categories:", error.message);
   }
 };
+
 export const getLevel = () => async (dispatch) => {
   try {
     const response = await axios.get(`${api_url}course-level/`);
