@@ -7,10 +7,11 @@ import "swiper/css/navigation";
 import Footer from "../components/Footer";
 import CardCategory from "../components/HomeComponent/CardCategory";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getFreeCourse, getPopularCourse } from "../redux/actions/courseActions";
 import { getCategory } from "../redux/actions/categoryActions";
 import Content from "../components/HomeComponent/Content";
+import Cookies from "js-cookie"; // Menggunakan js-cookie untuk mengambil token
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -18,11 +19,22 @@ const Home = () => {
   const { free } = useSelector((state) => state.course);
   const { category } = useSelector((state) => state.category);
 
+  // State untuk memeriksa apakah user sudah login
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   useEffect(() => {
+    // Mendapatkan token dari cookies
+    const token = Cookies.get("token"); // Mengambil token dari cookies
+    if (token) {
+      setIsLoggedIn(true); // Jika token ada, set isLoggedIn menjadi true
+    }
+
+    // Mengambil data course dan category
     dispatch(getPopularCourse());
     dispatch(getFreeCourse());
     dispatch(getCategory());
   }, [dispatch]);
+
   return (
     <>
       <Navbar />
@@ -43,9 +55,10 @@ const Home = () => {
               </h1>
               <p className="hidden lg:block lg:absolute lg:text-4xl lg:top-[155px] lg:left-[280px] animate-pulse"></p>
             </div>
-            <NavLink as={Link} to={"/topik-kelas"} className="mt-4 z-10">
+            {/* Tombol yang berubah jika sudah login */}
+            <NavLink as={Link} to={isLoggedIn ? "/topik-kelas" : "/login"} className="mt-4 z-10">
               <button className="text-primary bg-white text-base font-semibold px-2 py-1 rounded-lg w-40 h-9 hover:scale-110 hover:bg-primary hover:text-white duration-300 lg:hover:border-white lg:hover:border">
-                IKUTI KELAS
+                {isLoggedIn ? "Mulai Belajar" : "IKUTI KELAS"}
               </button>
             </NavLink>
           </div>
@@ -60,7 +73,7 @@ const Home = () => {
             <img
               src="https://images.unsplash.com/photo-1506878206813-92402b8ded23?q=80&w=1770&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
               alt="Freelancer Section"
-              className="w-full h-auto"
+              className="w-full h-auto rounded-md"
             />
           </div>
           <div className="lg:w-1/2 mt-6 lg:mt-0 lg:pl-12 text-center lg:text-left">
@@ -71,9 +84,10 @@ const Home = () => {
               Kuasai strategi menjadi freelancer profesional untuk meningkatkan pendapatan secara
               langsung bersama para ahli berpengalaman.
             </p>
-            <NavLink as={Link} to={"/login"} className="z-10">
+            {/* Tombol "Mulai Belajar" berubah jika sudah login */}
+            <NavLink as={Link} to={isLoggedIn ? "/topik-kelas" : "/login"} className="z-10">
               <button className="bg-white text-primary text-base font-semibold px-4 py-2 rounded-lg hover:bg-gray-200 hover:text-primary-dark transition duration-300">
-                Daftar Sekarang
+                {isLoggedIn ? "Mulai Belajar" : "Daftar Sekarang"}
               </button>
             </NavLink>
           </div>

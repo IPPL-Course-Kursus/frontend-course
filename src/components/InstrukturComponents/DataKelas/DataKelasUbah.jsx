@@ -15,12 +15,11 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
     courseLevelId: "",
     coursePrice: "",
     courseDiscountPercent: "",
-    publish: true,
+    publish: true,  
     certificateStatus: true,
     intendedFor: "",
     aboutCourse: "",
   });
-  // console.log("existingData:", existingData);
 
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
