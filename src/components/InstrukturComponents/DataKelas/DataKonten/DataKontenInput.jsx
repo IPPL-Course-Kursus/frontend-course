@@ -1,7 +1,11 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addDataKonten, getDataKonten } from "../../../../redux/actions/instruktorActions";
+import {
+  addDataKonten,
+  compileCode,
+  getDataKonten,
+} from "../../../../redux/actions/instruktorActions";
 import CodeMirror from "@uiw/react-codemirror"; // Adjust import if necessary
 import { githubLight } from "@uiw/codemirror-theme-github";
 import { python } from "@codemirror/lang-python";
@@ -70,9 +74,9 @@ const DataKontenModule = ({ show, onClose, chapterId }) => {
     setInterpreterError(null);
 
     const isValid = validateInputs();
-    if (!isValid) return; 
+    if (!isValid) return;
 
-    setLoading(true); 
+    setLoading(true);
     try {
       const requestData = {
         sort: Number(formData.sort),
@@ -142,12 +146,28 @@ const DataKontenModule = ({ show, onClose, chapterId }) => {
     setLanguage(language.languageInterpreter);
   };
 
-  const handleRunCode = () => {
-    // eslint-disable-next-line no-undef
-    dispatch(runCode(language, sourceCode)).catch((error) => {
-      console.error("Error:", error.response ? error.response.data : error.message);
+const handleRunCode = () => {
+  if (!sourceCode || !language) {
+    setError("Code and language must be selected.");
+    return;
+  }
+
+  // Dispatch untuk mengirim request compileCode
+  dispatch(
+    compileCode({
+      language, // Kirim bahasa yang dipilih
+      sourceCode, // Kirim kode sumber
+    })
+  )
+    .then((response) => {
+      setOutput(response.data.result); // Asumsikan API mengembalikan output kode
+      console.log("Code compiled successfully");
+    })
+    .catch((error) => {
+      setError(error.response?.data?.message || "An error occurred while compiling the code.");
     });
-  };
+};
+
 
   const copyCode = () => {
     navigator.clipboard.writeText(sourceCode);
@@ -347,10 +367,12 @@ const DataKontenModule = ({ show, onClose, chapterId }) => {
                   </button>
                 </div>
               </div>
+              {/* Error and Output */}
+              {error && <div className="text-red-500 mt-2">{error}</div>}
 
-              <div className="mt-4 p-4 bg-gray-100 rounded-lg">
-                <h4 className="text-gray-700 font-semibold">Output:</h4>
-                <p className="text-gray-600 mt-2">{output}</p>
+              <div className="mt-4">
+                <h3 className="font-semibold text-lg">Output</h3>
+                <pre className="bg-gray-100 p-4 rounded-lg whitespace-pre-wrap">{output}</pre>
               </div>
             </section>
           )}
