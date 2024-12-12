@@ -189,35 +189,37 @@ const InstruktorDataModule = () => {
           </div>
 
           {/* Pagination */}
-          <div className="flex justify-between items-center mt-4">
-            <button
-              className={`flex items-center py-2 px-4 rounded-lg ${
-                currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-[#0a61aa] text-white"
-              } transition-all duration-300 hover:scale-105`}
-              onClick={() => setCurrentPage(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              <IoArrowBackCircle className="mr-2 text-xl" />
-              Previous
-            </button>
+          {totalPages > 1 && (
+            <div className="flex justify-between items-center mt-4">
+              <button
+                className={`flex items-center py-2 px-4 rounded-lg ${
+                  currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-[#0a61aa] text-white"
+                } transition-all duration-300 hover:scale-105`}
+                onClick={() => setCurrentPage(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                <IoArrowBackCircle className="mr-2 text-xl" />
+                Previous
+              </button>
 
-            <span className="text-lg font-semibold">
-              Page {currentPage} of {totalPages}
-            </span>
+              <span className="text-lg font-semibold">
+                Page {currentPage} of {totalPages}
+              </span>
 
-            <button
-              className={`flex items-center py-2 px-4 rounded-lg ${
-                currentPage === totalPages
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-[#0a61aa] text-white"
-              } transition-all duration-300 hover:scale-105`}
-              onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              Next
-              <IoArrowForwardCircle className="ml-2 text-xl" />
-            </button>
-          </div>
+              <button
+                className={`flex items-center py-2 px-4 rounded-lg ${
+                  currentPage === totalPages
+                    ? "bg-gray-300 cursor-not-allowed"
+                    : "bg-[#0a61aa] text-white"
+                } transition-all duration-300 hover:scale-105`}
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Next
+                <IoArrowForwardCircle className="ml-2 text-xl" />
+              </button>
+            </div>
+          )}
 
           {/* Pop-up untuk tambah module */}
           <DataModuleInput

@@ -114,16 +114,16 @@ function AppRoutes() {
         <Route
           path="/mycourse"
           element={
-            <NoAccesToken>
+            // <NoAccesToken>
               <MyCourse />
-            </NoAccesToken>
+            // </NoAccesToken>
           }
         />
 
         <Route
           path="/success-payment"
           element={
-            <NoAccesToken>
+            <NoAccesToken>  
               <SuccessPage />
             </NoAccesToken>
           }
@@ -141,9 +141,9 @@ function AppRoutes() {
       <Route
         path="/mulai-kelas/:id"
         element={
-          <NoAccesToken>
+          // <NoAccesToken>
             <MulaiKelas />
-          </NoAccesToken>
+          // </NoAccesToken>
         }
       />
 

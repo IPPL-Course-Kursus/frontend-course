@@ -18,7 +18,12 @@ const DataModuleInput = ({ show, onClose, courseId }) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: name === "sort" ? value : value,
+      [name]:
+        name === "sort"
+          ? value === "" // Jika kosong, set sebagai 0 atau tetap kosong
+            ? 0
+            : parseInt(value, 10) // Jika ada angka, lakukan parsing
+          : value,
     }));
     // Reset error messages when the user starts typing
     if (name === "sort") {
@@ -102,11 +107,18 @@ const DataModuleInput = ({ show, onClose, courseId }) => {
               name="sort"
               value={formData.sort}
               autoComplete="tel"
-              onChange={handleInputChange}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^\d*$/.test(value)) {
+                  // Validasi hanya angka
+                  handleInputChange(e); // Perbarui state
+                }
+              }}
               className={`w-full p-2 border rounded-xl ${
                 sortError ? "border-red-600" : "border-gray-300"
               }`}
               placeholder="ex 1"
+              required
             />
             {sortError && <div className="text-red-600 mt-1">{sortError}</div>}{" "}
             {/* Tampilkan error untuk sort */}

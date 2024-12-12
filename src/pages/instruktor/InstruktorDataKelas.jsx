@@ -61,22 +61,38 @@ const InstruktorDataKelas = () => {
     setShowDeleteModal(true);
   };
 
+  // const confirmDelete = () => {
+  //   // Check if courseToDelete has a valid ID
+  //   if (!courseToDelete?.id) {
+  //     console.error("Course ID is required.");
+  //     return; // Don't proceed if there's no valid course ID
+  //   }
+
+  //   // Dispatch the delete action
+  //   dispatch(deleteDataCourse(courseToDelete.id))
+  //     .then(() => {
+  //       setShowDeleteModal(false); // Close the modal after successful deletion
+  //       dispatch(fetchUserCourses()); // Refresh the course list after deletion
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error deleting course:", error);
+  //       setShowDeleteModal(false); // Close the modal even if there's an error
+  //     });
+  // };
   const confirmDelete = () => {
-    // Check if courseToDelete has a valid ID
     if (!courseToDelete?.id) {
       console.error("Course ID is required.");
-      return; // Don't proceed if there's no valid course ID
+      return;
     }
 
-    // Dispatch the delete action
     dispatch(deleteDataCourse(courseToDelete.id))
       .then(() => {
-        setShowDeleteModal(false); // Close the modal after successful deletion
-        dispatch(fetchUserCourses()); // Refresh the course list after deletion
+        setShowDeleteModal(false);
+        dispatch(fetchUserCourses());
       })
       .catch((error) => {
         console.error("Error deleting course:", error);
-        setShowDeleteModal(false); // Close the modal even if there's an error
+        alert("Gagal menghapus kelas. Silakan coba lagi.");
       });
   };
 
@@ -240,7 +256,14 @@ const InstruktorDataKelas = () => {
                     <td className="px-2 md:px-4 py-2">
                       {courseType.publish ? "Published" : "Unpublished"}
                     </td>
-                    <td className="px-2 md:px-4 py-2">{courseType.coursePrice}</td>
+                    {/* <td className="px-2 md:px-4 py-2">{courseType.coursePrice}</td> */}
+                    <td className="px-2 md:px-4 py-2">
+                      {new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                      }).format(courseType.coursePrice)}
+                    </td>
+
                     <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
                       <Link to={`/inst/data-chapter/${courseType.id}`}>
                         <button className="py-1 px-2 md:px-4 bg-blue-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2">

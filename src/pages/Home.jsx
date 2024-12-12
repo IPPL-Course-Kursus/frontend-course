@@ -38,35 +38,44 @@ const Home = () => {
   return (
     <>
       <Navbar />
-      <div className="w-full h-full relative">
+      <div className="relative w-full h-full animate-fade-in-up">
+        {/* Background Image with Parallax Effect and Blur */}
         <img
-          src="/people_dasboard.png"
-          alt="picture"
-          className="w-full h-full object-cover absolute -z-50"
+          src="/learn.jpg"
+          alt="learning"
+          className="absolute inset-0 w-full h-full object-cover -z-10 transform transition-all duration-1000 ease-in-out parallax-blur"
         />
-        <div className="absolute w-full h-full bg-gradient-to-r from-primary via-primary to-transparent opacity-75" />
 
-        <div className="flex flex-col lg:flex-row lg:items-start lg:pt-24 lg:justify-between pt-16 pl-10 h-80 lg:px-40 relative z-10">
-          <div className="flex flex-col">
-            <div>
-              <h1 className="font-semibold text-white sm:text-xl lg:text-3xl">
-                Belajar Tanpa Batas & <br />
-                Jadilah Talenta Digital Handal <br /> Praktisi Terbaik!
-              </h1>
-              <p className="hidden lg:block lg:absolute lg:text-4xl lg:top-[155px] lg:left-[280px] animate-pulse"></p>
+        {/* Gradient Overlay with Elegant Animation */}
+        <div className="absolute inset-0 bg-gradient-to-r from-primary via-transparent to-transparent opacity-80 animate-gradient-background" />
+
+        {/* Content Wrapper with Delay Animation */}
+        <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between px-6 py-12 lg:px-40 text-center lg:text-left space-y-6 lg:space-y-0 opacity-0 animate-fade-in-up delay-200">
+          {/* Left Side: Text Content with Elegant Slide-up and Rotation */}
+          <div className="flex flex-col max-w-lg space-y-6 text-white">
+            <h1 className="text-4xl sm:text-5xl font-bold leading-tight opacity-0 transform translate-y-10 rotate-[-5deg] transition duration-700 ease-out animate-slide-up delay-300">
+              Belajar Tanpa Batas, <br />
+              Jadilah Talenta Digital Handal!
+            </h1>
+            <p className="text-sm sm:text-base opacity-0 transform translate-y-10 transition duration-700 ease-out animate-slide-up delay-400">
+              Tingkatkan keterampilanmu dengan pelatihan digital yang fleksibel dan dapat diakses
+              kapan saja.
+            </p>
+
+            {/* Button Section with Pulse Animation */}
+            <div className="mt-6 opacity-0 transform translate-y-10 transition duration-700 ease-out animate-slide-up delay-500">
+              <NavLink to={isLoggedIn ? "/topik-kelas" : "/login"}>
+                <button className="bg-white text-primary font-semibold text-base px-6 py-2 rounded-lg shadow-xl transition-all duration-300 hover:bg-primary hover:text-white hover:scale-105 hover:translate-y-1 animate-pulse">
+                  {isLoggedIn ? "Mulai Belajar" : "IKUTI KELAS"}
+                </button>
+              </NavLink>
             </div>
-            {/* Tombol yang berubah jika sudah login */}
-            <NavLink as={Link} to={isLoggedIn ? "/topik-kelas" : "/login"} className="mt-4 z-10">
-              <button className="text-primary bg-white text-base font-semibold px-2 py-1 rounded-lg w-40 h-9 hover:scale-110 hover:bg-primary hover:text-white duration-300 lg:hover:border-white lg:hover:border">
-                {isLoggedIn ? "Mulai Belajar" : "IKUTI KELAS"}
-              </button>
-            </NavLink>
           </div>
         </div>
       </div>
+
       <CardCategory category={category} />
       <CardCourse title="Kelas Populer" popular={popular} />
-
       <div className="w-full h-auto bg-primary flex justify-center items-center py-12 mt-20">
         <div className="flex flex-col lg:flex-row items-center max-w-6xl px-6 lg:px-12">
           <div className="lg:w-1/2">
@@ -93,7 +102,6 @@ const Home = () => {
           </div>
         </div>
       </div>
-
       <CardFree title="Kursus Gratis" free={free} />
       <Content />
       <Footer />
