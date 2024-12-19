@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FaSearch, FaBars } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import {
   IoAddCircleOutline,
   IoArrowBackCircle,
@@ -28,9 +28,10 @@ const AdminDataKategori = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
 
-  // State for popup notification
+  // States for popup notification
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
+  const [notificationType, setNotificationType] = useState("success"); // Added state
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -72,7 +73,7 @@ const AdminDataKategori = () => {
   const confirmDelete = () => {
     dispatch(deleteCategory(categoryToDelete.id));
     setShowDeleteModal(false);
-    showPopupNotification("Kategori berhasil dihapus");
+    showPopupNotification("Kategori berhasil dihapus", "error"); // Specify type
   };
 
   // Remove undefined or null categories
@@ -106,9 +107,10 @@ const AdminDataKategori = () => {
     }
   }, [currentPage, totalPages]);
 
-  // Show notification popup
-  const showPopupNotification = (message) => {
+  // Show notification popup with type
+  const showPopupNotification = (message, type = "success") => {
     setNotificationMessage(message);
+    setNotificationType(type);
     setShowNotification(true);
     setTimeout(() => {
       setShowNotification(false);
@@ -136,7 +138,7 @@ const AdminDataKategori = () => {
         )}
 
         <div className="flex-1 p-4 md:p-6 bg-secondary min-h-screen font-poppins">
-        <NavbarAdmin setSidebarOpen={setSidebarOpen} />
+          <NavbarAdmin setSidebarOpen={setSidebarOpen} />
 
           {/* Section Data Kategori */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
@@ -211,11 +213,15 @@ const AdminDataKategori = () => {
                           {category.categoryName}
                         </td>
                         <td className="px-2 md:px-4 py-2">
-                          <img
-                            src={category.image}
-                            alt={category.categoryName}
-                            className="w-16 h-16 object-cover rounded-md"
-                          />
+                          {category.image ? (
+                            <img
+                              src={category.image}
+                              alt={category.categoryName}
+                              className="w-16 h-16 object-cover rounded-md"
+                            />
+                          ) : (
+                            <span className="text-gray-500">No Image</span>
+                          )}
                         </td>
                         <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
                           {/* Edit Button */}
@@ -284,8 +290,9 @@ const AdminDataKategori = () => {
             }}
             onSuccess={() => {
               dispatch(fetchAdminCategories());
-              showPopupNotification("Kategori berhasil ditambahkan");
+              showPopupNotification("Kategori berhasil ditambahkan", "success"); // Specify type
             }}
+            showPopupNotification={showPopupNotification} // Passed as prop
           />
 
           {/* Pop-up for Edit Category */}
@@ -296,9 +303,10 @@ const AdminDataKategori = () => {
             }}
             onSuccess={() => {
               dispatch(fetchAdminCategories());
-              showPopupNotification("Kategori berhasil diubah");
+              showPopupNotification("Kategori berhasil diubah", "success"); // Specify type
             }}
             existingData={selectedCategory}
+            showPopupNotification={showPopupNotification} // Optional: If you want similar validation in edit
           />
 
           {/* Delete Confirmation Modal */}
@@ -328,7 +336,15 @@ const AdminDataKategori = () => {
 
           {/* Notification Popup */}
           {showNotification && (
-            <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 mb-10 bg-red-500 text-white px-4 py-2 rounded-md shadow-lg transition-all duration-500 ease-in-out transform ${showNotification ? 'translate-y-0' : 'translate-y-full'}`">
+            <div
+              className={`fixed bottom-0 left-1/2 transform -translate-x-1/2 mb-10 ${
+                notificationType === "success"
+                  ? "bg-green-500"
+                  : "bg-red-500"
+              } text-white px-4 py-2 rounded-md shadow-lg transition-all duration-500 ease-in-out ${
+                showNotification ? "translate-y-0" : "translate-y-full"
+              }`}
+            >
               {notificationMessage}
             </div>
           )}

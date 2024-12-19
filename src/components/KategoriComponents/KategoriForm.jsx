@@ -21,23 +21,31 @@ const KategoriForm = ({
         <form onSubmit={handleSubmit}>
           {/* Category Name */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Nama Kategori
+            <label
+              htmlFor="categoryName"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Nama Kategori <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
+              id="categoryName"
               name="categoryName"
               value={formData.categoryName}
               onChange={handleInputChange}
               required
               className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              placeholder="Masukkan nama kategori"
             />
           </div>
 
           {/* Image Upload */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Foto Kategori
+            <label
+              htmlFor="image"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Foto Kategori <span className="text-red-500">*</span>
             </label>
 
             {/* Display Image Preview */}
@@ -45,13 +53,14 @@ const KategoriForm = ({
               <img
                 src={imagePreview}
                 alt="Category Preview"
-                className="mt-2 w-32 h-32 object-cover"
+                className="mt-2 w-32 h-32 object-cover rounded-md"
               />
             )}
 
             <input
               type="file"
               accept="image/*"
+              id="image"
               name="image"
               onChange={handleImageUpload}
               className="mt-1 block w-full"
@@ -63,13 +72,13 @@ const KategoriForm = ({
             <button
               type="button"
               onClick={onClose}
-              className="bg-gray-300 px-4 py-2 rounded-md font-semibold"
+              className="bg-gray-300 px-4 py-2 rounded-md font-semibold hover:bg-gray-400 transition-colors duration-200"
             >
               Batal
             </button>
             <button
               type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold"
+              className="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700 transition-colors duration-200"
             >
               {isEditMode ? "Update" : "Tambah"}
             </button>
