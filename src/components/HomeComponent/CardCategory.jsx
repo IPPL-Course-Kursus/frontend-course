@@ -7,7 +7,6 @@ import PropTypes from "prop-types";
 import { IoIosArrowDroprightCircle, IoIosArrowDropleftCircle } from "react-icons/io";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import LoadSpinner from "../Spinner/LoadSpinner";
 
 const CardCategory = () => {
   const dispatch = useDispatch();
@@ -18,7 +17,6 @@ const CardCategory = () => {
     dispatch(getCategory());
   }, [dispatch]);
 
-  // Custom Next Arrow
   // Custom Next Arrow
   const NextArrow = ({ onClick }) => (
     <div className="absolute -right-10 top-1/2 transform -translate-y-1/2 cursor-pointer z-10 hidden sm:block">
@@ -59,12 +57,20 @@ const CardCategory = () => {
         breakpoint: 480,
         settings: {
           slidesToShow: 2,
-          nextArrow: null, // Menghilangkan nextArrow di mobile
-          prevArrow: null, // Menghilangkan prevArrow di mobile
+          nextArrow: null,
+          prevArrow: null,
         },
       },
     ],
   };
+
+  // Skeleton component
+  const SkeletonCategory = () => (
+    <div className="flex flex-col items-center gap-4 p-4 bg-gray-200 rounded-lg shadow-lg border border-gray-300 animate-pulse mr-4">
+      <div className="w-[140px] h-[100px] bg-gray-300 rounded-lg"></div>
+      <div className="w-[100px] h-4 bg-gray-300 rounded"></div>
+    </div>
+  );
 
   return (
     <div className="flex justify-center">
@@ -86,32 +92,25 @@ const CardCategory = () => {
             <p>Error: {error}</p>
           ) : (
             <Slider ref={sliderRef} {...sliderSettings}>
-              {category.length > 0 ? (
-                category.map((kategori, i) => (
-                  <NavLink
-                    key={i}
-                    to={`/topik-kelas?category=${kategori.categoryName}`}
-                    className="flex flex-col items-center gap-4 p-4 bg-white rounded-lg shadow-lg hover:shadow-xl transition-transform duration-300 ease-in-out hover:scale-105 border border-gray-200 mr-4" // Menambahkan margin kanan
-                    style={{
-                      outline: "none", // Menghapus garis biru
-                    }}
-                  >
-                    <img
-                      src={kategori.image}
-                      alt={kategori.categoryName}
-                      className="aspect-video w-[140px] h-[100px] object-cover rounded-lg shadow-md"
-                    />
-                    <div className="text-center text-sm font-medium text-gray-700 truncate max-w-[140px] mt-2">
-                      {kategori.categoryName}
-                    </div>
-                  </NavLink>
-                ))
-              ) : (
-                <div className="flex justify-center items-center w-full  px-10">
-                  {/* Menambahkan padding */}
-                  <LoadSpinner size={80} color="blue" />
-                </div>
-              )}
+              {category.length > 0
+                ? category.map((kategori, i) => (
+                    <NavLink
+                      key={i}
+                      to={`/topik-kelas?category=${kategori.categoryName}`}
+                      className="flex flex-col items-center gap-4 p-4 bg-white rounded-lg shadow-lg hover:shadow-xl transition-transform duration-300 ease-in-out hover:scale-105 border border-gray-200 mr-4"
+                      style={{ outline: "none" }}
+                    >
+                      <img
+                        src={kategori.image}
+                        alt={kategori.categoryName}
+                        className="aspect-video w-[140px] h-[100px] object-cover rounded-lg shadow-md"
+                      />
+                      <div className="text-center text-sm font-medium text-gray-700 truncate max-w-[140px] mt-2">
+                        {kategori.categoryName}
+                      </div>
+                    </NavLink>
+                  ))
+                : Array.from({ length: 9 }).map((_, index) => <SkeletonCategory key={index} />)}
             </Slider>
           )}
         </div>
