@@ -70,10 +70,17 @@ const AdminDataKategori = () => {
     dispatch(fetchAdminCategories());
   }, [dispatch]);
 
-  const confirmDelete = () => {
-    dispatch(deleteCategory(categoryToDelete.id));
-    setShowDeleteModal(false);
-    showPopupNotification("Kategori berhasil dihapus", "error"); // Specify type
+  const confirmDelete = async () => {
+    try {
+      await dispatch(deleteCategory(categoryToDelete.id));
+      setShowDeleteModal(false);
+      showPopupNotification("Kategori berhasil dihapus", "success");
+    } catch (err) {
+      setShowDeleteModal(false);
+      const errorMsg =
+        err.response?.data?.message || "Gagal menghapus kategori.";
+      showPopupNotification(errorMsg, "error");
+    }
   };
 
   // Remove undefined or null categories
@@ -295,19 +302,21 @@ const AdminDataKategori = () => {
             showPopupNotification={showPopupNotification} // Passed as prop
           />
 
-          {/* Pop-up for Edit Category */}
-          <UbahKategori
-            show={showUbahPopup}
-            onClose={() => {
-              setShowUbahPopup(false);
-            }}
-            onSuccess={() => {
-              dispatch(fetchAdminCategories());
-              showPopupNotification("Kategori berhasil diubah", "success"); // Specify type
-            }}
-            existingData={selectedCategory}
-            showPopupNotification={showPopupNotification} // Optional: If you want similar validation in edit
-          />
+          {/* Conditionally Render Pop-up for Edit Category */}
+          {showUbahPopup && selectedCategory && (
+            <UbahKategori
+              show={showUbahPopup}
+              onClose={() => {
+                setShowUbahPopup(false);
+              }}
+              onSuccess={() => {
+                dispatch(fetchAdminCategories());
+                // Success notification is now handled inside UbahKategori.jsx
+              }}
+              existingData={selectedCategory}
+              showPopupNotification={showPopupNotification} // Passed as prop
+            />
+          )}
 
           {/* Delete Confirmation Modal */}
           {showDeleteModal && (
@@ -338,9 +347,7 @@ const AdminDataKategori = () => {
           {showNotification && (
             <div
               className={`fixed bottom-0 left-1/2 transform -translate-x-1/2 mb-10 ${
-                notificationType === "success"
-                  ? "bg-green-500"
-                  : "bg-red-500"
+                notificationType === "success" ? "bg-green-500" : "bg-red-500"
               } text-white px-4 py-2 rounded-md shadow-lg transition-all duration-500 ease-in-out ${
                 showNotification ? "translate-y-0" : "translate-y-full"
               }`}
