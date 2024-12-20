@@ -3,7 +3,11 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { GrTransaction } from "react-icons/gr";
 import { FaFilter } from "react-icons/fa";
-import { IoArrowBackCircle, IoArrowForwardCircle, IoBookSharp } from "react-icons/io5";
+import {
+  IoArrowBackCircle,
+  IoArrowForwardCircle,
+  IoBookSharp,
+} from "react-icons/io5";
 import { instfetchPayments } from "../../redux/actions/instrukturDashboardActions";
 import { IoIosInformationCircle } from "react-icons/io";
 
@@ -11,7 +15,9 @@ import HeadInstruktur from "../../components/InstrukturComponents/HeadInstruktur
 
 const InstruktorDashboard = () => {
   const dispatch = useDispatch();
-  const { paymentStatus, loading } = useSelector((state) => state.instrukturDashboard);
+  const { paymentStatus, loading } = useSelector(
+    (state) => state.instrukturDashboard
+  );
 
   const [filter, setFilter] = useState("disable");
   // State for pagination
@@ -37,7 +43,9 @@ const InstruktorDashboard = () => {
       label: "Premium Class",
       color: "bg-primary",
       info: <IoIosInformationCircle className="w-6 h-6" />,
-      icon: <IoBookSharp className="text-2xl text-primary text-center items-center" />,
+      icon: (
+        <IoBookSharp className="text-2xl text-primary text-center items-center" />
+      ),
     },
     {
       count: paymentStatus?.totalTransactions || 0,
@@ -51,7 +59,11 @@ const InstruktorDashboard = () => {
   // Filter payments based on searches and filters
   const filteredPayments = Array.isArray(paymentStatus.transactions)
     ? paymentStatus.transactions.filter((payment) => {
-        return filter === "disable" || filter === "" || payment.paymentStatus === filter;
+        return (
+          filter === "disable" ||
+          filter === "" ||
+          payment.paymentStatus === filter
+        );
       })
     : [];
 
@@ -60,7 +72,10 @@ const InstruktorDashboard = () => {
   // Get current payments based on pagination
   const indexOfLastPayment = currentPage * itemsPerPage;
   const indexOfFirstPayment = indexOfLastPayment - itemsPerPage;
-  const currentPayments = sortedPayments.slice(indexOfFirstPayment, indexOfLastPayment);
+  const currentPayments = sortedPayments.slice(
+    indexOfFirstPayment,
+    indexOfLastPayment
+  );
   console.log("currentPayments", currentPayments);
 
   const handleFilterChange = (e) => setFilter(e.target.value);
@@ -136,7 +151,8 @@ const InstruktorDashboard = () => {
             <tbody>
               {!loading && currentPayments.length > 0 ? (
                 currentPayments.map((payment, index) => {
-                  const rowNumber = (currentPage - 1) * itemsPerPage + index + 1;
+                  const rowNumber =
+                    (currentPage - 1) * itemsPerPage + index + 1;
 
                   const statusClass =
                     payment.paymentStatus === "settlement"
@@ -151,7 +167,9 @@ const InstruktorDashboard = () => {
                       className="border-b hover:bg-gray-50 transition-colors text-sm md:text-base"
                     >
                       <td className="px-4 py-3">{rowNumber}</td>
-                      <td className="px-4 py-3 font-medium text-gray-800">{payment.orderId}</td>
+                      <td className="px-4 py-3 font-medium text-gray-800">
+                        {payment.orderId}
+                      </td>
                       <td className="px-4 py-3">{payment.categoryName}</td>
                       <td className="px-4 py-3">{payment.courseName}</td>
                       <td className="px-4 py-3 text-gray-900 font-semibold">
@@ -166,11 +184,14 @@ const InstruktorDashboard = () => {
                       </td>
                       <td className="px-4 py-3">{payment.paymentMethod}</td>
                       <td className="px-4 py-3 text-gray-600">
-                        {new Date(payment.createdAt).toLocaleDateString("id-ID", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
+                        {new Date(payment.createdAt).toLocaleDateString(
+                          "id-ID",
+                          {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          }
+                        )}
                       </td>
                     </tr>
                   );
@@ -202,17 +223,22 @@ const InstruktorDashboard = () => {
               </button>
 
               <span className="text-sm md:text-lg font-semibold mt-4 md:mt-0">
-                Halaman {currentPage} dari {Math.ceil(sortedPayments.length / itemsPerPage)}
+                Halaman {currentPage} dari{" "}
+                {Math.ceil(sortedPayments.length / itemsPerPage)}
               </span>
 
               <button
                 className={`flex items-center py-2 px-5 rounded-md text-sm md:text-base font-semibold ${
-                  currentPage === Math.ceil(sortedPayments.length / itemsPerPage)
+                  currentPage ===
+                  Math.ceil(sortedPayments.length / itemsPerPage)
                     ? "bg-gray-300 cursor-not-allowed"
                     : "bg-blue-600 text-white hover:bg-blue-700"
                 } transition-all`}
                 onClick={() => paginate(currentPage + 1)}
-                disabled={currentPage === Math.ceil(sortedPayments.length / itemsPerPage)}
+                disabled={
+                  currentPage ===
+                  Math.ceil(sortedPayments.length / itemsPerPage)
+                }
               >
                 Next
                 <IoArrowForwardCircle className="ml-2 text-xl" />
