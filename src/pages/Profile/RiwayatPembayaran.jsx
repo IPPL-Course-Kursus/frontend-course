@@ -98,7 +98,7 @@ const RiwayatPembayaran = () => {
               className="bg-white border border-gray-300 shadow-lg rounded-2xl w-full md:w-40 h-16 flex justify-center items-center cursor-pointer"
               onClick={() => filterPayments("pending")}
             >
-              <span className="font-semibold text-xl text-center">Pending</span>
+              <span className="font-semibold text-xl text-center">Belum Dibayar</span>
             </div>
           </div>
         </div>
