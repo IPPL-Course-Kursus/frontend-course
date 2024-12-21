@@ -1,10 +1,4 @@
-import {
-  BrowserRouter,
-  Route,
-  Routes,
-  useNavigate,
-  useLocation,
-} from "react-router-dom";
+import { BrowserRouter, Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import Home from "./pages/Home";
@@ -114,16 +108,16 @@ function AppRoutes() {
         <Route
           path="/mycourse"
           element={
-            // <NoAccesToken>
+            <NoAccesToken>
               <MyCourse />
-            // </NoAccesToken>
+            </NoAccesToken>
           }
         />
 
         <Route
           path="/success-payment"
           element={
-            <NoAccesToken>  
+            <NoAccesToken>
               <SuccessPage />
             </NoAccesToken>
           }
@@ -133,6 +127,15 @@ function AppRoutes() {
           element={
             <NoAccesToken>
               <PaymentPage />
+            </NoAccesToken>
+          }
+        />
+
+        <Route
+          path="/mulai-kelas/:id"
+          element={
+            <NoAccesToken>
+              <MulaiKelas />
             </NoAccesToken>
           }
         />
@@ -148,7 +151,7 @@ function AppRoutes() {
       />
       <Route path="/course-detail/:id" element={<DetailKelas />} />
       <Route path="/topik-kelas" element={<TopikKelas />} />
-
+      <Route path="/course-detail/:id" element={<DetailKelas />} />
       {/* Admin */}
       <Route element={<ProtectedRouteAdmin />}>
         <Route

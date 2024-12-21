@@ -38,8 +38,8 @@ import {
   updateCourseRequest,
   updateCourseSuccess,
 } from "../reducers/courseReducers";
-import { compileFailure, compileStart, compileSuccess } from "../reducers/compileReducers";
-import toast from "react-hot-toast";
+// import { compileFailure, compileStart, compileSuccess } from "../reducers/compileReducers";
+// import toast from "react-hot-toast";
 
 const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
 
@@ -50,7 +50,6 @@ export const getAllKelas = () => async (dispatch) => {
     const response = await axios.get(`${api_url}course/`);
 
     const courses = response.data;
-    console.log("ini kelas :", response.data);
 
     dispatch(setCourse(courses));
   } catch (error) {
@@ -118,7 +117,6 @@ export const addDataKelas = (requestData, imageFile) => async (dispatch) => {
     dispatch(addCourseSuccess(response.data.message));
     dispatch(getAllKelas());
   } catch (error) {
-    console.log(error);
     const errorMessage = error.response?.data?.message || error.message || "Add data kelas failed";
     dispatch(addCourseFailure(errorMessage));
   }
@@ -129,20 +127,31 @@ export const updateDataCourse = (courseId, updatedData) => async (dispatch) => {
   try {
     if (!courseId || typeof courseId !== "string" || courseId.trim() === "") {
       const errorMessage = "Invalid course ID";
-      console.log(errorMessage);
       dispatch(updateCourseFailure(errorMessage));
       return;
     }
 
     const token = getCookie("token");
     const formData = new FormData();
+
+    // Validasi dan persiapkan data
     const categoryId = parseInt(updatedData.categoryId, 10);
-    const courseLevelId = parseInt(updatedData.courseLevelId);
+    const courseLevelId = parseInt(updatedData.courseLevelId, 10);
     const typeCourseId = parseInt(updatedData.typeCourseId, 10);
 
-    formData.append("categoryId", !isNaN(categoryId) ? categoryId : null);
-    formData.append("courseLevelId", !isNaN(courseLevelId) ? courseLevelId : null);
-    formData.append("typeCourseId", !isNaN(typeCourseId) ? typeCourseId : null);
+    if (isNaN(categoryId)) {
+      throw new Error("Invalid category ID");
+    }
+    if (isNaN(courseLevelId)) {
+      throw new Error("Invalid course level ID");
+    }
+    if (isNaN(typeCourseId)) {
+      throw new Error("Invalid type course ID");
+    }
+
+    formData.append("categoryId", categoryId);
+    formData.append("courseLevelId", courseLevelId);
+    formData.append("typeCourseId", typeCourseId);
     formData.append("courseName", updatedData.courseName || "");
     formData.append("aboutCourse", updatedData.aboutCourse || "");
     formData.append("intendedFor", updatedData.intendedFor || "");
@@ -151,6 +160,7 @@ export const updateDataCourse = (courseId, updatedData) => async (dispatch) => {
     formData.append("certificateStatus", updatedData.certificateStatus);
     formData.append("publish", updatedData.publish);
 
+    // Cek apakah image dikirim, jika ada tambahkan
     if (updatedData.image) {
       formData.append("image", updatedData.image);
     }
@@ -162,19 +172,17 @@ export const updateDataCourse = (courseId, updatedData) => async (dispatch) => {
       },
     };
 
+    // Mengirim request PUT untuk update course
     const response = await axios.put(
       `${api_url}course/update-course/${courseId}`,
       formData,
       config
     );
 
-    console.log(response.data);
-
     dispatch(updateCourseSuccess(response.data));
     dispatch(fetchUserCourses()); // Memperbarui kursus pengguna setelah pembaruan
     return response.data;
   } catch (error) {
-    console.log(error);
     const errorMessage =
       error.response?.data?.message || error.message || "Update data kelas failed";
     dispatch(updateCourseFailure(errorMessage)); // Dispatch kegagalan
@@ -194,7 +202,6 @@ export const deleteDataCourse = (courseId) => async (dispatch) => {
     dispatch(deleteCourseSuccess(courseId)); // Kirim ID kursus yang dihapus ke aksi sukses
     return response.data; // Kembalikan data dari respon
   } catch (error) {
-    console.error("Delete error:", error.response ? error.response.data : error.message);
     dispatch(deleteCourseFailure(error.response?.data || "Delete failed")); // Tangani kesalahan
     throw error; // Lempar kesalahan jika perlu
   }
@@ -211,13 +218,13 @@ export const getDataModule = (chapterId) => async (dispatch) => {
       throw new Error("Token tidak ditemukan di cookies");
     }
 
-    console.log("Requesting chapter with ID:", chapterId);
+ 
     const response = await axios.get(`${api_url}chapter/course/${chapterId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log("API response:", response.data);
+
 
     if (response.data && response.data.data) {
       dispatch(fetchChaptersSuccess(response.data.data));
@@ -225,7 +232,7 @@ export const getDataModule = (chapterId) => async (dispatch) => {
       throw new Error("Data tidak ditemukan");
     }
   } catch (error) {
-    console.error("Fetch error:", error.response ? error.response.data : error.message);
+
     dispatch(fetchChaptersFailure(error.message));
   }
 };
@@ -260,7 +267,7 @@ export const addDataModule = (requestData, courseId) => async (dispatch) => {
     if (!courseId) {
       const errorMessage = "Chapter ID is required";
       dispatch(fetchChaptersFailure(errorMessage));
-      console.error(errorMessage);
+
       throw new Error(errorMessage);
     }
     const token = getCookie("token");
@@ -276,7 +283,7 @@ export const addDataModule = (requestData, courseId) => async (dispatch) => {
   } catch (error) {
     const errorMessage = error.response?.data?.message || "Add content failed";
     dispatch(fetchChaptersFailure(errorMessage));
-    console.error(errorMessage);
+
     throw error;
   }
 };
@@ -303,7 +310,7 @@ export const deleteDataModule = (chapterId) => async (dispatch) => {
 export const getDataKonten = (contentId) => async (dispatch) => {
   try {
     dispatch(fetchContentStart());
-    console.log(`Fetching content with ID: ${contentId}`); // Debug log
+    
 
     const token = getCookie("token");
     if (!token) {
@@ -322,7 +329,7 @@ export const getDataKonten = (contentId) => async (dispatch) => {
       throw new Error("Data tidak ditemukan");
     }
   } catch (error) {
-    console.error("Fetch error:", error.response ? error.response.data : error.message);
+
     dispatch(fetchContentFailure(error.message));
   }
 };
@@ -333,7 +340,7 @@ export const addDataKonten = (requestData, chapterId) => async (dispatch) => {
     if (!chapterId) {
       const errorMessage = "Chapter ID is required";
       dispatch(fetchContentFailure(errorMessage));
-      console.error(errorMessage);
+   
       throw new Error(errorMessage);
     }
     const token = getCookie("token");
@@ -352,7 +359,7 @@ export const addDataKonten = (requestData, chapterId) => async (dispatch) => {
   } catch (error) {
     const errorMessage = error.response?.data?.message || "Add content failed";
     dispatch(fetchContentFailure(errorMessage));
-    console.error(errorMessage);
+
     throw error;
   }
 };
@@ -403,21 +410,21 @@ export const deleteDataKonten = (contentId) => async (dispatch) => {
   }
 };
 
-export const compileCode = (compileData) => async (dispatch) => {
-  dispatch(compileStart());
+// export const compileCode = (compileData) => async (dispatch) => {
+//   dispatch(compileStart());
 
-  try {
-    const response = await axios.put(`${api_url}compiler/compile`, compileData, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+//   try {
+//     const response = await axios.post(`${api_url}compiler/compile`, compileData, {
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//     });
 
-    dispatch(compileSuccess(response.data));
-    toast.success("Code compiled successfully!");
-  } catch (error) {
-    const errorMessage = error.response?.data?.message || "Failed to compile code.";
-    dispatch(compileFailure(errorMessage));
-    toast.error(errorMessage);
-  }
-};
+//     dispatch(compileSuccess(response.data));
+//     toast.success("Code compiled successfully!");
+//   } catch (error) {
+//     const errorMessage = error.response?.data?.message || "Failed to compile code.";
+//     dispatch(compileFailure(errorMessage));
+//     toast.error(errorMessage);
+//   }
+// };

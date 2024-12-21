@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import Sidebar from "../../../components/Sidebar/SidebarInstruktur";
 import { FaBars } from "react-icons/fa";
-import { IoArrowBackCircle, IoArrowForwardCircle } from "react-icons/io5";
 // Import Redux hooks and actions
 import { useDispatch, useSelector } from "react-redux";
 import { getAllTypeCourses } from "../../../redux/actions/typeCourseActions";
@@ -11,18 +10,11 @@ const InstrukturDataType = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const dispatch = useDispatch();
-  const { typeCourses, loading, error } = useSelector(
-    (state) => state.typeCourse
-  );
+  const { typeCourses, loading, error } = useSelector((state) => state.typeCourse);
 
   useEffect(() => {
     dispatch(getAllTypeCourses());
   }, [dispatch]);
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 7;
-
-  const totalPages = Math.ceil(typeCourses?.length / itemsPerPage);
 
   return (
     <>
@@ -44,7 +36,7 @@ const InstrukturDataType = () => {
           ></div>
         )}
 
-<div className="flex-1 p-4 md:p-6 bg-secondary min-h-screen font-poppins">
+        <div className="flex-1 p-4 md:p-6 bg-secondary min-h-screen font-poppins">
           {/* header */}
           <div className="bg-[#F3F7FB] p-4 flex justify-between items-center mb-4 shadow-sm">
             {/* menu button on mobile */}
@@ -91,38 +83,6 @@ const InstrukturDataType = () => {
                 </tbody>
               </table>
             )}
-          </div>
-          {/* Pagination Controls */}
-          <div className="flex justify-between items-center mt-4">
-            <button
-              className={`flex items-center py-2 px-4 rounded-lg ${
-                currentPage === 1
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-[#0a61aa] text-white"
-              } transition-all duration-300 hover:scale-105`}
-              onClick={() => setCurrentPage(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              <IoArrowBackCircle className="mr-2 text-xl" />
-              Previous
-            </button>
-
-            <span className="text-lg font-semibold">
-              Page {currentPage} of {totalPages}
-            </span>
-
-            <button
-              className={`flex items-center py-2 px-4 rounded-lg ${
-                currentPage === totalPages
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-[#0a61aa] text-white"
-              } transition-all duration-300 hover:scale-105`}
-              onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              Next
-              <IoArrowForwardCircle className="ml-2 text-xl" />
-            </button>
           </div>
         </div>
       </div>
