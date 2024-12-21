@@ -85,7 +85,9 @@ const InstruktorDashboard = () => {
 
   return (
     <div className="flex">
+    <div className="w-1/4 min-h-screen">
       <Sidebar />
+      </div>
       <div className="p-6 bg-secondary min-h-screen w-screen font-poppins">
         {/* Header */}
         <div className="bg-[#F3F7FB] p-4 flex justify-between items-center mb-4 shadow-sm">
@@ -126,7 +128,6 @@ const InstruktorDashboard = () => {
                 <option value="disable">Filter</option>
                 <option value="settlement">Sudah Bayar</option>
                 <option value="pending">Belum Bayar</option>
-                <option value="cancel">cancel</option>
               </select>
               <FaFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-sm" />
             </div>
@@ -208,7 +209,8 @@ const InstruktorDashboard = () => {
 
           {/* Kontrol Pagination */}
           {sortedPayments.length > itemsPerPage && (
-            <div className="flex flex-col md:flex-row justify-between items-center mt-6">
+            <div className="flex items-center justify-between mt-6">
+              {/* Tombol Previous */}
               <button
                 className={`flex items-center py-2 px-5 rounded-md text-sm md:text-base font-semibold ${
                   currentPage === 1
@@ -219,30 +221,24 @@ const InstruktorDashboard = () => {
                 disabled={currentPage === 1}
               >
                 <IoArrowBackCircle className="mr-2 text-xl" />
-                Pervious
+                Previous
               </button>
 
-              <span className="text-sm md:text-lg font-semibold mt-4 md:mt-0">
-                Halaman {currentPage} dari{" "}
-                {Math.ceil(sortedPayments.length / itemsPerPage)}
+              {/* Indikator Halaman */}
+              <span className="text-sm md:text-lg font-semibold mx-auto">
+                Page {currentPage} of {Math.ceil(sortedPayments.length / itemsPerPage)}
               </span>
 
-              <button
-                className={`flex items-center py-2 px-5 rounded-md text-sm md:text-base font-semibold ${
-                  currentPage ===
-                  Math.ceil(sortedPayments.length / itemsPerPage)
-                    ? "bg-gray-300 cursor-not-allowed"
-                    : "bg-blue-600 text-white hover:bg-blue-700"
-                } transition-all`}
-                onClick={() => paginate(currentPage + 1)}
-                disabled={
-                  currentPage ===
-                  Math.ceil(sortedPayments.length / itemsPerPage)
-                }
-              >
-                Next
-                <IoArrowForwardCircle className="ml-2 text-xl" />
-              </button>
+              {/* Tombol Next - hanya muncul jika tidak di halaman terakhir */}
+              {currentPage < Math.ceil(sortedPayments.length / itemsPerPage) && (
+                <button
+                  className="flex items-center py-2 px-5 rounded-md text-sm md:text-base font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-all"
+                  onClick={() => paginate(currentPage + 1)}
+                >
+                  Next
+                  <IoArrowForwardCircle className="ml-2 text-xl" />
+                </button>
+              )}
             </div>
           )}
         </div>
