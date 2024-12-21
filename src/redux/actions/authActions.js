@@ -59,33 +59,46 @@ export const login = (email, password, navigate) => async (dispatch) => {
       toast.success("Login Berhasil");
 
       // Navigasi berdasarkan role
-      if (role === "Admin") {
-        navigate("/admin/dashboard");
-      } else if (role === "User") {
-        navigate("/");
-      } else if (role === "Instruktur") {
-        navigate("/inst/dashboard");
-      } else {
-        console.error("Role tidak dikenali:", role);
+      switch (role) {
+        case "Admin":
+          navigate("/admin/dashboard");
+          break;
+        case "User":
+          navigate("/");
+          break;
+        case "Instruktur":
+          navigate("/inst/dashboard");
+          break;
+        default:
+          console.error("Role tidak dikenali:", role);
+          break;
       }
     } else {
       toast.error("Login gagal. Silakan coba lagi nanti.");
     }
   } catch (error) {
+    // Handle error dari API jika ada
     if (error.response) {
-      if (error.response.status === 403) {
-        toast.error("Email atau Password Anda salah. Silahkan coba lagi.");
+      const { status, data } = error.response;
+
+      // Menampilkan pesan error yang dikirim oleh server
+      const errorMessage =
+        data?.message || "Terjadi kesalahan pada server. Silakan coba lagi nanti.";
+
+      if (status === 500) {
+        toast.error("Terjadi kesalahan pada server. Silakan coba lagi nanti.");
+      } else if (status === 403 || status === 404) {
+        toast.error(errorMessage); // Menampilkan pesan error yang lebih spesifik dari server
       } else {
-        toast.error("Email tidak terdaftar. Silakan cek kembali email Anda.");
+        toast.error(errorMessage); // Menampilkan pesan error secara umum
       }
-      // else {
-      //   toast.error("Login gagal. Silakan coba lagi nanti.");
-      // }
     } else {
+      // Handle error jika tidak ada response (misalnya server down)
       toast.error("Terjadi kesalahan pada server. Silakan coba lagi nanti.");
     }
   }
 };
+
 
 // Register action
 export const register =
@@ -104,35 +117,22 @@ export const register =
 
       if (response.status === 201) {
         dispatch(registerSuccess()); // Dispatch jika registrasi berhasil
-        toast.success("Pendaftaran Berhasil, silahkan check email untuk melakukan verified!"); // Notifikasi berhasil
+        toast.success("Pendaftaran Berhasil, silahkan check email untuk melakukan verifikasi!"); // Notifikasi berhasil
         navigate("/login"); // Navigasi ke halaman login
       } else {
-        throw new Error("Registrasi gagal.");
+        throw new Error(response.data.message || "Registrasi gagal.");
       }
     } catch (error) {
-      // Check for specific error response from server
-      if (error.response) {
-        const errorData = error.response.data;
+      // Handle error from the server
+      const errorMessage =
+        error.response?.data?.message || error.message || "Terjadi kesalahan saat registrasi.";
 
-        // Handle specific error like "Email already in use"
-        if (errorData.message === "Email already in use") {
-          dispatch(registerFailure("Email sudah digunakan, silahkan coba email lain."));
-          toast.error("Email sudah digunakan, silahkan coba email lain.");
-        } else {
-          dispatch(registerFailure(errorData.message || "Terjadi kesalahan saat registrasi."));
-          toast.error(errorData.message || "Terjadi kesalahan saat registrasi.");
-        }
-      } else if (error.response?.status === 500) {
-        // Handle server error 500
-        dispatch(registerFailure("Terjadi kesalahan pada server, coba lagi nanti."));
-        toast.error("Terjadi kesalahan pada server, coba lagi nanti.");
-      } else {
-        // General error fallback
-        dispatch(registerFailure("Terjadi kesalahan saat registrasi."));
-        toast.error("sepertinya email sudah terdaftar");
-      }
+      dispatch(registerFailure(errorMessage)); // Dispatch error ke Redux
+      toast.error(errorMessage); // Tampilkan pesan error
     }
   };
+
+
 
 export const getMe = () => async (dispatch) => {
   try {

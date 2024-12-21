@@ -86,7 +86,9 @@ const InstruktorDataKonten = () => {
   };
 
   const totalPages = Math.ceil(content.length / itemsPerPage);
-  const currentItems = content.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const currentItems = Array.isArray(content)
+    ? content.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+    : [];
 
   return (
     <>

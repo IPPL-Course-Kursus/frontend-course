@@ -65,15 +65,14 @@ const InstruktorDataModule = () => {
     dispatch(deleteDataModule(chapterToDelete.id))
       .then(() => {
         setShowDeleteModal(false); // Tutup modal setelah berhasil
-        window.location.reload(); // Reload halaman setelah penghapusan berhasil
+        // Panggil ulang getDataModule untuk mengambil data terbaru
+        dispatch(getDataModule(id));
       })
       .catch((error) => {
         console.error("Error deleting chapter:", error);
         setShowDeleteModal(false);
       });
   };
-
-  
 
   const handleDetailClick = (course) => {
     console.log("Detail clicked for:", course);

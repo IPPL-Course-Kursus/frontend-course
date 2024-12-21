@@ -66,40 +66,28 @@ const DataKontenModule = ({ show, onClose, chapterId }) => {
     e.preventDefault();
 
     // Reset error messages
-    setSortError(null);
-    setContentTitleError(null);
-    setTeksError(null);
-    setContentUrlError(null);
-    setDurationError(null);
-    setInterpreterError(null);
-
+    // setErrors({});
     const isValid = validateInputs();
     if (!isValid) return;
 
     setLoading(true);
     try {
       const requestData = {
+        ...formData,
         sort: Number(formData.sort),
-        contentTitle: formData.contentTitle,
-        teks: formData.teks,
-        contentUrl: formData.contentUrl,
         duration: Number(formData.duration),
-        interpreterStatus: formData.interpreterStatus,
         sourceCode: formData.interpreterStatus ? sourceCode : null,
         language: formData.interpreterStatus ? language : null,
       };
 
-      // Dispatch action untuk menambahkan konten
       await dispatch(addDataKonten(requestData, chapterId));
-      console.log("Data konten berhasil ditambahkan");
-
       setLoading(false);
-      onClose(); // Tutup modal setelah berhasil menambahkan
-      await fetchData(); // Panggil fetchData untuk memperbarui data di state tanpa refresh halaman
+      onClose();
+      fetchData();
     } catch (err) {
       setLoading(false);
-      setSortError(err.response?.data?.message || "Error adding content");
-      console.error("Error detail:", err);
+      setError(err.response?.data?.message || "Error adding content");
+      console.error("Error:", err);
     }
   };
 
@@ -146,28 +134,27 @@ const DataKontenModule = ({ show, onClose, chapterId }) => {
     setLanguage(language.languageInterpreter);
   };
 
-const handleRunCode = () => {
-  if (!sourceCode || !language) {
-    setError("Code and language must be selected.");
-    return;
-  }
+  const handleRunCode = () => {
+    if (!sourceCode || !language) {
+      setError("Code and language must be selected.");
+      return;
+    }
 
-  // Dispatch untuk mengirim request compileCode
-  dispatch(
-    compileCode({
-      language, // Kirim bahasa yang dipilih
-      sourceCode, // Kirim kode sumber
-    })
-  )
-    .then((response) => {
-      setOutput(response.data.result); // Asumsikan API mengembalikan output kode
-      console.log("Code compiled successfully");
-    })
-    .catch((error) => {
-      setError(error.response?.data?.message || "An error occurred while compiling the code.");
-    });
-};
-
+    // Dispatch untuk mengirim request compileCode
+    dispatch(
+      compileCode({
+        language, // Kirim bahasa yang dipilih
+        sourceCode, // Kirim kode sumber
+      })
+    )
+      .then((response) => {
+        setOutput(response.data.result); // Asumsikan API mengembalikan output kode
+        console.log("Code compiled successfully");
+      })
+      .catch((error) => {
+        setError(error.response?.data?.message || "An error occurred while compiling the code.");
+      });
+  };
 
   const copyCode = () => {
     navigator.clipboard.writeText(sourceCode);

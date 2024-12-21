@@ -5,6 +5,7 @@ import { updateDataCourse } from "../../../redux/actions/instruktorActions";
 import { getCategory } from "../../../redux/actions/categoryActions";
 import { getAllTypeCourses } from "../../../redux/actions/typeCourseActions";
 import { getAllLevelCourses } from "../../../redux/actions/levelCourseActions";
+import LoadSpinner from "../../Spinner/LoadSpinner";
 
 const DataKelasUbah = ({ show, onClose, existingData }) => {
   const dispatch = useDispatch();
@@ -21,6 +22,7 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
     aboutCourse: "",
   });
 
+  const [loading, setLoading] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const { category } = useSelector((state) => state.category);
@@ -49,24 +51,22 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
     }
   }, [dispatch, existingData]);
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
 
-    console.log("Input changed:", name, value);
-
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]:
-        name === "categoryId" ||
-        name === "courseLevelId" ||
-        name === "coursePrice" ||
-        name === "courseDiscountPercent" ||
-        name === "typeCourseId"
-          ? value === "" // Jika kosong, set sebagai 0 atau tetap kosong
-            ? 0
-            : parseInt(value, 10) // Jika ada angka, lakukan parsing
-          : value,
-    }));
+    // Jika value 'free', set harga dan diskon menjadi 0
+    if (value === "free") {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        coursePrice: 0,
+        courseDiscountPercent: 0,
+      }));
+    } else {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: value,
+      }));
+    }
   };
 
   const handleImageUpload = (e) => {
@@ -96,19 +96,17 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
       image: imageFile,
     };
 
+    setLoading(true);
     try {
       const courseId = existingData.id;
       console.log("this is response", courseId);
 
-      const response = await dispatch(updateDataCourse(courseId, updatedData));
-      console.log("this is response", response);
-      // if (response.success) {
-      //   onClose();
-      // } else {
-      //   console.error("Failed to update course:", response.message);
-      // }
+      await dispatch(updateDataCourse(courseId, updatedData));
+      onClose();
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -182,7 +180,19 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
             <select
               name="typeCourseId"
               value={formData.typeCourseId}
-              onChange={handleInputChange}
+              onChange={(e) => {
+                const { value } = e.target;
+                handleInputChange(e); // Update state untuk tipe kelas yang dipilih
+
+                // Periksa jika tipe kelas adalah 'free' dan set harga serta diskon menjadi 0
+                if (value === "free") {
+                  setFormData((prevFormData) => ({
+                    ...prevFormData,
+                    coursePrice: 0,
+                    courseDiscountPercent: 0,
+                  }));
+                }
+              }}
               className="w-full p-2 border rounded-xl"
             >
               <option value="" disabled hidden>
@@ -220,12 +230,11 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
             <input
               type="text" // Tetap sebagai teks agar tidak muncul panah
               name="coursePrice"
-              value={formData.coursePrice}
+              value={formData.coursePrice === 0 ? "" : formData.coursePrice} // Kosongkan jika harga 0
               onChange={(e) => {
                 const value = e.target.value;
-
-                // Validasi hanya angka dan string kosong
                 if (/^\d*$/.test(value)) {
+                  // Validasi hanya angka
                   handleInputChange(e); // Perbarui state dengan nilai yang valid
                 }
               }}
@@ -240,12 +249,12 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
             <input
               type="text"
               name="courseDiscountPercent"
-              value={formData.courseDiscountPercent}
+              value={formData.courseDiscountPercent === 0 ? "" : formData.courseDiscountPercent} // Kosongkan jika diskon 0
               onChange={(e) => {
                 const value = e.target.value;
                 if (/^\d*$/.test(value)) {
                   // Validasi hanya angka
-                  handleInputChange(e); // Perbarui state
+                  handleInputChange(e); // Perbarui state dengan nilai diskon
                 }
               }}
               className="w-full p-2 border rounded-xl"
@@ -310,9 +319,19 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
 
           <button
             type="submit"
-            className="w-full p-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600"
+            className={`bg-blue-600 text-white px-4 py-2 rounded-md font-semibold transition-colors duration-300 ${
+              loading ? "cursor-not-allowed bg-gray-500" : "hover:bg-blue-700 active:bg-blue-800"
+            }`}
+            disabled={loading}
           >
-            Ubah Kelas
+            {loading ? (
+              <div className="flex items-center justify-center gap-2">
+                <LoadSpinner size={24} color="white" />
+                <span>Loading...</span>
+              </div>
+            ) : (
+              "Ubah"
+            )}
           </button>
         </form>
       </div>

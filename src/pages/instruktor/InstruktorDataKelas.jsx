@@ -61,24 +61,6 @@ const InstruktorDataKelas = () => {
     setShowDeleteModal(true);
   };
 
-  // const confirmDelete = () => {
-  //   // Check if courseToDelete has a valid ID
-  //   if (!courseToDelete?.id) {
-  //     console.error("Course ID is required.");
-  //     return; // Don't proceed if there's no valid course ID
-  //   }
-
-  //   // Dispatch the delete action
-  //   dispatch(deleteDataCourse(courseToDelete.id))
-  //     .then(() => {
-  //       setShowDeleteModal(false); // Close the modal after successful deletion
-  //       dispatch(fetchUserCourses()); // Refresh the course list after deletion
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error deleting course:", error);
-  //       setShowDeleteModal(false); // Close the modal even if there's an error
-  //     });
-  // };
   const confirmDelete = () => {
     if (!courseToDelete?.id) {
       console.error("Course ID is required.");

@@ -62,39 +62,39 @@ const InstrukturProfile = () => {
     setIsDirty(true); // Mark as dirty on input change
   };
 
-const handleSave = () => {
-  if (!form.fullName || !form.phoneNumber || !form.city || !form.tanggalLahir) {
-    toast.error("Data tidak boleh kosong");
-    return;
-  }
+  const handleSave = () => {
+    if (!form.fullName || !form.phoneNumber || !form.city || !form.tanggalLahir) {
+      toast.error("Data tidak boleh kosong");
+      return;
+    }
 
-  const formData = new FormData();
-  formData.append("fullName", form.fullName);
-  formData.append("phoneNumber", form.phoneNumber);
-  formData.append("city", form.city);
-  formData.append("tanggalLahir", form.tanggalLahir);
+    const formData = new FormData();
+    formData.append("fullName", form.fullName);
+    formData.append("phoneNumber", form.phoneNumber);
+    formData.append("city", form.city);
+    formData.append("tanggalLahir", form.tanggalLahir);
 
-  if (imageFile) {
-    formData.append("image", imageFile);
-  }
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
 
-  setLoading(true);
+    setLoading(true);
 
-  dispatch(updateProfile(formData))
-    .then(() => {
-      dispatch(getMe());
-      toast.success("Profil berhasil diperbarui");
-      setTimeout(() => {
-        navigate("/inst/profile");
-      }, 1000);
-    })
-    .catch((error) => {
-      toast.error("Gagal memperbarui profil: " + (error?.message || "Terjadi kesalahan"));
-    })
-    .finally(() => {
-      setLoading(false);
-    });
-};
+    dispatch(updateProfile(formData))
+      .then(() => {
+        dispatch(getMe());
+        setIsDirty(false); // Reset tombol ke kondisi tidak aktif
+        setTimeout(() => {
+          navigate("/inst/profile");
+        }, 1000);
+      })
+      .catch((error) => {
+        toast.error("Gagal memperbarui profil: " + (error?.message || "Terjadi kesalahan"));
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -255,7 +255,7 @@ const handleSave = () => {
                       ? "bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800"
                       : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
-                  disabled={!isDirty || loading} // Disabled jika tidak ada perubahan atau sedang loading
+                  disabled={!isDirty || loading} // Tombol disable jika tidak ada perubahan atau sedang loading
                 >
                   {loading ? (
                     <div className="flex items-center justify-center gap-2">
@@ -263,7 +263,7 @@ const handleSave = () => {
                       <span>Loading...</span>
                     </div>
                   ) : (
-                    "Simpan Profil Saya"
+                    "Simpan Profile"
                   )}
                 </button>
               </div>

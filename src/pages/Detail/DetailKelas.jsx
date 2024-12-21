@@ -164,7 +164,7 @@ export const DetailKelas = () => {
         <>
             <Navbar />
 
-            <div className="w-full h-full container">
+            <div className="w-full h-full container mx-auto">
                 <div className="flex flex-row-reverse justify-between lg:flex lg:flex-col lg:gap-4">
                     <Link
                         to="/"
