@@ -9,6 +9,7 @@ const KategoriForm = ({
   isEditMode,
   imagePreview,
   handleImageUpload,
+  isSubmitDisabled,
 }) => {
   if (!show) return null;
 
@@ -78,7 +79,12 @@ const KategoriForm = ({
             </button>
             <button
               type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700 transition-colors duration-200"
+              disabled={isSubmitDisabled} // Disable button based on prop
+              className={`px-4 py-2 rounded-md font-semibold text-white transition-colors duration-200 ${
+                isSubmitDisabled
+                  ? "bg-blue-300 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700"
+              }`}
             >
               {isEditMode ? "Update" : "Tambah"}
             </button>
@@ -98,6 +104,7 @@ KategoriForm.propTypes = {
   isEditMode: PropTypes.bool.isRequired,
   imagePreview: PropTypes.string,
   handleImageUpload: PropTypes.func.isRequired,
+  isSubmitDisabled: PropTypes.bool, // New prop type
 };
 
 export default KategoriForm;
