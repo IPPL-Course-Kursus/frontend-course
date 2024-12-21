@@ -6,7 +6,7 @@ import { toast } from "react-hot-toast";
 export const ProtectedRouteUser = (props) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
-  const [isUser, setIsUser] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(false);
 
   useEffect(() => {
     const token = Cookies.get("token");
@@ -14,13 +14,14 @@ export const ProtectedRouteUser = (props) => {
 
     if (token) {
       try {
+        // Simulated response, replace with actual API validation if needed
         const response = {
           success: true,
-          message: "Login in successfully",
+          message: "Login successfully",
           data: {
             token: {
               token: token,
-              role: "user",
+              role: "user", // Replace with dynamic role
             },
           },
         };
@@ -29,11 +30,11 @@ export const ProtectedRouteUser = (props) => {
         console.log("User role:", userRole);
 
         if (userRole && userRole.toLowerCase() === "user") {
-          setIsUser(true);
+          setIsAuthorized(true);
         } else {
           console.log("Access denied, navigating to not found.");
           toast.error("Anda tidak memiliki akses ke halaman ini.");
-          navigate("/*");
+          navigate("/not-found"); // Navigate to a not-found page for unauthorized users
         }
       } catch (error) {
         console.error("Error:", error);
@@ -58,11 +59,11 @@ export const ProtectedRouteUser = (props) => {
     return <Navigate to="/login" />;
   }
 
-  // Cek apakah role adalah user
-  if (isUser) {
+  // Cek apakah role adalah user dan diizinkan
+  if (isAuthorized) {
     return <Outlet {...props} />;
   } else {
-    return <Navigate to="/*" />;
+    return <Navigate to="/not-found" />; // Redirect unauthorized users
   }
 };
 

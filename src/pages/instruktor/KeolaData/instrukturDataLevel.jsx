@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import Sidebar from "../../../components/Sidebar/SidebarInstruktur";
 import { FaBars } from "react-icons/fa";
-import { IoArrowBackCircle, IoArrowForwardCircle } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllLevelCourses } from "../../../redux/actions/levelCourseActions";
 import HeadInstruktur from "../../../components/InstrukturComponents/HeadInstruktur";
@@ -19,12 +18,6 @@ const InstrukturDataLevel = () => {
   useEffect(() => {
     dispatch(getAllLevelCourses());
   }, [dispatch]);
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 7;
-
-  // Pagination logic: slicing categories for the current page
-  const totalPages = Math.ceil(levelCourses?.length / itemsPerPage);
 
   return (
     <>
@@ -67,9 +60,7 @@ const InstrukturDataLevel = () => {
           </div>
 
           {/* Success and Error Messages */}
-          {successMessage && (
-            <p className="text-green-500 mb-4">{successMessage}</p>
-          )}
+          {successMessage && <p className="text-green-500 mb-4">{successMessage}</p>}
           {error && <p className="text-red-500 mb-4">{error}</p>}
 
           {/* Tabel Data Level */}
@@ -100,37 +91,6 @@ const InstrukturDataLevel = () => {
           </div>
 
           {/* Pagination Controls */}
-          <div className="flex justify-between items-center mt-4">
-            <button
-              className={`flex items-center py-2 px-4 rounded-lg ${
-                currentPage === 1
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-[#0a61aa] text-white"
-              } transition-all duration-300 hover:scale-105`}
-              onClick={() => setCurrentPage(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              <IoArrowBackCircle className="mr-2 text-xl" />
-              Previous
-            </button>
-
-            <span className="text-lg font-semibold">
-              Page {currentPage} of {totalPages}
-            </span>
-
-            <button
-              className={`flex items-center py-2 px-4 rounded-lg ${
-                currentPage === totalPages
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-[#0a61aa] text-white"
-              } transition-all duration-300 hover:scale-105`}
-              onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              Next
-              <IoArrowForwardCircle className="ml-2 text-xl" />
-            </button>
-          </div>
         </div>
       </div>
     </>

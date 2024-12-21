@@ -8,17 +8,18 @@ import {
 } from "react-icons/io5";
 import DataKontenInput from "../../components/InstrukturComponents/DataKelas/DataKonten/DataKontenInput";
 import DataKontenUbah from "../../components/InstrukturComponents/DataKelas/DataKonten/DataKontenUbah";
-import DataKontenDetail from "../../components/InstrukturComponents/DataKelas/DataKonten/DataKontenDetail";
+// import DataKontenDetail from "../../components/InstrukturComponents/DataKelas/DataKonten/DataKontenDetail";
 import Sidebar from "../../components/Sidebar/SidebarInstruktur";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteDataKonten, getDataKonten } from "../../redux/actions/instruktorActions";
 import HeadInstruktur from "../../components/InstrukturComponents/HeadInstruktur";
+import toast from "react-hot-toast";
 
 const InstruktorDataKonten = () => {
   const [showTambahPopup, setShowTambahPopup] = useState(false);
   const [showUbahPopup, setShowUbahPopup] = useState(false);
-  const [showDetailPopup, setShowDetailPopup] = useState(false);
+  // const [showDetailPopup, setShowDetailPopup] = useState(false);
   const [selectedContent, setSelectedContent] = useState(null);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -47,32 +48,38 @@ const InstruktorDataKonten = () => {
     setShowUbahPopup(true);
   };
 
-  const handleDetailClick = (contentItem) => {
-    setSelectedContent(contentItem);
-    setShowDetailPopup(true);
-  };
+  // const handleDetailClick = (contentItem) => {
+  //   setSelectedContent(contentItem);
+  //   setShowDetailPopup(true);
+  // };
 
   const handleDelete = (content) => {
     setContentToDelete(content);
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
-    if (!contentToDelete?.chapterId) {
-      console.error("Chapter ID is required.");
-      return; // Jangan lanjut jika chapterId tidak ada
-    }
+const confirmDelete = () => {
+  if (!contentToDelete?.chapterId) {
+    console.error("Chapter ID is required.");
+    return; // Jangan lanjut jika chapterId tidak ada
+  }
 
-    dispatch(deleteDataKonten(contentToDelete.id, contentToDelete.chapterId))
-      .then(() => {
-        setShowDeleteModal(false); // Tutup modal setelah berhasil
-        dispatch(getDataKonten(id)); // Memuat ulang data setelah penghapusan
-      })
-      .catch((error) => {
-        console.error("Error deleting content:", error);
-        setShowDeleteModal(false);
-      });
-  };
+  dispatch(deleteDataKonten(contentToDelete.id, contentToDelete.chapterId))
+    .then(() => {
+      setShowDeleteModal(false); // Tutup modal setelah berhasil
+      dispatch(getDataKonten(id)); // Memuat ulang data setelah penghapusan
+
+      // Menampilkan toast sukses
+      toast.success("Konten berhasil dihapus!");
+    })
+    .catch((error) => {
+      console.error("Error deleting content:", error);
+      setShowDeleteModal(false);
+
+      // Menampilkan toast error
+      toast.error(`Gagal menghapus konten: ${error.message}`);
+    });
+};
 
   const handleBackClick = () => {
     navigate(-1);
@@ -86,7 +93,9 @@ const InstruktorDataKonten = () => {
   };
 
   const totalPages = Math.ceil(content.length / itemsPerPage);
-  const currentItems = content.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const currentItems = Array.isArray(content)
+    ? content.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+    : [];
 
   return (
     <>
@@ -147,15 +156,6 @@ const InstruktorDataKonten = () => {
               </button>
             </div>
           </div>
-
-          {/* Tabel Data Kelas */}
-          {/* {loading ? (
-            <p>Loading...</p>
-          ) : error ? (
-            <p>Error: {error}</p>
-          ) : content.length === 0 ? (
-            <p>Tidak ada konten yang ditemukan.</p>
-          ) : ( */}
           <div className="overflow-x-auto bg-white p-4 rounded-lg shadow-md">
             <table className="min-w-full table-auto">
               <thead>
@@ -173,11 +173,10 @@ const InstruktorDataKonten = () => {
                   <tr key={content.id} className="border-t text-xs md:text-sm">
                     <td className="px-4 py-3">{content.sort}</td>
                     <td className="px-4 py-3">{content.contentTitle}</td>
-                    {/* <td className="px-4 py-3">{content.teks}</td> */}
                     <td className="px-4 py-3 max-h-12 overflow-hidden text-ellipsis whitespace-nowrap">
                       {truncateText(content.teks, 30)}
                     </td>
-                    <td className="px-4 py-3">{truncateText(content.contentUrl, 40)}</td>
+                    <td className="px-4 py-3">{truncateText(content.contentUrl, 60)}</td>
                     <td className="px-4 py-3">{content.duration}</td>
                     <td className="px-4 py-3 flex flex-wrap space-x-2">
                       <button
@@ -186,12 +185,12 @@ const InstruktorDataKonten = () => {
                       >
                         Ubah
                       </button>
-                      <button
+                      {/* <button
                         className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
                         onClick={() => handleDetailClick(content)}
                       >
                         Detail
-                      </button>
+                      </button> */}
                       <button
                         className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
                         onClick={() => handleDelete(content)}
@@ -204,7 +203,6 @@ const InstruktorDataKonten = () => {
               </tbody>
             </table>
           </div>
-          {/* // )} */}
 
           {/* Pagination */}
           {totalPages > 1 && (
@@ -250,11 +248,11 @@ const InstruktorDataKonten = () => {
             onClose={() => setShowUbahPopup(false)}
             existingData={selectedContent}
           />
-          <DataKontenDetail
+          {/* <DataKontenDetail
             show={showDetailPopup}
             onClose={() => setShowDetailPopup(false)}
-            contentId={selectedContent ? selectedContent.id : null}
-          />
+            contentId={selectedContent ? Number(selectedContent.id) : null}
+          /> */}
 
           {showDeleteModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-70">

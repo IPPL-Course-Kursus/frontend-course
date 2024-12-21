@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import {
   IoAddCircleOutline,
@@ -6,6 +6,7 @@ import {
   IoArrowForwardCircle,
 } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-hot-toast";
 
 import {
   fetchAdminCategories,
@@ -16,6 +17,7 @@ import SideBar from "../../../components/Sidebar/SidebarAdmin";
 import TambahKategori from "../../../components/KategoriComponents/TambahKategori";
 import UbahKategori from "../../../components/KategoriComponents/UbahKategori";
 import NavbarAdmin from "../../../components/NavbarAdmin";
+import CategoryDelete from "../../../components/KategoriComponents/CategoryDelete"; // Import the new component
 
 const AdminDataKategori = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -27,11 +29,6 @@ const AdminDataKategori = () => {
   // State for delete confirmation modal
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
-
-  // States for popup notification
-  const [showNotification, setShowNotification] = useState(false);
-  const [notificationMessage, setNotificationMessage] = useState("");
-  const [notificationType, setNotificationType] = useState("success"); // Added state
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -74,12 +71,24 @@ const AdminDataKategori = () => {
     try {
       await dispatch(deleteCategory(categoryToDelete.id));
       setShowDeleteModal(false);
-      showPopupNotification("Kategori berhasil dihapus", "success");
+      toast.success("Kategori berhasil dihapus", {
+        style: {
+          borderRadius: "8px",
+          background: "#FF3333",
+          color: "#fff",
+        },
+      });
     } catch (err) {
       setShowDeleteModal(false);
       const errorMsg =
         err.response?.data?.message || "Gagal menghapus kategori.";
-      showPopupNotification(errorMsg, "error");
+      toast.error(errorMsg, {
+        style: {
+          borderRadius: "8px",
+          background: "#FF3333",
+          color: "#fff",
+        },
+      });
     }
   };
 
@@ -113,16 +122,6 @@ const AdminDataKategori = () => {
       setCurrentPage(totalPages);
     }
   }, [currentPage, totalPages]);
-
-  // Show notification popup with type
-  const showPopupNotification = (message, type = "success") => {
-    setNotificationMessage(message);
-    setNotificationType(type);
-    setShowNotification(true);
-    setTimeout(() => {
-      setShowNotification(false);
-    }, 3000);
-  };
 
   return (
     <>
@@ -297,9 +296,14 @@ const AdminDataKategori = () => {
             }}
             onSuccess={() => {
               dispatch(fetchAdminCategories());
-              showPopupNotification("Kategori berhasil ditambahkan", "success"); // Specify type
+              toast.success("Kategori berhasil ditambahkan", {
+                style: {
+                  borderRadius: "8px",
+                  background: "#4BB543",
+                  color: "#fff",
+                },
+              });
             }}
-            showPopupNotification={showPopupNotification} // Passed as prop
           />
 
           {/* Conditionally Render Pop-up for Edit Category */}
@@ -314,47 +318,15 @@ const AdminDataKategori = () => {
                 // Success notification is now handled inside UbahKategori.jsx
               }}
               existingData={selectedCategory}
-              showPopupNotification={showPopupNotification} // Passed as prop
             />
           )}
 
           {/* Delete Confirmation Modal */}
-          {showDeleteModal && (
-            <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-              <div className="bg-white p-6 rounded-3xl shadow-lg relative w-80">
-                <h2 className="text-xl font-bold text-center mb-4">
-                  Yakin hapus data?
-                </h2>
-                <div className="flex justify-around mt-6">
-                  <button
-                    className="bg-red-600 text-white px-6 py-2 rounded-full font-bold"
-                    onClick={confirmDelete}
-                  >
-                    Hapus
-                  </button>
-                  <button
-                    className="bg-gray-300 px-6 py-2 rounded-full font-bold"
-                    onClick={() => setShowDeleteModal(false)}
-                  >
-                    Batal
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Notification Popup */}
-          {showNotification && (
-            <div
-              className={`fixed bottom-0 left-1/2 transform -translate-x-1/2 mb-10 ${
-                notificationType === "success" ? "bg-green-500" : "bg-red-500"
-              } text-white px-4 py-2 rounded-md shadow-lg transition-all duration-500 ease-in-out ${
-                showNotification ? "translate-y-0" : "translate-y-full"
-              }`}
-            >
-              {notificationMessage}
-            </div>
-          )}
+          <CategoryDelete
+            show={showDeleteModal}
+            onClose={() => setShowDeleteModal(false)}
+            onConfirm={confirmDelete}
+          />
         </div>
       </div>
     </>

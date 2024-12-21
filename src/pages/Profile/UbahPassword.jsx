@@ -21,7 +21,7 @@ const UbahPassword = () => {
     length: newPassword.length >= 8,
     capital: /[A-Z]/.test(newPassword),
     number: /\d/.test(newPassword),
-    symbol: /[!@#$%^&*(),.?":{}|<>]/.test(newPassword),
+    // symbol: /[!@#$%^&*(),.?":{}|<>]/.test(newPassword),
   };
 
   const isPasswordValid = Object.values(passwordValidation).every(Boolean);
@@ -134,7 +134,7 @@ const UbahPassword = () => {
               <li className={passwordValidation.length ? "text-green-500" : "text-red-500"}>*Minimal 8 karakter</li>
               <li className={passwordValidation.capital ? "text-green-500" : "text-red-500"}>*Tambahkan huruf kapital</li>
               <li className={passwordValidation.number ? "text-green-500" : "text-red-500"}>*Gunakan huruf dan angka</li>
-              <li className={passwordValidation.symbol ? "text-green-500" : "text-red-500"}>*Gunakan simbol</li>
+              {/* <li className={passwordValidation.symbol ? "text-green-500" : "text-red-500"}>*Gunakan simbol</li> */}
             </ul>
           </div>
 

@@ -3,13 +3,13 @@ import { useDispatch } from "react-redux";
 import PropTypes from "prop-types";
 import KategoriForm from "./KategoriForm";
 import { updateCategory } from "../../redux/actions/adminDataKategoriActions";
+import { toast } from "react-hot-toast"; // Import toast
 
 const UbahKategori = ({
   show,
   onClose,
   existingData,
   onSuccess,
-  showPopupNotification,
 }) => {
   const dispatch = useDispatch();
 
@@ -65,7 +65,13 @@ const UbahKategori = ({
 
     // Validation: Check if categoryName is provided
     if (!formData.categoryName.trim()) {
-      showPopupNotification("Silakan isi field Nama Kategori.", "error");
+      toast.error("Silakan isi field Nama Kategori.", {
+        style: {
+          borderRadius: "8px",
+          background: "#FF3333",
+          color: "#fff",
+        },
+      });
       return;
     }
 
@@ -88,14 +94,19 @@ const UbahKategori = ({
       }
 
       // Show success notification
-      showPopupNotification("Kategori berhasil diubah", "success");
+      toast.success("Kategori berhasil diubah", {
+        style: {
+          borderRadius: "8px",
+          background: "#4BB543",
+          color: "#fff",
+        },
+      });
     } catch (error) {
       // Handle errors (e.g., duplicate category name)
       console.error("Error updating category:", error);
 
       let errorMessage = "Gagal memperbarui kategori. Silakan coba lagi.";
 
-      // Check if the error is due to duplicate category name
       if (
         error.response &&
         error.response.data &&
@@ -114,7 +125,13 @@ const UbahKategori = ({
         }
       }
 
-      showPopupNotification(errorMessage, "error");
+      toast.error(errorMessage, {
+        style: {
+          borderRadius: "8px",
+          background: "#FF3333",
+          color: "#fff",
+        },
+      });
     }
   };
 
@@ -147,7 +164,6 @@ UbahKategori.propTypes = {
   onClose: PropTypes.func.isRequired,
   existingData: PropTypes.object.isRequired,
   onSuccess: PropTypes.func,
-  showPopupNotification: PropTypes.func.isRequired,
 };
 
 export default UbahKategori;
