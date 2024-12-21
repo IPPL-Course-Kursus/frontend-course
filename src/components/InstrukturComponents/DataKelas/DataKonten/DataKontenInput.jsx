@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addDataKonten,
-  compileCode,
+  // compileCode,
   getDataKonten,
 } from "../../../../redux/actions/instruktorActions";
 import CodeMirror from "@uiw/react-codemirror"; // Adjust import if necessary
@@ -11,6 +11,7 @@ import { githubLight } from "@uiw/codemirror-theme-github";
 import { python } from "@codemirror/lang-python";
 import LoadSpinner from "../../../Spinner/LoadSpinner";
 import { fetchLanguages } from "../../../../redux/actions/adminDataInterLangActions";
+import toast from "react-hot-toast";
 
 const DataKontenModule = ({ show, onClose, chapterId }) => {
   const dispatch = useDispatch();
@@ -26,6 +27,7 @@ const DataKontenModule = ({ show, onClose, chapterId }) => {
     contentUrl: "",
     duration: "",
     interpreterStatus: false,
+    language: "",
   });
 
   const [sortError, setSortError] = useState(null);
@@ -62,6 +64,7 @@ const DataKontenModule = ({ show, onClose, chapterId }) => {
     if (error) setError(null);
   };
 
+
   const handleAdd = async (e) => {
     e.preventDefault();
 
@@ -80,13 +83,21 @@ const DataKontenModule = ({ show, onClose, chapterId }) => {
         language: formData.interpreterStatus ? language : null,
       };
 
+      // Dispatch action to add content
       await dispatch(addDataKonten(requestData, chapterId));
+
+      // Menampilkan toast sukses
+      toast.success("Konten berhasil ditambahkan!");
+
       setLoading(false);
       onClose();
       fetchData();
     } catch (err) {
       setLoading(false);
-      setError(err.response?.data?.message || "Error adding content");
+
+      // Menampilkan toast error
+      toast.error(err.response?.data?.message || "Error adding content");
+
       console.error("Error:", err);
     }
   };
@@ -141,12 +152,7 @@ const DataKontenModule = ({ show, onClose, chapterId }) => {
     }
 
     // Dispatch untuk mengirim request compileCode
-    dispatch(
-      compileCode({
-        language, // Kirim bahasa yang dipilih
-        sourceCode, // Kirim kode sumber
-      })
-    )
+    dispatch()
       .then((response) => {
         setOutput(response.data.result); // Asumsikan API mengembalikan output kode
         console.log("Code compiled successfully");

@@ -6,6 +6,7 @@ import { getCategory } from "../../../redux/actions/categoryActions";
 import { getAllTypeCourses } from "../../../redux/actions/typeCourseActions";
 import { getAllLevelCourses } from "../../../redux/actions/levelCourseActions";
 import LoadSpinner from "../../Spinner/LoadSpinner";
+import toast from "react-hot-toast";
 
 const DataKelasUbah = ({ show, onClose, existingData }) => {
   const dispatch = useDispatch();
@@ -86,6 +87,7 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+
     if (!existingData || !existingData.id) {
       console.error("existingData atau ID tidak ditemukan");
       return;
@@ -97,14 +99,28 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
     };
 
     setLoading(true);
+
     try {
       const courseId = existingData.id;
-      console.log("this is response", courseId);
 
-      await dispatch(updateDataCourse(courseId, updatedData));
+      // Mengupdate data course
+      const response = await dispatch(updateDataCourse(courseId, updatedData));
+
+      // Menutup modal setelah update
       onClose();
+
+      // Cek apakah ada pesan dari response backend
+      const successMessage = response?.data?.message || "Course berhasil diperbarui!";
+
+      // Menampilkan toast sukses dengan pesan dari backend
+      toast.success(successMessage);
     } catch (error) {
       console.error(error);
+
+      // Menampilkan toast error dengan pesan dari backend (jika ada)
+      const errorMessage =
+        error?.response?.data?.message || "Gagal memperbarui course. Silakan coba lagi.";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

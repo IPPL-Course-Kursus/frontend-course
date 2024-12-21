@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { updateDataKonten } from "../../../../redux/actions/instruktorActions";
+import { getDataKonten, updateDataKonten } from "../../../../redux/actions/instruktorActions";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 
@@ -57,11 +57,22 @@ function DataKontenUbah({ show, onClose, existingData }) {
     };
 
     try {
+      // Dispatch update action
       await dispatch(updateDataKonten(existingData.id, payload));
+
+      // Show success notification
       toast.success("Module berhasil diperbarui");
-      // window.location.reload();
+
+      // Fetch the updated data
+      await dispatch(getDataKonten(existingData.chapterId)); // Refetch the data here
+
+      onClose();
     } catch (error) {
       console.error("Update error:", error);
+
+      // Show error notification
+      toast.error(`Error: ${error.message || "Gagal memperbarui module"}`);
+
       setError(`Error: ${error.message}`);
     } finally {
       setLoading(false);

@@ -14,6 +14,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteDataKonten, getDataKonten } from "../../redux/actions/instruktorActions";
 import HeadInstruktur from "../../components/InstrukturComponents/HeadInstruktur";
+import toast from "react-hot-toast";
 
 const InstruktorDataKonten = () => {
   const [showTambahPopup, setShowTambahPopup] = useState(false);
@@ -57,22 +58,28 @@ const InstruktorDataKonten = () => {
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
-    if (!contentToDelete?.chapterId) {
-      console.error("Chapter ID is required.");
-      return; // Jangan lanjut jika chapterId tidak ada
-    }
+const confirmDelete = () => {
+  if (!contentToDelete?.chapterId) {
+    console.error("Chapter ID is required.");
+    return; // Jangan lanjut jika chapterId tidak ada
+  }
 
-    dispatch(deleteDataKonten(contentToDelete.id, contentToDelete.chapterId))
-      .then(() => {
-        setShowDeleteModal(false); // Tutup modal setelah berhasil
-        dispatch(getDataKonten(id)); // Memuat ulang data setelah penghapusan
-      })
-      .catch((error) => {
-        console.error("Error deleting content:", error);
-        setShowDeleteModal(false);
-      });
-  };
+  dispatch(deleteDataKonten(contentToDelete.id, contentToDelete.chapterId))
+    .then(() => {
+      setShowDeleteModal(false); // Tutup modal setelah berhasil
+      dispatch(getDataKonten(id)); // Memuat ulang data setelah penghapusan
+
+      // Menampilkan toast sukses
+      toast.success("Konten berhasil dihapus!");
+    })
+    .catch((error) => {
+      console.error("Error deleting content:", error);
+      setShowDeleteModal(false);
+
+      // Menampilkan toast error
+      toast.error(`Gagal menghapus konten: ${error.message}`);
+    });
+};
 
   const handleBackClick = () => {
     navigate(-1);
@@ -149,15 +156,6 @@ const InstruktorDataKonten = () => {
               </button>
             </div>
           </div>
-
-          {/* Tabel Data Kelas */}
-          {/* {loading ? (
-            <p>Loading...</p>
-          ) : error ? (
-            <p>Error: {error}</p>
-          ) : content.length === 0 ? (
-            <p>Tidak ada konten yang ditemukan.</p>
-          ) : ( */}
           <div className="overflow-x-auto bg-white p-4 rounded-lg shadow-md">
             <table className="min-w-full table-auto">
               <thead>
@@ -175,7 +173,6 @@ const InstruktorDataKonten = () => {
                   <tr key={content.id} className="border-t text-xs md:text-sm">
                     <td className="px-4 py-3">{content.sort}</td>
                     <td className="px-4 py-3">{content.contentTitle}</td>
-                    {/* <td className="px-4 py-3">{content.teks}</td> */}
                     <td className="px-4 py-3 max-h-12 overflow-hidden text-ellipsis whitespace-nowrap">
                       {truncateText(content.teks, 30)}
                     </td>
@@ -206,7 +203,6 @@ const InstruktorDataKonten = () => {
               </tbody>
             </table>
           </div>
-          {/* // )} */}
 
           {/* Pagination */}
           {totalPages > 1 && (
@@ -255,7 +251,7 @@ const InstruktorDataKonten = () => {
           <DataKontenDetail
             show={showDetailPopup}
             onClose={() => setShowDetailPopup(false)}
-            contentId={selectedContent ? selectedContent.id : null}
+            contentId={selectedContent ? Number(selectedContent.id) : null}
           />
 
           {showDeleteModal && (

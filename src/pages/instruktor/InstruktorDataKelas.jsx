@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import SidebarInstruktur from "../../components/Sidebar/SidebarInstruktur";
 import { deleteDataCourse, fetchUserCourses } from "../../redux/actions/instruktorActions";
 import HeadInstruktur from "../../components/InstrukturComponents/HeadInstruktur";
+import toast from "react-hot-toast";
 
 const InstruktorDataKelas = () => {
   const [courseTypeSearch, setCourseTypeSearch] = useState("");
@@ -28,7 +29,7 @@ const InstruktorDataKelas = () => {
   const dispatch = useDispatch();
   const { mycourse } = useSelector((state) => state.course);
 
-  console.log("mycourse:", mycourse);
+  // console.log("mycourse:", mycourse);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -63,18 +64,20 @@ const InstruktorDataKelas = () => {
 
   const confirmDelete = () => {
     if (!courseToDelete?.id) {
-      console.error("Course ID is required.");
-      return;
+      return; // Tidak perlu menampilkan console error karena tidak ada ID
     }
 
     dispatch(deleteDataCourse(courseToDelete.id))
       .then(() => {
+        // Tampilkan toast sukses setelah berhasil menghapus course
+        toast.success("Course berhasil dihapus");
+
         setShowDeleteModal(false);
-        dispatch(fetchUserCourses());
+        dispatch(fetchUserCourses()); // Memuat ulang daftar kursus pengguna
       })
-      .catch((error) => {
-        console.error("Error deleting course:", error);
-        alert("Gagal menghapus kelas. Silakan coba lagi.");
+      .catch(() => {
+        // Tampilkan toast error jika gagal menghapus course
+        toast.error("Gagal menghapus course. Silakan coba lagi.");
       });
   };
 

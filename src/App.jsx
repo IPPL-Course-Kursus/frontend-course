@@ -1,10 +1,4 @@
-import {
-  BrowserRouter,
-  Route,
-  Routes,
-  useNavigate,
-  useLocation,
-} from "react-router-dom";
+import { BrowserRouter, Route, Routes, useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import Home from "./pages/Home";
@@ -146,8 +140,6 @@ function AppRoutes() {
           }
         />
       </Route>
-<<<<<<< HEAD
-=======
 
       <Route
         path="/mulai-kelas/:id"
@@ -158,7 +150,6 @@ function AppRoutes() {
         }
       />
       <Route path="/course-detail/:id" element={<DetailKelas />} />
->>>>>>> 7636e9fd2f9895dc02ff15a8169e849c7635d158
       <Route path="/topik-kelas" element={<TopikKelas />} />
       <Route path="/course-detail/:id" element={<DetailKelas />} />
       {/* Admin */}
