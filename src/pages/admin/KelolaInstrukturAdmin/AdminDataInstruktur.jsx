@@ -194,11 +194,6 @@ const AdminDataInstruktur = () => {
                       </td>
                       <td className="px-4 py-2 text-center">
                         <div className="flex flex-wrap justify-center space-x-2">
-                          {/* Tombol Ubah */}
-                          {/* <button className="py-1 px-2 md:px-4 bg-green-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105" onClick={() => handleEditClick(instructor)}>
-                          Ubah
-                        </button> */}
-                          {/* Tombol Hapus */}
                           <button
                             className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105"
                             onClick={() =>
