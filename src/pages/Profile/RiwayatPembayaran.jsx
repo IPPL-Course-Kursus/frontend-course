@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux"; // Import untuk Redux
 import RiwayatContentCard from "./RiawayatContentCard";
-import { fetchPaymentHistory } from "../../redux/actions/transactionActions";
+import {
+  fetchPaymentHistory,
+  resumeTransaction,
+} from "../../redux/actions/transactionActions";
 
 const RiwayatPembayaran = () => {
   const dispatch = useDispatch();
 
   // Ambil data payment history dan status loading dari Redux store
-  const { paymentHistory, loading, error } = useSelector((state) => state.paymentHistory || []);
+  const { paymentHistory, loading, error } = useSelector(
+    (state) => state.paymentHistory || []
+  );
 
   // Local state untuk filter
   const [filteredPayments, setFilteredPayments] = useState([]);
@@ -36,6 +41,10 @@ const RiwayatPembayaran = () => {
       filteredData = paymentHistory.filter(
         (payment) => payment.paymentStatus === "settlement"
       );
+    } else if (filterType === "pending") {
+      filteredData = paymentHistory.filter(
+        (payment) => payment.paymentStatus === "pending"
+      );
     } else if (filterType === "cancel") {
       filteredData = paymentHistory.filter(
         (payment) => payment.paymentStatus === "cancel"
@@ -45,6 +54,24 @@ const RiwayatPembayaran = () => {
     }
 
     setFilteredPayments(filteredData);
+  };
+
+  const handleResumePayment = async (orderId) => {
+    try {
+      // Panggil action untuk melanjutkan transaksi
+      const result = await dispatch(resumeTransaction(orderId));
+
+      if (result && result.success) {
+        // Buka URL pembayaran di tab baru jika berhasil
+        window.open(result.data.data.paymentUrl, "_blank");
+      } else {
+        console.error("Resume transaction failed", result);
+        alert("Gagal melanjutkan pembayaran. Silakan coba lagi.");
+      }
+    } catch (error) {
+      console.error("Error while resuming payment:", error);
+      alert("Terjadi kesalahan. Silakan coba lagi nanti.");
+    }
   };
 
   return (
@@ -67,13 +94,23 @@ const RiwayatPembayaran = () => {
               className="bg-white border border-gray-300 shadow-lg rounded-2xl w-full md:w-40 h-16 flex justify-center items-center cursor-pointer"
               onClick={() => filterPayments("paid")}
             >
-              <span className="font-semibold text-xl text-center">Telah Dibayar</span>
+              <span className="font-semibold text-xl text-center">
+                Telah Dibayar
+              </span>
+            </div>
+            <div
+              className="bg-white border border-gray-300 shadow-lg rounded-2xl w-full md:w-40 h-16 flex justify-center items-center cursor-pointer"
+              onClick={() => filterPayments("pending")}
+            >
+              <span className="font-semibold text-xl text-center">Pending</span>
             </div>
             <div
               className="bg-white border border-gray-300 shadow-lg rounded-2xl w-full md:w-40 h-16 flex justify-center items-center cursor-pointer"
               onClick={() => filterPayments("cancel")}
             >
-              <span className="font-semibold text-xl text-center">Dibatalkan</span>
+              <span className="font-semibold text-xl text-center">
+                Dibatalkan
+              </span>
             </div>
           </div>
         </div>
@@ -93,9 +130,16 @@ const RiwayatPembayaran = () => {
                 courseImage={payment.course.image}
                 courseLevel={payment.course.courseLevel.levelName}
                 courseModule={payment.totalChapters}
-                courseStatus={payment.paymentStatus === "settlement" ? "Paid" : "cancel"}
+                courseStatus={
+                  payment.paymentStatus === "settlement"
+                    ? "Paid"
+                    : payment.paymentStatus === "pending"
+                    ? "Pending"
+                    : "Cancel"
+                }
                 courseTime={payment.course.totalDuration}
                 courseTitle={payment.courseName}
+                onResumePayment={() => handleResumePayment(payment.orderId)}
               />
             ))
           ) : (

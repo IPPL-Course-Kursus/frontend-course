@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux"; // Import useDispatch dari Redux
 import { logout } from "../../redux/actions/authActions"; // Import aksi logout
 import { useNavigate } from "react-router-dom"; // Import useNavigate untuk navigasi
 import { FaBars } from "react-icons/fa"; // Import icon untuk hamburger menu
+import Swal from "sweetalert2";
 
 const MainProfile = () => {
   const [activeMenu, setActiveMenu] = useState("");
@@ -17,8 +18,22 @@ const MainProfile = () => {
 
   const handleMenuClick = (menu) => {
     if (menu === "keluar") {
-      dispatch(logout()); // Panggil aksi logout dari Redux
-      navigate("/login"); // Arahkan pengguna ke halaman login
+      // Menampilkan konfirmasi logout menggunakan SweetAlert2
+      Swal.fire({
+        title: "Konfirmasi Logout",
+        text: "Apakah Anda yakin ingin keluar?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, Logout",
+        cancelButtonText: "Batal",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          dispatch(logout()); // Panggil aksi logout dari Redux
+          navigate("/login"); // Arahkan pengguna ke halaman login
+        }
+      });
     } else {
       setActiveMenu(menu); // Set menu aktif sesuai pilihan
     }
@@ -53,9 +68,7 @@ const MainProfile = () => {
         <div className="flex flex-col sm:flex-row bg-gray-100 shadow-md text-black rounded-3xl h-full w-full">
           {/* Sidebar */}
           <div
-            className={`px-4 py-4 sm:py-8 sm:w-1/6 ${
-              isSidebarOpen ? "block" : "hidden"
-            } sm:block`}
+            className={`px-4 py-4 sm:py-8 sm:w-1/6 ${isSidebarOpen ? "block" : "hidden"} sm:block`}
           >
             <h1
               className={`text-md cursor-pointer border-b-2 py-2 ${

@@ -165,7 +165,7 @@
 
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { updateDataKonten } from "../../../redux/actions/instruktorActions";
+import { updateDataKonten } from "../../../../redux/actions/instruktorActions";
 import { useDispatch } from "react-redux";
 import toast from "react-hot-toast";
 

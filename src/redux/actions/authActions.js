@@ -6,7 +6,7 @@ import {
   registerStart,
   registerSuccess,
   registerFailure,
-    setUser,
+  setUser,
   setToken,
 
   // logout,
@@ -59,41 +59,28 @@ export const login = (email, password, navigate) => async (dispatch) => {
       toast.success("Login Berhasil");
 
       // Navigasi berdasarkan role
-        if (role === "Admin") {
-          navigate("/admin/dashboard");
-        } else if (role === "User") {
-          navigate("/");
-        } else if (role === "Instruktur") {
-          navigate("/inst/dashboard");
-        } else {
-          console.error("Role tidak dikenali:", role);
-        }
+      if (role === "Admin") {
+        navigate("/admin/dashboard");
+      } else if (role === "User") {
+        navigate("/");
+      } else if (role === "Instruktur") {
+        navigate("/inst/dashboard");
       } else {
-        toast.error("Login gagal. Silakan coba lagi nanti.");
+        console.error("Role tidak dikenali:", role);
       }
-    //   setTimeout(() => {
-    //     if (role === "Admin") {
-    //       navigate("/admin/dashboard");
-    //     } else if (role === "User") {
-    //       navigate("/");
-    //     } else if (role === "Instruktur") {
-    //       navigate("/inst/dashboard");
-    //     } else {
-    //       console.error("Role tidak dikenali:", role);
-    //     }
-    //   }, 3000); // Delay 3000 ms atau 3 detik
-    // } else {
-    //   toast.error("Login gagal. Silakan coba lagi nanti.");
-    // }
+    } else {
+      toast.error("Login gagal. Silakan coba lagi nanti.");
+    }
   } catch (error) {
     if (error.response) {
       if (error.response.status === 403) {
         toast.error("Email atau Password Anda salah. Silahkan coba lagi.");
-      } else if (error.response.status === 404) {
-        toast.error("Email tidak terdaftar. Silakan cek kembali email Anda.");
       } else {
-        toast.error("Login gagal. Silakan coba lagi nanti.");
+        toast.error("Email tidak terdaftar. Silakan cek kembali email Anda.");
       }
+      // else {
+      //   toast.error("Login gagal. Silakan coba lagi nanti.");
+      // }
     } else {
       toast.error("Terjadi kesalahan pada server. Silakan coba lagi nanti.");
     }
@@ -123,10 +110,27 @@ export const register =
         throw new Error("Registrasi gagal.");
       }
     } catch (error) {
-      dispatch(
-        registerFailure(error.response?.data?.message || "Terjadi kesalahan saat registrasi.")
-      ); // Dispatch error
-      toast.error(error.message || "Terjadi kesalahan saat registrasi."); // Notifikasi gagal
+      // Check for specific error response from server
+      if (error.response) {
+        const errorData = error.response.data;
+
+        // Handle specific error like "Email already in use"
+        if (errorData.message === "Email already in use") {
+          dispatch(registerFailure("Email sudah digunakan, silahkan coba email lain."));
+          toast.error("Email sudah digunakan, silahkan coba email lain.");
+        } else {
+          dispatch(registerFailure(errorData.message || "Terjadi kesalahan saat registrasi."));
+          toast.error(errorData.message || "Terjadi kesalahan saat registrasi.");
+        }
+      } else if (error.response?.status === 500) {
+        // Handle server error 500
+        dispatch(registerFailure("Terjadi kesalahan pada server, coba lagi nanti."));
+        toast.error("Terjadi kesalahan pada server, coba lagi nanti.");
+      } else {
+        // General error fallback
+        dispatch(registerFailure("Terjadi kesalahan saat registrasi."));
+        toast.error("sepertinya email sudah terdaftar");
+      }
     }
   };
 
@@ -160,7 +164,6 @@ export const getMe = () => async (dispatch) => {
   }
 };
 
-
 export const logout = () => (dispatch) => {
   Cookies.remove("token"); // Menghapus cookie token
   dispatch(setToken(null));
@@ -171,10 +174,7 @@ export const sendEmail = (email) => async (dispatch) => {
   try {
     dispatch(sendEmailStart());
 
-    const response = await axios.post(
-      `${api_url}auth/forgot-password`,
-      { email }
-    );
+    const response = await axios.post(`${api_url}auth/forgot-password`, { email });
 
     if (response.status === 200) {
       dispatch(sendEmailSuccess());
@@ -183,9 +183,10 @@ export const sendEmail = (email) => async (dispatch) => {
     }
   } catch (error) {
     // Cek apakah error memiliki status response 404
-    const errorMessage = error.response && error.response.status === 404 
-      ? { status: 404, message: "Email tidak ditemukan" } 
-      : { message: error.message };
+    const errorMessage =
+      error.response && error.response.status === 404
+        ? { status: 404, message: "Email tidak ditemukan" }
+        : { message: error.message };
     dispatch(sendEmailFailure(errorMessage));
   }
 };
@@ -270,89 +271,40 @@ export const updateProfile = (userData) => async (dispatch) => {
   }
 };
 
-export const changePassword = (currentPassword, newPassword, confirmPassword) => async (dispatch) => {
-  try {
-    dispatch(changePasswordStart());
+export const changePassword =
+  (currentPassword, newPassword, confirmPassword) => async (dispatch) => {
+    try {
+      dispatch(changePasswordStart());
 
-    const token = Cookies.get("token");
+      const token = Cookies.get("token");
 
-    // Mengirim permintaan untuk mengubah password dengan token di header
-    const response = await axios.post(
-      `${api_url}auth/change-password`,
-      {
-        currentPassword,
-        newPassword,
-        confirmPassword,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`, // Sertakan token dalam header Authorization
+      // Mengirim permintaan untuk mengubah password dengan token di header
+      const response = await axios.post(
+        `${api_url}auth/change-password`,
+        {
+          currentPassword,
+          newPassword,
+          confirmPassword,
         },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Sertakan token dalam header Authorization
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        dispatch(changePasswordSuccess());
+        toast.success("Password berhasil diubah!");
       }
-    );
+    } catch (error) {
+      dispatch(changePasswordFailure());
 
-    if (response.status === 200) {
-      dispatch(changePasswordSuccess());
-      toast.success("Password berhasil diubah!");
+      // Handle specific error for old password mismatch (400 Bad Request)
+      if (error.response && error.response.status === 400) {
+        toast.error("Password lama salah.");
+      } else {
+        toast.error("Terjadi kesalahan saat mengubah password.");
+      }
     }
-  } catch (error) {
-    dispatch(changePasswordFailure());
-
-    // Handle specific error for old password mismatch (400 Bad Request)
-    if (error.response && error.response.status === 400) {
-      toast.error("Password lama salah.");
-    } else {
-      toast.error("Terjadi kesalahan saat mengubah password.");
-    }
-  }
-};
-
-
-
-// export const login = (email, password, navigate) => async (dispatch) => {
-//   try {
-//     // Memvalidasi input
-//     if (!email || !password) {
-//       toast.error("Email dan Password harus diisi.");
-//       return;
-//     }
-
-//     // Melakukan permintaan login
-//     const response = await axios.post(`${api_url}auth/login`, {
-//       email,
-//       password,
-//     });
-
-//     const { data } = response.data;
-//     const { token, user, role } = data; // Hanya menyimpan token, user, dan role
-//     console.log(response.data);
-//     console.log("ini data login:", response.data);
-
-//     // Menyimpan token di cookies (4 jam)
-//     Cookies.set("token", token, { expires: 1 / 6 });
-
-//     // Dispatch tindakan untuk menyimpan token dan user di Redux
-//     dispatch(loginSuccess({ token, user, role }));
-//     console.log(role);
-
-//     toast.success("Login Berhasil");
-
-//     // Navigasi ke halaman utama dengan delay
-//     setTimeout(() => {
-//       navigate("/inst/dashboard");
-//     }, 1000); // Durasi delay 1 detik
-//   } catch (error) {
-//     // Penanganan error yang lebih spesifik
-//     if (error.response) {
-//       if (error.response.status === 403) {
-//         toast.error("Email atau Password Anda salah. Silahkan coba lagi.");
-//       } else if (error.response.status === 404) {
-//         toast.error("Email tidak terdaftar. Silakan cek kembali email Anda.");
-//       } else {
-//         toast.error("Login gagal. Silakan coba lagi nanti.");
-//       }
-//     } else {
-//       toast.error("Terjadi kesalahan pada server. Silakan coba lagi nanti.");
-//     }
-//   }
-// };
+  };

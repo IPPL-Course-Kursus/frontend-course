@@ -10,6 +10,7 @@ import {
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom"; // useNavigate for navigation
 import { toast } from "react-toastify"; // For notification
+import LoadSpinner from "../../components/Spinner/LoadSpinner";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -17,8 +18,7 @@ const Profile = () => {
 
   // Redux state
   const profile = useSelector(selectProfile);
-  const profileLoading = useSelector(selectProfileLoading);
-  const profileError = useSelector(selectProfileError);
+
 
   // Local state for form
   const [form, setForm] = useState({
@@ -67,8 +67,7 @@ const Profile = () => {
 
   // Check for form changes or image file changes
   useEffect(() => {
-    const formChanged =
-      JSON.stringify(form) !== JSON.stringify(initialForm) || imageFile !== null;
+    const formChanged = JSON.stringify(form) !== JSON.stringify(initialForm) || imageFile !== null;
     setIsFormChanged(formChanged);
   }, [form, initialForm, imageFile]);
 
@@ -145,17 +144,11 @@ const Profile = () => {
     }
   };
 
-  if (profileLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (profileError) {
-    return <div>Error: {profileError}</div>;
-  }
-
   return (
     <div className="flex flex-col items-center p-2 sm:p-4">
-      <p className="text-xl sm:text-2xl md:text-4xl font-bold mb-4 sm:mb-8 text-center">Profile Saya</p>
+      <p className="text-xl sm:text-2xl md:text-4xl font-bold mb-4 sm:mb-8 text-center">
+        Profile Saya
+      </p>
 
       <div className="flex flex-col sm:flex-row w-full max-w-xs sm:max-w-md md:max-w-4xl">
         <div className="flex flex-col items-center mb-4 sm:mb-0 sm:mr-8 w-full sm:w-auto">
@@ -214,7 +207,9 @@ const Profile = () => {
             onBlur={handleBlur}
             className={`block w-full p-2 border-b ${
               focusedField === "phoneNumber" ? "border-black" : "border-gray-300"
-            } focus:outline-none ${focusedField === "phoneNumber" ? "text-black" : "text-gray-500"}`}
+            } focus:outline-none ${
+              focusedField === "phoneNumber" ? "text-black" : "text-gray-500"
+            }`}
             placeholder="Nomor Telepon"
           />
           <input
@@ -236,24 +231,25 @@ const Profile = () => {
             onChange={handleInputChange}
             onFocus={() => handleFocus("tanggalLahir")}
             onBlur={handleBlur}
-            className={`block w-full p-2 border-b ${
+            className={`block w-full py-1 sm:py-2 border-b ${
               focusedField === "tanggalLahir" ? "border-black" : "border-gray-300"
-            } focus:outline-none ${focusedField === "tanggalLahir" ? "text-black" : "text-gray-500"}`}
-            placeholder="Tanggal Lahir"
+            } focus:outline-none ${
+              focusedField === "tanggalLahir" ? "text-black" : "text-gray-500"
+            }`}
           />
         </div>
       </div>
 
-      <div className="w-full mt-6 sm:mt-8 lg:w-full lg:flex lg:items-center">
-        <button
-          onClick={handleSave}
-          className={`w-full py-2 sm:py-3 bg-blue-900 text-white rounded-full sm:max-w-md mx-auto ${
-            (!isFormChanged || isSubmitting) ? "opacity-50 cursor-not-allowed" : "" // Disable button if no changes or during submission
-          }`}
-          disabled={!isFormChanged || isSubmitting} // Disabled if no form changes or submission in progress
-        >
-          {isSubmitting ? "Menyimpan..." : "Simpan"} {/* Show loading text when submitting */}
-        </button>
+      <div className="mt-6 w-full max-w-xs sm:max-w-md md:max-w-4xl">
+        <div className="mt-6 w-full max-w-xs sm:max-w-md md:max-w-4xl flex justify-center">
+          <button
+            onClick={handleSave}
+            disabled={!isFormChanged || isSubmitting}
+            className="w-full py-2 bg-blue-600 text-white rounded-full shadow-md hover:bg-blue-700 disabled:bg-gray-300 flex justify-center items-center"
+          >
+            {isSubmitting ? <LoadSpinner /> : "Simpan"}
+          </button>
+        </div>
       </div>
     </div>
   );

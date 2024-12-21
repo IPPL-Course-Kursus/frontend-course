@@ -10,6 +10,7 @@ import { IoIosArrowDroprightCircle, IoIosArrowDropleftCircle } from "react-icons
 import { useDispatch, useSelector } from "react-redux";
 import { getFreeCourse } from "../../redux/actions/courseActions";
 import { getCategory } from "../../redux/actions/categoryActions";
+import CardSkeleton from "../Skeleton/CardSkeleton";
 
 const CardFree = ({ title = "Kelas Free" }) => {
   const [selectCategoryId, setSelectCategoryId] = useState(null);
@@ -64,7 +65,7 @@ const CardFree = ({ title = "Kelas Free" }) => {
     dots: false,
     infinite: false,
     speed: 500,
-    slidesToShow: 6,
+    slidesToShow: 8,
     slidesToScroll: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
@@ -79,7 +80,7 @@ const CardFree = ({ title = "Kelas Free" }) => {
     dots: false,
     infinite: true,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: 4,
     slidesToScroll: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
@@ -92,9 +93,9 @@ const CardFree = ({ title = "Kelas Free" }) => {
   return (
     <>
       <div className="flex justify-center">
-        <div className="flex flex-col items-center max-w-[1060px] pl-4 pr-4 lg:pr-0 lg:pl-0 container gap-5 pt-[26px] pb-[53px]">
+        <div className="w-full max-w-[1680px] px-6 lg:px-20 flex flex-col gap-6">
           {/* Header Section */}
-          <div className="flex justify-between w-full px-6">
+          <div className="flex justify-between w-full mt-10">
             <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
             <NavLink
               to="/topik-kelas"
@@ -105,8 +106,7 @@ const CardFree = ({ title = "Kelas Free" }) => {
           </div>
 
           {/* Category Carousel Section */}
-          <div className="relative w-full px-6">
-            {/* Add padding here */}
+          <div className="relative w-full">
             <Slider ref={sliderRef} {...categorySliderSettings}>
               <button
                 onClick={() => handleFilterClick(null)} // Change to null for "All"
@@ -118,207 +118,212 @@ const CardFree = ({ title = "Kelas Free" }) => {
               >
                 All
               </button>
-              {category.map((kategori) => (
-                <div key={kategori.id} className="ml-0">
-                  <div
-                    className={`flex justify-center items-center border-2 rounded-lg text-sm font-semibold p-3 transition-colors duration-300 mx-2 whitespace-nowrap ${
-                      selectCategoryId === kategori.id
-                        ? "bg-blue-600 text-white"
-                        : "bg-white text-gray-700 border-gray-300"
-                    } hover:bg-blue-500 hover:text-white cursor-pointer`}
-                    onClick={() => handleFilterClick(kategori.id)}
-                  >
-                    <span className="block max-w-[120px] overflow-hidden text-ellipsis whitespace-nowrap">
-                      {kategori.categoryName}
-                    </span>
+              {category.length > 0 &&
+                category.map((kategori) => (
+                  <div key={kategori.id} className="ml-0">
+                    <div
+                      className={`flex justify-center items-center border-2 rounded-lg text-sm font-semibold p-3 transition-colors duration-300 mx-2 whitespace-nowrap ${
+                        selectCategoryId === kategori.id
+                          ? "bg-blue-600 text-white"
+                          : "bg-white text-gray-700 border-gray-300"
+                      } hover:bg-blue-500 hover:text-white cursor-pointer`}
+                      onClick={() => handleFilterClick(kategori.id)}
+                    >
+                      <span className="block max-w-[120px] overflow-hidden text-ellipsis whitespace-nowrap">
+                        {kategori.categoryName}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </Slider>
+          </div>
+
+          {/* Card Course Section */}
+          <div className="mt-4">
+            {Array.isArray(filteredCoursePopular) && filteredCoursePopular.length > 0 ? (
+              selectCategoryId === null ? ( // Menampilkan slider jika "All" dipilih
+                <Slider {...courseSliderSettings}>
+                  {filteredCoursePopular.map((val) => (
+                    <div
+                      key={val.id}
+                      onClick={() => window.location(`/course/${val.id}`)}
+                      className="p-2"
+                    >
+                      <div
+                        className={`w-full bg-white shadow-xl rounded-xl overflow-hidden pb-3 h-full flex flex-col transition-all duration-300 hover:scale-105 ${
+                          val.isPurchased ? "bg-green-50" : ""
+                        }`}
+                      >
+                        <img
+                          src={val.image}
+                          alt={val.name}
+                          className="w-full h-32 object-cover rounded-t-xl"
+                        />
+                        <div className="mx-2 md:mx-4 flex flex-col mt-2 md:mt-3 h-full">
+                          <div className="flex justify-between items-center mb-2 flex-grow">
+                            <h1
+                              className={`font-bold text-sm lg:text-base truncate ${
+                                val.isPurchased ? "text-gray-700" : "text-color-primary"
+                              }`}
+                            >
+                              {val.courseName}
+                            </h1>
+                          </div>
+                          <p className="text-gray-600 text-sm font-semibold flex-shrink-0">
+                            Instruktor {val.user.fullName}
+                          </p>
+                          <div className="mt-3 flex justify-between flex-wrap text-xs font-semibold text-color-primary">
+                            <p className="flex items-center">
+                              <Shield size={18} className="mr-1" /> {val.courseLevel.levelName}
+                            </p>
+                            <p className="flex items-center">
+                              <Book size={18} className="mr-1" /> {val._count.chapters} Chapter
+                            </p>
+                            <p className="flex items-center">
+                              <Clock size={18} className="mr-1" /> {val.totalDuration} Menit
+                            </p>
+                          </div>
+
+                          {/* Tampilkan progress bar dan tombol untuk kelas yang sudah dibeli */}
+                          {val.isPurchased ? (
+                            <div className="my-2 flex-grow">
+                              <ProgressBar />
+                              <div className="my-2">
+                                <Link
+                                  to={`/course-detail/${val.id}`} // Link to course detail page
+                                  className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
+                                >
+                                  Mulai Kelas
+                                </Link>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="my-2">
+                              <div className="flex items-center">
+                                {val.coursePrice > 0 ? (
+                                  <>
+                                    <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
+                                      {formatCurrency(val.coursePrice)}{" "}
+                                    </button>
+                                    <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
+                                      <Gem size={16} className="mr-2" /> Premium
+                                    </button>
+                                  </>
+                                ) : (
+                                  <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
+                                    <Gem size={16} className="mr-2" /> Free
+                                  </button>
+                                )}
+                              </div>
+                              <div className="my-2">
+                                <Link
+                                  to={`/course-detail/${val.id}`} // Link to course detail page
+                                  className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs "
+                                >
+                                  Lihat Kelas
+                                </Link>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </Slider>
+              ) : (
+                // Tampilan grid untuk kategori yang dipilih
+                <div className="flex mt-2 overflow-x-auto space-x-4">
+                  {filteredCoursePopular.map((val) => (
+                    <div key={val.id} className="flex-none w-1/3 p-2">
+                      <div
+                        className={`w-full bg-white shadow-xl rounded-xl overflow-hidden pb-3 h-full flex flex-col ${
+                          val.isPurchased ? "bg-green-50" : ""
+                        }`}
+                      >
+                        <img
+                          src={val.image}
+                          alt={val.name}
+                          className="w-full h-32 object-cover rounded-t-xl"
+                        />
+                        <div className="mx-2 md:mx-4 flex flex-col mt-2 md:mt-3 h-full">
+                          <div className="flex justify-between items-center mb-2 flex-grow">
+                            <h1
+                              className={`font-bold text-sm lg:text-base truncate ${
+                                val.isPurchased ? "text-gray-700" : "text-color-primary"
+                              }`}
+                            >
+                              {val.courseName}
+                            </h1>
+                          </div>
+                          <p className="text-gray-600 text-sm font-semibold flex-shrink-0">
+                            Instruktor {val.user.fullName}
+                          </p>
+                          <div className="mt-3 flex justify-between flex-wrap text-xs font-semibold text-color-primary">
+                            <p className="flex items-center">
+                              <Shield size={18} className="mr-1" /> {val.courseLevel.levelName}
+                            </p>
+                            <p className="flex items-center">
+                              <Book size={18} className="mr-1" /> {val._count.chapters} Chapter
+                            </p>
+                            <p className="flex items-center">
+                              <Clock size={18} className="mr-1" /> {val.totalDuration} Menit
+                            </p>
+                          </div>
+
+                          {/* Tampilkan progress bar dan tombol untuk kelas yang sudah dibeli */}
+                          {val.isPurchased ? (
+                            <div className="my-2 flex-grow">
+                              <ProgressBar />
+                              <div className="my-2">
+                                <Link
+                                  to={`/course-detail/${val.id}`} // Link to course detail page
+                                  className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
+                                >
+                                  Mulai Kelas
+                                </Link>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="my-2">
+                              <div className="flex items-center">
+                                {val.coursePrice > 0 ? (
+                                  <>
+                                    <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
+                                      {formatCurrency(val.coursePrice)}{" "}
+                                    </button>
+                                    <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
+                                      <Gem size={16} className="mr-2" /> Premium
+                                    </button>
+                                  </>
+                                ) : (
+                                  <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
+                                    <Gem size={16} className="mr-2" /> Free
+                                  </button>
+                                )}
+                              </div>
+                              <div className="my-2">
+                                <Link
+                                  to={`/course-detail/${val.id}`} // Link to course detail page
+                                  className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
+                                >
+                                  Lihat Detail
+                                </Link>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )
+            ) : (
+              <div>
+                <CardSkeleton/>
+              </div>
+            )}
           </div>
         </div>
-      </div>
-
-      {/* Card Course Section */}
-      <div className="max-w-screen-lg mx-auto px-6 lg:p-0">
-        {Array.isArray(filteredCoursePopular) && filteredCoursePopular.length > 0 ? (
-          selectCategoryId === null ? ( // Menampilkan slider jika "All" dipilih
-            <Slider {...courseSliderSettings}>
-              {filteredCoursePopular.map((val) => (
-                <div key={val.id} onClick={() => window.location(`/course/${val.id}`)} className="p-2">
-                  <div
-                    className={`w-full bg-white shadow-xl rounded-xl overflow-hidden pb-3 h-full flex flex-col transition-all duration-300 hover:scale-105 ${
-                      val.isPurchased ? "bg-green-50" : ""
-                    }`}
-                  >
-                    <img
-                      src={val.image}
-                      alt={val.name}
-                      className="w-full h-32 object-cover rounded-t-xl"
-                    />
-                    <div className="mx-2 md:mx-4 flex flex-col mt-2 md:mt-3 h-full">
-                      <div className="flex justify-between items-center mb-2 flex-grow">
-                        <h1
-                          className={`font-bold text-sm lg:text-base truncate ${
-                            val.isPurchased ? "text-gray-700" : "text-color-primary"
-                          }`}
-                        >
-                          {val.courseName}
-                        </h1>
-                      </div>
-                      <p className="text-gray-600 text-sm font-semibold flex-shrink-0">
-                        Instruktor {val.user.fullName}
-                      </p>
-                      <div className="mt-3 flex justify-between flex-wrap text-xs font-semibold text-color-primary">
-                        <p className="flex items-center">
-                          <Shield size={18} className="mr-1" /> {val.courseLevel.levelName}
-                        </p>
-                        <p className="flex items-center">
-                          <Book size={18} className="mr-1" /> {val._count.chapters} Chapter
-                        </p>
-                        <p className="flex items-center">
-                          <Clock size={18} className="mr-1" /> {val.totalDuration} Menit
-                        </p>
-                      </div>
-
-                      {/* Tampilkan progress bar dan tombol untuk kelas yang sudah dibeli */}
-                      {val.isPurchased ? (
-                        <div className="my-2 flex-grow">
-                          <ProgressBar />
-                          <div className="my-2">
-                            <Link
-                              to={`/course-detail/${val.id}`} // Link to course detail page
-                              className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
-                            >
-                              Mulai Kelas
-                            </Link>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="my-2">
-                          <div className="flex items-center">
-                            {val.coursePrice > 0 ? (
-                              <>
-                                <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
-                                  {formatCurrency(val.coursePrice)}{" "}
-                                </button>
-                                <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
-                                  <Gem size={16} className="mr-2" /> Premium
-                                </button>
-                              </>
-                            ) : (
-                              <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
-                                <Gem size={16} className="mr-2" /> Free
-                              </button>
-                            )}
-                          </div>
-                          <div className="my-2">
-                            <Link
-                              to={`/course-detail/${val.id}`} // Link to course detail page
-                              className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs "
-                            >
-                              Lihat Kelas
-                            </Link>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </Slider>
-          ) : (
-            // Tampilan grid untuk kategori yang dipilih
-            <div className="flex mt-2 overflow-x-auto space-x-4">
-              {filteredCoursePopular.map((val) => (
-                <div key={val.id} className="flex-none w-1/3 p-2">
-                  <div
-                    className={`w-full bg-white shadow-xl rounded-xl overflow-hidden pb-3 h-full flex flex-col ${
-                      val.isPurchased ? "bg-green-50" : ""
-                    }`}
-                  >
-                    <img
-                      src={val.image}
-                      alt={val.name}
-                      className="w-full h-32 object-cover rounded-t-xl"
-                    />
-                    <div className="mx-2 md:mx-4 flex flex-col mt-2 md:mt-3 h-full">
-                      <div className="flex justify-between items-center mb-2 flex-grow">
-                        <h1
-                          className={`font-bold text-sm lg:text-base truncate ${
-                            val.isPurchased ? "text-gray-700" : "text-color-primary"
-                          }`}
-                        >
-                          {val.courseName}
-                        </h1>
-                      </div>
-                      <p className="text-gray-600 text-sm font-semibold flex-shrink-0">
-                        Instruktor {val.user.fullName}
-                      </p>
-                      <div className="mt-3 flex justify-between flex-wrap text-xs font-semibold text-color-primary">
-                        <p className="flex items-center">
-                          <Shield size={18} className="mr-1" /> {val.courseLevel.levelName}
-                        </p>
-                        <p className="flex items-center">
-                          <Book size={18} className="mr-1" /> {val._count.chapters} Chapter
-                        </p>
-                        <p className="flex items-center">
-                          <Clock size={18} className="mr-1" /> {val.totalDuration} Menit
-                        </p>
-                      </div>
-
-                      {/* Tampilkan progress bar dan tombol untuk kelas yang sudah dibeli */}
-                      {val.isPurchased ? (
-                        <div className="my-2 flex-grow">
-                          <ProgressBar />
-                          <div className="my-2">
-                            <Link
-                              to={`/course-detail/${val.id}`} // Link to course detail page
-                              className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
-                            >
-                              Mulai Kelas
-                            </Link>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="my-2">
-                          <div className="flex items-center">
-                            {val.coursePrice > 0 ? (
-                              <>
-                                <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
-                                  {formatCurrency(val.coursePrice)}{" "}
-                                </button>
-                                <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
-                                  <Gem size={16} className="mr-2" /> Premium
-                                </button>
-                              </>
-                            ) : (
-                              <button className="py-1 px-4 bg-blue-400 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center mr-2">
-                                <Gem size={16} className="mr-2" /> Free
-                              </button>
-                            )}
-                          </div>
-                          <div className="my-2">
-                            <Link
-                              to={`/course-detail/${val.id}`} // Link to course detail page
-                              className="py-1 px-4 bg-black text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
-                            >
-                              Lihat Detail
-                            </Link>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )
-        ) : (
-          <div className="flex justify-center items-center">
-            <p className="text-gray-500">Tidak ada kursus yang tersedia.</p>
-          </div>
-        )}
       </div>
     </>
   );

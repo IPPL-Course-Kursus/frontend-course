@@ -45,10 +45,10 @@ const Register = () => {
       setEmailError("Silahkan isi email anda");
       return;
     }
-    if (!phoneNumber) {
-      setPhoneNumberError("Silahkan masukkan no telepon anda");
-      return;
-    }
+      if (phoneNumber.length < 10 || phoneNumber.length > 14) {
+        setPhoneNumberError("Nomor telepon harus antara 10 sampai 14 digit");
+        return;
+      }
     if (!city) {
       setCityError("Silahkan isi kota anda");
       return;

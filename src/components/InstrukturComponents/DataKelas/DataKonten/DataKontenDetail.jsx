@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
-import { getDataKonten } from "../../../redux/actions/instruktorActions";
+import { getDataKonten } from "../../../../redux/actions/instruktorActions";
 
 function DataKontenDetail({ show, onClose, contentId }) {
   const dispatch = useDispatch();
@@ -19,7 +19,6 @@ function DataKontenDetail({ show, onClose, contentId }) {
     if (show && contentId) {
       dispatch(getDataKonten(contentId)); // Memanggil data API berdasarkan contentId
       console.log(contentId);
-      
     }
   }, [show, contentId, dispatch]);
 

@@ -9,6 +9,7 @@ const RiwayatContentCard = ({
   courseModule,
   courseTime,
   courseStatus,
+  onResumePayment,
 }) => {
   return (
     <div className="border rounded-xl overflow-hidden shadow-lg flex flex-col mb-5">
@@ -59,14 +60,24 @@ const RiwayatContentCard = ({
         </div>
 
         {/* Payment Status */}
-        <div className="mt-4">
+        <div className="mt-4 flex flex-col space-y-2">
           <button
-            className={`text-white text-sm py-2 px-4 rounded-full ${
+            className={`text-white text-sm py-2 px-4 rounded-full w-fit ${
               courseStatus === "Paid" ? "bg-green-500" : "bg-red-500"
             }`}
           >
             {courseStatus}
           </button>
+
+          {/* Additional Button for Pending Payment */}
+          {courseStatus === "Pending" && (
+            <button
+              onClick={onResumePayment}
+              className="bg-yellow-500 text-white text-sm py-2 px-4 rounded-full hover:bg-yellow-600 w-fit"
+            >
+              Lanjutkan Pembayaran
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -82,6 +93,7 @@ RiwayatContentCard.propTypes = {
   courseModule: PropTypes.string,
   courseTime: PropTypes.string,
   courseStatus: PropTypes.string,
+  onResumePayment: PropTypes.func, // Function to handle payment resumption
 };
 
 export default RiwayatContentCard;

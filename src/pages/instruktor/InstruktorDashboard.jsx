@@ -2,25 +2,24 @@ import Sidebar from "../../components/Sidebar/SidebarInstruktur";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { GrTransaction } from "react-icons/gr";
-import { FaUsers, FaSearch, FaFilter } from "react-icons/fa";
-import { IoArrowBackCircle, IoArrowForwardCircle, IoBookSharp } from "react-icons/io5";
+import { FaFilter } from "react-icons/fa";
+import {
+  IoArrowBackCircle,
+  IoArrowForwardCircle,
+  IoBookSharp,
+} from "react-icons/io5";
 import { instfetchPayments } from "../../redux/actions/instrukturDashboardActions";
 import { IoIosInformationCircle } from "react-icons/io";
 
 import HeadInstruktur from "../../components/InstrukturComponents/HeadInstruktur";
 
-
-
 const InstruktorDashboard = () => {
   const dispatch = useDispatch();
-  const { stats, paymentStatus, loading, user } = useSelector((state) => state.instrukturDashboard);
+  const { paymentStatus, loading } = useSelector(
+    (state) => state.instrukturDashboard
+  );
 
-  // State for search input
-  const [globalSearch, setGlobalSearch] = useState("");
-  const [paymentSearch, setPaymentSearch] = useState("");
-
-  const [filter, setFilter] = useState("");
-
+  const [filter, setFilter] = useState("disable");
   // State for pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10); // You can change this value to adjust items per page
@@ -28,8 +27,6 @@ const InstruktorDashboard = () => {
   // Fetch stats, payment status, kategori status, and user data
   useEffect(() => {
     dispatch(instfetchPayments());
-    // dispatch(instfetchkategori());
-    // dispatch(instfetchuser());
   }, [dispatch]);
 
   // Create an array for card data
@@ -37,7 +34,7 @@ const InstruktorDashboard = () => {
     {
       count: paymentStatus?.transactionCountByType?.Free || 0,
       label: "Free Class",
-      color: "bg-primary" ,
+      color: "bg-primary",
       info: <IoIosInformationCircle className="w-6 h-6" />,
       icon: <IoBookSharp className="text-2xl text-primary" />,
     },
@@ -46,7 +43,9 @@ const InstruktorDashboard = () => {
       label: "Premium Class",
       color: "bg-primary",
       info: <IoIosInformationCircle className="w-6 h-6" />,
-      icon: <IoBookSharp className="text-2xl text-primary text-center items-center" />,
+      icon: (
+        <IoBookSharp className="text-2xl text-primary text-center items-center" />
+      ),
     },
     {
       count: paymentStatus?.totalTransactions || 0,
@@ -55,33 +54,16 @@ const InstruktorDashboard = () => {
       info: <IoIosInformationCircle className="w-6 h-6" />,
       icon: <GrTransaction className="text-2xl text-[#173D94]" />,
     },
-    // {
-    //   count: premiumClassesCount,
-    //   label: "Premium Class",
-    //   color: "bg-[#0a61aa]",
-    // },
   ];
-  console.log("ini user", user);
 
   // Filter payments based on searches and filters
   const filteredPayments = Array.isArray(paymentStatus.transactions)
     ? paymentStatus.transactions.filter((payment) => {
-        const isGlobalSearchMatch =
-          globalSearch === "" ||
-          payment.id.toString().includes(globalSearch.toLowerCase()) ||
-          payment.kategori.toLowerCase().includes(globalSearch.toLowerCase()) ||
-          payment.kelasPremium.toLowerCase().includes(globalSearch.toLowerCase());
-
-        const isPaymentSearchMatch =
-          paymentSearch === "" ||
-          payment.id.toString().includes(paymentSearch.toLowerCase()) ||
-          payment.kategori.toLowerCase().includes(paymentSearch.toLowerCase()) ||
-          payment.kelasPremium.toLowerCase().includes(paymentSearch.toLowerCase()) ||
-          payment.tanggalBayar.toLowerCase().includes(paymentSearch.toLowerCase());
-
-        const isFilterMatch = filter === "" || payment.paymentStatus === filter;
-
-        return isGlobalSearchMatch && isPaymentSearchMatch && isFilterMatch;
+        return (
+          filter === "disable" ||
+          filter === "" ||
+          payment.paymentStatus === filter
+        );
       })
     : [];
 
@@ -90,19 +72,16 @@ const InstruktorDashboard = () => {
   // Get current payments based on pagination
   const indexOfLastPayment = currentPage * itemsPerPage;
   const indexOfFirstPayment = indexOfLastPayment - itemsPerPage;
-  const currentPayments = sortedPayments.slice(indexOfFirstPayment, indexOfLastPayment);
+  const currentPayments = sortedPayments.slice(
+    indexOfFirstPayment,
+    indexOfLastPayment
+  );
   console.log("currentPayments", currentPayments);
 
   const handleFilterChange = (e) => setFilter(e.target.value);
 
   // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  // Debugging output
-  console.log("Stats:", stats);
-  console.log("Payment Status:", paymentStatus);
-  console.log("Loading:", loading);
-  console.log("User:", user);
 
   return (
     <div className="flex">
@@ -144,8 +123,9 @@ const InstruktorDashboard = () => {
                 onChange={handleFilterChange}
                 className="flex items-center py-2 pl-10 pr-4 bg-[#0a61aa] text-white font-semibold rounded-md text-sm transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#0a61aa] focus:ring-opacity-50"
               >
-                <option value="">Filter</option>
+                <option value="disable">Filter</option>
                 <option value="settlement">Sudah Bayar</option>
+                <option value="pending">Belum Bayar</option>
                 <option value="cancel">cancel</option>
               </select>
               <FaFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-sm" />
@@ -154,81 +134,117 @@ const InstruktorDashboard = () => {
         </div>
 
         {/* Payment Status Table */}
-        <div className="overflow-x-auto bg-white p-4 rounded-lg shadow-md">
+        <div className="overflow-x-auto bg-white p-6 rounded-lg shadow-lg">
           <table className="min-w-full table-auto">
             <thead>
-              <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
-                <th className="px-2 md:px-4 py-2">ID</th>
-                <th className="px-2 md:px-4 py-2">Order ID</th>
-                <th className="px-2 md:px-4 py-2">Nama Kursus</th>
-                <th className="px-2 md:px-4 py-2">Harga</th>
-                <th className="px-2 md:px-4 py-2">Status</th>
-                <th className="px-2 md:px-4 py-2">Metode Pembayaran</th>
-                <th className="px-2 md:px-4 py-2">Tanggal Transaksi</th>
+              <tr className="bg-gray-200 text-left text-sm md:text-base font-semibold">
+                <th className="px-4 py-3">#</th>
+                <th className="px-4 py-3">Order ID</th>
+                <th className="px-4 py-3">Kategori</th>
+                <th className="px-4 py-3">Nama Kursus</th>
+                <th className="px-4 py-3">Harga</th>
+                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Metode Pembayaran</th>
+                <th className="px-4 py-3">Tanggal Transaksi</th>
               </tr>
             </thead>
             <tbody>
               {!loading && currentPayments.length > 0 ? (
                 currentPayments.map((payment, index) => {
-                  const rowNumber = (currentPage - 1) * itemsPerPage + index + 1;
+                  const rowNumber =
+                    (currentPage - 1) * itemsPerPage + index + 1;
+
+                  const statusClass =
+                    payment.paymentStatus === "settlement"
+                      ? "bg-green-100 text-green-700"
+                      : payment.paymentStatus === "pending"
+                      ? "bg-yellow-100 text-yellow-700"
+                      : "bg-gray-100 text-gray-700";
+
                   return (
-                    <tr key={payment.id} className="border-t text-xs md:text-sm">
-                      <td className="px-2 md:px-4 py-2">{rowNumber}</td>
-                      <td className="px-2 md:px-4 py-2">{payment.orderId}</td>
-                      <td className="px-2 md:px-4 py-2">{payment.courseName}</td>
-                      <td className="px-2 md:px-4 py-2">Rp.{payment.totalPrice},00</td>
-                      <td className="px-2 md:px-4 py-2">{payment.paymentStatus}</td>
-                      <td className="px-2 md:px-4 py-2">{payment.paymentMethod}</td>
-                      <td className="px-2 md:px-4 py-2">
-                        {new Date(payment.createdAt).toLocaleDateString("id-ID", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
+                    <tr
+                      key={payment.id}
+                      className="border-b hover:bg-gray-50 transition-colors text-sm md:text-base"
+                    >
+                      <td className="px-4 py-3">{rowNumber}</td>
+                      <td className="px-4 py-3 font-medium text-gray-800">
+                        {payment.orderId}
+                      </td>
+                      <td className="px-4 py-3">{payment.categoryName}</td>
+                      <td className="px-4 py-3">{payment.courseName}</td>
+                      <td className="px-4 py-3 text-gray-900 font-semibold">
+                        Rp.{payment.totalPrice.toLocaleString("id-ID")},00
+                      </td>
+                      <td className="px-4 py-3">
+                        <span
+                          className={`px-3 py-1 rounded-lg font-semibold text-sm ${statusClass}`}
+                        >
+                          {payment.paymentStatus}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">{payment.paymentMethod}</td>
+                      <td className="px-4 py-3 text-gray-600">
+                        {new Date(payment.createdAt).toLocaleDateString(
+                          "id-ID",
+                          {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          }
+                        )}
                       </td>
                     </tr>
                   );
                 })
               ) : (
                 <tr>
-                  <td colSpan="6" className="text-center py-4">
-                    No Data Available
+                  <td colSpan="7" className="text-center py-6 text-gray-500">
+                    Tidak ada data yang tersedia
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
 
-          {/* Pagination Controls */}
-          <div className="flex justify-between items-center mt-4">
-            <button
-              className={`flex items-center py-2 px-4 rounded-lg ${
-                currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-[#0a61aa] text-white"
-              } transition-all duration-300 hover:scale-105`}
-              onClick={() => paginate(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              <IoArrowBackCircle className="mr-2 text-xl" />
-              Previous
-            </button>
+          {/* Kontrol Pagination */}
+          {sortedPayments.length > itemsPerPage && (
+            <div className="flex flex-col md:flex-row justify-between items-center mt-6">
+              <button
+                className={`flex items-center py-2 px-5 rounded-md text-sm md:text-base font-semibold ${
+                  currentPage === 1
+                    ? "bg-gray-300 cursor-not-allowed"
+                    : "bg-blue-600 text-white hover:bg-blue-700"
+                } transition-all`}
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                <IoArrowBackCircle className="mr-2 text-xl" />
+                Pervious
+              </button>
 
-            <span className="text-lg font-semibold">
-              Page {currentPage} of {Math.ceil(sortedPayments.length / itemsPerPage)}
-            </span>
+              <span className="text-sm md:text-lg font-semibold mt-4 md:mt-0">
+                Halaman {currentPage} dari{" "}
+                {Math.ceil(sortedPayments.length / itemsPerPage)}
+              </span>
 
-            <button
-              className={`flex items-center py-2 px-4 rounded-lg ${
-                currentPage === Math.ceil(sortedPayments.length / itemsPerPage)
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-[#0a61aa] text-white"
-              } transition-all duration-300 hover:scale-105`}
-              onClick={() => paginate(currentPage + 1)}
-              disabled={currentPage === Math.ceil(sortedPayments.length / itemsPerPage)}
-            >
-              Next
-              <IoArrowForwardCircle className="ml-2 text-xl" />
-            </button>
-          </div>
+              <button
+                className={`flex items-center py-2 px-5 rounded-md text-sm md:text-base font-semibold ${
+                  currentPage ===
+                  Math.ceil(sortedPayments.length / itemsPerPage)
+                    ? "bg-gray-300 cursor-not-allowed"
+                    : "bg-blue-600 text-white hover:bg-blue-700"
+                } transition-all`}
+                onClick={() => paginate(currentPage + 1)}
+                disabled={
+                  currentPage ===
+                  Math.ceil(sortedPayments.length / itemsPerPage)
+                }
+              >
+                Next
+                <IoArrowForwardCircle className="ml-2 text-xl" />
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -24,6 +24,7 @@ const DataKelasInput = ({ show, onClose }) => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [selectedType, setSelectedType] = useState("");
 
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -40,8 +41,27 @@ const DataKelasInput = ({ show, onClose }) => {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
 
-    console.log("Input changed:", name, value); // Debug log
+    // Pastikan tipe kelas 'free' menyembunyikan harga dan diskon
+    if (name === "typeCourseId") {
+      setSelectedType(value); // Setel tipe kelas yang dipilih
+      if (value === "free") {
+        // Setel harga dan diskon menjadi 0 atau kosong jika tipe kelas free
+        setRequestData((prevFormData) => ({
+          ...prevFormData,
+          coursePrice: 0,
+          courseDiscountPercent: 0,
+        }));
+      } else {
+        // Jika tipe kelas bukan free, biarkan nilai sebelumnya
+        setRequestData((prevFormData) => ({
+          ...prevFormData,
+          coursePrice: prevFormData.coursePrice || 0, // Atur harga jika sebelumnya kosong
+          courseDiscountPercent: prevFormData.courseDiscountPercent || 0, // Atur diskon jika sebelumnya kosong
+        }));
+      }
+    }
 
+    // Menangani perubahan input lainnya
     setRequestData((prevFormData) => ({
       ...prevFormData,
       [name]:
@@ -50,7 +70,9 @@ const DataKelasInput = ({ show, onClose }) => {
         name === "coursePrice" ||
         name === "courseDiscountPercent" ||
         name === "typeCourseId"
-          ? parseInt(value, 10)
+          ? value === "" // Jika kosong, set sebagai 0 atau tetap kosong
+            ? 0
+            : parseInt(value, 10) // Jika ada angka, lakukan parsing
           : value,
     }));
   };
@@ -211,29 +233,45 @@ const DataKelasInput = ({ show, onClose }) => {
             </select>
           </div>
 
-          <div className="mb-4">
-            <label className="block mb-1 font-semibold">Harga Kelas</label>
-            <input
-              type="number"
-              name="coursePrice"
-              value={requestData.coursePrice}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-xl"
-              placeholder="Rp"
-              required
-            />
-          </div>
+          {selectedType !== "free" && (
+            <>
+              <div className="mb-4">
+                <label className="block mb-1 font-semibold">Harga Kelas</label>
+                <input
+                  type="text"
+                  name="coursePrice"
+                  value={requestData.coursePrice}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (/^\d*$/.test(value)) {
+                      handleInputChange(e);
+                    }
+                  }}
+                  className="w-full p-2 border rounded-xl"
+                  placeholder="Rp"
+                  required
+                />
+              </div>
 
-          <div className="mb-4">
-            <label className="block mb-1 font-semibold">Discount Kelas</label>
-            <input
-              type="number"
-              name="courseDiscountPercent"
-              value={requestData.courseDiscountPercent}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-xl"
-            />
-          </div>
+              <div className="mb-4">
+                <label className="block mb-1 font-semibold">Discount Kelas</label>
+                <input
+                  type="text"
+                  name="courseDiscountPercent"
+                  value={requestData.courseDiscountPercent}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (/^\d*$/.test(value)) {
+                      handleInputChange(e);
+                    }
+                  }}
+                  className="w-full p-2 border rounded-xl"
+                  placeholder="%"
+                  required
+                />
+              </div>
+            </>
+          )}
 
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Status Publish</label>
@@ -316,51 +354,3 @@ DataKelasInput.propTypes = {
 };
 
 export default DataKelasInput;
-
-
-  // const fetchData = async () => {
-  //   try {
-  //     await dispatch(fetchUserCourses()); // Pastikan fetchUserCourses tidak memerlukan courseId
-  //   } catch (err) {
-  //     console.error("Error fetching data:", err);
-  //   }
-  // };
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   console.log("Form submitted:", requestData); // Debug log
-
-  //   setError(null); // Reset error messages
-
-  //   let hasError = false;
-
-  //   // Validasi input requestData jika perlu
-  //   if (!requestData.categoryId) {
-  //     setError("Silahkan isi kategori");
-  //     hasError = true;
-  //   }
-  //   if (!requestData.courseName) {
-  //     setError("Silahkan isi judul kelas");
-  //     hasError = true;
-  //   }
-  //   // Lanjutkan dengan validasi field lainnya jika perlu
-
-  //   if (hasError) return;
-
-  //   setLoading(true); // Set loading true sebelum proses async dimulai
-  //   try {
-  //     const response = await dispatch(addDataKelas(requestData, imageFile));
-
-  //     if (response && response.data) {
-  //       await dispatch(fetchUserCourses());
-  //       console.log("Data kelas berhasil ditambahkan");
-  //     }
-
-  //     onClose(); // Tutup form setelah berhasil menambahkan
-  //   } catch (err) {
-  //     setError(err.response?.data?.message || "Error adding class");
-  //     console.error("Error detail:", err);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
