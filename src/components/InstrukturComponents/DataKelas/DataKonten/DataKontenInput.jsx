@@ -36,6 +36,7 @@ const DataKontenModule = ({ show, onClose, chapterId }) => {
   const [contentUrlError, setContentUrlError] = useState(null);
   const [durationError, setDurationError] = useState(null);
   const [interpreterError, setInterpreterError] = useState(null);
+  const [errors, setErrors] = useState({});
 
   const [selectedLanguage, setSelectedLanguage] = useState("Pilih Bahasa"); // State untuk bahasa yang dipilih
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State untuk membuka/menutup dropdown
@@ -45,31 +46,41 @@ const DataKontenModule = ({ show, onClose, chapterId }) => {
     dispatch(fetchLanguages());
   }, [dispatch]);
 
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+const handleInputChange = (e) => {
+  const { name, value, type, checked } = e.target;
 
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]:
-        type === "checkbox"
-          ? checked // Jika checkbox, set nilai menjadi true/false
-          : ["sort", "duration"].includes(name) // Input angka
-          ? value === ""
-            ? 0 // Jika kosong, set sebagai 0
-            : parseInt(value, 10) // Parsing angka jika ada nilai
-          : value, // Untuk input teks, gunakan nilai langsung
-    }));
+  setFormData((prevData) => ({
+    ...prevData,
+    [name]:
+      type === "checkbox"
+        ? checked // Jika checkbox, set nilai menjadi true/false
+        : ["sort", "duration"].includes(name) // Input angka
+        ? value === ""
+          ? 0 // Jika kosong, set sebagai 0
+          : parseInt(value, 10) // Parsing angka jika ada nilai
+        : value, // Untuk input teks, gunakan nilai langsung
+  }));
 
-    // Hapus pesan error saat pengguna mengetik
-    if (error) setError(null);
-  };
+  // Reset error for the specific field when the user types
+  if (name === "sort") {
+    setSortError(null);
+  } else if (name === "contentTitle") {
+    setContentTitleError(null);
+  } else if (name === "teks") {
+    setTeksError(null);
+  } else if (name === "contentUrl") {
+    setContentUrlError(null);
+  } else if (name === "duration") {
+    setDurationError(null);
+  }
+
+  // If you have other fields, you can add similar checks for them
+};
 
 
   const handleAdd = async (e) => {
     e.preventDefault();
 
-    // Reset error messages
-    // setErrors({});
     const isValid = validateInputs();
     if (!isValid) return;
 
@@ -83,21 +94,15 @@ const DataKontenModule = ({ show, onClose, chapterId }) => {
         language: formData.interpreterStatus ? language : null,
       };
 
-      // Dispatch action to add content
       await dispatch(addDataKonten(requestData, chapterId));
 
-      // Menampilkan toast sukses
       toast.success("Konten berhasil ditambahkan!");
-
       setLoading(false);
       onClose();
       fetchData();
     } catch (err) {
       setLoading(false);
-
-      // Menampilkan toast error
       toast.error(err.response?.data?.message || "Error adding content");
-
       console.error("Error:", err);
     }
   };
@@ -197,13 +202,13 @@ const DataKontenModule = ({ show, onClose, chapterId }) => {
               onChange={(e) => {
                 const value = e.target.value;
                 if (/^\d*$/.test(value)) {
-                  // Validasi hanya angka
                   handleInputChange(e); // Perbarui state
                 }
               }}
               className="w-full p-2 border rounded-xl"
               placeholder="ex 1"
             />
+            {sortError && <p className="text-red-500 text-sm">{sortError}</p>}
           </div>
 
           <div className="mb-4">
@@ -216,6 +221,7 @@ const DataKontenModule = ({ show, onClose, chapterId }) => {
               className="w-full p-2 border rounded-xl"
               placeholder="Masukkan judul kelas"
             />
+            {contentTitleError && <p className="text-red-500 text-sm">{contentTitleError}</p>}
           </div>
 
           <div className="mb-4">
@@ -228,6 +234,7 @@ const DataKontenModule = ({ show, onClose, chapterId }) => {
               className="w-full p-2 border rounded-xl"
               placeholder="Masukkan teks"
             />
+            {teksError && <p className="text-red-500 text-sm">{teksError}</p>}
           </div>
 
           <div className="mb-4">
@@ -240,6 +247,7 @@ const DataKontenModule = ({ show, onClose, chapterId }) => {
               className="w-full p-2 border rounded-xl"
               placeholder="Masukkan Video URL"
             />
+            {contentUrlError && <p className="text-red-500 text-sm">{contentUrlError}</p>}
           </div>
 
           <div className="mb-4">
@@ -251,13 +259,13 @@ const DataKontenModule = ({ show, onClose, chapterId }) => {
               onChange={(e) => {
                 const value = e.target.value;
                 if (/^\d*$/.test(value)) {
-                  // Validasi hanya angka
                   handleInputChange(e); // Perbarui state
                 }
               }}
               className="w-full p-2 border rounded-xl"
               placeholder="Masukkan durasi video"
             />
+            {durationError && <p className="text-red-500 text-sm">{durationError}</p>}
           </div>
 
           <div className="mb-4">

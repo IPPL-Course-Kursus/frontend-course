@@ -85,7 +85,7 @@ const InstruktorDashboard = () => {
 
   return (
     <div className="flex">
-    <div className="w-1/4 min-h-screen">
+    <div className="">
       <Sidebar />
       </div>
       <div className="p-6 bg-secondary min-h-screen w-screen font-poppins">

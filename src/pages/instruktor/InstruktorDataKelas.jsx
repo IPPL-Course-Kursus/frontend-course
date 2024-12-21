@@ -220,16 +220,30 @@ const InstruktorDataKelas = () => {
 
               <tbody>
                 {currentItems.map((courseType, index) => (
-                  <tr key={courseType.id} className="border-t text-xs md:text-sm">
+                  <tr
+                    key={courseType.id}
+                    className="border-t text-xs md:text-sm hover:bg-gray-50 transition-all duration-300"
+                  >
                     {/* Nomor urutan */}
-                    <td className="px-2 md:px-4 py-2">
+                    <td className="px-2 md:px-4 py-2 text-center">
                       {(currentPage - 1) * itemsPerPage + index + 1}
                     </td>
-                    <td className="px-2 md:px-4 py-2">
-                      <img src={courseType.image} className="w-16 object-cover h-16 rounded-lg" />
+
+                    {/* Gambar */}
+                    <td className="px-2 md:px-4 py-2 text-center">
+                      <img
+                        src={courseType.image}
+                        className="w-16 object-cover h-16 rounded-lg shadow-lg transition-transform duration-300 transform hover:scale-105"
+                      />
                     </td>
+
+                    {/* Kategori */}
                     <td className="px-2 md:px-4 py-2">{courseType.category.categoryName}</td>
-                    <td className="px-2 md:px-4 py-2">{courseType.courseName}</td>
+
+                    {/* Nama Kursus */}
+                    <td className="px-2 md:px-4 py-2 font-semibold">{courseType.courseName}</td>
+
+                    {/* Tipe Kursus */}
                     <td
                       className={`px-2 md:px-4 py-2 font-bold ${
                         courseType.typeCourse.typeName === "Free" ? "text-success" : "text-failed"
@@ -237,38 +251,50 @@ const InstruktorDataKelas = () => {
                     >
                       {courseType.typeCourse.typeName}
                     </td>
-                    <td className="px-2 md:px-4 py-2">{courseType.courseLevel.levelName}</td>
-                    <td className="px-2 md:px-4 py-2">
-                      {courseType.publish ? "Published" : "Unpublished"}
+
+                    {/* Level Kursus */}
+                    <td className="px-2 md:px-4 py-2 text-center">
+                      {courseType.courseLevel.levelName}
                     </td>
-                    {/* <td className="px-2 md:px-4 py-2">{courseType.coursePrice}</td> */}
-                    <td className="px-2 md:px-4 py-2">
+
+                    {/* Status Publish */}
+                    <td className="px-2 md:px-4 py-2 text-center">
+                      {courseType.publish ? (
+                        <span className="text-green-500 font-semibold">Published</span>
+                      ) : (
+                        <span className="text-red-500 font-semibold">Unpublished</span>
+                      )}
+                    </td>
+
+                    {/* Harga */}
+                    <td className="px-2 md:px-4 py-2 font-semibold">
                       {new Intl.NumberFormat("id-ID", {
                         style: "currency",
                         currency: "IDR",
                       }).format(courseType.coursePrice)}
                     </td>
 
-                    <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
+                    {/* Tombol Aksi */}
+                    <td className="px-2 md:px-4 py-2 flex justify-center space-x-3 items-center">
                       <Link to={`/inst/data-chapter/${courseType.id}`}>
-                        <button className="py-1 px-2 md:px-4 bg-blue-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2">
+                        <button className="py-1 px-3 bg-blue-600 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:bg-blue-700 transform hover:scale-105 mt-4">
                           Kelola
                         </button>
                       </Link>
                       <button
-                        className="py-1 px-2 md:px-4 bg-green-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                        className="py-1 px-3 bg-green-600 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:bg-green-700 transform hover:scale-105 mt-4"
                         onClick={() => handleEditClick(courseType)}
                       >
                         Ubah
                       </button>
                       <button
-                        className="py-1 px-2 md:px-4 bg-yellow-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                        className="py-1 px-3 bg-yellow-600 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:bg-yellow-700 transform hover:scale-105 mt-4"
                         onClick={() => handleDetailClick(courseType)}
                       >
                         Detail
                       </button>
                       <button
-                        className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                        className="py-1 px-3 bg-red-600 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:bg-red-700 transform hover:scale-105 mt-4"
                         onClick={() => handleDelete(courseType)}
                       >
                         Hapus
