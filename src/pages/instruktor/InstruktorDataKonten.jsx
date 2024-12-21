@@ -8,7 +8,7 @@ import {
 } from "react-icons/io5";
 import DataKontenInput from "../../components/InstrukturComponents/DataKelas/DataKonten/DataKontenInput";
 import DataKontenUbah from "../../components/InstrukturComponents/DataKelas/DataKonten/DataKontenUbah";
-import DataKontenDetail from "../../components/InstrukturComponents/DataKelas/DataKonten/DataKontenDetail";
+// import DataKontenDetail from "../../components/InstrukturComponents/DataKelas/DataKonten/DataKontenDetail";
 import Sidebar from "../../components/Sidebar/SidebarInstruktur";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,7 +19,7 @@ import toast from "react-hot-toast";
 const InstruktorDataKonten = () => {
   const [showTambahPopup, setShowTambahPopup] = useState(false);
   const [showUbahPopup, setShowUbahPopup] = useState(false);
-  const [showDetailPopup, setShowDetailPopup] = useState(false);
+  // const [showDetailPopup, setShowDetailPopup] = useState(false);
   const [selectedContent, setSelectedContent] = useState(null);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -48,10 +48,10 @@ const InstruktorDataKonten = () => {
     setShowUbahPopup(true);
   };
 
-  const handleDetailClick = (contentItem) => {
-    setSelectedContent(contentItem);
-    setShowDetailPopup(true);
-  };
+  // const handleDetailClick = (contentItem) => {
+  //   setSelectedContent(contentItem);
+  //   setShowDetailPopup(true);
+  // };
 
   const handleDelete = (content) => {
     setContentToDelete(content);
@@ -176,7 +176,7 @@ const confirmDelete = () => {
                     <td className="px-4 py-3 max-h-12 overflow-hidden text-ellipsis whitespace-nowrap">
                       {truncateText(content.teks, 30)}
                     </td>
-                    <td className="px-4 py-3">{truncateText(content.contentUrl, 40)}</td>
+                    <td className="px-4 py-3">{truncateText(content.contentUrl, 60)}</td>
                     <td className="px-4 py-3">{content.duration}</td>
                     <td className="px-4 py-3 flex flex-wrap space-x-2">
                       <button
@@ -185,12 +185,12 @@ const confirmDelete = () => {
                       >
                         Ubah
                       </button>
-                      <button
+                      {/* <button
                         className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
                         onClick={() => handleDetailClick(content)}
                       >
                         Detail
-                      </button>
+                      </button> */}
                       <button
                         className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
                         onClick={() => handleDelete(content)}
@@ -248,11 +248,11 @@ const confirmDelete = () => {
             onClose={() => setShowUbahPopup(false)}
             existingData={selectedContent}
           />
-          <DataKontenDetail
+          {/* <DataKontenDetail
             show={showDetailPopup}
             onClose={() => setShowDetailPopup(false)}
             contentId={selectedContent ? Number(selectedContent.id) : null}
-          />
+          /> */}
 
           {showDeleteModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-70">
