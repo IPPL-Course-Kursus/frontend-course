@@ -13,6 +13,7 @@ import UbahModule from "../../components/InstrukturComponents/DataModuleComponen
 import { deleteDataModule, getDataModule } from "../../redux/actions/instruktorActions";
 import DataModuleInput from "../../components/InstrukturComponents/DataModuleComponent/DataModuleInput";
 import HeadInstruktur from "../../components/InstrukturComponents/HeadInstruktur";
+import toast from "react-hot-toast";
 
 const InstruktorDataModule = () => {
   const [showTambahPopup, setShowTambahPopup] = useState(false);
@@ -54,26 +55,30 @@ const InstruktorDataModule = () => {
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
-    if (!chapterToDelete?.id) {
-      console.error("Chapter ID is required."); // Pastikan ID chapter ada
-      return; // Hentikan proses jika id chapter tidak ada
-    }
+ const confirmDelete = () => {
+   if (!chapterToDelete?.id) {
+     console.error("Chapter ID is required."); // Pastikan ID chapter ada
+     return; // Hentikan proses jika id chapter tidak ada
+   }
 
-    console.log("Menghapus chapter dengan ID:", chapterToDelete.id); // Debugging line
+   // Hapus chapter
+   dispatch(deleteDataModule(chapterToDelete.id))
+     .then(() => {
+       // Tampilkan toast sukses setelah berhasil menghapus
+       toast.success("Chapter berhasil dihapus");
 
-    dispatch(deleteDataModule(chapterToDelete.id))
-      .then(() => {
-        setShowDeleteModal(false); // Tutup modal setelah berhasil
-        window.location.reload(); // Reload halaman setelah penghapusan berhasil
-      })
-      .catch((error) => {
-        console.error("Error deleting chapter:", error);
-        setShowDeleteModal(false);
-      });
-  };
+       setShowDeleteModal(false); // Tutup modal setelah berhasil
+       // Panggil ulang getDataModule untuk mengambil data terbaru
+       dispatch(getDataModule(id));
+     })
+     .catch((error) => {
+       // Tampilkan toast error jika ada kesalahan
+       toast.error("Gagal menghapus chapter");
 
-  
+       console.error("Error deleting chapter:", error);
+       setShowDeleteModal(false);
+     });
+ };
 
   const handleDetailClick = (course) => {
     console.log("Detail clicked for:", course);

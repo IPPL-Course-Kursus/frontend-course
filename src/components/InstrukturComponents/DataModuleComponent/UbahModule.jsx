@@ -1,7 +1,8 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { updateDataModule } from "../../../redux/actions/instruktorActions";
+import { getDataModule, updateDataModule } from "../../../redux/actions/instruktorActions";
+import toast from "react-hot-toast";
 
 const UbahModule = ({ show, onClose, existingData }) => {
   const dispatch = useDispatch();
@@ -34,26 +35,36 @@ const UbahModule = ({ show, onClose, existingData }) => {
     }));
   };
 
-  const handleUpdate = async (e) => {
-    e.preventDefault();
-    console.log("Updating chapter with data:", formData);
+const handleUpdate = async (e) => {
+  e.preventDefault();
+  console.log("Updating chapter with data:", formData);
 
-    try {
-      const payload = {
-        chapterTitle: formData.chapterTitle,
-        sort: formData.sort,
-      };
+  try {
+    const payload = {
+      chapterTitle: formData.chapterTitle,
+      sort: formData.sort,
+    };
 
-      console.log("Payload to update:", payload); // Log payload sebelum dikirim
+    console.log("Payload to update:", payload); // Log payload sebelum dikirim
 
-      await dispatch(updateDataModule(existingData.id, payload));
-      onClose();
-      window.location.reload();
-    } catch (error) {
-      console.error("Failed to update data:", error);
-      // Tambahkan error handling jika diperlukan
-    }
-  };
+    // Mengupdate data module
+    await dispatch(updateDataModule(existingData.id, payload));
+
+    // Menutup modal setelah update
+    onClose();
+
+    // Menampilkan toast sukses
+    toast.success("Module berhasil diperbarui!");
+
+    // Memuat ulang data module
+    dispatch(getDataModule(existingData.courseId));
+  } catch (error) {
+    console.error("Failed to update data:", error);
+
+    // Menampilkan toast error
+    toast.error(`Gagal memperbarui module: ${error.message}`);
+  }
+};
 
   return (
     <div
