@@ -28,7 +28,7 @@ const SidebarInstruktur = () => {
       if (result.isConfirmed) {
         dispatch(logout()); // Dispatch action logout
         navigate("/login"); // Arahkan pengguna ke halaman login
-        Swal.fire("Berhasil!", "Anda telah logout.", "success");
+        // Swal.fire("Berhasil!", "Anda telah logout.", "success");
       }
     });
   };

@@ -99,7 +99,6 @@ export const login = (email, password, navigate) => async (dispatch) => {
   }
 };
 
-
 // Register action
 export const register =
   (email, password, fullName, phoneNumber, city, tanggalLahir, navigate) => async (dispatch) => {
@@ -132,8 +131,6 @@ export const register =
     }
   };
 
-
-
 export const getMe = () => async (dispatch) => {
   try {
     dispatch(getMeStart());
@@ -143,8 +140,6 @@ export const getMe = () => async (dispatch) => {
 
     // Jika token tidak ada, jangan lakukan request dan akhiri fungsi
     if (!token) {
-      // console.log("Token tidak ditemukan. Pengguna belum login.");
-      // Kamu bisa memutuskan apa yang dilakukan di sini, misalnya redirect ke login
       return;
     }
 
@@ -154,7 +149,6 @@ export const getMe = () => async (dispatch) => {
     });
 
     const { data } = response.data;
-    console.log("ini data profile:", response.data);
 
     // Dispatch hasil success dengan data pengguna
     dispatch(getMeSuccess(data));
@@ -204,7 +198,6 @@ export const resetPassword = (oobCode, password, confirmPassword) => async (disp
         confirmPassword: confirmPassword,
       }
     );
-    console.log(response);
 
     if (response.status === 200) {
       dispatch(resetPasswordSuccess());
