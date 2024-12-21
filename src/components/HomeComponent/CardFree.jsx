@@ -10,7 +10,7 @@ import { IoIosArrowDroprightCircle, IoIosArrowDropleftCircle } from "react-icons
 import { useDispatch, useSelector } from "react-redux";
 import { getFreeCourse } from "../../redux/actions/courseActions";
 import { getCategory } from "../../redux/actions/categoryActions";
-import LoadSpinner from "../Spinner/LoadSpinner";
+import CardSkeleton from "../Skeleton/CardSkeleton";
 
 const CardFree = ({ title = "Kelas Free" }) => {
   const [selectCategoryId, setSelectCategoryId] = useState(null);
@@ -318,8 +318,8 @@ const CardFree = ({ title = "Kelas Free" }) => {
                 </div>
               )
             ) : (
-              <div className="flex justify-center items-center h-32">
-                <LoadSpinner size={80} color="blue" />
+              <div>
+                <CardSkeleton/>
               </div>
             )}
           </div>

@@ -152,7 +152,7 @@ const MulaiKelas = () => {
   return (
     <>
       <Navbar />
-      <div className="container">
+      <div className="container mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-4 mx-auto mt-10 p-4 gap-6">
           {/* Main Content */}
           <div className="col-span-3">

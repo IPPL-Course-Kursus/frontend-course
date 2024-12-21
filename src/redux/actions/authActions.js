@@ -75,11 +75,12 @@ export const login = (email, password, navigate) => async (dispatch) => {
     if (error.response) {
       if (error.response.status === 403) {
         toast.error("Email atau Password Anda salah. Silahkan coba lagi.");
-      } else if (error.response.status === 404) {
-        toast.error("Email tidak terdaftar. Silakan cek kembali email Anda.");
       } else {
-        toast.error("Login gagal. Silakan coba lagi nanti.");
+        toast.error("Email tidak terdaftar. Silakan cek kembali email Anda.");
       }
+      // else {
+      //   toast.error("Login gagal. Silakan coba lagi nanti.");
+      // }
     } else {
       toast.error("Terjadi kesalahan pada server. Silakan coba lagi nanti.");
     }
@@ -109,10 +110,27 @@ export const register =
         throw new Error("Registrasi gagal.");
       }
     } catch (error) {
-      dispatch(
-        registerFailure(error.response?.data?.message || "Terjadi kesalahan saat registrasi.")
-      ); // Dispatch error
-      toast.error(error.message || "Terjadi kesalahan saat registrasi."); // Notifikasi gagal
+      // Check for specific error response from server
+      if (error.response) {
+        const errorData = error.response.data;
+
+        // Handle specific error like "Email already in use"
+        if (errorData.message === "Email already in use") {
+          dispatch(registerFailure("Email sudah digunakan, silahkan coba email lain."));
+          toast.error("Email sudah digunakan, silahkan coba email lain.");
+        } else {
+          dispatch(registerFailure(errorData.message || "Terjadi kesalahan saat registrasi."));
+          toast.error(errorData.message || "Terjadi kesalahan saat registrasi.");
+        }
+      } else if (error.response?.status === 500) {
+        // Handle server error 500
+        dispatch(registerFailure("Terjadi kesalahan pada server, coba lagi nanti."));
+        toast.error("Terjadi kesalahan pada server, coba lagi nanti.");
+      } else {
+        // General error fallback
+        dispatch(registerFailure("Terjadi kesalahan saat registrasi."));
+        toast.error("sepertinya email sudah terdaftar");
+      }
     }
   };
 

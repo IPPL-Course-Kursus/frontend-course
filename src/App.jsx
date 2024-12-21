@@ -1,4 +1,10 @@
-import { BrowserRouter, Route, Routes, useNavigate, useLocation } from "react-router-dom";
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import Home from "./pages/Home";
@@ -135,12 +141,11 @@ function AppRoutes() {
       <Route
         path="/mulai-kelas/:id"
         element={
-          // <NoAccesToken>
+          <NoAccesToken>
             <MulaiKelas />
-          // </NoAccesToken>
+          </NoAccesToken>
         }
       />
-
       <Route path="/course-detail/:id" element={<DetailKelas />} />
       <Route path="/topik-kelas" element={<TopikKelas />} />
 
