@@ -36,3 +36,18 @@
     transform: rotate(360deg);
   }
 }
+
+/* Menyembunyikan scrollbar di Webkit browsers (Chrome, Safari, Edge) */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Menyembunyikan scrollbar di Firefox */
+.hide-scrollbar {
+  scrollbar-width: none;
+}
+
+/* Menyembunyikan scrollbar di Internet Explorer 10+ */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+}
