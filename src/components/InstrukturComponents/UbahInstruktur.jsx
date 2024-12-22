@@ -2,9 +2,6 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import InstrukturForm from "./InstrukturFormEdit";
 import { useDispatch } from "react-redux";
-import { toast } from "react-toastify"; // Menambahkan react-toastify
-import "react-toastify/dist/ReactToastify.css"; // Mengimpor CSS untuk react-toastify
-
 const UbahInstruktur = ({ show, onClose, existingData, updateInstructor }) => {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -17,8 +14,6 @@ const UbahInstruktur = ({ show, onClose, existingData, updateInstructor }) => {
   });
 
   const [imageFile, setImageFile] = useState(null);
-
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (existingData) {
@@ -54,72 +49,27 @@ const UbahInstruktur = ({ show, onClose, existingData, updateInstructor }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Validasi nomor telepon
-    if (formData.phoneNumber.length < 10) {
-      toast.error("Nomor telepon harus lebih dari 10 karakter.", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-      return;
-    }
-
+    console.log("Data yang dikirim:", formDataToSend);
+  
     // Menggunakan FormData untuk mengirim data
-    const formDataToSend = new FormData();
-    formDataToSend.append("fullName", formData.fullName);
-    formDataToSend.append("country", formData.country);
-    formDataToSend.append("city", formData.city);
-    formDataToSend.append("phoneNumber", formData.phoneNumber);
-    formDataToSend.append("tanggalLahir", formData.tanggalLahir);
+    const formData = new FormData();
+    formData.append("fullName", formDataToSend.fullName);
+    formData.append("country", formDataToSend.country);
+    formData.append("city", formDataToSend.city);
+    formData.append("phoneNumber", formDataToSend.phoneNumber);
+    formData.append("tanggalLahir", formDataToSend.tanggalLahir);
   
     // Jika ada gambar baru yang dipilih
     if (imageFile) {
-      formDataToSend.append("image", imageFile);
+      formData.append("image", imageFile);
     }
     
-    dispatch(updateInstructor(existingData.id, formDataToSend))
-      .then(() => {
-        toast.success("Instruktur berhasil diperbarui!", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-        onClose();
-      })
-      .catch((error) => {
-        toast.error("Terjadi kesalahan saat memperbarui instruktur.", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      });
+    dispatch(updateInstructor(existingData.id, formDataToSend));
+    onSubmit(form);
+    onClose();
   };
 
-  if (!existingData) {
-    toast.info("Data instruktur tidak ditemukan.", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
-    return null;
-  }
+  if (!existingData) return null;
 
   return (
     <InstrukturForm
@@ -128,7 +78,7 @@ const UbahInstruktur = ({ show, onClose, existingData, updateInstructor }) => {
       formData={formData}
       handleInputChange={handleInputChange}
       handleImageUpload={handleImageUpload}
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit} // Panggil handleUpdate yang benar
       isEditMode={true}
     />
   );
