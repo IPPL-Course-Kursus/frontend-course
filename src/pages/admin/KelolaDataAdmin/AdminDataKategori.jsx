@@ -59,7 +59,7 @@ const AdminDataKategori = () => {
   const dispatch = useDispatch();
 
   // Fetch categories from Redux store
-  const { loading, categories = [], error } = useSelector(
+  const { loadingFetch, categories = [], errorFetch } = useSelector(
     (state) => state.adminDataKategori
   );
 
@@ -74,7 +74,7 @@ const AdminDataKategori = () => {
       toast.success("Kategori berhasil dihapus", {
         style: {
           borderRadius: "8px",
-          background: "#FF3333",
+          background: "#4BB543",
           color: "#fff",
         },
       });
@@ -190,10 +190,10 @@ const AdminDataKategori = () => {
 
           {/* Table Data Kategori */}
           <div className="overflow-x-auto bg-white p-4">
-            {loading ? (
-              <p>Loading...</p>
-            ) : error ? (
-              <p>Error: {error}</p>
+            {loadingFetch ? (
+              <p>Loading...</p> // Only shows when fetching categories
+            ) : errorFetch ? (
+              <p>Error: {errorFetch}</p> // Only shows fetch-related errors
             ) : (
               <table className="min-w-full table-auto">
                 <thead>
@@ -295,14 +295,6 @@ const AdminDataKategori = () => {
               setShowTambahPopup(false);
             }}
             onSuccess={() => {
-              dispatch(fetchAdminCategories());
-              toast.success("Kategori berhasil ditambahkan", {
-                style: {
-                  borderRadius: "8px",
-                  background: "#4BB543",
-                  color: "#fff",
-                },
-              });
             }}
           />
 
@@ -314,8 +306,6 @@ const AdminDataKategori = () => {
                 setShowUbahPopup(false);
               }}
               onSuccess={() => {
-                dispatch(fetchAdminCategories());
-                // Success notification is now handled inside UbahKategori.jsx
               }}
               existingData={selectedCategory}
             />
@@ -330,7 +320,7 @@ const AdminDataKategori = () => {
         </div>
       </div>
     </>
-  );
+    );
 };
 
 export default AdminDataKategori;

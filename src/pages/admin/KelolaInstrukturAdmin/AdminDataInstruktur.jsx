@@ -1,13 +1,11 @@
-// eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getAllInstructors,
   addInstructor,
-  updateInstructor,
   deleteInstructor,
 } from "../../../redux/actions/datainstructorActions";
-import { FaSearch, FaBars } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import {
   IoArrowBackCircle,
   IoArrowForwardCircle,
@@ -16,7 +14,8 @@ import {
 import SideBar from "../../../components/Sidebar/SidebarAdmin";
 import TambahInstruktur from "../../../components/InstrukturComponents/TambahInstruktur";
 import NavbarAdmin from "../../../components/NavbarAdmin";
-// import UbahInstruktur from "../../../components/InstrukturComponents/UbahInstruktur";
+import { toast } from "react-hot-toast";
+import Swal from "sweetalert2";
 
 const AdminDataInstruktur = () => {
   const dispatch = useDispatch();
@@ -25,81 +24,113 @@ const AdminDataInstruktur = () => {
   );
 
   const [showTambahPopup, setShowTambahPopup] = useState(false);
-  // const [showUbahPopup, setShowUbahPopup] = useState(false);
-  const [selectedInstructor, setSelectedInstructor] = useState(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [searchVisible, setSearchVisible] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 7;
 
   useEffect(() => {
-    dispatch(getAllInstructors());
-  }, [dispatch]);
+    const fetchData = async () => {
+      try {
+        await dispatch(getAllInstructors());
+        toast.success("Data instruktur berhasil ditampilkan", {
+          style: {
+            borderRadius: "8px",
+            background: "#4BB543",
+            color: "#fff",
+          },
+        });
+      } catch (error) {
+        toast.error("Gagal memuat data instruktur. Silakan coba lagi.", {
+          style: {
+            borderRadius: "8px",
+            background: "#FF3333",
+            color: "#fff",
+          },
+        });
+      }
+    };
 
-  const totalPages = Math.ceil(instructors?.length / itemsPerPage);
-  // const currentItems = instructors?.slice(
-  //   (currentPage - 1) * itemsPerPage,
-  //   currentPage * itemsPerPage
-  // );
+    fetchData();
+  }, [dispatch]);
 
   const toggleSearch = () => {
     setSearchVisible(!searchVisible);
   };
 
   const handleAddClick = () => {
-    setSelectedInstructor(null);
     setShowTambahPopup(true);
   };
 
-  // const handleEditClick = (instructor) => {
-  //   setSelectedInstructor(instructor);
-  //   setShowUbahPopup(true);
-  // };
-
   const handleDeleteInstructor = (id) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus instruktur ini?")) {
-      dispatch(deleteInstructor(id));
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: "Data instruktur ini akan dihapus!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Hapus",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await dispatch(deleteInstructor(id));
+          toast.success("Instruktur berhasil dihapus", {
+            style: {
+              borderRadius: "8px",
+              background: "#4BB543",
+              color: "#fff",
+            },
+          });
+        } catch (error) {
+          toast.error("Gagal menghapus instruktur. Silakan coba lagi.", {
+            style: {
+              borderRadius: "8px",
+              background: "#FF3333",
+              color: "#fff",
+            },
+          });
+        }
+      }
+    });
+  };
+
+  const handleAddInstructor = async (newInstructor) => {
+    try {
+      await dispatch(addInstructor(newInstructor));
+      toast.success("Instruktur berhasil ditambahkan", {
+        style: {
+          borderRadius: "8px",
+          background: "#4CAF50",
+          color: "#fff",
+        },
+      });
+      setShowTambahPopup(false);
+    } catch (error) {
+      toast.error("Gagal menambahkan instruktur. Coba lagi nanti.", {
+        style: {
+          borderRadius: "8px",
+          background: "#FF3333",
+          color: "#fff",
+        },
+      });
     }
   };
 
-  const handleCloseTambahPopup = () => {
-    setShowTambahPopup(false);
-  };
-
-  // const handleCloseUbahPopup = () => {
-  //   setShowUbahPopup(false);
-  // };
-
-  const filteredInstructors = (instructors || []).filter(
-    (instructor) =>
-      instructor &&
-      instructor.fullName &&
-      instructor.fullName.toLowerCase().includes(searchValue.toLowerCase())
+  const filteredInstructors = (instructors || []).filter((instructor) =>
+    instructor.fullName?.toLowerCase().includes(searchValue.toLowerCase())
   );
 
-  // const handleUpdateInstructor = async (updatedInstructor) => {
-  //   // Lakukan update instruktur menggunakan dispatch
-  //   const result = await dispatch(
-  //     updateInstructor(selectedInstructor.id, updatedInstructor)
-  //   );
+  const currentItems = filteredInstructors.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
-  //   // Pastikan result berisi data instruktur yang telah diperbarui
-  //   if (result && result.payload) {
-  //     const updatedData = result.payload.data; // Ambil data instruktur yang diperbarui
-  //     const updatedInstructors = instructors.map((instructor) =>
-  //       instructor.id === updatedData.id ? updatedData : instructor
-  //     );
-  //     // Update state instructors
-  //     dispatch({ type: "UPDATE_INSTRUCTOR", payload: updatedInstructors }); // Pastikan ada action ini di reducers
-  //   }
-
-  //   handleCloseUbahPopup(); // Tutup popup setelah selesai
-  // };
+  const totalPages = Math.ceil(filteredInstructors.length / itemsPerPage);
 
   return (
     <div className="flex">
-      {/* Sidebar */}
       <div
         className={`fixed inset-0 z-50 transition-transform transform bg-white md:relative md:translate-x-0 md:bg-transparent ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
@@ -107,8 +138,6 @@ const AdminDataInstruktur = () => {
       >
         <SideBar />
       </div>
-
-      {/* Overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black opacity-50 z-40 md:hidden"
@@ -116,18 +145,15 @@ const AdminDataInstruktur = () => {
         ></div>
       )}
 
-      {/* Main content */}
       <div className="flex-1 p-4 md:p-6 bg-secondary min-h-screen font-poppins">
-      <NavbarAdmin setSidebarOpen={setSidebarOpen} />
+        <NavbarAdmin setSidebarOpen={setSidebarOpen} />
 
-        {/* Section Data Instruktur */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
           <h2 className="flex items-center py-2 px-4 mt-4 bg-gradient-to-r from-[#FF5722] to-[#FF9800] text-white font-semibold rounded-md text-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl mb-4">
             Data Instruktur
           </h2>
 
           <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
-            {/* Tombol tambah instruktur */}
             <div className="relative">
               <button
                 className="py-1 px-4 bg-[#0a61aa] text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center"
@@ -138,7 +164,6 @@ const AdminDataInstruktur = () => {
               </button>
             </div>
 
-            {/* Pencarian */}
             <div className="relative w-full md:w-auto flex items-center">
               <FaSearch
                 className="text-[#173D94] text-lg cursor-pointer"
@@ -159,7 +184,6 @@ const AdminDataInstruktur = () => {
           </div>
         </div>
 
-        {/* Tabel Data Instruktur */}
         <div className="overflow-x-auto bg-white p-4">
           {loading ? (
             <p>Loading...</p>
@@ -176,93 +200,38 @@ const AdminDataInstruktur = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredInstructors.map((instructor, index) => {
-                  const rowNumber =
-                    (currentPage - 1) * itemsPerPage + index + 1;
-                  return (
-                    <tr key={index} className="border-t text-xs md:text-sm">
-                      <td className="px-4 py-2 text-center">{rowNumber}</td>
-                      <td className="px-4 py-2 text-center">
-                        {instructor.fullName}
-                      </td>
-                      <td className="px-4 py-2 text-center">
-                        <img
-                          src={instructor.image}
-                          alt={instructor.fullName}
-                          className="w-16 h-16 object-cover rounded-full mx-auto"
-                        />
-                      </td>
-                      <td className="px-4 py-2 text-center">
-                        <div className="flex flex-wrap justify-center space-x-2">
-                          <button
-                            className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105"
-                            onClick={() =>
-                              handleDeleteInstructor(instructor.id)
-                            }
-                          >
-                            Hapus
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {currentItems.map((instructor, index) => (
+                  <tr key={instructor.id} className="border-t text-xs md:text-sm">
+                    <td className="px-4 py-2 text-center">{index + 1}</td>
+                    <td className="px-4 py-2 text-center">{instructor.fullName}</td>
+                    <td className="px-4 py-2 text-center">
+                      <img
+                        src={instructor.image}
+                        alt={instructor.fullName}
+                        className="w-16 h-16 object-cover rounded-full mx-auto"
+                      />
+                    </td>
+                    <td className="px-4 py-2 text-center">
+                      <button
+                        className="py-1 px-2 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105"
+                        onClick={() => handleDeleteInstructor(instructor.id)}
+                      >
+                        Hapus
+                      </button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           )}
         </div>
-
-        {/* Pop-up untuk tambah instruktur */}
-        <TambahInstruktur
-          show={showTambahPopup}
-          onClose={handleCloseTambahPopup}
-          addInstructor={(newInstructor) => {
-            dispatch(addInstructor(newInstructor));
-            handleCloseTambahPopup();
-          }}
-        />
-
-        {/* Pop-up untuk ubah instruktur */}
-        {/* <UbahInstruktur
-          show={showUbahPopup}
-          onClose={handleCloseUbahPopup}
-          existingData={selectedInstructor}
-          updateInstructor={handleUpdateInstructor} // Update dengan fungsi baru
-        /> */}
-
-        {/* Pagination Controls */}
-        <div className="flex justify-between items-center mt-4">
-          <button
-            className={`flex items-center py-2 px-4 rounded-lg ${
-              currentPage === 1
-                ? "bg-gray-300 cursor-not-allowed"
-                : "bg-[#0a61aa] text-white"
-            } transition-all duration-300 hover:scale-105`}
-            onClick={() => setCurrentPage(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            <IoArrowBackCircle className="mr-2 text-xl" />
-            Previous
-          </button>
-
-          <span className="text-lg font-semibold">
-            Page {currentPage} of {totalPages}
-          </span>
-
-          <button
-            className={`flex items-center py-2 px-4 rounded-lg ${
-              currentPage === totalPages
-                ? "bg-gray-300 cursor-not-allowed"
-                : "bg-[#0a61aa] text-white"
-            } transition-all duration-300 hover:scale-105`}
-            onClick={() => setCurrentPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            Next
-            <IoArrowForwardCircle className="ml-2 text-xl" />
-          </button>
-        </div>
       </div>
+
+      <TambahInstruktur
+        show={showTambahPopup}
+        onClose={() => setShowTambahPopup(false)}
+        onSuccess={handleAddInstructor}
+      />
     </div>
   );
 };
