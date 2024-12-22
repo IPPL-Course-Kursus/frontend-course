@@ -5,36 +5,36 @@ import KategoriForm from "./KategoriForm";
 import { addCategory } from "../../redux/actions/adminDataKategoriActions";
 import { toast } from "react-hot-toast"; // Import toast
 
-const TambahKategori = ({
-  show,
-  onClose,
-  onSuccess,
-}) => {
+const TambahKategori = ({ show, onClose, onSuccess }) => {
   const dispatch = useDispatch();
 
   // Initial form data
   const initialFormData = {
     categoryName: "",
-    image: null, // Image file
+    image: null,
   };
 
   const [formData, setFormData] = useState(initialFormData);
   const [imagePreview, setImagePreview] = useState(null);
   const [imageFile, setImageFile] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false); // Submission state
 
   useEffect(() => {
     if (show) {
-      // Set form data when the popup opens
+      // Reset form when popup opens
       setFormData({
         categoryName: "",
-        image: null, // Reset image file
+        image: null,
       });
       setImagePreview(null);
+      setImageFile(null);
+      setIsSubmitting(false);
     } else {
-      // Reset form data when the popup closes
+      // Reset form when popup closes
       setFormData(initialFormData);
       setImagePreview(null);
       setImageFile(null);
+      setIsSubmitting(false);
     }
   }, [show]);
 
@@ -87,6 +87,8 @@ const TambahKategori = ({
       return;
     }
 
+    setIsSubmitting(true);
+
     try {
       // Construct FormData
       const formDataToSend = new FormData();
@@ -96,20 +98,22 @@ const TambahKategori = ({
       // Dispatch addCategory action and await its completion
       await dispatch(addCategory(formDataToSend));
 
-      // If successful, proceed to close and notify
+      // Close the popup first
       handleClose();
+
+      // Execute any additional success actions
       if (onSuccess) {
         onSuccess();
       }
 
       // Show success notification
-      // toast.success("Kategori berhasil ditambahkan", {
-      //   style: {
-      //     borderRadius: "8px",
-      //     background: "#4BB543",
-      //     color: "#fff",
-      //   },
-      // });
+      toast.success("Kategori berhasil ditambahkan", {
+        style: {
+          borderRadius: "8px",
+          background: "#4BB543",
+          color: "#fff",
+        },
+      });
     } catch (error) {
       // Handle errors (e.g., duplicate category name)
       console.error("Error adding category:", error);
@@ -125,7 +129,7 @@ const TambahKategori = ({
 
         if (
           backendMessage.includes("duplicate") ||
-          backendMessage.includes("nama kategori sudah ada")
+          backendMessage.includes("category already exists")
         ) {
           errorMessage =
             "Gagal menambahkan nama kategori, nama kategori sudah ada.";
@@ -141,6 +145,8 @@ const TambahKategori = ({
           color: "#fff",
         },
       });
+    } finally {
+      setIsSubmitting(false); // End submission
     }
   };
 
@@ -149,11 +155,13 @@ const TambahKategori = ({
     setFormData(initialFormData);
     setImagePreview(null);
     setImageFile(null);
+    setIsSubmitting(false);
     onClose();
   };
 
   // Determine if the submit button should be disabled
-  const isSubmitDisabled = !formData.categoryName.trim() || !imageFile;
+  const isSubmitDisabled =
+    !formData.categoryName.trim() || !imageFile;
 
   if (!show) return null;
 
@@ -167,7 +175,8 @@ const TambahKategori = ({
       handleSubmit={handleAdd}
       imagePreview={imagePreview}
       isEditMode={false}
-      isSubmitDisabled={isSubmitDisabled} // Pass the disabled state
+      isSubmitDisabled={isSubmitDisabled}
+      isSubmitting={isSubmitting} // Pass the submitting state
     />
   );
 };
