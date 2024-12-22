@@ -230,9 +230,10 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
                   {filteredCoursePopular.map((val) => (
                     <div key={val.id} className="p-2">
                       <div
-                        className={`w-72 bg-white shadow-xl rounded-xl overflow-hidden pb-3 h-full flex flex-col ${
+                        className={`bg-white shadow-xl rounded-xl overflow-hidden pb-3 h-full flex flex-col ${
                           val.isPurchased ? "bg-green-50" : ""
                         }`}
+                        style={{ width: "350px" }}
                       >
                         <img
                           src={val.image}
