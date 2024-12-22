@@ -65,30 +65,31 @@ const AdminDataKelas = () => {
           <h2 className="flex items-center py-2 px-4 mt-4 bg-gradient-to-r from-[#FF5722] to-[#FF9800] text-white font-semibold rounded-md text-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl mb-4">Data Kelas</h2>
           <div className="flex items-center space-x-4">
             <div className="relative">
-              <select
+            <select
                 value={filter}
                 onChange={handleFilterChange}
-                className="p-1 border border-[#0a61aa] rounded-full text-sm text-[#0a61aa]"
+                className="flex items-center py-2 pl-10 pr-4 bg-[#0a61aa] text-white font-semibold rounded-md text-sm transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#0a61aa] focus:ring-opacity-50"
               >
                 <option value="">Filter</option>
                 <option value="Free">Free</option>
                 <option value="Premium">Premium</option>
               </select>
-              <FaFilter className="absolute right-4 top-2 text-[#0a61aa] text-sm" />
+              <FaFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-sm" />
             </div>
           </div>
         </div>
 
-        <div className="overflow-x-auto bg-white p-4 rounded-lg shadow-md">
-          <table className="min-w-full table-auto">
+        {/* Payment Status Table */}
+        <div className="bg-white p-6 rounded-lg shadow-lg">
+          <table className="table-fixed w-full">
             <thead>
-              <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
-                <th className="px-2 md:px-4 py-2">ID</th>
-                <th className="px-2 md:px-4 py-2">Kategori</th>
-                <th className="px-2 md:px-4 py-2">Nama Kelas</th>
-                <th className="px-2 md:px-4 py-2">Tipe Kelas</th>
-                <th className="px-2 md:px-4 py-2">Level</th>
-                <th className="px-2 md:px-4 py-2">Harga</th>
+              <tr className="bg-gray-200 text-left text-sm md:text-base font-semibold">
+                <th className="px-4 py-2 w-1/6">ID</th>
+                <th className="px-4 py-2 w-1/6">Kategori</th>
+                <th className="px-4 py-2 w-2/6">Nama Kelas</th>
+                <th className="px-4 py-2 w-1/6">Tipe Kelas</th>
+                <th className="px-4 py-2 w-1/6">Level</th>
+                <th className="px-4 py-2 w-1/6">Harga</th>
               </tr>
             </thead>
             <tbody>
@@ -105,7 +106,7 @@ const AdminDataKelas = () => {
                     {course.typeCourse.typeName}
                   </td>
                   <td className="px-2 md:px-4 py-2">{course.courseLevel.levelName}</td>
-                  <td className="px-2 md:px-4 py-2">{course.coursePrice}</td>
+                  <td className="px-2 md:px-4 py-2 text-gray-900 font-semibold">Rp. {course.coursePrice.toLocaleString("id-ID")}</td>
                   <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2"></td>
                 </tr>
               ))}
@@ -113,7 +114,11 @@ const AdminDataKelas = () => {
           </table>
         </div>
 
-        <div className="flex justify-between items-center mt-4">
+          {/* Tombol Pagination */}
+          {totalPages > 1 && (
+          <div className="flex justify-between items-center mt-4">
+
+          {/* Tombol Previous */}
           <button
             className={`flex items-center py-2 px-4 rounded-lg ${
               currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-[#0a61aa] text-white"
@@ -125,23 +130,23 @@ const AdminDataKelas = () => {
             Previous
           </button>
 
-          <span className="text-lg font-semibold">
+          {/* Keterangan Page of */}
+          <span className="text-lg font-semibold mx-auto">
             Page {currentPage} of {totalPages}
           </span>
 
-          <button
-            className={`flex items-center py-2 px-4 rounded-lg ${
-              currentPage === totalPages
-                ? "bg-gray-300 cursor-not-allowed"
-                : "bg-[#0a61aa] text-white"
-            } transition-all duration-300 hover:scale-105`}
-            onClick={handleNextPage}
-            disabled={currentPage === totalPages}
-          >
-            Next
-            <IoArrowForwardCircle className="ml-2 text-xl" />
-          </button>
+          {/* Tombol Next hanya tampil jika currentPage < totalPages */}
+          {currentPage < totalPages && (
+            <button
+              className="flex items-center py-2 px-4 rounded-lg bg-[#0a61aa] text-white transition-all duration-300 hover:scale-105"
+              onClick={handleNextPage}
+            >
+              Next
+              <IoArrowForwardCircle className="ml-2 text-xl" />
+            </button>
+          )}
         </div>
+        )}
       </div>
     </div>
   );

@@ -17,21 +17,19 @@ import { getCookie } from "cookies-next";
 
 const api_url = import.meta.env.VITE_REACT_API_ADDRESS;
 
-// Existing fetchAdminCategories action
+// Fetch Admin Categories
 export const fetchAdminCategories = () => async (dispatch) => {
   dispatch(fetchCategoriesRequest());
   try {
     const response = await axios.get(`${api_url}category/`);
     dispatch(fetchCategoriesSuccess(response.data));
-
-
     console.log(response.data);
-    
   } catch (error) {
     dispatch(fetchCategoriesFailure(error.message));
   }
 };
 
+// Delete Category
 export const deleteCategory = (categoryId) => async (dispatch) => {
   try {
     dispatch(deleteCategoryRequest());
@@ -46,11 +44,14 @@ export const deleteCategory = (categoryId) => async (dispatch) => {
     // Dispatch success action with categoryId as payload
     dispatch(deleteCategorySuccess(categoryId));
   } catch (error) {
-    dispatch(deleteCategoryFailure(error.response?.data || "Delete failed"));
+    // Extract meaningful error message
+    const errorMessage = error.response?.data?.message || "Delete failed";
+    dispatch(deleteCategoryFailure(errorMessage));
     throw error;
   }
 };
 
+// Update Category
 export const updateCategory = (id, updatedData) => async (dispatch) => {
   dispatch(updateCategoryRequest());
   try {
@@ -82,6 +83,7 @@ export const updateCategory = (id, updatedData) => async (dispatch) => {
   }
 };
 
+// Add Category
 export const addCategory = (newCategoryData) => async (dispatch) => {
   dispatch(addCategoryRequest());
   try {
@@ -107,7 +109,8 @@ export const addCategory = (newCategoryData) => async (dispatch) => {
     dispatch(fetchAdminCategories());
   } catch (error) {
     console.error("Add category error:", error.response || error);
-    const errorMessage = error.response?.data?.message || error.message || "Add category failed";
+    const errorMessage =
+      error.response?.data?.message || error.message || "Add category failed";
     dispatch(addCategoryFailure(errorMessage));
     throw error;
   }

@@ -21,6 +21,8 @@ import { fetchCertificate } from "../../redux/actions/certificateAction";
 import jsPDF from "jspdf";
 import sertifikat from "../../assets/sertif-ec.png";
 import Swal from "sweetalert2";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const MulaiKelas = () => {
   const dispatch = useDispatch();
@@ -30,6 +32,7 @@ const MulaiKelas = () => {
   const [language, setLanguage] = useState("");
   const [selectedContent, setSelectedContent] = useState(null);
   const { data: certificateData } = useSelector((state) => state.certificate);
+  const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
   const name = profile?.fullName;
   const formatTanggal = (tanggal) => {
@@ -41,17 +44,25 @@ const MulaiKelas = () => {
   };
 
   useEffect(() => {
-    if (id) {
-      dispatch(fetchMulaiKelas(id));
-      {
-        if (selectedContent && selectedContent.interpreterStatus) {
-          setCode(selectedContent?.interpreter?.sourceCode || "");
-          setLanguage(selectedContent?.interpreter?.languageInterpreterId || "");
+    const fetchData = async () => {// Set isLoading ke true saat mulai fetch
+      try {
+        if (id) {
+          await dispatch(fetchMulaiKelas(id));
+          if (selectedContent && selectedContent.interpreterStatus) {
+            setCode(selectedContent?.interpreter?.sourceCode || "");
+            setLanguage(selectedContent?.interpreter?.languageInterpreterId || "");
+          }
         }
+        await dispatch(getMe());
+        await dispatch(fetchCertificate(id));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
       }
-    }
-    dispatch(getMe());
-    dispatch(fetchCertificate(id));
+    };
+
+    fetchData();
   }, [id, dispatch, selectedContent]);
 
   const handleRunCode = () => {
@@ -160,13 +171,20 @@ const MulaiKelas = () => {
             <header className="bg-blue-50 p-6 rounded-lg shadow-sm mb-6">
               {/* Back button */}
               <Link to="/mycourse">
+                  {isLoading ? (
+                                    <Skeleton width="20%" height={20} className="bg-gray-300" />
+                                ) : (
                 <div className="flex items-center gap-4">
                   <FaArrowLeft className="text-gray-500 cursor-pointer" />
                   <h1 className="text-xl font-bold text-gray-800">Kelas Lainnya</h1>
                 </div>
+                                )}
               </Link>
 
               {/* Main class information */}
+              {isLoading ? (
+                                    <Skeleton width="100%" height={100} className="bg-gray-300" />
+                                ) : (
               <div className="mt-4">
                 <h1 className="text-3xl font-bold text-gray-800 mb-2">
                   {data?.data?.course?.courseName
@@ -203,9 +221,14 @@ const MulaiKelas = () => {
                   </button>
                 </div>
               </div>
+                                )}
             </header>
 
             {/* Video Placeholder */}
+            <div>
+            {isLoading ? (
+                                    <Skeleton width="100%" height="400px" className="bg-gray-300" />
+                                ) : (
             <section className="bg-black h-[600px] flex items-center relative justify-center mb-6">
               {selectedContent ? (
                 selectedContent.contentUrl ? (
@@ -234,8 +257,16 @@ const MulaiKelas = () => {
                 />
               )}
             </section>
+                                )
+            }
+            </div>
+            
 
             {/* Course Info Section */}
+            <div>
+            {isLoading ? (
+                                    <Skeleton width="100%" height={100} className="bg-gray-300 mt-6 " />
+                                ) : (
             <section className="bg-white p-6 rounded-lg shadow-lg mb-10">
               {selectedContent ? (
                 <h3 className="text-gray-700 text-2xl font-semibold"> Deskripsi video </h3>
@@ -251,8 +282,12 @@ const MulaiKelas = () => {
                 <p className="text-gray-600 mt-2">{data?.data?.course?.aboutCourse}</p>
               )}
             </section>
+                                )
+            }
+            </div>
 
             {/* Code Editor Section */}
+            
             {selectedContent && selectedContent.interpreterStatus && (
               <section className="bg-white p-6 rounded-lg shadow-lg mb-10">
                 <h3 className="text-gray-700 text-2xl font-semibold mb-4">Editor Kode</h3>
@@ -297,6 +332,9 @@ const MulaiKelas = () => {
           </div>
 
           {/* Sidebar */}
+          <div >{isLoading ? (
+                                    <Skeleton width="100%" height="100%" className="bg-gray-300" />
+                                ) : (
           <aside className="col-span-1 bg-white p-6 rounded-lg shadow-lg h-screen overflow-y-auto max-h-[calc(100vh-2rem)]">
             {" "}
             {/* Adjust height */}
@@ -410,6 +448,10 @@ const MulaiKelas = () => {
                 </button>
             </div> */}
           </aside>
+                                )
+                              }
+          </div>
+          
         </div>
       </div>
       <Footer />
