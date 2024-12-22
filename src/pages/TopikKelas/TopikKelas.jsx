@@ -54,23 +54,29 @@ const TopikKelas = () => {
       const hashString = activeFilters
         .map((filter) => filter.toLowerCase().replace(/ /g, "_"))
         .join(",");
-      window.location.hash = hashString;
+      window.history.pushState(null, "", `/topik-kelas/filter=${hashString}`);
     } else {
-      window.location.hash = "";
+      window.history.pushState(null, "", `/topik-kelas`);
     }
   }, [filterChecked]);
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const categoryFromUrl = params.get("category");
-    if (categoryFromUrl) {
-      setFilterChecked((prev) => ({
-        ...prev,
-        [categoryFromUrl]: true, // Set the checked state for the selected category
-      }));
-      setSelectedFilter(categoryFromUrl); // Update selected filter
-    }
-  }, [location.search]);
+  const pathParts = window.location.pathname.split("/");
+  const filterParam = pathParts.find((part) => part.startsWith("filter="));
+
+  if (filterParam) {
+    const categoryFromUrl = filterParam.split("=")[1].split(",");
+    const updatedFilters = categoryFromUrl.reduce((acc, filter) => {
+      acc[filter.replace(/_/g, " ")] = true;
+      return acc;
+    }, {});
+    setFilterChecked((prev) => ({
+      ...prev,
+      ...updatedFilters,
+    }));
+    setSelectedFilter("Filter");
+  }
+}, []);
 
   const handleCheckboxChange = (label) => {
     const updatedChecked = {
