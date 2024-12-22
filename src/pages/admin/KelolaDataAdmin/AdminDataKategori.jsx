@@ -398,7 +398,7 @@ const AdminDataKategori = () => {
   const dispatch = useDispatch();
 
   // Fetch categories from Redux store
-  const { loading, categories = [], error } = useSelector(
+  const { loadingFetch, categories = [], error } = useSelector(
     (state) => state.adminDataKategori
   );
 
@@ -529,8 +529,8 @@ const AdminDataKategori = () => {
 
           {/* Table Data Kategori */}
           <div className="overflow-x-auto bg-white p-4">
-            {loading ? (
-              <p>Loading...</p> // This shows when categories are being fetched
+            {loadingFetch ? (
+              <p>Loading...</p> // Only shows when fetching categories
             ) : error ? (
               <p>Error: {error}</p>
             ) : (
@@ -571,7 +571,7 @@ const AdminDataKategori = () => {
                         <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
                           {/* Edit Button */}
                           <button
-                            className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                            className="py-1 px-2 md:px-4 bg-blue-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
                             onClick={() => handleEditClick(category)}
                           >
                             Ubah
@@ -634,8 +634,8 @@ const AdminDataKategori = () => {
               setShowTambahPopup(false);
             }}
             onSuccess={() => {
-              dispatch(fetchAdminCategories());
-              // The success toast is already handled inside TambahKategori.jsx
+              // fetchAdminCategories is already dispatched within TambahKategori.jsx
+              // This can be used for additional side effects if needed
             }}
           />
 
@@ -663,7 +663,7 @@ const AdminDataKategori = () => {
         </div>
       </div>
     </>
-  );
+    );
 };
 
 export default AdminDataKategori;

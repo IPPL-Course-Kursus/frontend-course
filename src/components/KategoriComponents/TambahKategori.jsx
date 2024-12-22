@@ -186,7 +186,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import PropTypes from "prop-types";
 import KategoriForm from "./KategoriForm";
-import { addCategory, fetchAdminCategories } from "../../redux/actions/adminDataKategoriActions";
+import { addCategory } from "../../redux/actions/adminDataKategoriActions";
 import { toast } from "react-hot-toast"; // Import toast
 
 const TambahKategori = ({ show, onClose, onSuccess }) => {
@@ -285,8 +285,7 @@ const TambahKategori = ({ show, onClose, onSuccess }) => {
       // Close the popup first
       handleClose();
 
-      // Dispatch fetchAdminCategories to refresh the table
-      dispatch(fetchAdminCategories());
+      // The `fetchAdminCategories` is already dispatched within the `addCategory` action
 
       // Execute any additional success actions
       if (onSuccess) {
@@ -347,7 +346,8 @@ const TambahKategori = ({ show, onClose, onSuccess }) => {
   };
 
   // Determine if the submit button should be disabled
-  const isSubmitDisabled = !formData.categoryName.trim() || !imageFile;
+  const isSubmitDisabled =
+    !formData.categoryName.trim() || !imageFile;
 
   if (!show) return null;
 
