@@ -155,3 +155,20 @@ h2 {
 .slick-list {
   overflow: hidden; /* Mencegah overflow dari item yang tidak perlu */
 }
+
+
+/* Menyembunyikan scrollbar di Webkit browsers (Chrome, Safari, Edge) */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Menyembunyikan scrollbar di Firefox */
+.hide-scrollbar {
+  scrollbar-width: none;
+}
+
+/* Menyembunyikan scrollbar di Internet Explorer 10+ */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+}
+
