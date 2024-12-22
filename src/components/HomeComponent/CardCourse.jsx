@@ -226,7 +226,7 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
                 </Slider>
               ) : (
                 // Tampilan grid untuk kategori yang dipilih
-                <div className="flex mt-2 overflow-x-auto space-x-4">
+                <div className="flex mt-2 space-x-4 overflow-x-auto hide-scrollbar">
                   {filteredCoursePopular.map((val) => (
                     <div key={val.id} className="p-2">
                       <div
