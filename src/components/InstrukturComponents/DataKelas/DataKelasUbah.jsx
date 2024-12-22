@@ -22,6 +22,16 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
     intendedFor: "",
     aboutCourse: "",
   });
+  const [categoryIdError, setCategoryIdError] = useState(null);
+  const [courseNameError, setCourseNameError] = useState(null);
+  const [typeCourseIdError, setTypeCourseIdError] = useState(null);
+  const [courseLevelIdError, setCourseLevelIdError] = useState(null);
+  // const [coursePriceError, setCoursePriceError] = useState(null);
+  // const [courseDiscountPercentError, setCourseDiscountPercentError] = useState(null);
+  const [intendedForError, setIntendedForError] = useState(null);
+  const [aboutCourseError, setAboutCourseError] = useState(null);
+  const [publishError, setPublishError] = useState(null);
+  const [certificateStatusError, setCertificateStatusError] = useState(null);
 
   const [loading, setLoading] = useState(false);
   const [imageFile, setImageFile] = useState(null);
@@ -68,6 +78,30 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
         [name]: value,
       }));
     }
+
+    if (name === "courseName") {
+      setCourseNameError(null);
+    } 
+    // else if (name === "coursePrice") {
+    //   setCoursePriceError(null);
+    // } else if (name === "courseDiscountPercent") {
+    //   setCourseDiscountPercentError(null);
+    // } 
+    else if (name === "intendedFor") {
+      setIntendedForError(null);
+    } else if (name === "aboutCourse") {
+      setAboutCourseError(null);
+    } else if (name === "categoryId") {
+      setCategoryIdError(null);
+    } else if (name === "typeCourseId") {
+      setTypeCourseIdError(null);
+    } else if (name === "courseLevelId") {
+      setCourseLevelIdError(null);
+    } else if (name === "publish") {
+      setPublishError(null);
+    } else if (name === "certificateStatus") {
+      setCertificateStatusError(null);
+    }
   };
 
   const handleImageUpload = (e) => {
@@ -95,8 +129,68 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
 
     const updatedData = {
       ...formData,
-      image: imageFile,
+      image: imageFile ? imageFile : null, // Pastikan imageFile sudah ada dan valid
     };
+
+
+    setCourseNameError(null);
+    // setCoursePriceError(null);
+    // setCourseDiscountPercentError(null);
+    setIntendedForError(null);
+    setAboutCourseError(null);
+    setCategoryIdError(null);
+    setTypeCourseIdError(null);
+    setCourseLevelIdError(null);
+    setPublishError(null);
+    setCertificateStatusError(null);
+
+    let hasError = false;
+
+    // Validasi input requestData jika perlu
+    if (!existingData.categoryId) {
+      setCategoryIdError("Silahkan pilih kategori");
+      hasError = true;
+    }
+    if (!existingData.courseName) {
+      setCourseNameError("Silahkan isi judul kelas");
+      hasError = true;
+    }
+
+    if (!existingData.typeCourseId) {
+      setTypeCourseIdError("Silahkan pilih tipe kelas");
+      hasError = true;
+    }
+
+    if (!existingData.courseLevelId) {
+      setCourseLevelIdError("Silahkan pilih level kelas");
+      hasError = true;
+    }
+    // if (!existingData.coursePrice) {
+    //   setCoursePriceError("Silahkan isi harga kelas");
+    //   hasError = true;
+    // }
+    // if (!existingData.courseDiscountPercent) {
+    //   setCourseDiscountPercentError("Silahkan isi diskon kelas");
+    //   hasError = true;
+    // }
+    if (!existingData.intendedFor) {
+      setIntendedForError("Silahkan isi tujuan kelas");
+      hasError = true;
+    }
+    if (!existingData.aboutCourse) {
+      setAboutCourseError("Silahkan isi tentang kelas");
+      hasError = true;
+    }
+    if (!existingData.publish) {
+      setPublishError("Silahkan pilih status publish");
+      hasError = true;
+    }
+    if (!existingData.certificateStatus) {
+      setCertificateStatusError("Silahkan pilih status sertifikat");
+      hasError = true;
+    }
+
+    if (hasError) return; // Jika ada error, jangan lanjut
 
     setLoading(true);
 
@@ -165,7 +259,9 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
               name="categoryId"
               value={formData.categoryId}
               onChange={handleInputChange}
-              className="w-full p-2 border rounded-xl"
+              className={`w-full p-2 border rounded-xl ${
+                categoryIdError ? "border-red-500" : "border-gray-300"
+              }`}
             >
               <option value="" disabled hidden>
                 Pilih
@@ -176,6 +272,7 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
                 </option>
               ))}
             </select>
+            {categoryIdError && <div className="text-red-500">{categoryIdError}</div>}
           </div>
 
           <div className="mb-4">
@@ -185,10 +282,12 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
               name="courseName"
               value={formData.courseName}
               onChange={handleInputChange}
-              className="w-full p-2 border rounded-xl"
+              className={`w-full p-2 border rounded-xl ${
+                courseNameError ? "border-red-500" : "border-gray-300"
+              }`}
               placeholder="Masukkan judul kelas"
-              required
             />
+            {courseNameError && <div className="text-red-500">{courseNameError}</div>}
           </div>
 
           <div className="mb-4">
@@ -209,7 +308,9 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
                   }));
                 }
               }}
-              className="w-full p-2 border rounded-xl"
+              className={`w-full p-2 border rounded-xl ${
+                typeCourseIdError ? "border-red-500" : "border-gray-300"
+              }`}
             >
               <option value="" disabled hidden>
                 Pilih
@@ -220,6 +321,7 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
                 </option>
               ))}
             </select>
+            {typeCourseIdError && <div className="text-red-500">{typeCourseIdError}</div>}
           </div>
 
           <div className="mb-4">
@@ -228,7 +330,9 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
               name="courseLevelId"
               value={formData.courseLevelId}
               onChange={handleInputChange}
-              className="w-full p-2 border rounded-xl"
+              className={`w-full p-2 border rounded-xl ${
+                courseLevelIdError ? "border-red-500" : "border-gray-300"
+              }`}
             >
               <option value="" disabled hidden>
                 Pilih
@@ -239,6 +343,7 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
                 </option>
               ))}
             </select>
+            {courseLevelIdError && <div className="text-red-500">{courseLevelIdError}</div>}
           </div>
 
           <div className="mb-4">
@@ -256,8 +361,8 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
               }}
               className="w-full p-2 border rounded-xl"
               placeholder="Rp"
-              required
             />
+            {/* {coursePriceError && <div className="text-red-500">{coursePriceError}</div>} */}
           </div>
 
           <div className="mb-4">
@@ -275,8 +380,10 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
               }}
               className="w-full p-2 border rounded-xl"
               placeholder="%"
-              required
             />
+            {/* {courseDiscountPercentError && (
+              <div className="text-red-500">{courseDiscountPercentError}</div>
+            )} */}
           </div>
 
           <div className="mb-4">
@@ -285,12 +392,15 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
               name="publish"
               value={formData.publish}
               onChange={handleInputChange}
-              className="w-full p-2 border rounded-xl"
+              className={`w-full p-2 border rounded-xl ${
+                publishError ? "border-red-500" : "border-gray-300"
+              }`}
             >
               <option value="">Pilih Status</option>
               <option value={true}>Published</option>
               <option value={false}>Unpublished</option>
             </select>
+            {publishError && <div className="text-red-500">{publishError}</div>}
           </div>
 
           <div className="mb-4">
@@ -299,12 +409,21 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
               name="certificateStatus"
               value={formData.certificateStatus}
               onChange={handleInputChange}
-              className="w-full p-2 border rounded-xl"
+              className={`w-full p-2 border rounded-xl ${
+                certificateStatusError ? "border-red-500" : "border-gray-300"
+              }`}
             >
               <option value="">Pilih Status</option>
-              <option value={true}>Yes</option>
-              <option value={false}>No</option>
+              {[
+                { value: true, label: "Yes" },
+                { value: false, label: "No" },
+              ].map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
             </select>
+            {certificateStatusError && <div className="text-red-500">{certificateStatusError}</div>}
           </div>
 
           <div className="mb-4">
@@ -314,10 +433,12 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
               name="intendedFor"
               value={formData.intendedFor}
               onChange={handleInputChange}
-              className="w-full p-2 border rounded-xl"
+              className={`w-full p-2 border rounded-xl ${
+                intendedForError ? "border-red-500" : "border-gray-300"
+              }`}
               placeholder="Siapa yang diperuntukkan?"
-              required
             />
+            {intendedForError && <div className="text-red-500">{intendedForError}</div>}
           </div>
 
           <div className="mb-4">
@@ -326,29 +447,39 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
               name="aboutCourse"
               value={formData.aboutCourse}
               onChange={handleInputChange}
-              className="w-full p-2 border rounded-xl"
-              placeholder="Deskripsi tentang kelas"
-              rows="4"
-              required
+              className={`w-full p-2 border rounded-xl ${
+                aboutCourseError ? "border-red-500" : "border-gray-300"
+              }`}
+              placeholder="Deskripsikan kelas ini"
             />
+            {aboutCourseError && <div className="text-red-500">{aboutCourseError}</div>}
           </div>
 
-          <button
-            type="submit"
-            className={`bg-blue-600 text-white px-4 py-2 rounded-md font-semibold transition-colors duration-300 ${
-              loading ? "cursor-not-allowed bg-gray-500" : "hover:bg-blue-700 active:bg-blue-800"
-            }`}
-            disabled={loading}
-          >
-            {loading ? (
-              <div className="flex items-center justify-center gap-2">
-                <LoadSpinner size={24} color="white" />
-                <span>Loading...</span>
-              </div>
-            ) : (
-              "Ubah"
-            )}
-          </button>
+          <div className="flex justify-end space-x-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="bg-gray-300 px-4 py-2 rounded-md font-semibold"
+            >
+              Batal
+            </button>
+            <button
+              type="submit"
+              className={`bg-blue-600 text-white px-4 py-2 rounded-md font-semibold transition-colors duration-300 ${
+                loading ? "cursor-not-allowed bg-gray-500" : "hover:bg-blue-700 active:bg-blue-800"
+              }`}
+              disabled={loading}
+            >
+              {loading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <LoadSpinner size={24} color="white" />
+                  <span>Loading...</span>
+                </div>
+              ) : (
+                "Tambah"
+              )}
+            </button>
+          </div>
         </form>
       </div>
     </div>
