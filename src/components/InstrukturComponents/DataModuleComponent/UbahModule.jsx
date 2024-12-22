@@ -10,6 +10,10 @@ const UbahModule = ({ show, onClose, existingData }) => {
     sort: "",
     chapterTitle: "",
   });
+  const [errors, setErrors] = useState({
+    sort: "",
+    chapterTitle: "",
+  });
 
   useEffect(() => {
     if (existingData) {
@@ -35,36 +39,65 @@ const UbahModule = ({ show, onClose, existingData }) => {
     }));
   };
 
-const handleUpdate = async (e) => {
-  e.preventDefault();
-  console.log("Updating chapter with data:", formData);
+  const handleUpdate = async (e) => {
+    e.preventDefault();
 
-  try {
-    const payload = {
-      chapterTitle: formData.chapterTitle,
-      sort: formData.sort,
-    };
+    // Reset error messages
+    setErrors({
+      sort: "",
+      chapterTitle: "",
+    });
 
-    console.log("Payload to update:", payload); // Log payload sebelum dikirim
+    let hasError = false;
 
-    // Mengupdate data module
-    await dispatch(updateDataModule(existingData.id, payload));
+    // Validasi untuk urutan
+    if (!formData.sort) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        sort: "Silahkan isi urutan",
+      }));
+      hasError = true;
+    }
 
-    // Menutup modal setelah update
-    onClose();
+    // Validasi untuk judul chapter
+    if (!formData.chapterTitle) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        chapterTitle: "Silahkan isi judul chapter",
+      }));
+      hasError = true;
+    }
 
-    // Menampilkan toast sukses
-    toast.success("Module berhasil diperbarui!");
+    if (hasError) return; // Jika ada error, jangan lanjut
 
-    // Memuat ulang data module
-    dispatch(getDataModule(existingData.courseId));
-  } catch (error) {
-    console.error("Failed to update data:", error);
+    console.log("Updating chapter with data:", formData);
 
-    // Menampilkan toast error
-    toast.error(`Gagal memperbarui module: ${error.message}`);
-  }
-};
+    try {
+      const payload = {
+        chapterTitle: formData.chapterTitle,
+        sort: formData.sort,
+      };
+
+      console.log("Payload to update:", payload); // Log payload sebelum dikirim
+
+      // Mengupdate data module
+      await dispatch(updateDataModule(existingData.id, payload));
+
+      // Menutup modal setelah update
+      onClose();
+
+      // Menampilkan toast sukses
+      toast.success("Module berhasil diperbarui!");
+
+      // Memuat ulang data module
+      dispatch(getDataModule(existingData.courseId));
+    } catch (error) {
+      console.error("Failed to update data:", error);
+
+      // Menampilkan toast error
+      toast.error(`Gagal memperbarui module: ${error.message}`);
+    }
+  };
 
   return (
     <div
@@ -84,7 +117,6 @@ const handleUpdate = async (e) => {
               type="text"
               name="sort"
               value={formData.sort}
-              // disabled
               onChange={(e) => {
                 const value = e.target.value;
                 if (/^\d*$/.test(value)) {
@@ -95,6 +127,8 @@ const handleUpdate = async (e) => {
               className="w-full p-2 border rounded-xl" // Hapus bg-gray-200 dan cursor-not-allowed
               placeholder="ex 1"
             />
+            {errors.sort && <p className="text-red-500 text-sm">{errors.sort}</p>}{" "}
+            {/* Pesan error urutan */}
           </div>
 
           <div className="mb-4">
@@ -107,6 +141,8 @@ const handleUpdate = async (e) => {
               className="w-full p-2 border rounded-xl"
               placeholder="Masukkan judul chapter"
             />
+            {errors.chapterTitle && <p className="text-red-500 text-sm">{errors.chapterTitle}</p>}{" "}
+            {/* Pesan error judul */}
           </div>
 
           <div className="flex justify-center">

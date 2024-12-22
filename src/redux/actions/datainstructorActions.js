@@ -6,6 +6,7 @@ import {
   clearError,
 } from "../reducers/datainstructorReducers"; // Pastikan jalur ini benar
 import { getCookie } from "cookies-next";
+import { Form } from "react-router-dom";
 
 const api_url = import.meta.env.VITE_REACT_API_ADDRESS; // pastikan sudah di .env
 
@@ -70,6 +71,8 @@ export const addInstructor = (newInstructor) => async (dispatch) => {
       type: "ADD_INSTRUCTOR",
       payload: addedInstructor,
     });
+    console.log(Form);
+    
   } catch (error) {
     console.error("Error response:", error.response?.data); // Log error dari server
     if (error.response?.data.errors) {
