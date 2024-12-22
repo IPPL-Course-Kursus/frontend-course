@@ -16,7 +16,6 @@ const CoursesPage = () => {
   const [courseStatusFilter, setCourseStatusFilter] = useState('all'); // State untuk status kursus
   const {
     category = [],
-    courseLevel = [],
 } = useSelector((state) => state.category);
   
 
@@ -339,11 +338,11 @@ const CoursesPage = () => {
                           <div
                             className="bg-indigo-500 rounded-full h-full flex items-center justify-center"
                             style={{
-                              width: `${courseItem.contentFinish}%`,
+                              width: `${Math.min(courseItem.contentFinish, 100)}%`,
                             }}
                           >
                             <span className="text-white text-xs font-bold pl-9">
-                              {Math.round(courseItem.contentFinish) }%
+                              {Math.min(Math.round(courseItem.contentFinish), 100)}%
                             </span>
                           </div>
                         </div>

@@ -28,22 +28,19 @@ const SidebarInstruktur = () => {
       if (result.isConfirmed) {
         dispatch(logout()); // Dispatch action logout
         navigate("/login"); // Arahkan pengguna ke halaman login
-        Swal.fire("Berhasil!", "Anda telah logout.", "success");
+        // Swal.fire("Berhasil!", "Anda telah logout.", "success");
       }
     });
   };
 
   return (
-    <div className="h-full min-h-screen h-fullw w-64 bg-blue-900 text-white flex flex-col">
+    <div className="h-full min-h-screen w-64 bg-blue-900 text-white flex flex-col">
       <div className="flex items-center justify-center h-20">
         <h1 className="text-2xl font-bold">Etam Course</h1>
       </div>
       <nav className="flex-1 px-2 py-4 space-y-2">
         <Link to="/inst/dashboard">
-          <span
-            // href="/inst/dashboard"
-            className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700"
-          >
+          <span className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
             Dashboard
           </span>
         </Link>
@@ -58,10 +55,7 @@ const SidebarInstruktur = () => {
           {isDataMenuOpen && (
             <div className="pl-4">
               <Link to="/inst/data-kelas">
-                <span
-                  // href="/inst/data-kelas"
-                  className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700"
-                >
+                <span className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
                   Data Kelas
                 </span>
               </Link>
@@ -82,7 +76,7 @@ const SidebarInstruktur = () => {
               </Link>
               <Link to="/inst/data-interpreter">
                 <span className="block py-2.5 px-4 rounded transition duration-200 hover:bg-blue-700">
-                Data Bahasa Interpreter
+                  Data Bahasa Interpreter
                 </span>
               </Link>
             </div>
@@ -102,6 +96,9 @@ const SidebarInstruktur = () => {
           Keluar
         </button>
       </nav>
+
+      {/* Konten utama, memberikan margin kiri untuk sidebar */}
+
     </div>
   );
 };

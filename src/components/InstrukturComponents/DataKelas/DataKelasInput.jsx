@@ -6,6 +6,7 @@ import { getAllTypeCourses } from "../../../redux/actions/typeCourseActions";
 import { getAllLevelCourses } from "../../../redux/actions/levelCourseActions";
 import { addDataKelas, fetchUserCourses } from "../../../redux/actions/instruktorActions";
 import LoadSpinner from "../../Spinner/LoadSpinner";
+import toast from "react-hot-toast";
 
 const DataKelasInput = ({ show, onClose }) => {
   const dispatch = useDispatch();
@@ -120,6 +121,7 @@ const DataKelasInput = ({ show, onClose }) => {
         console.log("Data kelas berhasil ditambahkan");
         await dispatch(fetchUserCourses()); // Pastikan data diperbarui di Redux
       }
+      toast.success("Data kelas berhasil ditambahkan");
       onClose(); // Tutup form setelah menambah data
     } catch (err) {
       setError(err.response?.data?.message || "Error adding class");
@@ -281,7 +283,9 @@ const DataKelasInput = ({ show, onClose }) => {
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
             >
-              <option value="">Pilih Status</option>
+              <option value="" disabled hidden>
+                Pilih Status
+              </option>
               <option value={true}>Published</option>
               <option value={false}>Unpublished</option>
             </select>
@@ -291,13 +295,19 @@ const DataKelasInput = ({ show, onClose }) => {
             <label className="block mb-1 font-semibold">Status Sertifikat</label>
             <select
               name="certificateStatus"
-              value={requestData.certificateStatus}
+              value={requestData.certificateStatus || ""}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-xl"
             >
               <option value="">Pilih Status</option>
-              <option value={true}>Yes</option>
-              <option value={false}>No</option>
+              {[
+                { value: true, label: "Yes" },
+                { value: false, label: "No" },
+              ].map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
             </select>
           </div>
 

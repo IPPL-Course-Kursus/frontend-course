@@ -82,16 +82,24 @@ const coursesSlice = createSlice({
       state.popular = action.payload;
     },
 
+    // updateCourseSuccess(state, action) {
+    //   const updatedCourse = action.payload;
+    //   console.log("Updated Course:", updatedCourse); // Log untuk debug
+    //   const index = state.courses.findIndex((course) => course.id === updatedCourse.id);
+    //   if (index !== -1) {
+    //     console.log("Updating course at index:", index); // Log untuk debug
+    //     state.courses[index] = updatedCourse; // Ganti kursus yang diperbarui
+    //   } else {
+    //     console.warn("Course not found for update:", updatedCourse.id); // Log jika tidak ditemukan
+    //   }
+    //   state.loading = false;
+    //   state.error = null;
+    // },
     updateCourseSuccess(state, action) {
       const updatedCourse = action.payload;
-      console.log("Updated Course:", updatedCourse); // Log untuk debug
-      const index = state.courses.findIndex((course) => course.id === updatedCourse.id);
-      if (index !== -1) {
-        console.log("Updating course at index:", index); // Log untuk debug
-        state.courses[index] = updatedCourse; // Ganti kursus yang diperbarui
-      } else {
-        console.warn("Course not found for update:", updatedCourse.id); // Log jika tidak ditemukan
-      }
+      state.courses = state.courses.map((course) =>
+        course.id === updatedCourse.id ? updatedCourse : course
+      );
       state.loading = false;
       state.error = null;
     },
@@ -123,7 +131,7 @@ const coursesSlice = createSlice({
     },
     fetchUserCoursesSuccess: (state, action) => {
       state.mycourse = action.payload; // Save fetched courses to mycourse
-      state.loading = false; // Set loading to false after fetching
+      // state.loading = false; // Set loading to false after fetching
     },
     fetchUserCoursesFailure: (state, action) => {
       state.error = action.payload; // Save error message

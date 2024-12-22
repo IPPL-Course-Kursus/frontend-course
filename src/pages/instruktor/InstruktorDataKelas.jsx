@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import SidebarInstruktur from "../../components/Sidebar/SidebarInstruktur";
 import { deleteDataCourse, fetchUserCourses } from "../../redux/actions/instruktorActions";
 import HeadInstruktur from "../../components/InstrukturComponents/HeadInstruktur";
+import toast from "react-hot-toast";
 
 const InstruktorDataKelas = () => {
   const [courseTypeSearch, setCourseTypeSearch] = useState("");
@@ -28,7 +29,7 @@ const InstruktorDataKelas = () => {
   const dispatch = useDispatch();
   const { mycourse } = useSelector((state) => state.course);
 
-  console.log("mycourse:", mycourse);
+  // console.log("mycourse:", mycourse);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -61,38 +62,22 @@ const InstruktorDataKelas = () => {
     setShowDeleteModal(true);
   };
 
-  // const confirmDelete = () => {
-  //   // Check if courseToDelete has a valid ID
-  //   if (!courseToDelete?.id) {
-  //     console.error("Course ID is required.");
-  //     return; // Don't proceed if there's no valid course ID
-  //   }
-
-  //   // Dispatch the delete action
-  //   dispatch(deleteDataCourse(courseToDelete.id))
-  //     .then(() => {
-  //       setShowDeleteModal(false); // Close the modal after successful deletion
-  //       dispatch(fetchUserCourses()); // Refresh the course list after deletion
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error deleting course:", error);
-  //       setShowDeleteModal(false); // Close the modal even if there's an error
-  //     });
-  // };
   const confirmDelete = () => {
     if (!courseToDelete?.id) {
-      console.error("Course ID is required.");
-      return;
+      return; // Tidak perlu menampilkan console error karena tidak ada ID
     }
 
     dispatch(deleteDataCourse(courseToDelete.id))
       .then(() => {
+        // Tampilkan toast sukses setelah berhasil menghapus course
+        toast.success("Course berhasil dihapus");
+
         setShowDeleteModal(false);
-        dispatch(fetchUserCourses());
+        dispatch(fetchUserCourses()); // Memuat ulang daftar kursus pengguna
       })
-      .catch((error) => {
-        console.error("Error deleting course:", error);
-        alert("Gagal menghapus kelas. Silakan coba lagi.");
+      .catch(() => {
+        // Tampilkan toast error jika gagal menghapus course
+        toast.error("Gagal menghapus course. Silakan coba lagi.");
       });
   };
 
@@ -235,16 +220,30 @@ const InstruktorDataKelas = () => {
 
               <tbody>
                 {currentItems.map((courseType, index) => (
-                  <tr key={courseType.id} className="border-t text-xs md:text-sm">
+                  <tr
+                    key={courseType.id}
+                    className="border-t text-xs md:text-sm hover:bg-gray-50 transition-all duration-300"
+                  >
                     {/* Nomor urutan */}
-                    <td className="px-2 md:px-4 py-2">
+                    <td className="px-2 md:px-4 py-2 text-center">
                       {(currentPage - 1) * itemsPerPage + index + 1}
                     </td>
-                    <td className="px-2 md:px-4 py-2">
-                      <img src={courseType.image} className="w-16 object-cover h-16 rounded-lg" />
+
+                    {/* Gambar */}
+                    <td className="px-2 md:px-4 py-2 text-center">
+                      <img
+                        src={courseType.image}
+                        className="w-16 object-cover h-16 rounded-lg shadow-lg transition-transform duration-300 transform hover:scale-105"
+                      />
                     </td>
+
+                    {/* Kategori */}
                     <td className="px-2 md:px-4 py-2">{courseType.category.categoryName}</td>
-                    <td className="px-2 md:px-4 py-2">{courseType.courseName}</td>
+
+                    {/* Nama Kursus */}
+                    <td className="px-2 md:px-4 py-2 font-semibold">{courseType.courseName}</td>
+
+                    {/* Tipe Kursus */}
                     <td
                       className={`px-2 md:px-4 py-2 font-bold ${
                         courseType.typeCourse.typeName === "Free" ? "text-success" : "text-failed"
@@ -252,38 +251,50 @@ const InstruktorDataKelas = () => {
                     >
                       {courseType.typeCourse.typeName}
                     </td>
-                    <td className="px-2 md:px-4 py-2">{courseType.courseLevel.levelName}</td>
-                    <td className="px-2 md:px-4 py-2">
-                      {courseType.publish ? "Published" : "Unpublished"}
+
+                    {/* Level Kursus */}
+                    <td className="px-2 md:px-4 py-2 text-center">
+                      {courseType.courseLevel.levelName}
                     </td>
-                    {/* <td className="px-2 md:px-4 py-2">{courseType.coursePrice}</td> */}
-                    <td className="px-2 md:px-4 py-2">
+
+                    {/* Status Publish */}
+                    <td className="px-2 md:px-4 py-2 text-center">
+                      {courseType.publish ? (
+                        <span className="text-green-500 font-semibold">Published</span>
+                      ) : (
+                        <span className="text-red-500 font-semibold">Unpublished</span>
+                      )}
+                    </td>
+
+                    {/* Harga */}
+                    <td className="px-2 md:px-4 py-2 font-semibold">
                       {new Intl.NumberFormat("id-ID", {
                         style: "currency",
                         currency: "IDR",
                       }).format(courseType.coursePrice)}
                     </td>
 
-                    <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
+                    {/* Tombol Aksi */}
+                    <td className="px-2 md:px-4 py-2 flex justify-center space-x-3 items-center">
                       <Link to={`/inst/data-chapter/${courseType.id}`}>
-                        <button className="py-1 px-2 md:px-4 bg-blue-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2">
+                        <button className="py-1 px-3 bg-blue-600 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:bg-blue-700 transform hover:scale-105 mt-4">
                           Kelola
                         </button>
                       </Link>
                       <button
-                        className="py-1 px-2 md:px-4 bg-green-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                        className="py-1 px-3 bg-green-600 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:bg-green-700 transform hover:scale-105 mt-4"
                         onClick={() => handleEditClick(courseType)}
                       >
                         Ubah
                       </button>
                       <button
-                        className="py-1 px-2 md:px-4 bg-yellow-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                        className="py-1 px-3 bg-yellow-600 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:bg-yellow-700 transform hover:scale-105 mt-4"
                         onClick={() => handleDetailClick(courseType)}
                       >
                         Detail
                       </button>
                       <button
-                        className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                        className="py-1 px-3 bg-red-600 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:bg-red-700 transform hover:scale-105 mt-4"
                         onClick={() => handleDelete(courseType)}
                       >
                         Hapus

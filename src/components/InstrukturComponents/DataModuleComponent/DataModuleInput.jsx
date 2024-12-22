@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addDataModule, getDataModule } from "../../../redux/actions/instruktorActions";
 import LoadSpinner from "../../Spinner/LoadSpinner";
+import toast from "react-hot-toast";
 
 const DataModuleInput = ({ show, onClose, courseId }) => {
   const dispatch = useDispatch();
@@ -68,11 +69,18 @@ const DataModuleInput = ({ show, onClose, courseId }) => {
       await dispatch(addDataModule(requestData, courseId));
       console.log("Data module berhasil ditambahkan");
 
+      // Show success notification
+      toast.success("Modul berhasil ditambahkan");
+
       setLoading(false);
       onClose(); // Tutup modal setelah berhasil menambahkan
       await fetchData(); // Panggil fetchData untuk memperbarui data di state
     } catch (err) {
       setLoading(false);
+
+      // Show error notification
+      toast.error(err.response?.data?.message || "Terjadi kesalahan saat menambahkan modul");
+
       setSortError(err.response?.data?.message || "Error adding content");
       console.error("Error detail:", err);
     }

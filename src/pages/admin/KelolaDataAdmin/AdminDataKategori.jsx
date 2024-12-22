@@ -1,11 +1,12 @@
-import { useState, useEffect } from "react";
-import { FaSearch, FaBars } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { FaSearch } from "react-icons/fa";
 import {
   IoAddCircleOutline,
   IoArrowBackCircle,
   IoArrowForwardCircle,
 } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-hot-toast";
 
 import {
   fetchAdminCategories,
@@ -16,6 +17,7 @@ import SideBar from "../../../components/Sidebar/SidebarAdmin";
 import TambahKategori from "../../../components/KategoriComponents/TambahKategori";
 import UbahKategori from "../../../components/KategoriComponents/UbahKategori";
 import NavbarAdmin from "../../../components/NavbarAdmin";
+import CategoryDelete from "../../../components/KategoriComponents/CategoryDelete"; // Import the new component
 
 const AdminDataKategori = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -27,10 +29,6 @@ const AdminDataKategori = () => {
   // State for delete confirmation modal
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
-
-  // State for popup notification
-  const [showNotification, setShowNotification] = useState(false);
-  const [notificationMessage, setNotificationMessage] = useState("");
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -69,10 +67,29 @@ const AdminDataKategori = () => {
     dispatch(fetchAdminCategories());
   }, [dispatch]);
 
-  const confirmDelete = () => {
-    dispatch(deleteCategory(categoryToDelete.id));
-    setShowDeleteModal(false);
-    showPopupNotification("Kategori berhasil dihapus");
+  const confirmDelete = async () => {
+    try {
+      await dispatch(deleteCategory(categoryToDelete.id));
+      setShowDeleteModal(false);
+      toast.success("Kategori berhasil dihapus", {
+        style: {
+          borderRadius: "8px",
+          background: "#FF3333",
+          color: "#fff",
+        },
+      });
+    } catch (err) {
+      setShowDeleteModal(false);
+      const errorMsg =
+        err.response?.data?.message || "Gagal menghapus kategori.";
+      toast.error(errorMsg, {
+        style: {
+          borderRadius: "8px",
+          background: "#FF3333",
+          color: "#fff",
+        },
+      });
+    }
   };
 
   // Remove undefined or null categories
@@ -106,15 +123,6 @@ const AdminDataKategori = () => {
     }
   }, [currentPage, totalPages]);
 
-  // Show notification popup
-  const showPopupNotification = (message) => {
-    setNotificationMessage(message);
-    setShowNotification(true);
-    setTimeout(() => {
-      setShowNotification(false);
-    }, 3000);
-  };
-
   return (
     <>
       <div className="flex">
@@ -136,7 +144,7 @@ const AdminDataKategori = () => {
         )}
 
         <div className="flex-1 p-4 md:p-6 bg-secondary min-h-screen font-poppins">
-        <NavbarAdmin setSidebarOpen={setSidebarOpen} />
+          <NavbarAdmin setSidebarOpen={setSidebarOpen} />
 
           {/* Section Data Kategori */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
@@ -211,11 +219,15 @@ const AdminDataKategori = () => {
                           {category.categoryName}
                         </td>
                         <td className="px-2 md:px-4 py-2">
-                          <img
-                            src={category.image}
-                            alt={category.categoryName}
-                            className="w-16 h-16 object-cover rounded-md"
-                          />
+                          {category.image ? (
+                            <img
+                              src={category.image}
+                              alt={category.categoryName}
+                              className="w-16 h-16 object-cover rounded-md"
+                            />
+                          ) : (
+                            <span className="text-gray-500">No Image</span>
+                          )}
                         </td>
                         <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
                           {/* Edit Button */}
@@ -284,54 +296,37 @@ const AdminDataKategori = () => {
             }}
             onSuccess={() => {
               dispatch(fetchAdminCategories());
-              showPopupNotification("Kategori berhasil ditambahkan");
+              toast.success("Kategori berhasil ditambahkan", {
+                style: {
+                  borderRadius: "8px",
+                  background: "#4BB543",
+                  color: "#fff",
+                },
+              });
             }}
           />
 
-          {/* Pop-up for Edit Category */}
-          <UbahKategori
-            show={showUbahPopup}
-            onClose={() => {
-              setShowUbahPopup(false);
-            }}
-            onSuccess={() => {
-              dispatch(fetchAdminCategories());
-              showPopupNotification("Kategori berhasil diubah");
-            }}
-            existingData={selectedCategory}
-          />
+          {/* Conditionally Render Pop-up for Edit Category */}
+          {showUbahPopup && selectedCategory && (
+            <UbahKategori
+              show={showUbahPopup}
+              onClose={() => {
+                setShowUbahPopup(false);
+              }}
+              onSuccess={() => {
+                dispatch(fetchAdminCategories());
+                // Success notification is now handled inside UbahKategori.jsx
+              }}
+              existingData={selectedCategory}
+            />
+          )}
 
           {/* Delete Confirmation Modal */}
-          {showDeleteModal && (
-            <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-              <div className="bg-white p-6 rounded-3xl shadow-lg relative w-80">
-                <h2 className="text-xl font-bold text-center mb-4">
-                  Yakin hapus data?
-                </h2>
-                <div className="flex justify-around mt-6">
-                  <button
-                    className="bg-red-600 text-white px-6 py-2 rounded-full font-bold"
-                    onClick={confirmDelete}
-                  >
-                    Hapus
-                  </button>
-                  <button
-                    className="bg-gray-300 px-6 py-2 rounded-full font-bold"
-                    onClick={() => setShowDeleteModal(false)}
-                  >
-                    Batal
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Notification Popup */}
-          {showNotification && (
-            <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 mb-10 bg-red-500 text-white px-4 py-2 rounded-md shadow-lg transition-all duration-500 ease-in-out transform ${showNotification ? 'translate-y-0' : 'translate-y-full'}`">
-              {notificationMessage}
-            </div>
-          )}
+          <CategoryDelete
+            show={showDeleteModal}
+            onClose={() => setShowDeleteModal(false)}
+            onConfirm={confirmDelete}
+          />
         </div>
       </div>
     </>

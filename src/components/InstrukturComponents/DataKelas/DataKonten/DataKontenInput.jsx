@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addDataKonten,
-  compileCode,
+  // compileCode,
   getDataKonten,
 } from "../../../../redux/actions/instruktorActions";
 import CodeMirror from "@uiw/react-codemirror"; // Adjust import if necessary
@@ -11,6 +11,7 @@ import { githubLight } from "@uiw/codemirror-theme-github";
 import { python } from "@codemirror/lang-python";
 import LoadSpinner from "../../../Spinner/LoadSpinner";
 import { fetchLanguages } from "../../../../redux/actions/adminDataInterLangActions";
+import toast from "react-hot-toast";
 
 const DataKontenModule = ({ show, onClose, chapterId }) => {
   const dispatch = useDispatch();
@@ -26,6 +27,7 @@ const DataKontenModule = ({ show, onClose, chapterId }) => {
     contentUrl: "",
     duration: "",
     interpreterStatus: false,
+    language: "",
   });
 
   const [sortError, setSortError] = useState(null);
@@ -34,6 +36,7 @@ const DataKontenModule = ({ show, onClose, chapterId }) => {
   const [contentUrlError, setContentUrlError] = useState(null);
   const [durationError, setDurationError] = useState(null);
   const [interpreterError, setInterpreterError] = useState(null);
+  const [errors, setErrors] = useState({});
 
   const [selectedLanguage, setSelectedLanguage] = useState("Pilih Bahasa"); // State untuk bahasa yang dipilih
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State untuk membuka/menutup dropdown
@@ -43,35 +46,40 @@ const DataKontenModule = ({ show, onClose, chapterId }) => {
     dispatch(fetchLanguages());
   }, [dispatch]);
 
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+const handleInputChange = (e) => {
+  const { name, value, type, checked } = e.target;
 
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]:
-        type === "checkbox"
-          ? checked // Jika checkbox, set nilai menjadi true/false
-          : ["sort", "duration"].includes(name) // Input angka
-          ? value === ""
-            ? 0 // Jika kosong, set sebagai 0
-            : parseInt(value, 10) // Parsing angka jika ada nilai
-          : value, // Untuk input teks, gunakan nilai langsung
-    }));
+  setFormData((prevData) => ({
+    ...prevData,
+    [name]:
+      type === "checkbox"
+        ? checked // Jika checkbox, set nilai menjadi true/false
+        : ["sort", "duration"].includes(name) // Input angka
+        ? value === ""
+          ? 0 // Jika kosong, set sebagai 0
+          : parseInt(value, 10) // Parsing angka jika ada nilai
+        : value, // Untuk input teks, gunakan nilai langsung
+  }));
 
-    // Hapus pesan error saat pengguna mengetik
-    if (error) setError(null);
-  };
+  // Reset error for the specific field when the user types
+  if (name === "sort") {
+    setSortError(null);
+  } else if (name === "contentTitle") {
+    setContentTitleError(null);
+  } else if (name === "teks") {
+    setTeksError(null);
+  } else if (name === "contentUrl") {
+    setContentUrlError(null);
+  } else if (name === "duration") {
+    setDurationError(null);
+  }
+
+  // If you have other fields, you can add similar checks for them
+};
+
 
   const handleAdd = async (e) => {
     e.preventDefault();
-
-    // Reset error messages
-    setSortError(null);
-    setContentTitleError(null);
-    setTeksError(null);
-    setContentUrlError(null);
-    setDurationError(null);
-    setInterpreterError(null);
 
     const isValid = validateInputs();
     if (!isValid) return;
@@ -79,27 +87,23 @@ const DataKontenModule = ({ show, onClose, chapterId }) => {
     setLoading(true);
     try {
       const requestData = {
+        ...formData,
         sort: Number(formData.sort),
-        contentTitle: formData.contentTitle,
-        teks: formData.teks,
-        contentUrl: formData.contentUrl,
         duration: Number(formData.duration),
-        interpreterStatus: formData.interpreterStatus,
         sourceCode: formData.interpreterStatus ? sourceCode : null,
         language: formData.interpreterStatus ? language : null,
       };
 
-      // Dispatch action untuk menambahkan konten
       await dispatch(addDataKonten(requestData, chapterId));
-      console.log("Data konten berhasil ditambahkan");
 
+      toast.success("Konten berhasil ditambahkan!");
       setLoading(false);
-      onClose(); // Tutup modal setelah berhasil menambahkan
-      await fetchData(); // Panggil fetchData untuk memperbarui data di state tanpa refresh halaman
+      onClose();
+      fetchData();
     } catch (err) {
       setLoading(false);
-      setSortError(err.response?.data?.message || "Error adding content");
-      console.error("Error detail:", err);
+      toast.error(err.response?.data?.message || "Error adding content");
+      console.error("Error:", err);
     }
   };
 
@@ -146,28 +150,22 @@ const DataKontenModule = ({ show, onClose, chapterId }) => {
     setLanguage(language.languageInterpreter);
   };
 
-const handleRunCode = () => {
-  if (!sourceCode || !language) {
-    setError("Code and language must be selected.");
-    return;
-  }
+  const handleRunCode = () => {
+    if (!sourceCode || !language) {
+      setError("Code and language must be selected.");
+      return;
+    }
 
-  // Dispatch untuk mengirim request compileCode
-  dispatch(
-    compileCode({
-      language, // Kirim bahasa yang dipilih
-      sourceCode, // Kirim kode sumber
-    })
-  )
-    .then((response) => {
-      setOutput(response.data.result); // Asumsikan API mengembalikan output kode
-      console.log("Code compiled successfully");
-    })
-    .catch((error) => {
-      setError(error.response?.data?.message || "An error occurred while compiling the code.");
-    });
-};
-
+    // Dispatch untuk mengirim request compileCode
+    dispatch()
+      .then((response) => {
+        setOutput(response.data.result); // Asumsikan API mengembalikan output kode
+        console.log("Code compiled successfully");
+      })
+      .catch((error) => {
+        setError(error.response?.data?.message || "An error occurred while compiling the code.");
+      });
+  };
 
   const copyCode = () => {
     navigator.clipboard.writeText(sourceCode);
@@ -204,13 +202,13 @@ const handleRunCode = () => {
               onChange={(e) => {
                 const value = e.target.value;
                 if (/^\d*$/.test(value)) {
-                  // Validasi hanya angka
                   handleInputChange(e); // Perbarui state
                 }
               }}
               className="w-full p-2 border rounded-xl"
               placeholder="ex 1"
             />
+            {sortError && <p className="text-red-500 text-sm">{sortError}</p>}
           </div>
 
           <div className="mb-4">
@@ -223,6 +221,7 @@ const handleRunCode = () => {
               className="w-full p-2 border rounded-xl"
               placeholder="Masukkan judul kelas"
             />
+            {contentTitleError && <p className="text-red-500 text-sm">{contentTitleError}</p>}
           </div>
 
           <div className="mb-4">
@@ -235,6 +234,7 @@ const handleRunCode = () => {
               className="w-full p-2 border rounded-xl"
               placeholder="Masukkan teks"
             />
+            {teksError && <p className="text-red-500 text-sm">{teksError}</p>}
           </div>
 
           <div className="mb-4">
@@ -247,6 +247,7 @@ const handleRunCode = () => {
               className="w-full p-2 border rounded-xl"
               placeholder="Masukkan Video URL"
             />
+            {contentUrlError && <p className="text-red-500 text-sm">{contentUrlError}</p>}
           </div>
 
           <div className="mb-4">
@@ -258,13 +259,13 @@ const handleRunCode = () => {
               onChange={(e) => {
                 const value = e.target.value;
                 if (/^\d*$/.test(value)) {
-                  // Validasi hanya angka
                   handleInputChange(e); // Perbarui state
                 }
               }}
               className="w-full p-2 border rounded-xl"
               placeholder="Masukkan durasi video"
             />
+            {durationError && <p className="text-red-500 text-sm">{durationError}</p>}
           </div>
 
           <div className="mb-4">

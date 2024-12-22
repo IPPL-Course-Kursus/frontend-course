@@ -85,7 +85,7 @@ const InstruktorDashboard = () => {
 
   return (
     <div className="flex">
-    <div className="w-1/4 min-h-screen">
+    <div className="min-h-screen">
       <Sidebar />
       </div>
       <div className="p-6 bg-secondary min-h-screen w-screen font-poppins">
@@ -125,9 +125,9 @@ const InstruktorDashboard = () => {
                 onChange={handleFilterChange}
                 className="flex items-center py-2 pl-10 pr-4 bg-[#0a61aa] text-white font-semibold rounded-md text-sm transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#0a61aa] focus:ring-opacity-50"
               >
-                <option value="disable">Filter</option>
-                <option value="settlement">Sudah Bayar</option>
-                <option value="pending">Belum Bayar</option>
+                <option value="">Filter</option>
+                <option value="settlement">Settlement</option>
+                <option value="pending">Pending</option>
               </select>
               <FaFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-sm" />
             </div>
@@ -174,7 +174,7 @@ const InstruktorDashboard = () => {
                       <td className="px-4 py-3">{payment.categoryName}</td>
                       <td className="px-4 py-3">{payment.courseName}</td>
                       <td className="px-4 py-3 text-gray-900 font-semibold">
-                        Rp.{payment.totalPrice.toLocaleString("id-ID")},00
+                        Rp. {payment.totalPrice.toLocaleString("id-ID")},00
                       </td>
                       <td className="px-4 py-3">
                         <span
