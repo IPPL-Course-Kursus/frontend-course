@@ -99,7 +99,7 @@ const handleCheckboxChange = (label) => {
   }
 };
 
-// Menyaring kursus berdasarkan kategori dan level yang dipilih
+// Menyaring kursus berdasarkan kategori, level, dan filter lainnya
 const filteredCourses = () => {
   const activeFilters = Object.keys(filterChecked).filter((key) => filterChecked[key]);
 
@@ -135,6 +135,19 @@ const filteredCourses = () => {
 
       return matchesCategory && matchesLevel; // Memastikan kedua kondisi terpenuhi
     });
+  }
+
+  // Apply additional filters: isNewest, isPopular, promoStatus
+  if (activeFilters.includes("Paling Baru")) {
+    filteredCourses = filteredCourses.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Filter berdasarkan waktu pembuatan
+  }
+  
+  if (activeFilters.includes("Paling Populer")) {
+    filteredCourses = filteredCourses.sort((a, b) => b.popularity - a.popularity); // Filter berdasarkan popularitas
+  }
+  
+  if (activeFilters.includes("Promo")) {
+    filteredCourses = filteredCourses.filter(course => course.isPromo); // Filter berdasarkan status promo
   }
 
   return filteredCourses;
