@@ -107,6 +107,7 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
             </NavLink>
           </div>
 
+          {/* Category Section */}
           <div className="relative w-full">
             <Slider ref={sliderRef} {...categorySliderSettings}>
               <button
