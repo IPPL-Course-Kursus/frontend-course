@@ -66,19 +66,19 @@ const AdminDashboard = () => {
   return (
     <div className="flex">
       <div
-        className={`fixed inset-y-0 z-50 w-64 transform bg-white transition-transform duration-300 ease-in-out ${
+        className={`fixed inset-y-0 z-50 w-64 min-h-screen transform bg-white transition-transform duration-300 ease-in-out ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } md: relative md: translate-x-0`}
       >
         <SideBar />
       </div>
 
-      {sidebarOpen && (
+      {/* {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black opacity-50 z-40 md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
-      )}
+      )} */}
       
       <div className="flex-1 flex flex-col p-4 md:p-6 bg-secondary min-h-screen">
         <NavbarAdmin setSidebarOpen={setSidebarOpen} />
@@ -113,8 +113,8 @@ const AdminDashboard = () => {
                 className="flex items-center py-2 pl-10 pr-4 bg-[#0a61aa] text-white font-semibold rounded-md text-sm transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#0a61aa] focus:ring-opacity-50"
               >
                 <option value="">Filter</option>
-                <option value="settlement">Sudah Bayar</option>
-                <option value="pending">Belum Bayar</option>
+                <option value="settlement">Settlement</option>
+                <option value="pending">Pending</option>
               </select>
               <FaFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-sm" />
             </div>
@@ -168,7 +168,7 @@ const AdminDashboard = () => {
               ) : (
                 <tr>
                 <td colSpan={6} className="text-center py-6 text-gray-500">
-                  Tidak ada data yang tersedia.
+                  Tidak ada data yang tersedia
                 </td>
               </tr>
               )}
