@@ -38,6 +38,8 @@ const InstruktorDataModule = () => {
     dispatch(getDataModule(id));
   }, [dispatch, id]);
 
+  console.log("Chapter data:", chapter); // Tambahkan ini untuk debugging
+
   const handleAddClick = () => {
     setSelectedChapter({});
     setShowTambahPopup(true);
@@ -53,31 +55,30 @@ const InstruktorDataModule = () => {
     setShowDeleteModal(true);
   };
 
-const confirmDelete = () => {
-  if (!chapterToDelete?.id) {
-    console.error("Chapter ID is required."); // Pastikan ID chapter ada
-    return; // Hentikan proses jika id chapter tidak ada
-  }
+ const confirmDelete = () => {
+   if (!chapterToDelete?.id) {
+     console.error("Chapter ID is required."); // Pastikan ID chapter ada
+     return; // Hentikan proses jika id chapter tidak ada
+   }
 
-  console.log("Menghapus chapter dengan ID:", chapterToDelete.id); // Debugging line
+   // Hapus chapter
+   dispatch(deleteDataModule(chapterToDelete.id))
+     .then(() => {
+       // Tampilkan toast sukses setelah berhasil menghapus
+       toast.success("Chapter berhasil dihapus");
 
-  dispatch(deleteDataModule(chapterToDelete.id))
-    .then(() => {
-      // Tampilkan notifikasi sukses
-      toast.success("Chapter berhasil dihapus");
+       setShowDeleteModal(false); // Tutup modal setelah berhasil
+       // Panggil ulang getDataModule untuk mengambil data terbaru
+       dispatch(getDataModule(id));
+     })
+     .catch((error) => {
+       // Tampilkan toast error jika ada kesalahan
+       toast.error("Gagal menghapus chapter");
 
-      setShowDeleteModal(false); // Tutup modal setelah berhasil
-      window.location.reload(); // Reload halaman setelah penghapusan berhasil
-    })
-    .catch((error) => {
-      // Tampilkan notifikasi error
-      toast.error("Gagal menghapus chapter");
-
-      console.error("Error deleting chapter:", error);
-      setShowDeleteModal(false);
-    });
-};
-
+       console.error("Error deleting chapter:", error);
+       setShowDeleteModal(false);
+     });
+ };
 
   const handleDetailClick = (course) => {
     console.log("Detail clicked for:", course);
