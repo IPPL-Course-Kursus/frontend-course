@@ -28,12 +28,15 @@ const AdminDataInstruktur = () => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isAdding, setIsAdding] = useState(false);
+
   const itemsPerPage = 7;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         await dispatch(getAllInstructors());
+        toast.dismiss()
         toast.success("Data instruktur berhasil ditampilkan", {
           style: {
             borderRadius: "8px",
@@ -42,6 +45,7 @@ const AdminDataInstruktur = () => {
           },
         });
       } catch (error) {
+        toast.dismiss()
         toast.error("Gagal memuat data instruktur. Silakan coba lagi.", {
           style: {
             borderRadius: "8px",
@@ -76,6 +80,7 @@ const AdminDataInstruktur = () => {
       if (result.isConfirmed) {
         try {
           await dispatch(deleteInstructor(id));
+          toast.dismiss()
           toast.success("Instruktur berhasil dihapus", {
             style: {
               borderRadius: "8px",
@@ -84,6 +89,7 @@ const AdminDataInstruktur = () => {
             },
           });
         } catch (error) {
+          toast.dismiss()
           toast.error("Gagal menghapus instruktur. Silakan coba lagi.", {
             style: {
               borderRadius: "8px",
@@ -96,30 +102,25 @@ const AdminDataInstruktur = () => {
     });
   };
 
+  const handleCloseTambahPopup = () => {
+    setShowTambahPopup(false);
+  };
+
+
   const handleAddInstructor = async (newInstructor) => {
     try {
       await dispatch(addInstructor(newInstructor));
-      toast.success("Instruktur berhasil ditambahkan", {
-        style: {
-          borderRadius: "8px",
-          background: "#4CAF50",
-          color: "#fff",
-        },
-      });
-      setShowTambahPopup(false);
+      handleCloseTambahPopup();
     } catch (error) {
-      toast.error("Gagal menambahkan instruktur. Coba lagi nanti.", {
-        style: {
-          borderRadius: "8px",
-          background: "#FF3333",
-          color: "#fff",
-        },
-      });
+      console.error("Error adding instructor:", error);
     }
   };
 
-  const filteredInstructors = (instructors || []).filter((instructor) =>
-    instructor.fullName?.toLowerCase().includes(searchValue.toLowerCase())
+  const filteredInstructors = (instructors || []).filter(
+    (instructor) =>
+      instructor &&
+      instructor.fullName &&
+      instructor.fullName.toLowerCase().includes(searchValue.toLowerCase())
   );
 
   const currentItems = filteredInstructors.slice(
@@ -200,38 +201,83 @@ const AdminDataInstruktur = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentItems.map((instructor, index) => (
-                  <tr key={instructor.id} className="border-t text-xs md:text-sm">
-                    <td className="px-4 py-2 text-center">{index + 1}</td>
-                    <td className="px-4 py-2 text-center">{instructor.fullName}</td>
-                    <td className="px-4 py-2 text-center">
-                      <img
-                        src={instructor.image}
-                        alt={instructor.fullName}
-                        className="w-16 h-16 object-cover rounded-full mx-auto"
-                      />
-                    </td>
-                    <td className="px-4 py-2 text-center">
-                      <button
-                        className="py-1 px-2 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105"
-                        onClick={() => handleDeleteInstructor(instructor.id)}
-                      >
-                        Hapus
-                      </button>
+                {filteredInstructors.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan="4"
+                      className="px-4 py-4 text-center text-gray-500 italic"
+                    >
+                      Instruktur tidak ditemukan.
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  currentItems.map((instructor, index) => (
+                    <tr key={instructor.id} className="border-t text-xs md:text-sm">
+                      <td className="px-4 py-2 text-center">{index + 1}</td>
+                      <td className="px-4 py-2 text-center">{instructor.fullName}</td>
+                      <td className="px-4 py-2 text-center">
+                        <img
+                          src={instructor.image}
+                          alt={instructor.fullName}
+                          className="w-16 h-16 object-cover rounded-full mx-auto"
+                        />
+                      </td>
+                      <td className="px-4 py-2 text-center">
+                        <button
+                          className="py-1 px-2 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105"
+                          onClick={() => handleDeleteInstructor(instructor.id)}
+                        >
+                          Hapus
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
+
             </table>
           )}
         </div>
       </div>
 
-      <TambahInstruktur
-        show={showTambahPopup}
-        onClose={() => setShowTambahPopup(false)}
-        onSuccess={handleAddInstructor}
-      />
+      {/* Pop-up untuk tambah instruktur */}
+        <TambahInstruktur
+          show={showTambahPopup}
+          onClose={handleCloseTambahPopup}
+          addInstructor={async (newInstructor) => {
+            setIsAdding(true);
+            try {
+              await dispatch(addInstructor(newInstructor));
+              await dispatch(getAllInstructors());
+              handleCloseTambahPopup();
+            } catch (error) {
+              console.error("Error Adding Instructor:", error);
+              if (error.response) {
+                if (error.response.data && error.response.data.message === "Email Telah Digunakan")
+                  toast.dismiss()
+                  toast.error("Gagal menambahkan instruktur. Email Telah Digunakan.", {
+                    style: {
+                      borderRadius: "8px",
+                      background: "#FF3333",
+                      color: "#fff",
+                   },
+                  });
+                } else {
+                  toast.dismiss()
+                  toast.error("Gagal menambahkan instruktur. Silakan coba lagi nanti.", {
+                    style: {
+                      borderRadius: "8px",
+                      background: "#FF3333",
+                      color: "#fff",
+                    },
+                  });
+                }
+            } finally {
+              setIsAdding(false);
+            }
+          }}
+          isAdding={isAdding}
+        />
     </div>
   );
 };

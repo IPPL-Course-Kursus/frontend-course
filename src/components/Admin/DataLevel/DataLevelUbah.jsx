@@ -1,9 +1,5 @@
-
-
 function DataLevelUbah() {
-  return (
-    <div>DataLevelUbah</div>
-  )
+  return <div>DataLevelUbah</div>;
 }
 
-export default DataLevelUbah
+export default DataLevelUbah;

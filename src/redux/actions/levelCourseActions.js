@@ -13,7 +13,8 @@ import {
 // Import getCookie from cookies-next
 import { getCookie } from "cookies-next";
 
-const api_url = import.meta.env.VITE_REACT_API_ADDRESS || "http://localhost:6969/";
+const api_url =
+  import.meta.env.VITE_REACT_API_ADDRESS || "http://localhost:6969/";
 
 export const getAllLevelCourses = () => async (dispatch) => {
   dispatch(setLoading());
