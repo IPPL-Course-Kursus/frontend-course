@@ -34,111 +34,121 @@ const TopikKelas = () => {
     dispatch(getLevel());
     dispatch(getType());
   }, [dispatch]);
-
-  useEffect(() => {
-    if (courses.length > 0) {
-      const uniqueCategories = [...new Set(courses.map((course) => course.category))];
-      setCategories(uniqueCategories);
-      const initialFilterState = uniqueCategories.reduce((acc, category) => {
-        acc[category.categoryName] = false;
-        return acc;
-      }, {});
-      setFilterChecked(initialFilterState);
-    }
-  }, [courses]);
-
-  useEffect(() => {
-    const activeFilters = Object.keys(filterChecked).filter((key) => filterChecked[key]);
-
-    if (activeFilters.length > 0) {
-      const hashString = activeFilters
-        .map((filter) => filter.toLowerCase().replace(/ /g, "_"))
-        .join(",");
-      window.location.hash = hashString;
-    } else {
-      window.location.hash = "";
-    }
-  }, [filterChecked]);
+  
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const categoryFromUrl = params.get("category");
+  
     if (categoryFromUrl) {
+      const formattedCategory = categoryFromUrl.replace(/_/g, " ");
       setFilterChecked((prev) => ({
         ...prev,
-        [categoryFromUrl]: true, // Set the checked state for the selected category
+        [formattedCategory]: true,
       }));
-      setSelectedFilter(categoryFromUrl); // Update selected filter
+      setSelectedFilter(formattedCategory); 
+    } else {
+      setSelectedFilter("All");
     }
   }, [location.search]);
-
+  
+  
+  const handleCategoryClick = (category) => {
+    const formattedCategory = category.replace(/\s+/g, "_"); 
+    const url = new URL(window.location);
+    url.searchParams.set("category", formattedCategory); 
+    window.history.pushState({}, "", url);
+  
+    setSelectedFilter(formattedCategory);
+    setCurrentPage(1); 
+  };
+  
   const handleCheckboxChange = (label) => {
     const updatedChecked = {
       ...filterChecked,
       [label]: !filterChecked[label],
     };
-
     setFilterChecked(updatedChecked);
     setScrollPosition(window.scrollY);
-
+  
+    const activeFilters = Object.keys(updatedChecked).filter((key) => updatedChecked[key]);
+  
+    const filterString = activeFilters
+      .filter((filter) => filter !== selectedFilter)  
+      .map((filter) => filter.replace(/\s+/g, "_"))   
+      .join(",");  
+  
+    const baseUrl = `${window.location.origin}${window.location.pathname}`;
+    if (filterString) {
+      const newUrl = `${baseUrl}?filter=${filterString}`;  
+      window.history.pushState({}, "", newUrl);
+    } else {
+      window.history.pushState({}, "", baseUrl); 
+    }
+  
     const filters = {
       isNewest: updatedChecked["Paling Baru"] || false,
       isPopular: updatedChecked["Paling Populer"] || false,
       promoStatus: updatedChecked["Promo"] || false,
-      // Jika Anda ingin menambah kategori
-      categories: Object.keys(updatedChecked).filter(
-        (key) =>
-          updatedChecked[key] &&
-          key !== "Paling Baru" &&
-          key !== "Paling Populer" &&
-          key !== "Promo"
+      categories: activeFilters.filter((key) =>
+        category.some((cat) => cat.categoryName === key && key !== selectedFilter) 
       ),
-      levels: Object.keys(updatedChecked).filter(
-        (key) => courseLevel.some((level) => level.levelName === key && updatedChecked[key]) // Filter berdasarkan level
+      levels: activeFilters.filter((key) =>
+        courseLevel.some((level) => level.levelName === key)
       ),
     };
-
+  
+    
     if (
-      updatedChecked["Promo"] ||
-      updatedChecked["Paling Baru"] ||
-      updatedChecked["Paling Populer"]
-    )
-      if (filters.isNewest || filters.isPopular || filters.promoStatus) {
-        dispatch(getFilteredCourses(filters)); // Dispatch the filter action
-      } else {
-        dispatch(getAllCourse()); // If no filters, get all courses
-      }
+      filters.isNewest ||
+      filters.isPopular ||
+      filters.promoStatus ||
+      filters.categories.length ||
+      filters.levels.length
+    ) {
+      dispatch(getFilteredCourses(filters));
+    } else {
+      dispatch(getAllCourse());  
+    }
   };
+  
+  
   useEffect(() => {
     if (scrollPosition !== 0) {
       window.scrollTo(0, scrollPosition);
     }
   }, [filterChecked, scrollPosition]);
-
+  
   const handleFilterClick = (filter) => {
     setSelectedFilter(filter);
     setCurrentPage(1);
-
-    // Reset the filterChecked when "All" is clicked
     if (filter === "All") {
-      clearFilters(); // Reset all filters when "All" is selected
+      clearFilters(); 
     }
   };
-
   const filteredCourses = () => {
     const activeFilters = Object.keys(filterChecked).filter((key) => filterChecked[key]);
-
     let filteredCourses = courses.filter((course) => {
       const matchesSearch =
         course.courseName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         course.category.categoryName.toLowerCase().includes(searchQuery.toLowerCase());
-
       if (selectedFilter === "Premium" && course.coursePrice === 0) return false;
       if (selectedFilter === "Free" && course.coursePrice !== 0) return false;
-
       return matchesSearch;
     });
-
+  
+    if (filterChecked["Paling Baru"]) {
+      filteredCourses = filteredCourses.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    }
+  
+    if (filterChecked["Paling Populer"]) {
+      filteredCourses = filteredCourses.sort((a, b) => b.popularity - a.popularity);
+    }
+  
+    if (filterChecked["Promo"]) {
+      filteredCourses = filteredCourses.filter((course) => course.promoStatus === true);
+    }
+  
     if (activeFilters.length > 0) {
       const categoryFilters = activeFilters.filter((filter) =>
         category.some((cat) => cat.categoryName === filter)
@@ -146,22 +156,19 @@ const TopikKelas = () => {
       const levelFilters = activeFilters.filter((filter) =>
         courseLevel.some((level) => level.levelName === filter)
       );
-
       filteredCourses = filteredCourses.filter((course) => {
         const matchesCategory =
           categoryFilters.length === 0 ||
           categoryFilters.some((filter) => course.category.categoryName === filter);
-
         const matchesLevel =
           levelFilters.length === 0 ||
           levelFilters.some((filter) => course.courseLevel.levelName === filter);
-
-        return matchesCategory && matchesLevel; // Memastikan kedua kondisi terpenuhi
+        return matchesCategory && matchesLevel; 
       });
     }
-
     return filteredCourses;
   };
+  
 
   const clearFilters = () => {
     const clearedFilterState = {
@@ -173,29 +180,36 @@ const TopikKelas = () => {
         return acc;
       }, {}),
     };
-
-    const currentScrollPosition = window.scrollY;
-    setScrollPosition(currentScrollPosition);
-
+  
+    setScrollPosition(window.scrollY);
     setFilterChecked(clearedFilterState);
     setSelectedFilter("All");
-    window.location.hash = "";
-
+  
+    const url = new URL(window.location);
+    url.search = "";
+    window.history.pushState({}, "", url);
+  
     dispatch(getAllCourse());
   };
-
+  
+  
+  useEffect(() => {
+    if (scrollPosition !== 0) {
+      window.scrollTo(0, scrollPosition);
+    }
+  }, [filterChecked, scrollPosition]);
+  
   const [showFilters, setShowFilters] = useState(false);
-
   const toggleFilters = () => {
     setShowFilters(!showFilters);
   };
-
+  
   const filteredCourseType = filteredCourses();
   const totalPages = Math.ceil(filteredCourseType.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredCourseType.slice(indexOfFirstItem, indexOfLastItem);
-
+  
   return (
     <>
       <Navbar />

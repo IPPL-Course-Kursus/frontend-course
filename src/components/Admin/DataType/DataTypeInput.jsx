@@ -1,14 +1,22 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
 import { createTypeCourse } from "../../../redux/actions/typeCourseActions";
 
-function DataTypeInput({ show, onClose }) {
+function DataTypeInput({ show, onClose, onSuccess, onError }) {
   const [formData, setFormData] = useState({
     typeName: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false); // Submission state
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (show) {
+      setFormData({ typeName: "" }); // Reset form when popup opens
+      setIsSubmitting(false); // Reset submitting state
+    }
+  }, [show]);
 
   if (!show) return null;
 
@@ -20,12 +28,36 @@ function DataTypeInput({ show, onClose }) {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(createTypeCourse(formData.typeName));
-    setFormData({ typeName: "" }); // Reset form
-    onClose(); // Close modal
+
+    if (!formData.typeName.trim()) {
+      onError("Silakan isi nama tipe kelas.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Dispatch createTypeCourse action
+      await dispatch(createTypeCourse(formData.typeName));
+
+      // Reset form data and close the popup
+      setFormData({ typeName: "" });
+      onClose();
+
+      // Trigger success callback
+      onSuccess("Tipe kelas berhasil ditambahkan");
+    } catch (error) {
+      console.error("Error adding type course:", error);
+      onError("Gagal menambahkan tipe kelas. Silakan coba lagi.");
+    } finally {
+      setIsSubmitting(false); // End submission
+    }
   };
+
+  // Determine if the submit button should be disabled
+  const isSubmitDisabled = !formData.typeName.trim();
 
   return (
     <div
@@ -61,8 +93,9 @@ function DataTypeInput({ show, onClose }) {
             <button
               className="py-2 px-6 bg-[#0a61aa] text-white rounded-xl"
               type="submit"
+              disabled={isSubmitDisabled || isSubmitting}
             >
-              Tambah
+              {isSubmitting ? "Menambahkan..." : "Tambah"}
             </button>
           </div>
         </form>
@@ -72,8 +105,10 @@ function DataTypeInput({ show, onClose }) {
 }
 
 DataTypeInput.propTypes = {
-  show: PropTypes.bool,
-  onClose: PropTypes.func,
+  show: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func.isRequired, // New success callback prop
+  onError: PropTypes.func.isRequired, // New error callback prop
 };
 
 export default DataTypeInput;
