@@ -35,35 +35,34 @@ const TopikKelas = () => {
     dispatch(getType());
   }, [dispatch]);
   
-  // Menangani URL untuk kategori yang dipilih
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const categoryFromUrl = params.get("category");  // Ambil kategori dari URL
+    const categoryFromUrl = params.get("category");
   
     if (categoryFromUrl) {
+      const formattedCategory = categoryFromUrl.replace(/_/g, " ");
       setFilterChecked((prev) => ({
         ...prev,
-        [categoryFromUrl]: true,  // Set filter kategori yang dipilih
+        [formattedCategory]: true,
       }));
-      setSelectedFilter(categoryFromUrl);  // Set kategori di state
+      setSelectedFilter(formattedCategory); 
     } else {
-      // Jika tidak ada kategori di URL, set kategori default
       setSelectedFilter("All");
     }
   }, [location.search]);
   
-  // Fungsi untuk menangani perubahan kategori atau checkbox
-  const handleCategoryClick = (category) => {
-    const url = new URL(window.location);
-    url.searchParams.set("category", category); // Update URL dengan kategori yang dipilih
-    window.history.pushState({}, "", url); // Update URL tanpa reload halaman
   
-    // Set kategori yang dipilih di state
-    setSelectedFilter(category);
-    setCurrentPage(1); // Reset halaman ke 1 saat filter berubah
+  const handleCategoryClick = (category) => {
+    const formattedCategory = category.replace(/\s+/g, "_"); 
+    const url = new URL(window.location);
+    url.searchParams.set("category", formattedCategory); 
+    window.history.pushState({}, "", url);
+  
+    setSelectedFilter(formattedCategory);
+    setCurrentPage(1); 
   };
   
-  // Menangani perubahan filter saat checkbox dipilih
   const handleCheckboxChange = (label) => {
     const updatedChecked = {
       ...filterChecked,
@@ -71,44 +70,60 @@ const TopikKelas = () => {
     };
     setFilterChecked(updatedChecked);
     setScrollPosition(window.scrollY);
+  
+    const activeFilters = Object.keys(updatedChecked).filter((key) => updatedChecked[key]);
+  
+    const filterString = activeFilters
+      .filter((filter) => filter !== selectedFilter)  
+      .map((filter) => filter.replace(/\s+/g, "_"))   
+      .join(",");  
+  
+    const baseUrl = `${window.location.origin}${window.location.pathname}`;
+    if (filterString) {
+      const newUrl = `${baseUrl}?filter=${filterString}`;  
+      window.history.pushState({}, "", newUrl);
+    } else {
+      window.history.pushState({}, "", baseUrl); 
+    }
+  
     const filters = {
       isNewest: updatedChecked["Paling Baru"] || false,
       isPopular: updatedChecked["Paling Populer"] || false,
       promoStatus: updatedChecked["Promo"] || false,
-      // Jika Anda ingin menambah kategori
-      categories: Object.keys(updatedChecked).filter(
-        (key) =>
-          updatedChecked[key] &&
-          key !== "Paling Baru" &&
-          key !== "Paling Populer" &&
-          key !== "Promo"
+      categories: activeFilters.filter((key) =>
+        category.some((cat) => cat.categoryName === key && key !== selectedFilter) 
       ),
-      levels: Object.keys(updatedChecked).filter(
-        (key) => courseLevel.some((level) => level.levelName === key && updatedChecked[key]) // Filter berdasarkan level
+      levels: activeFilters.filter((key) =>
+        courseLevel.some((level) => level.levelName === key)
       ),
     };
+  
+    
     if (
-      updatedChecked["Promo"] ||
-      updatedChecked["Paling Baru"] ||
-      updatedChecked["Paling Populer"]
-    )
-      if (filters.isNewest || filters.isPopular || filters.promoStatus) {
-        dispatch(getFilteredCourses(filters)); // Dispatch the filter action
-      } else {
-        dispatch(getAllCourse()); // If no filters, get all courses
-      }
+      filters.isNewest ||
+      filters.isPopular ||
+      filters.promoStatus ||
+      filters.categories.length ||
+      filters.levels.length
+    ) {
+      dispatch(getFilteredCourses(filters));
+    } else {
+      dispatch(getAllCourse());  
+    }
   };
+  
+  
   useEffect(() => {
     if (scrollPosition !== 0) {
       window.scrollTo(0, scrollPosition);
     }
   }, [filterChecked, scrollPosition]);
+  
   const handleFilterClick = (filter) => {
     setSelectedFilter(filter);
     setCurrentPage(1);
-    // Reset the filterChecked when "All" is clicked
     if (filter === "All") {
-      clearFilters(); // Reset all filters when "All" is selected
+      clearFilters(); 
     }
   };
   const filteredCourses = () => {
@@ -148,13 +163,13 @@ const TopikKelas = () => {
         const matchesLevel =
           levelFilters.length === 0 ||
           levelFilters.some((filter) => course.courseLevel.levelName === filter);
-        return matchesCategory && matchesLevel; // Memastikan kedua kondisi terpenuhi
+        return matchesCategory && matchesLevel; 
       });
     }
     return filteredCourses;
   };
   
-  // Fungsi untuk membersihkan filter
+
   const clearFilters = () => {
     const clearedFilterState = {
       "Paling Baru": false,
@@ -169,18 +184,21 @@ const TopikKelas = () => {
     setScrollPosition(window.scrollY);
     setFilterChecked(clearedFilterState);
     setSelectedFilter("All");
-    window.location.hash = "";  // Reset hash URL
-    dispatch(getAllCourse());  // Ambil semua kursus lagi
+  
+    const url = new URL(window.location);
+    url.search = "";
+    window.history.pushState({}, "", url);
+  
+    dispatch(getAllCourse());
   };
   
-  // Menggunakan scroll yang tersimpan saat filter berubah
+  
   useEffect(() => {
     if (scrollPosition !== 0) {
       window.scrollTo(0, scrollPosition);
     }
   }, [filterChecked, scrollPosition]);
   
-  // Fungsi untuk menampilkan filter tambahan
   const [showFilters, setShowFilters] = useState(false);
   const toggleFilters = () => {
     setShowFilters(!showFilters);
