@@ -74,6 +74,7 @@ const handleCheckboxChange = (label) => {
   setFilterChecked(updatedChecked);
   setScrollPosition(window.scrollY);
 
+<<<<<<< HEAD
   // Mengambil kategori dan level yang dipilih
   const filters = {
     isNewest: updatedChecked["Paling Baru"] || false,
@@ -90,6 +91,28 @@ const handleCheckboxChange = (label) => {
       (key) => courseLevel.some((level) => level.levelName === key && updatedChecked[key])
     ),
   };
+=======
+        const filters = {
+            isNewest: updatedChecked["Paling Baru"] || false,
+            isPopular: updatedChecked["Paling Populer"] || false,
+            promoStatus: updatedChecked["Promo"] || false,
+            // Jika Anda ingin menambah kategori
+            categories: Object.keys(updatedChecked).filter(
+                (key) =>
+                    updatedChecked[key] &&
+                    key !== "Paling Baru" &&
+                    key !== "Paling Populer" &&
+                    key !== "Promo"
+            ),
+            levels: Object.keys(updatedChecked).filter(
+                (key) =>
+                    courseLevel.some(
+                        (level) =>
+                            level.levelName === key && updatedChecked[key]
+                    ) // Filter berdasarkan level
+            ),
+        };
+>>>>>>> d95f1ee999b94e028d222f4700d45ab18e9dd6e4
 
   // Dispatch action berdasarkan filter yang dipilih
   if (filters.isNewest || filters.isPopular || filters.promoStatus || filters.categories.length || filters.levels.length) {
@@ -108,6 +131,7 @@ const filteredCourses = () => {
       course.courseName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       course.category.categoryName.toLowerCase().includes(searchQuery.toLowerCase());
 
+<<<<<<< HEAD
     // Filter berdasarkan kategori yang dipilih
     if (selectedFilter && course.category.categoryName !== selectedFilter && selectedFilter !== "All") {
       return false;
@@ -122,6 +146,84 @@ const filteredCourses = () => {
     );
     const levelFilters = activeFilters.filter((filter) =>
       courseLevel.some((level) => level.levelName === filter)
+=======
+    const filteredCourses = () => {
+        const activeFilters = Object.keys(filterChecked).filter(
+            (key) => filterChecked[key]
+        );
+    
+        let filteredCourses = courses.filter((course) => {
+            const matchesSearch =
+                course.courseName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                course.category.categoryName.toLowerCase().includes(searchQuery.toLowerCase());
+    
+            if (selectedFilter === "Premium" && course.coursePrice === 0)
+                return false;
+            if (selectedFilter === "Free" && course.coursePrice !== 0)
+                return false;
+    
+            return matchesSearch;
+        });
+    
+        if (activeFilters.length > 0) {
+            const categoryFilters = activeFilters.filter(filter => 
+                category.some(cat => cat.categoryName === filter)
+            );
+            const levelFilters = activeFilters.filter(filter => 
+                courseLevel.some(level => level.levelName === filter)
+            );
+    
+            filteredCourses = filteredCourses.filter((course) => {
+                const matchesCategory = categoryFilters.length === 0 || categoryFilters.some(filter => 
+                    course.category.categoryName === filter
+                );
+    
+                const matchesLevel = levelFilters.length === 0 || levelFilters.some(filter => 
+                    course.courseLevel.levelName === filter
+                );
+    
+                return matchesCategory && matchesLevel; // Memastikan kedua kondisi terpenuhi
+            });
+        }
+    
+        return filteredCourses;
+    };
+
+    const clearFilters = () => {
+        const clearedFilterState = {
+            "Paling Baru": false,
+            "Paling Populer": false,
+            Promo: false,
+            ...categories.reduce((acc, category) => {
+                acc[category.categoryName] = false;
+                return acc;
+            }, {}),
+        };
+
+        const currentScrollPosition = window.scrollY;
+        setScrollPosition(currentScrollPosition);
+
+        setFilterChecked(clearedFilterState);
+        setSelectedFilter("All");
+        window.location.hash = "";
+
+        dispatch(getAllCourse());
+    };
+
+    const [showFilters, setShowFilters] = useState(false);
+
+    const toggleFilters = () => {
+        setShowFilters(!showFilters);
+    };
+
+    const filteredCourseType = filteredCourses();
+    const totalPages = Math.ceil(filteredCourseType.length / itemsPerPage);
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredCourseType.slice(
+        indexOfFirstItem,
+        indexOfLastItem
+>>>>>>> d95f1ee999b94e028d222f4700d45ab18e9dd6e4
     );
 
     filteredCourses = filteredCourses.filter((course) => {
