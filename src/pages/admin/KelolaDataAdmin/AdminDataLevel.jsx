@@ -10,7 +10,8 @@ import {
   deleteLevelCourseById,
 } from "../../../redux/actions/levelCourseActions";
 import NavbarAdmin from "../../../components/NavbarAdmin";
-
+import { toast } from "react-hot-toast";
+import DataLevelDelete from "../../../components/Admin/DataLevel/DataLevelDelete";
 
 const AdminDataLevel = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -29,69 +30,111 @@ const AdminDataLevel = () => {
     levelName: "",
   });
 
-  // State for popup notification
-  const [showNotification, setShowNotification] = useState(false);
-  const [notificationMessage, setNotificationMessage] = useState("");
+  // State for delete modal visibility and level ID to delete
+  const [showDelete, setShowDelete] = useState(false);
+  const [levelToDelete, setLevelToDelete] = useState(null);
 
   // Fetch level courses on component mount
   useEffect(() => {
     dispatch(getAllLevelCourses());
   }, [dispatch]);
 
-  // Show notification popup
-  const showPopupNotification = (message) => {
-    setNotificationMessage(message);
-    setShowNotification(true);
-    setTimeout(() => {
-      setShowNotification(false);
-    }, 3000);
-  };
-
   // Handle form input change
   const handleInputChange = (e) => {
     setFormData({ ...formData, levelName: e.target.value });
   };
 
+  // loading//
+  const [loadingTambah, setLoadingTambah] = useState(false);
+
+  // const [loadingTambah, setLoadingTambah] = useState(false);
+
   // Handle add level
   const handleAddLevel = async () => {
-    if (levelCourses.some((level) => level.levelName.toLowerCase() === formData.levelName.toLowerCase())) {
-      showPopupNotification("Level sudah ada");
+    if (!formData.levelName.trim()) {
+      toast.error("Nama level tidak boleh kosong", {
+        style: { backgroundColor: "#d93025", color: "#fff" },
+      });
       return;
     }
+
+    if (
+      levelCourses.some(
+        (level) =>
+          level.levelName.toLowerCase() === formData.levelName.toLowerCase()
+      )
+    ) {
+      toast.error("Level sudah ada", {
+        style: { backgroundColor: "#d93025", color: "#fff" },
+      });
+      return;
+    }
+
+    setLoadingTambah(true);
+
     try {
       await dispatch(createLevelCourse(formData.levelName));
       setFormData({ levelName: "" });
       setShowModal(false);
-      showPopupNotification("Level berhasil ditambahkan");
+      toast.success("Level berhasil ditambahkan", {
+        style: { backgroundColor: "#4BB543", color: "#fff" },
+      });
     } catch (err) {
-      showPopupNotification("Terjadi kesalahan saat menambahkan level");
+      toast.error("Terjadi kesalahan saat menambahkan level", {
+        style: { backgroundColor: "#d93025", color: "#fff" },
+      });
+    } finally {
+      setLoadingTambah(false); // Set loading to false
     }
   };
 
   // Handle edit level
   const handleEditLevel = async () => {
+    if (!formData.levelName.trim()) {
+      toast.error("Nama level tidak boleh kosong", {
+        style: { backgroundColor: "#d93025", color: "#fff" },
+      });
+      return;
+    }
+
+    if (
+      levelCourses.some(
+        (level) =>
+          level.levelName.toLowerCase() === formData.levelName.toLowerCase() &&
+          level.id !== selectedLevel.id
+      )
+    ) {
+      toast.error("Nama level sudah ada", {
+        style: { backgroundColor: "#d93025", color: "#fff" }, // Merah
+      });
+      return;
+    }
+
+    setLoadingTambah(true);
     try {
-      await dispatch(updateLevelCourseById(selectedLevel.id, formData.levelName));
+      await dispatch(
+        updateLevelCourseById(selectedLevel.id, formData.levelName)
+      );
       setFormData({ levelName: "" });
       setSelectedLevel(null);
       setIsEditMode(false);
       setShowModal(false);
-      showPopupNotification("Level berhasil diubah");
+      toast.success("Level berhasil diubah", {
+        style: { backgroundColor: "#4BB543", color: "#fff" },
+      });
     } catch (err) {
-      showPopupNotification("Terjadi kesalahan saat mengubah level");
+      toast.error("Terjadi kesalahan saat mengedit level", {
+        style: { backgroundColor: "#d93025", color: "#fff" },
+      });
+    } finally {
+      setLoadingTambah(false); // Set loading to false
     }
   };
 
-  // Handle delete level
-  const handleDeleteLevel = async (id) => {
-    if (window.confirm("Are you sure you want to delete this level?")) {
-      try {
-        await dispatch(deleteLevelCourseById(id));
-        showPopupNotification("Level berhasil dihapus");
-      } catch (err) {
-        showPopupNotification("Terjadi kesalahan saat menghapus level");
-      }
-    }
+  // Handle delete level (called from modal)
+  const handleDeleteLevel = (id) => {
+    setLevelToDelete(id);
+    setShowDelete(true); // Show the delete confirmation modal
   };
 
   // Open modal for adding new level
@@ -108,6 +151,12 @@ const AdminDataLevel = () => {
     setSelectedLevel(level);
     setFormData({ levelName: level.levelName });
     setShowModal(true);
+  };
+
+  // Close the delete modal
+  const closeDeleteModal = () => {
+    setShowDelete(false);
+    setLevelToDelete(null);
   };
 
   return (
@@ -160,46 +209,42 @@ const AdminDataLevel = () => {
 
           {/* Tabel Data Level */}
           <div className="overflow-x-auto bg-white p-4">
-            {loading ? (
-              <p>Loading...</p>
-            ) : (
-              <table className="min-w-full table-auto">
-                <thead>
-                  <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
-                    <th className="px-2 md:px-4 py-2">Nomor</th>
-                    <th className="px-2 md:px-4 py-2">Level</th>
-                    <th className="px-2 md:px-4 py-2">Aksi</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {levelCourses.map((level, index) => {
-                    const rowNumber = index + 1;
-                    return (
-                      <tr key={index} className="border-t text-xs md:text-sm">
-                        <td className="px-2 md:px-4 py-2">{rowNumber}</td>
-                        <td className="px-2 md:px-4 py-2">{level.levelName}</td>
-                        <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
-                          {/* Tombol Ubah */}
-                          <button
-                            className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
-                            onClick={() => openEditModal(level)}
-                          >
-                            Ubah
-                          </button>
-                          {/* Tombol Hapus */}
-                          <button
-                            className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
-                            onClick={() => handleDeleteLevel(level.id)}
-                          >
-                            Hapus
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            )}
+            <table className="min-w-full table-auto">
+              <thead>
+                <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
+                  <th className="px-2 md:px-4 py-2">Nomor</th>
+                  <th className="px-2 md:px-4 py-2">Level</th>
+                  <th className="px-2 md:px-4 py-2">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {levelCourses.map((level, index) => {
+                  const rowNumber = index + 1;
+                  return (
+                    <tr key={index} className="border-t text-xs md:text-sm">
+                      <td className="px-2 md:px-4 py-2">{rowNumber}</td>
+                      <td className="px-2 md:px-4 py-2">{level.levelName}</td>
+                      <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
+                        {/* Tombol Ubah */}
+                        <button
+                          className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                          onClick={() => openEditModal(level)}
+                        >
+                          Ubah
+                        </button>
+                        {/* Tombol Hapus */}
+                        <button
+                          className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                          onClick={() => handleDeleteLevel(level.id)}
+                        >
+                          Hapus
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
 
           {/* Modal for Adding and Editing Level */}
@@ -227,7 +272,9 @@ const AdminDataLevel = () => {
                 >
                   {/* Level Name Input */}
                   <div className="mb-4">
-                    <label className="block mb-1 font-semibold">Level Kelas</label>
+                    <label className="block mb-1 font-semibold">
+                      Level Kelas
+                    </label>
                     <input
                       type="text"
                       name="levelName"
@@ -241,10 +288,21 @@ const AdminDataLevel = () => {
 
                   <div className="flex justify-center">
                     <button
-                      className="py-2 px-6 bg-[#0a61aa] text-white rounded-xl"
+                      className="py-2 px-6 bg-[#0a61aa] text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
                       type="submit"
+                      disabled={
+                        loadingTambah ||
+                        !formData.levelName.trim() || // Cek input kosong
+                        (isEditMode &&
+                          formData.levelName === selectedLevel?.levelName) // Cek jika tidak ada perubahan
+                      }
+                      onClick={isEditMode ? handleEditLevel : handleAddLevel}
                     >
-                      {isEditMode ? "Ubah" : "Tambah"}
+                      {loadingTambah
+                        ? "Loading..."
+                        : isEditMode
+                        ? "Ubah"
+                        : "Tambah"}
                     </button>
                   </div>
                 </form>
@@ -252,16 +310,12 @@ const AdminDataLevel = () => {
             </div>
           )}
 
-          {/* Notification Popup */}
-          {showNotification && (
-            <div
-              className={`fixed bottom-0 left-1/2 transform -translate-x-1/2 mb-10 bg-red-500 text-white px-4 py-2 rounded-md shadow-lg transition-transform duration-500 ease-in-out ${
-                showNotification ? "translate-y-0" : "translate-y-full"
-              }`}
-            >
-              {notificationMessage}
-            </div>
-          )}
+          {/* Delete Confirmation Modal */}
+          <DataLevelDelete
+            show={showDelete}
+            onClose={closeDeleteModal}
+            levelId={levelToDelete}
+          />
         </div>
       </div>
     </>
