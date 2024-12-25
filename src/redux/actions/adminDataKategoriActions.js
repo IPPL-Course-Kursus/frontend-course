@@ -79,6 +79,8 @@ export const updateCategory = (id, updatedData) => async (dispatch) => {
   } catch (error) {
     const errorMessage = error.response?.data?.message || error.message;
     dispatch(updateCategoryFailure(errorMessage));
+    console.error("Update Category Error:", error);
+    console.error("Error Message:", errorMessage);
     throw error;
   }
 };
