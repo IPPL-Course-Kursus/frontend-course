@@ -121,13 +121,8 @@ const TopikKelas = () => {
     } else {
       dispatch(getAllCourse());
     }
+    setCurrentPage(1);
   };
-  
-  useEffect(() => {
-    if (scrollPosition !== 0) {
-      window.scrollTo(0, scrollPosition);
-    }
-  }, [filterChecked, scrollPosition]);
   
   const handleFilterClick = (filter) => {
     setSelectedFilter(filter);
@@ -155,7 +150,7 @@ const TopikKelas = () => {
         course.courseName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         course.category.categoryName.toLowerCase().includes(searchQuery.toLowerCase());
   
-      if (selectedFilter === "All") return true;
+      if (selectedFilter === "All") return matchesSearch;
       if (selectedFilter === "Premium" && course.coursePrice === 0) return false;
       if (selectedFilter === "Free" && course.coursePrice !== 0) return false;
       if (selectedFilter !== "All" && selectedFilter !== "Premium" && selectedFilter !== "Free" && !category.some(cat => cat.categoryName === selectedFilter)) {
@@ -249,7 +244,6 @@ const TopikKelas = () => {
       }, {}),
     };
   
-    setScrollPosition(window.scrollY);
     setFilterChecked(clearedFilterState);
     setSelectedFilter("All");
     setCurrentPage(1); // Reset halaman ke 1
@@ -260,13 +254,6 @@ const TopikKelas = () => {
   
     dispatch(getAllCourse());
   };
-  
-  
-  useEffect(() => {
-    if (scrollPosition !== 0) {
-      window.scrollTo(0, scrollPosition);
-    }
-  }, [filterChecked, scrollPosition]);
   
   const [showFilters, setShowFilters] = useState(false);
   const toggleFilters = () => {
