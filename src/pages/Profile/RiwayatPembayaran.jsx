@@ -45,10 +45,6 @@ const RiwayatPembayaran = () => {
       filteredData = paymentHistory.filter(
         (payment) => payment.paymentStatus === "pending"
       );
-    } else if (filterType === "cancel") {
-      filteredData = paymentHistory.filter(
-        (payment) => payment.paymentStatus === "cancel"
-      );
     } else {
       filteredData = paymentHistory; // Default, semua data
     }
@@ -102,15 +98,7 @@ const RiwayatPembayaran = () => {
               className="bg-white border border-gray-300 shadow-lg rounded-2xl w-full md:w-40 h-16 flex justify-center items-center cursor-pointer"
               onClick={() => filterPayments("pending")}
             >
-              <span className="font-semibold text-xl text-center">Pending</span>
-            </div>
-            <div
-              className="bg-white border border-gray-300 shadow-lg rounded-2xl w-full md:w-40 h-16 flex justify-center items-center cursor-pointer"
-              onClick={() => filterPayments("cancel")}
-            >
-              <span className="font-semibold text-xl text-center">
-                Dibatalkan
-              </span>
+              <span className="font-semibold text-xl text-center">Belum Dibayar</span>
             </div>
           </div>
         </div>

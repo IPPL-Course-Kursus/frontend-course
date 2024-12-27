@@ -12,6 +12,8 @@ import { getDetailCourse } from "../../redux/actions/detailActions";
 import { createTransaction } from "../../redux/actions/transactionActions";
 import { getUserCourses } from "../../redux/actions/courseActions";
 import { FaRupiahSign } from "react-icons/fa6";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import Cookies from "js-cookie";
 
 export const DetailKelas = () => {
@@ -23,16 +25,16 @@ export const DetailKelas = () => {
     const [isModalOpen, setModalOpen] = useState(false);
     const [transactionMessage, setTransactionMessage] = useState("");
     const [expandedChapter, setExpandedChapter] = useState(null);
+    const isLoading = !detail || Object.keys(detail).length === 0;
     const isCourseEnrolled = () => {
         return userCourses.some((course) => course.courseId === id);
     };
     const getEnrolledCourseId = () => {
-      const enrolledCourse = userCourses.find(
-          (course) => course.courseId === id
-      );
-      return enrolledCourse ? enrolledCourse.id : null; // Menggunakan 'id' dari userCourses
-  };
-  
+        const enrolledCourse = userCourses.find(
+            (course) => course.courseId === id
+        );
+        return enrolledCourse ? enrolledCourse.id : null; // Menggunakan 'id' dari userCourses
+    };
 
     const handleExpandChapter = (chapterId) => {
         setExpandedChapter(expandedChapter === chapterId ? null : chapterId);
@@ -135,35 +137,33 @@ export const DetailKelas = () => {
     };
 
     const handleButtonClick = () => {
-      const token = Cookies.get("token");
-  
-      if (!token) {
-          Swal.fire({
-              icon: "warning",
-              title: "Harap Login",
-              text: "Anda perlu login untuk membeli kelas. Silakan login terlebih dahulu.",
-              confirmButtonText: "OK",
-          });
-          return;
-      }
-      if (isCourseEnrolled()) {
-          // Ambil id dari data userCourses yang sudah diambil
-          const enrolledCourseId = getEnrolledCourseId();
-          // Navigasi ke halaman mulai kelas jika sudah diambil
-          if (enrolledCourseId) {
-              navigate(`/mulai-kelas/${enrolledCourseId}`); // Gunakan id dari userCourses untuk navigasi
-          }
-      } else {
-          // Tampilkan modal untuk pembayaran jika belum diambil
-          handleModalOpen();
-      }
-  };
-  
+        const token = Cookies.get("token");
+
+        if (!token) {
+            Swal.fire({
+                icon: "warning",
+                title: "Harap Login",
+                text: "Anda perlu login untuk membeli kelas. Silakan login terlebih dahulu.",
+                confirmButtonText: "OK",
+            });
+            return;
+        }
+        if (isCourseEnrolled()) {
+            // Ambil id dari data userCourses yang sudah diambil
+            const enrolledCourseId = getEnrolledCourseId();
+            // Navigasi ke halaman mulai kelas jika sudah diambil
+            if (enrolledCourseId) {
+                navigate(`/mulai-kelas/${enrolledCourseId}`); // Gunakan id dari userCourses untuk navigasi
+            }
+        } else {
+            // Tampilkan modal untuk pembayaran jika belum diambil
+            handleModalOpen();
+        }
+    };
 
     return (
         <>
             <Navbar />
-
             <div className="w-full h-full container mx-auto">
                 <div className="flex flex-row-reverse justify-between lg:flex lg:flex-col lg:gap-4">
                     <Link
@@ -179,27 +179,44 @@ export const DetailKelas = () => {
                     <div className="max-w-screen-xl mx-auto px-4 flex flex-col sm:flex-row sm:items-start sm:justify-between">
                         <div className="w-full sm:w-1/2 pt-16 pb-16 pr-8">
                             <h1 className="text-[#151515] text-[24px] sm:text-[32px] font-semibold leading-normal">
-                                {detail.courseName || "Loading..."}
+                                {isLoading ? (
+                                    <Skeleton width={300} className="bg-gray-300"/>
+                                ) : (
+                                    detail.courseName
+                                )}
                             </h1>
                             <p className="text-[#151515] text-[12px] sm:text-[15px] leading-tight mt-4">
-                                {detail.intendedFor ||
-                                    "Deskripsi belum tersedia"}
+                                {isLoading ? (
+                                    <Skeleton width="100%" height={100} className="bg-gray-300"/>
+                                ) : (
+                                    detail.intendedFor
+                                )}
                             </p>
                             <button
                                 onClick={handleButtonClick}
                                 className="mt-6 px-4 py-2 bg-[#0a61aa] text-white text-xs font-bold rounded-md"
                             >
-                                {isCourseEnrolled()
-                                    ? "Pelajari Kelas"
-                                    : "Beli Kelas"}
+                                {isLoading ? (
+                                    <Skeleton width={100} height={20} className="bg-gray-300"/>
+                                ) : userCourses.some(
+                                    (course) => course.courseId === id
+                                  ) ? (
+                                    "Pelajari Kelas"
+                                ) : (
+                                    "Beli Kelas"
+                                )}
                             </button>
                         </div>
                         <div className="w-full sm:w-[512px] pt-16 pb-16">
-                            <img
-                                className="w-full rounded-xl h-auto"
-                                src={detail.image}
-                                alt="Gambar Kelas"
-                            />
+                            {isLoading ? (
+                                <Skeleton height={300} className="bg-gray-300"/>
+                            ) : (
+                                <img
+                                    className="w-full rounded-xl"
+                                    src={detail.image}
+                                    alt="Gambar Kelas"
+                                />
+                            )}
                         </div>
                     </div>
                 </div>
@@ -235,6 +252,9 @@ export const DetailKelas = () => {
 
                 {/* Bagian Tentang Kelas dan Detail Kelas */}
                 <div className=" mx-auto px-4 mt-8">
+                {isLoading ? (
+                                    <Skeleton  width={"100%"} height={300} className="bg-gray-300"/>
+                                ) : (
                     <div className="flex flex-col sm:flex-row w-full">
                         <div className="w-full sm:w-2/3 p-4 bg-secondary rounded-md border border-solid border-[#d1d1d1]">
                             <h2 className="text-xl font-semibold text-[#151515]">
@@ -281,52 +301,80 @@ export const DetailKelas = () => {
                             </div>
                         </div>
                     </div>
+                                )} 
                 </div>
 
                 {/* Bagian Chapter */}
                 <div className=" mx-auto px-4 mt-8 ">
-                <div className="p-6 bg-white shadow-lg rounded-lg border border-gray-200">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Chapters</h2>
-        <div>
-          {detail.chapters?.length > 0 ? (
-            detail.chapters.map((chapter) => (
-              <div key={chapter.id} className="mb-3">
-                <div
-                  onClick={() => handleExpandChapter(chapter.id)}
-                  className="p-3 bg-blue-100 hover:bg-blue-200 rounded-lg cursor-pointer flex justify-between items-center"
-                >
-                  <span className="font-semibold text-gray-700">
-                    {chapter.chapterTitle}
-                  </span>
-                  <span className="text-gray-500">
-                    {expandedChapter === chapter.id ? "▲" : "▼"}
-                  </span>
-                </div>
-                {expandedChapter === chapter.id && (
-                  <div className="mt-2 pl-4 bg-blue-50 rounded-lg py-2">
-                    {chapter.contents?.length > 0 ? (
-                      chapter.contents.map((content, contentIndex) => (
-                        <div
-                          key={contentIndex}
-                          className="p-2 text-gray-600 hover:bg-blue-100 rounded-md cursor-pointer"
-                        >
-                          <li className="list-none">{content.contentTitle}</li>
+                    <div className="p-6 bg-white shadow-lg rounded-lg border border-gray-200">
+                        <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+                            Chapters
+                        </h2>
+                        <div>
+                            {isLoading ? (
+                                <Skeleton
+                                    height={50}
+                                    count={3}
+                                    className="mt-4"
+                                />
+                            ) : detail.chapters?.length > 0 ? (
+                                detail.chapters.map((chapter) => (
+                                    <div key={chapter.id} className="mb-3">
+                                        <div
+                                            onClick={() =>
+                                                handleExpandChapter(chapter.id)
+                                            }
+                                            className="p-3 bg-blue-100 hover:bg-blue-200 rounded-lg cursor-pointer flex justify-between items-center"
+                                        >
+                                            <span className="font-semibold text-gray-700">
+                                                {chapter.chapterTitle}
+                                            </span>
+                                            <span className="text-gray-500">
+                                                {expandedChapter === chapter.id
+                                                    ? "▲"
+                                                    : "▼"}
+                                            </span>
+                                        </div>
+                                        {expandedChapter === chapter.id && (
+                                            <div className="mt-2 pl-4 bg-blue-50 rounded-lg py-2">
+                                                {chapter.contents?.length >
+                                                0 ? (
+                                                    chapter.contents.map(
+                                                        (
+                                                            content,
+                                                            contentIndex
+                                                        ) => (
+                                                            <div
+                                                                key={
+                                                                    contentIndex
+                                                                }
+                                                                className="p-2 text-gray-600 hover:bg-blue-100 rounded-md cursor-pointer"
+                                                            >
+                                                                <li className="list-none">
+                                                                    {
+                                                                        content.contentTitle
+                                                                    }
+                                                                </li>
+                                                            </div>
+                                                        )
+                                                    )
+                                                ) : (
+                                                    <p className="text-gray-500 pl-2">
+                                                        Tidak ada konten
+                                                        tersedia
+                                                    </p>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-gray-500">
+                                    Tidak ada chapter yang tersedia.
+                                </p>
+                            )}
                         </div>
-                      ))
-                    ) : (
-                      <p className="text-gray-500 pl-2">
-                        Tidak ada konten tersedia
-                      </p>
-                    )}
-                  </div>
-                )}
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-500">Tidak ada chapter yang tersedia.</p>
-          )}
-        </div>
-      </div>
+                    </div>
                 </div>
 
                 {/* Rekomendasi Kelas */}

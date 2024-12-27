@@ -6,6 +6,8 @@ import {
   clearError,
 } from "../reducers/datainstructorReducers"; // Pastikan jalur ini benar
 import { getCookie } from "cookies-next";
+import { Form } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const api_url = import.meta.env.VITE_REACT_API_ADDRESS; // pastikan sudah di .env
 
@@ -66,24 +68,53 @@ export const addInstructor = (newInstructor) => async (dispatch) => {
     );
 
     const addedInstructor = response.data.data;
+    toast.success("Instruktur berhasil ditambahkan", {
+                    style: {
+                      borderRadius: "8px",
+                      background: "#4CAF50",
+                      color: "#fff",
+                    },
+                  });
     dispatch({
       type: "ADD_INSTRUCTOR",
       payload: addedInstructor,
     });
+    
+    
   } catch (error) {
     console.error("Error response:", error.response?.data); // Log error dari server
-    if (error.response?.data.errors) {
-      const errorMessages = error.response.data.errors
-        .map((err) => err.message)
-        .join(", ");
-      dispatch(setError(`Error adding instructor: ${errorMessages}`));
-    } else {
-      dispatch(setError(error.message || "Error adding instructor"));
+    let errorMessage = "Gagal menambahkan instruktur. Email telah digunakan.";
+    if (error.response?.data?.errors) {
+      const errors = error.response.data.errors;
+
+      // Cari error email secara eksplisit
+      const emailError = errors.find(
+        (err) =>
+          err.param === "email" || err.message.toLowerCase().includes("email")
+      );
+
+      // Jika error email ditemukan, pakai pesan custom
+      if (emailError) {
+        errorMessage = "Gagal menambahkan instruktur. Email telah digunakan.";
+      } else {
+        errorMessage = errors.map((err) => err.message).join(", ");
+      }
     }
+
+    // Paksa tampilkan pesan custom tanpa backend override
+    toast.dismiss(); // Hapus toast lain yang mungkin aktif
+    toast.error(errorMessage, {
+      style: {
+        borderRadius: "8px",
+        background: "#FF3333",
+        color: "#fff",
+      },
+    });
   } finally {
     dispatch(setLoading(false));
   }
 };
+
 
 export const updateInstructor = (id, updatedInstructor) => async (dispatch) => {
   dispatch(setLoading(true));

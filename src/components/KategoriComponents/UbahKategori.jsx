@@ -3,41 +3,38 @@ import { useDispatch } from "react-redux";
 import PropTypes from "prop-types";
 import KategoriForm from "./KategoriForm";
 import { updateCategory } from "../../redux/actions/adminDataKategoriActions";
+import { toast } from "react-hot-toast"; // Import toast
 
-const UbahKategori = ({
-  show,
-  onClose,
-  existingData,
-  onSuccess,
-  showPopupNotification,
-}) => {
+const UbahKategori = ({ show, onClose, onSuccess, existingData }) => {
   const dispatch = useDispatch();
 
-  // Initial form data
+  // Initial form data with existing category details
   const initialFormData = {
-    categoryName: existingData ? existingData.categoryName : "",
-    image: null, // Image file
+    categoryName: existingData?.categoryName || "",
+    image: null, // Image file (optional, in case user wants to change it)
   };
 
   const [formData, setFormData] = useState(initialFormData);
-  const [imagePreview, setImagePreview] = useState(
-    existingData ? existingData.image : null
-  );
+  const [imagePreview, setImagePreview] = useState(existingData?.image || null);
   const [imageFile, setImageFile] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false); // Submission state
 
   useEffect(() => {
-    if (show && existingData) {
-      // Set form data when the popup opens
+    if (show) {
+      // Reset form when popup opens with existing data
       setFormData({
-        categoryName: existingData.categoryName || "",
-        image: null, // Reset image file
+        categoryName: existingData?.categoryName || "",
+        image: null,
       });
-      setImagePreview(existingData.image || null);
-    } else if (!show) {
-      // Reset form data when the popup closes
-      setFormData(initialFormData);
-      setImagePreview(existingData ? existingData.image : null);
+      setImagePreview(existingData?.image || null);
       setImageFile(null);
+      setIsSubmitting(false);
+    } else {
+      // Reset form when popup closes
+      setFormData(initialFormData);
+      setImagePreview(existingData?.image || null);
+      setImageFile(null);
+      setIsSubmitting(false);
     }
   }, [show, existingData]);
 
@@ -56,6 +53,10 @@ const UbahKategori = ({
         setImagePreview(reader.result);
       };
       reader.readAsDataURL(file);
+    } else {
+      // If no file is selected, reset imageFile and imagePreview
+      setImageFile(null);
+      setImagePreview(existingData?.image || null);
     }
   };
 
@@ -65,15 +66,22 @@ const UbahKategori = ({
 
     // Validation: Check if categoryName is provided
     if (!formData.categoryName.trim()) {
-      showPopupNotification("Silakan isi field Nama Kategori.", "error");
+      toast.error("Silakan isi field Nama Kategori.", {
+        style: {
+          borderRadius: "8px",
+          background: "#FF3333",
+          color: "#fff",
+        },
+      });
       return;
     }
+
+    setIsSubmitting(true); // Start submission
 
     try {
       // Construct FormData
       const formDataToSend = new FormData();
       formDataToSend.append("categoryName", formData.categoryName);
-
       if (imageFile) {
         formDataToSend.append("image", imageFile);
       }
@@ -81,21 +89,28 @@ const UbahKategori = ({
       // Dispatch updateCategory action and await its completion
       await dispatch(updateCategory(existingData.id, formDataToSend));
 
-      // If successful, proceed to close and notify
+      // Close the popup first
       handleClose();
+
+      // Execute any additional success actions
       if (onSuccess) {
         onSuccess();
       }
 
       // Show success notification
-      showPopupNotification("Kategori berhasil diubah", "success");
+      toast.success("Kategori berhasil diperbarui", {
+        style: {
+          borderRadius: "8px",
+          background: "#4BB543",
+          color: "#fff",
+        },
+      });
     } catch (error) {
       // Handle errors (e.g., duplicate category name)
       console.error("Error updating category:", error);
 
       let errorMessage = "Gagal memperbarui kategori. Silakan coba lagi.";
 
-      // Check if the error is due to duplicate category name
       if (
         error.response &&
         error.response.data &&
@@ -114,19 +129,32 @@ const UbahKategori = ({
         }
       }
 
-      showPopupNotification(errorMessage, "error");
+      toast.error(errorMessage, {
+        style: {
+          borderRadius: "8px",
+          background: "#FF3333",
+          color: "#fff",
+        },
+      });
+    } finally {
+      setIsSubmitting(false); // End submission
     }
   };
 
   const handleClose = () => {
     // Reset form data and image preview
     setFormData(initialFormData);
-    setImagePreview(existingData ? existingData.image : null);
+    setImagePreview(existingData?.image || null);
     setImageFile(null);
+    setIsSubmitting(false);
     onClose();
   };
 
-  if (!show || !existingData) return null;
+  // Determine if the submit button should be disabled
+  const isSubmitDisabled =
+    !formData.categoryName.trim() || isSubmitting;
+
+  if (!show) return null;
 
   return (
     <KategoriForm
@@ -138,6 +166,8 @@ const UbahKategori = ({
       handleSubmit={handleUpdate}
       imagePreview={imagePreview}
       isEditMode={true}
+      isSubmitDisabled={isSubmitDisabled}
+      isSubmitting={isSubmitting} // Pass the submitting state
     />
   );
 };
@@ -145,9 +175,12 @@ const UbahKategori = ({
 UbahKategori.propTypes = {
   show: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  existingData: PropTypes.object.isRequired,
   onSuccess: PropTypes.func,
-  showPopupNotification: PropTypes.func.isRequired,
+  existingData: PropTypes.shape({
+    id: PropTypes.number.isRequired, // Adjust type based on your data
+    categoryName: PropTypes.string.isRequired,
+    image: PropTypes.string, // URL to the image
+  }).isRequired,
 };
 
 export default UbahKategori;

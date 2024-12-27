@@ -5,6 +5,8 @@ import { updateDataCourse } from "../../../redux/actions/instruktorActions";
 import { getCategory } from "../../../redux/actions/categoryActions";
 import { getAllTypeCourses } from "../../../redux/actions/typeCourseActions";
 import { getAllLevelCourses } from "../../../redux/actions/levelCourseActions";
+import LoadSpinner from "../../Spinner/LoadSpinner";
+import toast from "react-hot-toast";
 
 const DataKelasUbah = ({ show, onClose, existingData }) => {
   const dispatch = useDispatch();
@@ -20,7 +22,18 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
     intendedFor: "",
     aboutCourse: "",
   });
+  const [categoryIdError, setCategoryIdError] = useState(null);
+  const [courseNameError, setCourseNameError] = useState(null);
+  const [typeCourseIdError, setTypeCourseIdError] = useState(null);
+  const [courseLevelIdError, setCourseLevelIdError] = useState(null);
+  // const [coursePriceError, setCoursePriceError] = useState(null);
+  // const [courseDiscountPercentError, setCourseDiscountPercentError] = useState(null);
+  const [intendedForError, setIntendedForError] = useState(null);
+  const [aboutCourseError, setAboutCourseError] = useState(null);
+  const [publishError, setPublishError] = useState(null);
+  const [certificateStatusError, setCertificateStatusError] = useState(null);
 
+  const [loading, setLoading] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const { category } = useSelector((state) => state.category);
@@ -49,24 +62,46 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
     }
   }, [dispatch, existingData]);
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
 
-    console.log("Input changed:", name, value);
+    // Jika value 'free', set harga dan diskon menjadi 0
+    if (value === "free") {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        coursePrice: 0,
+        courseDiscountPercent: 0,
+      }));
+    } else {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: value,
+      }));
+    }
 
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]:
-        name === "categoryId" ||
-        name === "courseLevelId" ||
-        name === "coursePrice" ||
-        name === "courseDiscountPercent" ||
-        name === "typeCourseId"
-          ? value === "" // Jika kosong, set sebagai 0 atau tetap kosong
-            ? 0
-            : parseInt(value, 10) // Jika ada angka, lakukan parsing
-          : value,
-    }));
+    if (name === "courseName") {
+      setCourseNameError(null);
+    } 
+    // else if (name === "coursePrice") {
+    //   setCoursePriceError(null);
+    // } else if (name === "courseDiscountPercent") {
+    //   setCourseDiscountPercentError(null);
+    // } 
+    else if (name === "intendedFor") {
+      setIntendedForError(null);
+    } else if (name === "aboutCourse") {
+      setAboutCourseError(null);
+    } else if (name === "categoryId") {
+      setCategoryIdError(null);
+    } else if (name === "typeCourseId") {
+      setTypeCourseIdError(null);
+    } else if (name === "courseLevelId") {
+      setCourseLevelIdError(null);
+    } else if (name === "publish") {
+      setPublishError(null);
+    } else if (name === "certificateStatus") {
+      setCertificateStatusError(null);
+    }
   };
 
   const handleImageUpload = (e) => {
@@ -86,6 +121,7 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+
     if (!existingData || !existingData.id) {
       console.error("existingData atau ID tidak ditemukan");
       return;
@@ -93,22 +129,94 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
 
     const updatedData = {
       ...formData,
-      image: imageFile,
+      image: imageFile ? imageFile : null, // Pastikan imageFile sudah ada dan valid
     };
+
+
+    setCourseNameError(null);
+    // setCoursePriceError(null);
+    // setCourseDiscountPercentError(null);
+    setIntendedForError(null);
+    setAboutCourseError(null);
+    setCategoryIdError(null);
+    setTypeCourseIdError(null);
+    setCourseLevelIdError(null);
+    setPublishError(null);
+    setCertificateStatusError(null);
+
+    let hasError = false;
+
+    // Validasi input requestData jika perlu
+    if (!existingData.categoryId) {
+      setCategoryIdError("Silahkan pilih kategori");
+      hasError = true;
+    }
+    if (!existingData.courseName) {
+      setCourseNameError("Silahkan isi judul kelas");
+      hasError = true;
+    }
+
+    if (!existingData.typeCourseId) {
+      setTypeCourseIdError("Silahkan pilih tipe kelas");
+      hasError = true;
+    }
+
+    if (!existingData.courseLevelId) {
+      setCourseLevelIdError("Silahkan pilih level kelas");
+      hasError = true;
+    }
+    // if (!existingData.coursePrice) {
+    //   setCoursePriceError("Silahkan isi harga kelas");
+    //   hasError = true;
+    // }
+    // if (!existingData.courseDiscountPercent) {
+    //   setCourseDiscountPercentError("Silahkan isi diskon kelas");
+    //   hasError = true;
+    // }
+    if (!existingData.intendedFor) {
+      setIntendedForError("Silahkan isi tujuan kelas");
+      hasError = true;
+    }
+    if (!existingData.aboutCourse) {
+      setAboutCourseError("Silahkan isi tentang kelas");
+      hasError = true;
+    }
+    if (!existingData.publish) {
+      setPublishError("Silahkan pilih status publish");
+      hasError = true;
+    }
+    if (!existingData.certificateStatus) {
+      setCertificateStatusError("Silahkan pilih status sertifikat");
+      hasError = true;
+    }
+
+    if (hasError) return; // Jika ada error, jangan lanjut
+
+    setLoading(true);
 
     try {
       const courseId = existingData.id;
-      console.log("this is response", courseId);
 
+      // Mengupdate data course
       const response = await dispatch(updateDataCourse(courseId, updatedData));
-      console.log("this is response", response);
-      // if (response.success) {
-      //   onClose();
-      // } else {
-      //   console.error("Failed to update course:", response.message);
-      // }
+
+      // Menutup modal setelah update
+      onClose();
+
+      // Cek apakah ada pesan dari response backend
+      const successMessage = response?.data?.message || "Course berhasil diperbarui!";
+
+      // Menampilkan toast sukses dengan pesan dari backend
+      toast.success(successMessage);
     } catch (error) {
       console.error(error);
+
+      // Menampilkan toast error dengan pesan dari backend (jika ada)
+      const errorMessage =
+        error?.response?.data?.message || "Gagal memperbarui course. Silakan coba lagi.";
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -151,7 +259,9 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
               name="categoryId"
               value={formData.categoryId}
               onChange={handleInputChange}
-              className="w-full p-2 border rounded-xl"
+              className={`w-full p-2 border rounded-xl ${
+                categoryIdError ? "border-red-500" : "border-gray-300"
+              }`}
             >
               <option value="" disabled hidden>
                 Pilih
@@ -162,6 +272,7 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
                 </option>
               ))}
             </select>
+            {categoryIdError && <div className="text-red-500">{categoryIdError}</div>}
           </div>
 
           <div className="mb-4">
@@ -171,10 +282,12 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
               name="courseName"
               value={formData.courseName}
               onChange={handleInputChange}
-              className="w-full p-2 border rounded-xl"
+              className={`w-full p-2 border rounded-xl ${
+                courseNameError ? "border-red-500" : "border-gray-300"
+              }`}
               placeholder="Masukkan judul kelas"
-              required
             />
+            {courseNameError && <div className="text-red-500">{courseNameError}</div>}
           </div>
 
           <div className="mb-4">
@@ -182,8 +295,22 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
             <select
               name="typeCourseId"
               value={formData.typeCourseId}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded-xl"
+              onChange={(e) => {
+                const { value } = e.target;
+                handleInputChange(e); // Update state untuk tipe kelas yang dipilih
+
+                // Periksa jika tipe kelas adalah 'free' dan set harga serta diskon menjadi 0
+                if (value === "free") {
+                  setFormData((prevFormData) => ({
+                    ...prevFormData,
+                    coursePrice: 0,
+                    courseDiscountPercent: 0,
+                  }));
+                }
+              }}
+              className={`w-full p-2 border rounded-xl ${
+                typeCourseIdError ? "border-red-500" : "border-gray-300"
+              }`}
             >
               <option value="" disabled hidden>
                 Pilih
@@ -194,6 +321,7 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
                 </option>
               ))}
             </select>
+            {typeCourseIdError && <div className="text-red-500">{typeCourseIdError}</div>}
           </div>
 
           <div className="mb-4">
@@ -202,7 +330,9 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
               name="courseLevelId"
               value={formData.courseLevelId}
               onChange={handleInputChange}
-              className="w-full p-2 border rounded-xl"
+              className={`w-full p-2 border rounded-xl ${
+                courseLevelIdError ? "border-red-500" : "border-gray-300"
+              }`}
             >
               <option value="" disabled hidden>
                 Pilih
@@ -213,6 +343,7 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
                 </option>
               ))}
             </select>
+            {courseLevelIdError && <div className="text-red-500">{courseLevelIdError}</div>}
           </div>
 
           <div className="mb-4">
@@ -220,19 +351,18 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
             <input
               type="text" // Tetap sebagai teks agar tidak muncul panah
               name="coursePrice"
-              value={formData.coursePrice}
+              value={formData.coursePrice === 0 ? "" : formData.coursePrice} // Kosongkan jika harga 0
               onChange={(e) => {
                 const value = e.target.value;
-
-                // Validasi hanya angka dan string kosong
                 if (/^\d*$/.test(value)) {
+                  // Validasi hanya angka
                   handleInputChange(e); // Perbarui state dengan nilai yang valid
                 }
               }}
               className="w-full p-2 border rounded-xl"
               placeholder="Rp"
-              required
             />
+            {/* {coursePriceError && <div className="text-red-500">{coursePriceError}</div>} */}
           </div>
 
           <div className="mb-4">
@@ -240,18 +370,20 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
             <input
               type="text"
               name="courseDiscountPercent"
-              value={formData.courseDiscountPercent}
+              value={formData.courseDiscountPercent === 0 ? "" : formData.courseDiscountPercent} // Kosongkan jika diskon 0
               onChange={(e) => {
                 const value = e.target.value;
                 if (/^\d*$/.test(value)) {
                   // Validasi hanya angka
-                  handleInputChange(e); // Perbarui state
+                  handleInputChange(e); // Perbarui state dengan nilai diskon
                 }
               }}
               className="w-full p-2 border rounded-xl"
               placeholder="%"
-              required
             />
+            {/* {courseDiscountPercentError && (
+              <div className="text-red-500">{courseDiscountPercentError}</div>
+            )} */}
           </div>
 
           <div className="mb-4">
@@ -260,12 +392,15 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
               name="publish"
               value={formData.publish}
               onChange={handleInputChange}
-              className="w-full p-2 border rounded-xl"
+              className={`w-full p-2 border rounded-xl ${
+                publishError ? "border-red-500" : "border-gray-300"
+              }`}
             >
               <option value="">Pilih Status</option>
               <option value={true}>Published</option>
               <option value={false}>Unpublished</option>
             </select>
+            {publishError && <div className="text-red-500">{publishError}</div>}
           </div>
 
           <div className="mb-4">
@@ -274,12 +409,21 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
               name="certificateStatus"
               value={formData.certificateStatus}
               onChange={handleInputChange}
-              className="w-full p-2 border rounded-xl"
+              className={`w-full p-2 border rounded-xl ${
+                certificateStatusError ? "border-red-500" : "border-gray-300"
+              }`}
             >
               <option value="">Pilih Status</option>
-              <option value={true}>Yes</option>
-              <option value={false}>No</option>
+              {[
+                { value: true, label: "Yes" },
+                { value: false, label: "No" },
+              ].map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
             </select>
+            {certificateStatusError && <div className="text-red-500">{certificateStatusError}</div>}
           </div>
 
           <div className="mb-4">
@@ -289,10 +433,12 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
               name="intendedFor"
               value={formData.intendedFor}
               onChange={handleInputChange}
-              className="w-full p-2 border rounded-xl"
+              className={`w-full p-2 border rounded-xl ${
+                intendedForError ? "border-red-500" : "border-gray-300"
+              }`}
               placeholder="Siapa yang diperuntukkan?"
-              required
             />
+            {intendedForError && <div className="text-red-500">{intendedForError}</div>}
           </div>
 
           <div className="mb-4">
@@ -301,19 +447,39 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
               name="aboutCourse"
               value={formData.aboutCourse}
               onChange={handleInputChange}
-              className="w-full p-2 border rounded-xl"
-              placeholder="Deskripsi tentang kelas"
-              rows="4"
-              required
+              className={`w-full p-2 border rounded-xl ${
+                aboutCourseError ? "border-red-500" : "border-gray-300"
+              }`}
+              placeholder="Deskripsikan kelas ini"
             />
+            {aboutCourseError && <div className="text-red-500">{aboutCourseError}</div>}
           </div>
 
-          <button
-            type="submit"
-            className="w-full p-2 bg-blue-500 text-white rounded-xl hover:bg-blue-600"
-          >
-            Ubah Kelas
-          </button>
+          <div className="flex justify-end space-x-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="bg-gray-300 px-4 py-2 rounded-md font-semibold"
+            >
+              Batal
+            </button>
+            <button
+              type="submit"
+              className={`bg-blue-600 text-white px-4 py-2 rounded-md font-semibold transition-colors duration-300 ${
+                loading ? "cursor-not-allowed bg-gray-500" : "hover:bg-blue-700 active:bg-blue-800"
+              }`}
+              disabled={loading}
+            >
+              {loading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <LoadSpinner size={24} color="white" />
+                  <span>Loading...</span>
+                </div>
+              ) : (
+                "Tambah"
+              )}
+            </button>
+          </div>
         </form>
       </div>
     </div>

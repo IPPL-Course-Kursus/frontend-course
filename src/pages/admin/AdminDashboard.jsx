@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FaUsers, FaSearch, FaFilter } from "react-icons/fa";
+import { FaUsers, FaFilter } from "react-icons/fa";
 import { IoArrowBackCircle, IoArrowForwardCircle } from "react-icons/io5";
 import SideBar from "../../components/Sidebar/SidebarAdmin";
 import NavbarAdmin from "../../components/NavbarAdmin";
@@ -10,10 +10,8 @@ const AdminDashboard = () => {
   const dispatch = useDispatch();
   const { stats, paymentStatus, loading, user } = useSelector((state) => state.adminDashboard);
 
-  const [paymentSearch, setPaymentSearch] = useState("");
   const [filter, setFilter] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [searchVisible, setSearchVisible] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -27,15 +25,8 @@ const AdminDashboard = () => {
   const premiumClassesCount = paymentStatus.filter(payment => payment.paymentMethod !== "Free").length;
 
   const filteredPayments = paymentStatus.filter((payment) => {
-    const isPaymentSearchMatch =
-      paymentSearch === "" ||
-      (payment.id && payment.id.toString().includes(paymentSearch.toLowerCase())) ||  
-      (payment.courseName && payment.courseName.toLowerCase().includes(paymentSearch.toLowerCase())) ||
-      (payment.paymentMethod && payment.paymentMethod.toLowerCase().includes(paymentSearch.toLowerCase()));
-
     const isFilterMatch = filter === "" || payment.paymentStatus === filter;
-
-    return isPaymentSearchMatch && isFilterMatch;
+    return isFilterMatch;
   });
 
   const sortedPayments = filteredPayments.sort((a, b) => a.id - b.id);
@@ -59,12 +50,11 @@ const AdminDashboard = () => {
   };
 
   const handleFilterChange = (e) => setFilter(e.target.value);
-  const toggleSearch = () => setSearchVisible((prev) => !prev);
 
   const formatTransactionTime = (timestamp) => {
     const date = new Date(timestamp);
     return date.toLocaleString("id-ID", { 
-      day: "2-digit", 
+      day: "numeric", 
       month: "short", 
       year: "numeric", 
       hour: "2-digit", 
@@ -76,19 +66,19 @@ const AdminDashboard = () => {
   return (
     <div className="flex">
       <div
-        className={`fixed inset-0 z-50 h-full transition-transform transform bg-white md:relative md:translate-x-0 md:bg-transparent flex flex-col transition-transform transform ${
+        className={`fixed inset-y-0 z-50 w-64 min-h-screen transform bg-white transition-transform duration-300 ease-in-out ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        } md: relative md: translate-x-0`}
       >
         <SideBar />
       </div>
 
-      {sidebarOpen && (
+      {/* {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black opacity-50 z-40 md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
-      )}
+      )} */}
       
       <div className="flex-1 flex flex-col p-4 md:p-6 bg-secondary min-h-screen">
         <NavbarAdmin setSidebarOpen={setSidebarOpen} />
@@ -111,6 +101,7 @@ const AdminDashboard = () => {
             ))}
         </div>
 
+        {/* Payment Table */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
           <h2 className="mt-4 text-lg md:text-xl font-bold text-neutral05">Status Pembayaran</h2>
 
@@ -119,37 +110,23 @@ const AdminDashboard = () => {
               <select
                 value={filter}
                 onChange={handleFilterChange}
-                className="p-1 border border-[#173D94] rounded-full text-sm text-[#173D94]"
+                className="flex items-center py-2 pl-10 pr-4 bg-[#0a61aa] text-white font-semibold rounded-md text-sm transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#0a61aa] focus:ring-opacity-50"
               >
                 <option value="">Filter</option>
-                <option value="settlement">Sudah Bayar</option>
-                <option value="pending">Belum Bayar</option>
-                <option value="cancel">Batal</option>
+                <option value="settlement">Settlement</option>
+                <option value="pending">Pending</option>
               </select>
-              <FaFilter className="absolute right-4 top-2 text-[#173D94] text-sm" />
-            </div>
-
-            <div className="relative w-full md:w-auto flex items-center">
-              <FaSearch
-                className="text-[#173D94] text-lg cursor-pointer"
-                onClick={toggleSearch}
-              />
-              <input
-                type="text"
-                value={paymentSearch}
-                onChange={(e) => setPaymentSearch(e.target.value)}
-                className={`transition-all duration-300 ease-in-out border border-[#173D94] rounded-full ml-2 p-1 ${searchVisible ? " w-full md:w-40 opacity-100" : "w-0 opacity-0 pointer-events-none"}`}
-                placeholder="Cari"
-              />
+              <FaFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-sm" />
             </div>
           </div>
         </div>
         
-        <div className="overflow-x-auto bg-white p-4 mt-2">
+       {/* Payment Status Table */}
+        <div className="overflow-x-auto bg-white p-6 rounded-lg shadow-lg">
           <table className="min-w-full table-auto">
             <thead>
-              <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
-                <th className="px-2 md:px-4 py-2">ID</th>
+              <tr className="bg-gray-200 text-left text-sm md:text-base font-semibold">
+                <th className="px-2 md:px-4 py-2">No</th>
                 <th className="px-2 md:px-4 py-2">Nama Kursus</th>
                 <th className="px-2 md:px-4 py-2">Harga</th>
                 <th className="px-2 md:px-4 py-2">Status</th>
@@ -158,26 +135,46 @@ const AdminDashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {paginatedPayments.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="text-center py-4 font-semibold">
-                    Tidak ada data tersedia. 
-                  </td>
-                </tr>
+            {!loading && paginatedPayments.length > 0 ? (
+              paginatedPayments.map((payment, index) => {
+                const rowNumber = (currentPage - 1) * itemsPerPage + index + 1;
+
+                  const statusClass =
+                    payment.paymentStatus === "settlement"
+                      ? "bg-green-100 text-green-700"
+                      : payment.paymentStatus === "pending"
+                      ? "bg-yellow-100 text-yellow-700"
+                      : "bg-gray-100 text-gray-700";
+
+                  return (
+                    <tr key={payment.id} className="border-b hover:bg-gray-50 transition-colors text-sm md:text-base">
+                      <td className="px-2 md:px-4 py-2">{rowNumber}</td>
+                      <td className="px-2 md:px-4 py-2">{payment.courseName}</td>
+                      <td className="px-2 md:px-4 py-2 text-gray-900 font-semibold">Rp. {payment.totalPrice.toLocaleString("id-ID")},00</td>
+                      <td className="px-2 md:px-4 py-2">
+                        <span
+                          className={`px-3 py-1 rounded-lg font-semibold text-sm ${statusClass}`}
+                        >
+                          {payment.paymentStatus}
+                        </span>
+                      </td>
+                      <td className="px-2 md:px-4 py-2">{payment.paymentMethod}</td>
+                      <td className="px-2 md:px-4 py-2 text-gray-600">
+                        {formatTransactionTime(payment.updatedAt)}
+                      </td>
+                    </tr>
+                  );
+                })
               ) : (
-                paginatedPayments.map((payment) => (
-                  <tr key={payment.id} className="border-b">
-                    <td className="px-2 md:px-4 py-2">{payment.id}</td>
-                    <td className="px-2 md:px-4 py-2">{payment.courseName}</td>
-                    <td className="px-2 md:px-4 py-2">Rp. {payment.totalPrice}</td>
-                    <td className="px-2 md:px-4 py-2">{payment.paymentStatus}</td>
-                    <td className="px-2 md:px-4 py-2">{payment.paymentMethod}</td>
-                    <td className="px-2 md:px-4 py-2">{formatTransactionTime(payment.updatedAt)}</td>
-                  </tr>
-                ))
+                <tr>
+                <td colSpan={6} className="text-center py-6 text-gray-500">
+                  Tidak ada data yang tersedia
+                </td>
+              </tr>
               )}
             </tbody>
           </table>
+        </div>
           
           {/* Pagination Controls */}
           {totalPages > 1 && ( 
@@ -210,7 +207,6 @@ const AdminDashboard = () => {
           )}
         </div>
       </div>
-    </div>
   );
 };
 

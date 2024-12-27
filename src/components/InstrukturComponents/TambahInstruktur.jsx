@@ -3,7 +3,7 @@
 import PropTypes from "prop-types";
 import InstrukturForm from "./InstrukturForm";
 
-const TambahInstruktur = ({ show, onClose, addInstructor }) => {
+const TambahInstruktur = ({ show, onClose, addInstructor, isAdding }) => {
   const handleSubmit = (formData) => {
     addInstructor(formData);
   };
@@ -15,6 +15,7 @@ const TambahInstruktur = ({ show, onClose, addInstructor }) => {
       existingData={null}
       isEditMode={false}
       onSubmit={handleSubmit}
+      isAdding={isAdding}
     />
   );
 };
@@ -23,6 +24,7 @@ TambahInstruktur.propTypes = {
   show: PropTypes.bool,
   onClose: PropTypes.func,
   addInstructor: PropTypes.func,
+  isAdding: PropTypes.bool,
 };
 
 export default TambahInstruktur;

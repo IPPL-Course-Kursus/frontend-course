@@ -107,6 +107,7 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
             </NavLink>
           </div>
 
+          {/* Category Section */}
           <div className="relative w-full">
             <Slider ref={sliderRef} {...categorySliderSettings}>
               <button
@@ -226,13 +227,14 @@ const CardCourse = ({ title = "Kelas Populer" }) => {
                 </Slider>
               ) : (
                 // Tampilan grid untuk kategori yang dipilih
-                <div className="flex mt-2 overflow-x-auto space-x-4">
+                <div className="flex mt-2 space-x-4 overflow-x-auto hide-scrollbar">
                   {filteredCoursePopular.map((val) => (
                     <div key={val.id} className="p-2">
                       <div
-                        className={`w-72 bg-white shadow-xl rounded-xl overflow-hidden pb-3 h-full flex flex-col ${
+                        className={`bg-white shadow-xl rounded-xl overflow-hidden pb-3 h-full flex flex-col ${
                           val.isPurchased ? "bg-green-50" : ""
                         }`}
+                        style={{ width: "350px" }}
                       >
                         <img
                           src={val.image}

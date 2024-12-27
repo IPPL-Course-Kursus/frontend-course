@@ -85,7 +85,9 @@ const InstruktorDashboard = () => {
 
   return (
     <div className="flex">
+    <div className="min-h-screen">
       <Sidebar />
+      </div>
       <div className="p-6 bg-secondary min-h-screen w-screen font-poppins">
         {/* Header */}
         <div className="bg-[#F3F7FB] p-4 flex justify-between items-center mb-4 shadow-sm">
@@ -123,10 +125,9 @@ const InstruktorDashboard = () => {
                 onChange={handleFilterChange}
                 className="flex items-center py-2 pl-10 pr-4 bg-[#0a61aa] text-white font-semibold rounded-md text-sm transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#0a61aa] focus:ring-opacity-50"
               >
-                <option value="disable">Filter</option>
-                <option value="settlement">Sudah Bayar</option>
-                <option value="pending">Belum Bayar</option>
-                <option value="cancel">cancel</option>
+                <option value="">Filter</option>
+                <option value="settlement">Settlement</option>
+                <option value="pending">Pending</option>
               </select>
               <FaFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-sm" />
             </div>
@@ -173,7 +174,7 @@ const InstruktorDashboard = () => {
                       <td className="px-4 py-3">{payment.categoryName}</td>
                       <td className="px-4 py-3">{payment.courseName}</td>
                       <td className="px-4 py-3 text-gray-900 font-semibold">
-                        Rp.{payment.totalPrice.toLocaleString("id-ID")},00
+                        Rp. {payment.totalPrice.toLocaleString("id-ID")},00
                       </td>
                       <td className="px-4 py-3">
                         <span
@@ -208,7 +209,8 @@ const InstruktorDashboard = () => {
 
           {/* Kontrol Pagination */}
           {sortedPayments.length > itemsPerPage && (
-            <div className="flex flex-col md:flex-row justify-between items-center mt-6">
+            <div className="flex items-center justify-between mt-6">
+              {/* Tombol Previous */}
               <button
                 className={`flex items-center py-2 px-5 rounded-md text-sm md:text-base font-semibold ${
                   currentPage === 1
@@ -219,30 +221,24 @@ const InstruktorDashboard = () => {
                 disabled={currentPage === 1}
               >
                 <IoArrowBackCircle className="mr-2 text-xl" />
-                Pervious
+                Previous
               </button>
 
-              <span className="text-sm md:text-lg font-semibold mt-4 md:mt-0">
-                Halaman {currentPage} dari{" "}
-                {Math.ceil(sortedPayments.length / itemsPerPage)}
+              {/* Indikator Halaman */}
+              <span className="text-sm md:text-lg font-semibold mx-auto">
+                Page {currentPage} of {Math.ceil(sortedPayments.length / itemsPerPage)}
               </span>
 
-              <button
-                className={`flex items-center py-2 px-5 rounded-md text-sm md:text-base font-semibold ${
-                  currentPage ===
-                  Math.ceil(sortedPayments.length / itemsPerPage)
-                    ? "bg-gray-300 cursor-not-allowed"
-                    : "bg-blue-600 text-white hover:bg-blue-700"
-                } transition-all`}
-                onClick={() => paginate(currentPage + 1)}
-                disabled={
-                  currentPage ===
-                  Math.ceil(sortedPayments.length / itemsPerPage)
-                }
-              >
-                Next
-                <IoArrowForwardCircle className="ml-2 text-xl" />
-              </button>
+              {/* Tombol Next - hanya muncul jika tidak di halaman terakhir */}
+              {currentPage < Math.ceil(sortedPayments.length / itemsPerPage) && (
+                <button
+                  className="flex items-center py-2 px-5 rounded-md text-sm md:text-base font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-all"
+                  onClick={() => paginate(currentPage + 1)}
+                >
+                  Next
+                  <IoArrowForwardCircle className="ml-2 text-xl" />
+                </button>
+              )}
             </div>
           )}
         </div>
