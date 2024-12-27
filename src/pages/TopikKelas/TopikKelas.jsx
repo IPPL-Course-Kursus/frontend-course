@@ -281,7 +281,7 @@ const TopikKelas = () => {
             </div>
 
             <div className="flex justify-center mt-12 px-4">
-              <div className="relative w-full max-w-[90%] sm:max-w-sm md:max-w-md lg:max-w-lg transition-all duration-200 ease-in-out">
+              <div className="relative w-full max-w-[85%] sm:max-w-sm md:max-w-md lg:max-w-lg transition-all duration-200 ease-in-out">
                 <input
                   type="text"
                   placeholder="Cari Kelas..."
