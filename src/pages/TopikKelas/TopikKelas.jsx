@@ -26,7 +26,7 @@ const TopikKelas = () => {
   const {
     category = [],
     courseLevel = [],
-    data: courseTypes = [], // Pastikan ini diambil dari state yang benar
+    data: courseTypes = [], 
   } = useSelector((state) => state.category);
 
   useEffect(() => {
@@ -128,7 +128,6 @@ const TopikKelas = () => {
     setSelectedFilter(filter);
     setCurrentPage(1);
   
-    // Update URL ketika filter dipilih
     const url = new URL(window.location);
     if (filter === "All") {
       url.searchParams.delete("category");
@@ -160,7 +159,6 @@ const TopikKelas = () => {
       return matchesSearch;
     });
   
-    // Filter berdasarkan harga
     const priceRanges = activeFilters.filter((filter) =>
       [
         "Kurang dari 50.000",
@@ -195,23 +193,15 @@ const TopikKelas = () => {
         });
       });
     }
-  
-    // Filter berdasarkan waktu (Paling Baru)
     if (filterChecked["Paling Baru"]) {
       filteredCourses = filteredCourses.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     }
-  
-    // Filter berdasarkan popularitas (Paling Populer)
     if (filterChecked["Paling Populer"]) {
       filteredCourses = filteredCourses.sort((a, b) => b.popularity - a.popularity);
     }
-  
-    // Filter promo
     if (filterChecked["Promo"]) {
       filteredCourses = filteredCourses.filter((course) => course.promoStatus === true);
     }
-  
-    // Filter berdasarkan kategori dan level
     if (activeFilters.length > 0) {
       const categoryFilters = activeFilters.filter((filter) =>
         category.some((cat) => cat.categoryName === filter)
@@ -246,7 +236,8 @@ const TopikKelas = () => {
   
     setFilterChecked(clearedFilterState);
     setSelectedFilter("All");
-    setCurrentPage(1); // Reset halaman ke 1
+    setSearchQuery("");
+    setCurrentPage(1); 
   
     const url = new URL(window.location);
     url.search = "";
