@@ -86,9 +86,6 @@ const AdminDataKategori = () => {
         });
       } catch (err) {
         // **Custom Error Handling**
-        // Since we threw a new Error with the message in the action creator,
-        // err.message should contain the detailed error message.
-
         if (
           err.message.includes("tidak dapat menghapus jenis kursus") ||
           err.message.includes("cannot delete type course")
@@ -104,7 +101,6 @@ const AdminDataKategori = () => {
             }
           );
         } else {
-          // Display the original error message for other errors
           toast.error(
             err.message || "Gagal menghapus kategori. Silakan coba lagi.",
             {
@@ -178,7 +174,7 @@ const AdminDataKategori = () => {
               Data Kategori Kelas
             </h2>
 
-            <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
+            <div className="flex justify-end items-center space-x-2 w-full md:w-auto">
               {/* Tambah Kategori Button */}
               <div className="relative">
                 <button
@@ -191,7 +187,7 @@ const AdminDataKategori = () => {
               </div>
 
               {/* Search Input */}
-              <div className="relative w-full md:w-auto flex items-center">
+              <div className="relative flex items-center">
                 <FaSearch
                   className="text-[#173D94] text-lg cursor-pointer"
                   onClick={toggleSearch}
@@ -319,7 +315,7 @@ const AdminDataKategori = () => {
                     <div className="flex justify-center space-x-4">
                       {/* Edit Button */}
                       <button
-                        className="py-2 px-4 bg-red-500 text-white font-semibold rounded-md text-sm transition-all duration-300 hover:bg-blue-600"
+                        className="py-2 px-4 bg-blue-500 text-white font-semibold rounded-md text-sm transition-all duration-300 hover:bg-blue-600"
                         onClick={() => handleEditClick(category)}
                       >
                         Ubah
@@ -403,12 +399,12 @@ const AdminDataKategori = () => {
             show={showDeleteModal}
             onClose={() => setShowDeleteModal(false)}
             onConfirm={confirmDelete}
-            isDeleting={isDeleting} // Pass the loading state as a prop
+            isDeleting={isDeleting}
           />
         </div>
       </div>
     </>
-    );
+  );
 };
 
 export default AdminDataKategori;
