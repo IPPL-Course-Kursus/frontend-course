@@ -97,9 +97,9 @@ const AdminDashboard = () => {
       {/* Kolom atas */}
       <div className="mt-[80px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       {[{ count: user.userCount, label: "Users", color: "bg-[#173D94]" },
-        { count: user.instrukturCount, label: "Instruktor", color: "bg-primary" },
+        { count: user.instrukturCount, label: "Instruktor", color: "bg-success" },
         { count: freeClassesCount, label: "Free Class", color: "bg-[#173D94]" },
-        { count: premiumClassesCount, label: "Premium Class", color: "bg-primary" }]
+        { count: premiumClassesCount, label: "Premium Class", color: "bg-success" }]
         .map(({ count, label, color }) => (
           <div key={label} className={`${color} text-white font-semibold p-4 rounded-lg shadow-sm flex items-center`}>
             <div className="bg-white rounded-full p-2">
@@ -108,7 +108,7 @@ const AdminDashboard = () => {
             <div className="ml-4">
               <div className="text-2xl">
                 {label === "Total Transaksi" 
-                  ? `Rp. ${count.toLocaleString("id-ID")},00` 
+                  ? `Rp ${count.toLocaleString("id-ID")},00` 
                   : count}
               </div>
               <div className="text-sm">{label}</div>
@@ -132,7 +132,7 @@ const AdminDashboard = () => {
           .filter(payment => payment.paymentMethod === "qris" && payment.paymentStatus === "settlement")
           .reduce((total, payment) => total + payment.totalPrice, 0),
           label: "QRIS", 
-          color: "bg-success",
+          color: "bg-[#173D94]",
           icon: <FaWallet className="text-2xl text-primary" />
         },
         { 
@@ -140,7 +140,7 @@ const AdminDashboard = () => {
           .filter(payment => payment.paymentMethod === "bank_transfer" && payment.paymentStatus === "settlement")
           .reduce((total, payment) => total + payment.totalPrice, 0),
           label: "Bank Transfer", 
-          color: "bg-success",
+          color: "bg-[#173D94]",
           icon: <FaCreditCard className="text-2xl text-primary" />
         }]
         .map(({ count, label, color, icon }) => (
@@ -151,7 +151,7 @@ const AdminDashboard = () => {
             <div className="ml-4">
               <div className="text-1xl">
               {label === "Total Transaksi" || label === "QRIS" || label === "Bank Transfer" 
-            ? `Rp. ${count.toLocaleString("id-ID")}` 
+            ? `Rp ${count.toLocaleString("id-ID")}` 
             : count}
               </div>
               <div className="text-sm">{label}</div>
@@ -209,7 +209,7 @@ const AdminDashboard = () => {
                     <tr key={payment.id} className="border-b hover:bg-gray-50 transition-colors text-sm md:text-base">
                       <td className="px-2 md:px-4 py-2">{rowNumber}</td>
                       <td className="px-2 md:px-4 py-2">{payment.courseName}</td>
-                      <td className="px-2 md:px-4 py-2 text-gray-900 font-semibold">Rp. {payment.totalPrice.toLocaleString("id-ID")},00</td>
+                      <td className="px-2 md:px-4 py-2 text-gray-900 font-semibold">Rp {payment.totalPrice.toLocaleString("id-ID")},00</td>
                       <td className="px-2 md:px-4 py-2">
                         <span
                           className={`px-3 py-1 rounded-lg font-semibold text-sm ${statusClass}`}
