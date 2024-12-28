@@ -107,7 +107,7 @@ const AdminDashboard = () => {
             </div>
             <div className="ml-4">
               <div className="text-2xl">
-                {label === "Total Transaksi" 
+                {label === "Total Uang Masuk" 
                   ? `Rp ${count.toLocaleString("id-ID")},00` 
                   : count}
               </div>
@@ -123,7 +123,7 @@ const AdminDashboard = () => {
           count: sortedPayments
           .filter(payment => payment.paymentStatus === "settlement")
           .reduce((total, payment) => total + payment.totalPrice, 0), 
-          label: "Total Transaksi", 
+          label: "Total Uang Masuk", 
           color: "bg-success",
           icon: <FaMoneyBillWave className="text-2xl text-primary" />
         },
@@ -150,7 +150,7 @@ const AdminDashboard = () => {
               </div>
             <div className="ml-4">
               <div className="text-1xl">
-              {label === "Total Transaksi" || label === "QRIS" || label === "Bank Transfer" 
+              {label === "Total Uang Masuk" || label === "QRIS" || label === "Bank Transfer" 
             ? `Rp ${count.toLocaleString("id-ID")}` 
             : count}
               </div>
