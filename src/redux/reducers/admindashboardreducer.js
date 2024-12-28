@@ -35,8 +35,11 @@ const adminDashboardReducer = (state = initialState, action) => {
         return {
           ...state,
           loading: false,
-          paymentStatus: action.payload.data, // Ambil data dari payload
+          paymentStatus: action.payload, // Langsung menyimpan transaksi ke paymentStatus
         };
+      
+      
+        
       
     case "FETCH_PAYMENTS_FAILURE":
       return {
