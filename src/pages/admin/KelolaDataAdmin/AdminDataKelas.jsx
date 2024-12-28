@@ -67,7 +67,7 @@ const AdminDataKelas = () => {
           </h2>
           <div className="flex items-center space-x-4">
             <div className="relative">
-              <select
+            <select
                 value={filter}
                 onChange={handleFilterChange}
                 className="flex items-center py-2 pl-10 pr-4 bg-[#0a61aa] text-white font-semibold rounded-md text-sm transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#0a61aa] focus:ring-opacity-50"

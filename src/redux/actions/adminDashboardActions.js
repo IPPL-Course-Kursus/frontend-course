@@ -63,8 +63,3 @@ export const fetchuser = () => async (dispatch) => {
       dispatch({ type: "FETCH_PAYMENTS_FAILURE", payload: error.message });
     }
   };
-  
-  
-
-
-
