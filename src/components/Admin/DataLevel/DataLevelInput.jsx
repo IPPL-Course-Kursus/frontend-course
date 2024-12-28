@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 function DataLevelInput() {
-  return (
-    <div>DataLevelInput</div>
-  )
+  return <div>DataLevelInput</div>;
 }
 
-export default DataLevelInput
+export default DataLevelInput;

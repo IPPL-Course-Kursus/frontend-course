@@ -1,85 +1,82 @@
-// adminDataKategoriReducers.js
-
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  loading: false,
+  loadingFetch: false,   // Loading state for fetching categories
+  loadingAdd: false,     // Loading state for adding a category
+  loadingDelete: false,  // Loading state for deleting a category
+  loadingUpdate: false,  // Loading state for updating a category
   categories: [],
-  error: null,
-  token: null, // Menyimpan token
+  errorFetch: null,      // Error state for fetching categories
+  errorAdd: null,        // Error state for adding a category
+  errorDelete: null,     // Error state for deleting a category
+  errorUpdate: null,     // Error state for updating a category
+  token: null,           // Menyimpan token
 };
-
-
 
 const adminDataKategoriSlice = createSlice({
   name: "adminDataKategori",
   initialState,
   reducers: {
-    // Existing reducers...
+    // Fetch Categories
     fetchCategoriesRequest: (state) => {
-      state.loading = true;
-      state.error = null;
+      state.loadingFetch = true;
+      state.errorFetch = null;
     },
     fetchCategoriesSuccess: (state, action) => {
-      state.loading = false;
+      state.loadingFetch = false;
       state.categories = action.payload;
     },
     fetchCategoriesFailure: (state, action) => {
-      state.loading = false;
-      state.error = action.payload;
+      state.loadingFetch = false;
+      state.errorFetch = action.payload;
     },
-    // New reducers for delete action
+
+    // Delete Category
     deleteCategoryRequest: (state) => {
-      state.loading = true;
-      state.error = null;
-      state.token = null; // Menyimpan token
+      state.loadingDelete = true;
+      state.errorDelete = null;
     },
-    // deleteCategorySuccess: (state, action) => {
-    //   state.loading = false;
-    //   state.categories = state.categories.filter(
-    //     (category) => category.id !== action.payload
-    //   );
-    // },
     deleteCategorySuccess: (state, action) => {
-      state.loading = false;
+      state.loadingDelete = false;
       state.categories = state.categories.filter(
         (category) => category.id !== action.payload
       );
-    },    
-    deleteCategoryFailure: (state, action) => {
-      state.loading = false;
-      state.error = action.payload;
     },
+    deleteCategoryFailure: (state, action) => {
+      state.loadingDelete = false;
+      state.errorDelete = action.payload;
+    },
+
+    // Update Category
     updateCategoryRequest: (state) => {
-        state.loading = true;
-        state.error = null;
-        state.token = null; // Menyimpan token
+      state.loadingUpdate = true;
+      state.errorUpdate = null;
     },
     updateCategorySuccess: (state, action) => {
-        state.loading = false;
-        const updatedCategory = action.payload;
-        state.categories = state.categories.map((category) =>
-            category.id === updatedCategory.id ? updatedCategory : category
-        );
+      state.loadingUpdate = false;
+      const updatedCategory = action.payload;
+      state.categories = state.categories.map((category) =>
+        category.id === updatedCategory.id ? updatedCategory : category
+      );
     },
     updateCategoryFailure: (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+      state.loadingUpdate = false;
+      state.errorUpdate = action.payload;
     },
+
+    // Add Category
     addCategoryRequest: (state) => {
-        state.loading = true;
-        state.error = null;
-        state.token = null; // Menyimpan token
+      state.loadingAdd = true;
+      state.errorAdd = null;
     },
     addCategorySuccess: (state, action) => {
-        state.loading = false;
-        state.categories.push(action.payload);
+      state.loadingAdd = false;
+      state.categories.push(action.payload);
     },
     addCategoryFailure: (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+      state.loadingAdd = false;
+      state.errorAdd = action.payload;
     },
-    
   },
 });
 

@@ -179,15 +179,15 @@ export const DetailKelas = () => {
                     <div className="max-w-screen-xl mx-auto px-4 flex flex-col sm:flex-row sm:items-start sm:justify-between">
                         <div className="w-full sm:w-1/2 pt-16 pb-16 pr-8">
                             <h1 className="text-[#151515] text-[24px] sm:text-[32px] font-semibold leading-normal">
-                            {isLoading ? (
-                                    <Skeleton width={300} />
+                                {isLoading ? (
+                                    <Skeleton width={300} className="bg-gray-300"/>
                                 ) : (
                                     detail.courseName
                                 )}
                             </h1>
                             <p className="text-[#151515] text-[12px] sm:text-[15px] leading-tight mt-4">
-                            {isLoading ? (
-                                    <Skeleton width={500} height={100} />
+                                {isLoading ? (
+                                    <Skeleton width="100%" height={100} className="bg-gray-300"/>
                                 ) : (
                                     detail.intendedFor
                                 )}
@@ -196,16 +196,20 @@ export const DetailKelas = () => {
                                 onClick={handleButtonClick}
                                 className="mt-6 px-4 py-2 bg-[#0a61aa] text-white text-xs font-bold rounded-md"
                             >
-                                {isLoading
-                                    ? <Skeleton width={100} height={20}/>
-                                    : userCourses.some((course) => course.courseId === id)
-                                    ? "Pelajari Kelas"
-                                    : "Beli Kelas"}
+                                {isLoading ? (
+                                    <Skeleton width={100} height={20} className="bg-gray-300"/>
+                                ) : userCourses.some(
+                                    (course) => course.courseId === id
+                                  ) ? (
+                                    "Pelajari Kelas"
+                                ) : (
+                                    "Beli Kelas"
+                                )}
                             </button>
                         </div>
                         <div className="w-full sm:w-[512px] pt-16 pb-16">
-                        {isLoading ? (
-                                <Skeleton height={300} />
+                            {isLoading ? (
+                                <Skeleton height={300} className="bg-gray-300"/>
                             ) : (
                                 <img
                                     className="w-full rounded-xl"
@@ -248,6 +252,9 @@ export const DetailKelas = () => {
 
                 {/* Bagian Tentang Kelas dan Detail Kelas */}
                 <div className=" mx-auto px-4 mt-8">
+                {isLoading ? (
+                                    <Skeleton  width={"100%"} height={300} className="bg-gray-300"/>
+                                ) : (
                     <div className="flex flex-col sm:flex-row w-full">
                         <div className="w-full sm:w-2/3 p-4 bg-secondary rounded-md border border-solid border-[#d1d1d1]">
                             <h2 className="text-xl font-semibold text-[#151515]">
@@ -294,6 +301,7 @@ export const DetailKelas = () => {
                             </div>
                         </div>
                     </div>
+                                )} 
                 </div>
 
                 {/* Bagian Chapter */}
@@ -303,9 +311,13 @@ export const DetailKelas = () => {
                             Chapters
                         </h2>
                         <div>
-                        {isLoading ? (
-                        <Skeleton height={50} count={3} className="mt-4" />
-                    ) : detail.chapters?.length > 0 ? (
+                            {isLoading ? (
+                                <Skeleton
+                                    height={50}
+                                    count={3}
+                                    className="mt-4"
+                                />
+                            ) : detail.chapters?.length > 0 ? (
                                 detail.chapters.map((chapter) => (
                                     <div key={chapter.id} className="mb-3">
                                         <div

@@ -218,13 +218,11 @@ export const getDataModule = (chapterId) => async (dispatch) => {
       throw new Error("Token tidak ditemukan di cookies");
     }
 
- 
     const response = await axios.get(`${api_url}chapter/course/${chapterId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-
 
     if (response.data && response.data.data) {
       dispatch(fetchChaptersSuccess(response.data.data));
@@ -232,7 +230,6 @@ export const getDataModule = (chapterId) => async (dispatch) => {
       throw new Error("Data tidak ditemukan");
     }
   } catch (error) {
-
     dispatch(fetchChaptersFailure(error.message));
   }
 };
@@ -310,7 +307,6 @@ export const deleteDataModule = (chapterId) => async (dispatch) => {
 export const getDataKonten = (contentId) => async (dispatch) => {
   try {
     dispatch(fetchContentStart());
-    
 
     const token = getCookie("token");
     if (!token) {
@@ -329,7 +325,6 @@ export const getDataKonten = (contentId) => async (dispatch) => {
       throw new Error("Data tidak ditemukan");
     }
   } catch (error) {
-
     dispatch(fetchContentFailure(error.message));
   }
 };
@@ -340,7 +335,7 @@ export const addDataKonten = (requestData, chapterId) => async (dispatch) => {
     if (!chapterId) {
       const errorMessage = "Chapter ID is required";
       dispatch(fetchContentFailure(errorMessage));
-   
+
       throw new Error(errorMessage);
     }
     const token = getCookie("token");

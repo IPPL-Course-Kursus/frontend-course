@@ -59,10 +59,12 @@ const AdminDataKelas = () => {
       )}
 
       <div className="flex-1 p-4 md:p-6 bg-secondary min-h-screen font-poppins">
-      <NavbarAdmin setSidebarOpen={setSidebarOpen} />
+        <NavbarAdmin setSidebarOpen={setSidebarOpen} />
 
         <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
-          <h2 className="flex items-center py-2 px-4 mt-4 bg-gradient-to-r from-[#FF5722] to-[#FF9800] text-white font-semibold rounded-md text-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl mb-4">Data Kelas</h2>
+          <h2 className="flex items-center py-2 px-4 mt-4 bg-gradient-to-r from-[#FF5722] to-[#FF9800] text-white font-semibold rounded-md text-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl mb-4">
+            Data Kelas
+          </h2>
           <div className="flex items-center space-x-4">
             <div className="relative">
             <select
@@ -84,7 +86,7 @@ const AdminDataKelas = () => {
           <table className="table-fixed w-full">
             <thead>
               <tr className="bg-gray-200 text-left text-sm md:text-base font-semibold">
-                <th className="px-4 py-2 w-1/6">ID</th>
+                <th className="px-4 py-2 w-1/12">No</th> {/* Changed from w-1/6 to w-1/12 */}
                 <th className="px-4 py-2 w-1/6">Kategori</th>
                 <th className="px-4 py-2 w-2/6">Nama Kelas</th>
                 <th className="px-4 py-2 w-1/6">Tipe Kelas</th>
@@ -93,59 +95,74 @@ const AdminDataKelas = () => {
               </tr>
             </thead>
             <tbody>
-              {currentItems.map((course, index) => (
-                <tr key={index} className="border-t text-xs md:text-sm">
-                  <td className="px-2 md:px-4 py-2">{course.courseCode}</td>
-                  <td className="px-2 md:px-4 py-2">{course.category.categoryName}</td>
-                  <td className="px-2 md:px-4 py-2">{course.courseName}</td>
-                  <td
-                    className={`px-2 md:px-4 py-2 font-bold ${
-                      course.typeCourse.typeName === "Free" ? "text-success" : "text-failed"
-                    }`}
-                  >
-                    {course.typeCourse.typeName}
+              {currentItems.length > 0 ? (
+                currentItems.map((course, index) => (
+                  <tr key={course.id} className="border-t text-xs md:text-sm">
+                    {/* Row Number */}
+                    <td className="px-2 md:px-4 py-2">
+                      {(currentPage - 1) * itemsPerPage + index + 1}
+                    </td>
+                    <td className="px-2 md:px-4 py-2">{course.category.categoryName}</td>
+                    <td className="px-2 md:px-4 py-2">{course.courseName}</td>
+                    <td
+                      className={`px-2 md:px-4 py-2 font-bold ${
+                        course.typeCourse.typeName === "Free" ? "text-success" : "text-failed"
+                      }`}
+                    >
+                      {course.typeCourse.typeName}
+                    </td>
+                    <td className="px-2 md:px-4 py-2">{course.courseLevel.levelName}</td>
+                    <td className="px-2 md:px-4 py-2 text-gray-900 font-semibold">
+                      Rp. {course.coursePrice.toLocaleString("id-ID")}
+                    </td>
+                    <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" className="text-center py-4">
+                    No classes found.
                   </td>
-                  <td className="px-2 md:px-4 py-2">{course.courseLevel.levelName}</td>
-                  <td className="px-2 md:px-4 py-2 text-gray-900 font-semibold">Rp. {course.coursePrice.toLocaleString("id-ID")}</td>
-                  <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2"></td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
 
-          {/* Tombol Pagination */}
-          {totalPages > 1 && (
+        {/* Pagination Buttons */}
+        {totalPages > 1 && (
           <div className="flex justify-between items-center mt-4">
-
-          {/* Tombol Previous */}
-          <button
-            className={`flex items-center py-2 px-4 rounded-lg ${
-              currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-[#0a61aa] text-white"
-            } transition-all duration-300 hover:scale-105`}
-            onClick={handlePreviousPage}
-            disabled={currentPage === 1}
-          >
-            <IoArrowBackCircle className="mr-2 text-xl" />
-            Previous
-          </button>
-
-          {/* Keterangan Page of */}
-          <span className="text-lg font-semibold mx-auto">
-            Page {currentPage} of {totalPages}
-          </span>
-
-          {/* Tombol Next hanya tampil jika currentPage < totalPages */}
-          {currentPage < totalPages && (
+            {/* Previous Button */}
             <button
-              className="flex items-center py-2 px-4 rounded-lg bg-[#0a61aa] text-white transition-all duration-300 hover:scale-105"
-              onClick={handleNextPage}
+              className={`flex items-center py-2 px-4 rounded-lg ${
+                currentPage === 1
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "bg-[#0a61aa] text-white"
+              } transition-all duration-300 hover:scale-105`}
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
             >
-              Next
-              <IoArrowForwardCircle className="ml-2 text-xl" />
+              <IoArrowBackCircle className="mr-2 text-xl" />
+              Previous
             </button>
-          )}
-        </div>
+
+            {/* Page Indicator */}
+            <span className="text-lg font-semibold mx-auto">
+              Page {currentPage} of {totalPages}
+            </span>
+
+            {/* Next Button */}
+            {currentPage < totalPages && (
+              <button
+                className="flex items-center py-2 px-4 rounded-lg bg-[#0a61aa] text-white transition-all duration-300 hover:scale-105"
+                onClick={handleNextPage}
+              >
+                Next
+                <IoArrowForwardCircle className="ml-2 text-xl" />
+              </button>
+            )}
+          </div>
         )}
       </div>
     </div>

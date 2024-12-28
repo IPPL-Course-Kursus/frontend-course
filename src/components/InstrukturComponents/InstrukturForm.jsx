@@ -8,6 +8,7 @@ const InstrukturForm = ({
   existingData,
   isEditMode,
   onSubmit,
+  isAdding,
 }) => {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -199,7 +200,7 @@ const InstrukturForm = ({
               className={`py-2 px-6 bg-[#0a61aa] text-white rounded-xl transition-colors duration-300 ${isSubmitDisabled ? "bg-gray-400 cursor-not-allowed" : "hover:bg-[#1A73E8] active:bg-[#084D8C]"}`}
               disabled={isSubmitDisabled} // Disable if there's an error
             >
-              {isEditMode ? "Update" : "Tambah"}
+              {isAdding ? "Menambahkan..." : isEditMode ? "Update" : "Tambah"}
             </button>
           </div>
         </form>
@@ -214,6 +215,7 @@ InstrukturForm.propTypes = {
   existingData: PropTypes.object,
   isEditMode: PropTypes.bool,
   onSubmit: PropTypes.func,
+  isAdding: PropTypes.bool,
 };
 
 export default InstrukturForm;
