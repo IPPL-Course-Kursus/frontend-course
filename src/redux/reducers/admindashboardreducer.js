@@ -36,6 +36,7 @@ switch (action.type) {
         loading: false,
         paymentStatus: action.payload, // Langsung menyimpan transaksi ke paymentStatus
       };
+<<<<<<< HEAD
     
     
       
@@ -59,6 +60,30 @@ switch (action.type) {
         user: action.payload.data,
       };
     case "FETCH_user_FAILURE":
+=======
+    case "FETCH_STATS_FAILURE":
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    case "FETCH_PAYMENTS_REQUEST":
+      return {
+        ...state,
+        loading: true,
+      };
+      case "FETCH_PAYMENTS_SUCCESS":
+        return {
+          ...state,
+          loading: false,
+          paymentStatus: action.payload, // Langsung menyimpan transaksi ke paymentStatus
+        };
+      
+      
+        
+      
+    case "FETCH_PAYMENTS_FAILURE":
+>>>>>>> 1d50dc725ca4cfa9b6ec07556cebac0b67ba88a2
       return {
         ...state,
         loading: false,
