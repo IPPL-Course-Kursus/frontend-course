@@ -8,7 +8,7 @@ import { fetchStats, fetchPayments, fetchuser } from "../../redux/actions/adminD
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
-  const { stats, paymentStatus, loading, user } = useSelector((state) => state.adminDashboard);
+  const { stats, paymentStatus = [], loading, user } = useSelector((state) => state.adminDashboard);
 
   const [filter, setFilter] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -21,16 +21,25 @@ const AdminDashboard = () => {
     dispatch(fetchuser());
   }, [dispatch]);
 
-  const freeClassesCount = paymentStatus.filter(payment => payment.paymentMethod === "Free").length;
-  const premiumClassesCount = paymentStatus.filter(payment => payment.paymentMethod !== "Free").length;
+  // Validasi dan debugging
+  useEffect(() => {
+    console.log("paymentStatus:", paymentStatus);
+    console.log("User Data:", user);
+  }, [paymentStatus, user]);
 
+  // Menghitung Free dan Premium Class
+  const freeClassesCount = paymentStatus.filter((payment) => payment.price === 0).length;
+  const premiumClassesCount = paymentStatus.filter((payment) => payment.price > 0).length;
+
+  // Filter data berdasarkan status pembayaran
   const filteredPayments = paymentStatus.filter((payment) => {
-    const isFilterMatch = filter === "" || payment.paymentStatus === filter;
-    return isFilterMatch;
+    return filter === "" || payment.paymentStatus === filter;
   });
 
+  // Sortir data berdasarkan ID
   const sortedPayments = filteredPayments.sort((a, b) => a.id - b.id);
 
+  // Pagination
   const totalPages = Math.ceil(sortedPayments.length / itemsPerPage);
   const paginatedPayments = sortedPayments.slice(
     (currentPage - 1) * itemsPerPage,
@@ -62,7 +71,7 @@ const AdminDashboard = () => {
     });
   };
 
-  // Sidebar 
+  // Render komponen
   return (
     <div className="flex">
       <div
@@ -72,20 +81,13 @@ const AdminDashboard = () => {
       >
         <SideBar />
       </div>
-
-      {/* {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black opacity-50 z-40 md:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )} */}
       
       <div className="flex-1 flex flex-col p-4 md:p-6 bg-secondary min-h-screen">
         <NavbarAdmin setSidebarOpen={setSidebarOpen} />
 
         <div className="mt-[80px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {[{ count: user.userCount, label: "Users", color: "bg-primary" },
-          { count: user.instrukturCount, label: "Instruktor", color: "bg-success" },
+          {[{ count: user?.userCount || 0, label: "Users", color: "bg-primary" },
+          { count: user?.instrukturCount || 0, label: "Instruktor", color: "bg-success" },
           { count: freeClassesCount, label: "Free Class", color: "bg-[#173D94]" },
           { count: premiumClassesCount, label: "Premium Class", color: "bg-[#173D94]" }]
             .map(({ count, label, color }) => (
@@ -101,27 +103,23 @@ const AdminDashboard = () => {
             ))}
         </div>
 
-        {/* Payment Table */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
           <h2 className="mt-4 text-lg md:text-xl font-bold text-neutral05">Status Pembayaran</h2>
 
-          <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
-            <div className="relative">
-              <select
-                value={filter}
-                onChange={handleFilterChange}
-                className="flex items-center py-2 pl-10 pr-4 bg-[#0a61aa] text-white font-semibold rounded-md text-sm transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#0a61aa] focus:ring-opacity-50"
-              >
-                <option value="">Filter</option>
-                <option value="settlement">Settlement</option>
-                <option value="pending">Pending</option>
-              </select>
-              <FaFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-sm" />
-            </div>
+          <div className="relative">
+            <select
+              value={filter}
+              onChange={handleFilterChange}
+              className="flex items-center py-2 pl-10 pr-4 bg-[#0a61aa] text-white font-semibold rounded-md text-sm transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#0a61aa] focus:ring-opacity-50"
+            >
+              <option value="">Filter</option>
+              <option value="settlement">Settlement</option>
+              <option value="pending">Pending</option>
+            </select>
+            <FaFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-sm" />
           </div>
         </div>
-        
-       {/* Payment Status Table */}
+
         <div className="overflow-x-auto bg-white p-6 rounded-lg shadow-lg">
           <table className="min-w-full table-auto">
             <thead>
@@ -135,78 +133,57 @@ const AdminDashboard = () => {
               </tr>
             </thead>
             <tbody>
-            {!loading && paginatedPayments.length > 0 ? (
-              paginatedPayments.map((payment, index) => {
-                const rowNumber = (currentPage - 1) * itemsPerPage + index + 1;
-
-                  const statusClass =
-                    payment.paymentStatus === "settlement"
-                      ? "bg-green-100 text-green-700"
-                      : payment.paymentStatus === "pending"
-                      ? "bg-yellow-100 text-yellow-700"
-                      : "bg-gray-100 text-gray-700";
-
-                  return (
-                    <tr key={payment.id} className="border-b hover:bg-gray-50 transition-colors text-sm md:text-base">
-                      <td className="px-2 md:px-4 py-2">{rowNumber}</td>
-                      <td className="px-2 md:px-4 py-2">{payment.courseName}</td>
-                      <td className="px-2 md:px-4 py-2 text-gray-900 font-semibold">Rp. {payment.totalPrice.toLocaleString("id-ID")},00</td>
-                      <td className="px-2 md:px-4 py-2">
-                        <span
-                          className={`px-3 py-1 rounded-lg font-semibold text-sm ${statusClass}`}
-                        >
-                          {payment.paymentStatus}
-                        </span>
-                      </td>
-                      <td className="px-2 md:px-4 py-2">{payment.paymentMethod}</td>
-                      <td className="px-2 md:px-4 py-2 text-gray-600">
-                        {formatTransactionTime(payment.updatedAt)}
-                      </td>
-                    </tr>
-                  );
-                })
+              {!loading && paginatedPayments.length > 0 ? (
+                paginatedPayments.map((payment, index) => (
+                  <tr key={payment.id} className="border-b hover:bg-gray-50 transition-colors text-sm md:text-base">
+                    <td className="px-2 md:px-4 py-2">{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                    <td className="px-2 md:px-4 py-2">{payment.courseName}</td>
+                    <td className="px-2 md:px-4 py-2 text-gray-900 font-semibold">Rp. {payment.totalPrice.toLocaleString("id-ID")},00</td>
+                    <td className="px-2 md:px-4 py-2">
+                      <span className={`px-3 py-1 rounded-lg font-semibold text-sm ${payment.paymentStatus === "settlement" ? "bg-green-100 text-green-700" : payment.paymentStatus === "pending" ? "bg-yellow-100 text-yellow-700" : "bg-gray-100 text-gray-700"}`}>
+                        {payment.paymentStatus}
+                      </span>
+                    </td>
+                    <td className="px-2 md:px-4 py-2">{payment.paymentMethod}</td>
+                    <td className="px-2 md:px-4 py-2 text-gray-600">{formatTransactionTime(payment.updatedAt)}</td>
+                  </tr>
+                ))
               ) : (
                 <tr>
-                <td colSpan={6} className="text-center py-6 text-gray-500">
-                  Tidak ada data yang tersedia
-                </td>
-              </tr>
+                  <td colSpan={6} className="text-center py-6 text-gray-500">
+                    Tidak ada data yang tersedia
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
         </div>
-          
-          {/* Pagination Controls */}
-          {totalPages > 1 && ( 
-            <div className="flex justify-between items-center mt-4">
-              <button
-                className={`flex items-center py-2 px-4 rounded-lg ${currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-[#0a61aa] text-white"} transition-all duration-300 hover:scale-105`}
-                onClick={goToPreviousPage}
-                disabled={currentPage === 1}
-              >
-                <IoArrowBackCircle className="mr-2 text-lg" />
-                Previous
-              </button>
 
-              {/* Keterangan Page of, dengan auto margin agar tetap di tengah */}
-              <span className="text-lg font-semibold mx-auto">
-                Page {currentPage} of {totalPages}
-              </span>
-
-              {/* Hanya tampilkan tombol Next jika tidak di halaman terakhir */}
-              {currentPage < totalPages && (
-                <button
-                  className="flex items-center py-2 px-4 rounded-lg bg-[#0a61aa] text-white transition-all duration-300 hover:scale-105"
-                  onClick={goToNextPage}
-                >
-                  Next
-                  <IoArrowForwardCircle className="ml-2 text-lg" />
-                </button>
-              )}
-            </div>
-          )}
-        </div>
+        {totalPages > 1 && (
+          <div className="flex justify-between items-center mt-4">
+            <button
+              className={`flex items-center py-2 px-4 rounded-lg ${currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-[#0a61aa] text-white"} transition-all duration-300 hover:scale-105`}
+              onClick={goToPreviousPage}
+              disabled={currentPage === 1}
+            >
+              <IoArrowBackCircle className="mr-2 text-lg" />
+              Previous
+            </button>
+            <span className="text-lg font-semibold mx-auto">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              className="flex items-center py-2 px-4 rounded-lg bg-[#0a61aa] text-white transition-all duration-300 hover:scale-105"
+              onClick={goToNextPage}
+              disabled={currentPage === totalPages}
+            >
+              Next
+              <IoArrowForwardCircle className="ml-2 text-lg" />
+            </button>
+          </div>
+        )}
       </div>
+    </div>
   );
 };
 
