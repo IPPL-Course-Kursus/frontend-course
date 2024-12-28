@@ -13,9 +13,11 @@ const CoursesPage = () => {
 
   const [isMobileDropdownVisible, setMobileDropdownVisible] = useState(false);
   const [filterChecked, setFilterChecked] = useState({});
+  
   const [courseStatusFilter, setCourseStatusFilter] = useState('all'); // State untuk status kursus
   const {
     category = [],
+    
 } = useSelector((state) => state.category);
   
 
@@ -37,6 +39,24 @@ const CoursesPage = () => {
   const handleStatusFilterChange = (status) => {
     setCourseStatusFilter(status);
   };
+
+  const availableLevels = [
+    ...new Set(
+      mycourse.map((courseItem) => courseItem.course.courseLevel?.levelName)
+    ),
+  ];
+
+  const uniqueCategories = [
+    ...new Set(
+      mycourse
+        ?.map((courseItem) => courseItem.course.category?.categoryName)
+        .filter((name) => name) // Hapus nilai null/undefined
+    ),
+  ];
+  
+  console.log("Unique Categories:", uniqueCategories);
+  
+  
   
   const activeFilters = Object.keys(filterChecked).filter((key) => filterChecked[key]);
   console.log(activeFilters); // Log the active filters
@@ -57,12 +77,15 @@ const CoursesPage = () => {
     });
  
     if (activeFilters.length > 0) {
-        const categoryFilters = activeFilters.filter((filter) =>
-            category.some((cat) => cat.categoryName === filter)
-        );
-        const levelFilters = activeFilters.filter((filter) =>
-          ["Beginner", "Intermediate", "Advanced"].includes(filter)
+      const categoryFilters = activeFilters.filter((filter) =>
+        uniqueCategories.includes(filter)
       );
+      
+    const levelFilters = activeFilters.filter((filter) =>
+        availableLevels.includes(filter)
+    );
+
+    // console.log("kategoriii ni coyy",availableLevels);
       
         filteredCourses = filteredCourses.filter((courseItem) => {
             const matchesCategory =
@@ -161,6 +184,7 @@ const CoursesPage = () => {
               {/* Filter selalu terlihat di desktop dan tablet, tersembunyi di HP */}
               <div className="hidden md:block bg-white shadow-md rounded-md p-4">
                 <h3 className="text-xl font-bold text-gray-800 mb-3">Filter</h3>
+                
                 {/* Filter Konten */}
                 {[
                   ...new Set(
@@ -183,7 +207,14 @@ const CoursesPage = () => {
                 <h3 className="text-xl font-bold text-gray-800 mb-3 mt-6">Level Kesulitan</h3>
                 {/* Filter Konten */}
                 <div>
-                  {["Beginner", "Intermediate", "Advanced"].map((label, index) => (
+                  {/* {["Beginner", "Intermediate", "Advanced"].map((label, index) => ( */}
+                    {[
+                      ...new Set(
+                        mycourse
+                          ?.map((courseItem) => courseItem.course.courseLevel?.levelName)
+                          .filter((level) => level) // Pastikan hanya level yang valid
+                      ),
+                    ].map((label, index) => (
                     <div className="flex items-center mb-2" key={index}>
                       <input
                         type="checkbox"
@@ -229,7 +260,14 @@ const CoursesPage = () => {
                 <h3 className="text-xl font-bold text-gray-800 mb-3 mt-6">Level Kesulitan</h3>
                 {/* Filter Konten */}
                 <div>
-                  {["Beginner", "Intermediate", "Advanced"].map((label, index) => (
+                  {/* {["Beginner", "Intermediate", "Advanced"].map((label, index) => ( */}
+                  {[
+                      ...new Set(
+                        mycourse
+                          ?.map((courseItem) => courseItem.course.courseLevel?.levelName)
+                          .filter((level) => level) // Pastikan hanya level yang valid
+                      ),
+                    ].map((label, index) => (
                     <div className="flex items-center mb-2" key={index}>
                       <input
                         type="checkbox"
@@ -253,8 +291,11 @@ const CoursesPage = () => {
 
               {filteredCourses().length > 0 ? (
                 filteredCourses().map((courseItem, index) => {
-                  console.log(courseItem); // Menampilkan di console
-                  console.log(courseItem.course.category.categoryName);
+                  // console.log("cobaa",courseItem.course.category.categoryName);
+                  mycourse.forEach((courseItem) => {
+                    console.log("Category Name:", courseItem.course.category.categoryName);
+                  });
+                  
 
                   return (
                     <div
