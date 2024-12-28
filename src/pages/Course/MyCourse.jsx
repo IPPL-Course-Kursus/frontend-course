@@ -11,7 +11,8 @@ const CoursesPage = () => {
   const mycourse = useSelector(selectMyCourse);
   const { loading, error } = useSelector((state) => state.course || {});
 
-  const [isMobileDropdownVisible, setMobileDropdownVisible] = useState(false);
+  const [isMobileDropdownVisible, setIsMobileDropdownVisible] = useState(false);
+
   const [filterChecked, setFilterChecked] = useState({});
   
   const [courseStatusFilter, setCourseStatusFilter] = useState('all'); // State untuk status kursus
@@ -112,7 +113,7 @@ const CoursesPage = () => {
         <main className="container mx-auto  py-10 bg-blue-50">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-4xl font-bold text-gray-900">Kelas Saya</h2>
-            <button
+            {/* <button
               onClick={toggleMobileDropdown}
               className="md:hidden bg-blue-500 text-white px-2 py-2 rounded"
             >
@@ -130,8 +131,10 @@ const CoursesPage = () => {
                   d="M4 6h16M4 12h16m-7 6h7"
                 />
               </svg>
-            </button>
+            </button> */}
           </div>
+
+
           {/* Tombol Filter Status */}
           <div className="mb-4 flex flex-wrap justify-center">
             <button
@@ -178,6 +181,7 @@ const CoursesPage = () => {
               Selesai
             </button>
           </div>
+
           <div className="flex flex-col md:flex-row">
             {/* Filter Box */}
             <div className="md:w-1/4">
@@ -231,11 +235,21 @@ const CoursesPage = () => {
               </div>
 
               {/* Filter untuk Mobile (dropdown toggle) */}
-              <div
-                className={`md:hidden ${
-                  isMobileDropdownVisible ? "block" : "hidden"
-                } bg-white shadow-md rounded-md p-4 mb-4`}
-              >
+              <div className="w-full md:hidden">
+  {/* Tombol Dropdown */}
+  <button
+  onClick={() => setIsMobileDropdownVisible(!isMobileDropdownVisible)} // Toggle the dropdown visibility
+  className="w-full bg-blue-500 text-white font-bold text-sm md:text-base px-2 py-1.5 rounded-md mb-4"
+>
+  {isMobileDropdownVisible ? "Tutup Filter" : "Tampilkan Filter"} {/* Change button text based on visibility */}
+</button>
+
+{/* Kontainer Dropdown */}
+<div
+  className={`${
+    isMobileDropdownVisible ? "block" : "hidden" // Show or hide the dropdown based on state
+  } bg-white shadow-md rounded-md p-4`}
+>
                 <h3 className="text-xl font-bold text-gray-800 mb-4">Filter</h3>
                 {/* Filter Konten untuk Mobile */}
                 <div>
@@ -283,6 +297,7 @@ const CoursesPage = () => {
                 </div>
               </div>
             </div>
+          </div>
 
             {/* Main Courses Display */}
             <div className="md:w-3/4 pl-0 md:pl-4">
