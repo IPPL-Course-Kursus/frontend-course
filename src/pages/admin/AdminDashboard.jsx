@@ -140,7 +140,7 @@ const AdminDashboard = () => {
       <div>
         <div className="text-2xl">
           {label === "Total Uang Masuk"
-            ? `Rp ${count.toLocaleString("id-ID")},00`
+            ? `Rp${count.toLocaleString("id-ID")},00`
             : count}
         </div>
         <div className="text-sm">{label}</div>
@@ -195,7 +195,7 @@ const AdminDashboard = () => {
                   {label === "Total Uang Masuk" ||
                   label === "QRIS" ||
                   label === "Bank Transfer"
-                    ? `Rp ${count.toLocaleString("id-ID")}`
+                    ? `Rp${count.toLocaleString("id-ID")}`
                     : count}
                 </div>
                 <div className="text-sm">{label}</div>
@@ -243,7 +243,7 @@ const AdminDashboard = () => {
                     {rowNumber}. {payment.courseName} {/* Menggunakan rowNumber */}
                   </div>
                   <div className="mb-2">
-                    <span className="font-semibold">Harga:</span> Rp{" "}
+                    <span className="font-semibold">Harga:</span> Rp{""}
                     {payment.totalPrice.toLocaleString("id-ID")},00
                   </div>
                   <div className="mb-2">
@@ -308,7 +308,7 @@ const AdminDashboard = () => {
                         {payment.courseName}
                       </td>
                       <td className="px-2 md:px-4 py-2 text-gray-900 font-semibold">
-                        Rp {payment.totalPrice.toLocaleString("id-ID")},00
+                        Rp{payment.totalPrice.toLocaleString("id-ID")},00
                       </td>
                       <td className="px-2 md:px-4 py-2">
                         <span
