@@ -514,8 +514,8 @@ const TopikKelas = () => {
                               ? "Free"
                               : `Beli Rp. ${
                                   course.promoStatus
-                                    ? course.courseDiscountPrice
-                                    : course.coursePrice
+                                    ? course.courseDiscountPrice.toLocaleString('id-ID')
+                                    : course.coursePrice.toLocaleString('id-ID')
                                 }`}
                           </Link>
                         </div>
