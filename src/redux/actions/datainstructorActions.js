@@ -83,7 +83,7 @@ export const addInstructor = (newInstructor) => async (dispatch) => {
     
   } catch (error) {
     console.error("Error response:", error.response?.data); // Log error dari server
-    let errorMessage = "Gagal menambahkan instruktur. Email telah digunakan.";
+    let errorMessage = error.response.data && error.response.data.message;
     if (error.response?.data?.errors) {
       const errors = error.response.data.errors;
 
@@ -115,59 +115,10 @@ export const addInstructor = (newInstructor) => async (dispatch) => {
   }
 };
 
-
-export const updateInstructor = (id, updatedInstructor) => async (dispatch) => {
-  dispatch(setLoading(true));
-  try {
-    const token = getCookie("token");
-
-    // Data yang akan dikirim dalam format JSON
-    const requestData = {
-      fullName: updatedInstructor.fullName,
-      image: updatedInstructor.photoUrl, // Menyimpan URL gambar yang di-upload
-      phoneNumber: updatedInstructor.phoneNumber,
-      role: "Instruktur", // Menetapkan role sebagai "Instruktur"
-      tanggalLahir: updatedInstructor.tanggalLahir,
-      city: updatedInstructor.city,
-      country: updatedInstructor.country,
-    };
-
-    const response = await axios.put(
-      `${api_url}auth/update-instruktur/${id}`,
-      requestData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json", // Mengirim data sebagai JSON
-        },
-      }
-    );
-
-    const updatedInstructorData = response.data.data.data; // Menyesuaikan dengan struktur respons
-    dispatch({
-      type: "UPDATE_INSTRUCTOR",
-      payload: updatedInstructorData,
-    });
-  } catch (error) {
-    console.error("Error response:", error.response?.data); // Log error dari server
-    if (error.response?.data.errors) {
-      const errorMessages = error.response.data.errors
-        .map((err) => err.message)
-        .join(", ");
-      dispatch(setError(`Error updating instructor: ${errorMessages}`));
-    } else {
-      dispatch(setError(error.message || "Error updating instructor"));
-    }
-  } finally {
-    dispatch(setLoading(false));
-  }
-};
-
 export const deleteInstructor = (id) => async (dispatch) => {
   dispatch(setLoading(true));
   try {
     const token = getCookie("token");
-    console.log("Token:", token); // Log token untuk memeriksa
 
     const response = await axios.delete(
       `${api_url}auth/delete-instruktur/${id}`,
@@ -176,17 +127,43 @@ export const deleteInstructor = (id) => async (dispatch) => {
       }
     );
 
+    // Jika berhasil
     dispatch({
       type: "DELETE_INSTRUCTOR",
       payload: id,
     });
+
+    // Tampilkan toast sukses
+    toast.dismiss();
+    toast.success("Instruktur berhasil dihapus", {
+      style: {
+        borderRadius: "8px",
+        background: "#4BB543",
+        color: "#fff",
+      },
+    });
   } catch (error) {
-    // Log detail error untuk debugging
-    console.error("Error response:", error.response?.data || error.message);
-    dispatch(
-      setError(error.response?.data?.message || "Error deleting instructor")
-    );
+    // Tangkap pesan error dari backend
+    const errorMessage =
+      error.response?.data?.message ||
+      "Gagal menghapus instruktur. Silakan coba lagi.";
+
+    // Tampilkan pesan error melalui toast
+    toast.dismiss();
+    toast.error(errorMessage, {
+      style: {
+        borderRadius: "8px",
+        background: "#FF3333",
+        color: "#fff",
+      },
+    });
+
+    // Dispatch error untuk debugging atau logging di reducer
+    dispatch(setError(errorMessage));
+    console.error("Error deleting instructor:", errorMessage);
   } finally {
+    // Set loading menjadi false
     dispatch(setLoading(false));
   }
 };
+

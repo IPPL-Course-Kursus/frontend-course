@@ -47,6 +47,8 @@ export const deleteCategory = (categoryId) => async (dispatch) => {
     // Extract meaningful error message
     const errorMessage = error.response?.data?.message || "Delete failed";
     dispatch(deleteCategoryFailure(errorMessage));
+    console.error("Update Category Error:", error);
+    console.error("Error Message:", errorMessage);
     throw error;
   }
 };
@@ -79,6 +81,8 @@ export const updateCategory = (id, updatedData) => async (dispatch) => {
   } catch (error) {
     const errorMessage = error.response?.data?.message || error.message;
     dispatch(updateCategoryFailure(errorMessage));
+    console.error("Update Category Error:", error);
+    console.error("Error Message:", errorMessage);
     throw error;
   }
 };

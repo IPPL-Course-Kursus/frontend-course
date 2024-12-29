@@ -1,9 +1,11 @@
+import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import { IoMenu } from "react-icons/io5"; // Import the menu icon
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getMe } from "../redux/actions/authActions";
 
-const NavbarAdmin = () => {
+const NavbarAdmin = ({ setSidebarOpen }) => {
   const dispatch = useDispatch();
 
   // Get token and profile from Redux store
@@ -21,15 +23,26 @@ const NavbarAdmin = () => {
 
   return (
     <div className="navbar bg-base-100 shadow-md shadow-slate-300 z-50">
-      {/* Left side with "Hi, Instruktur!" */}
-      <div className="flex-none">
-        <h1 className="text-2xl font-bold text-primary lg:ml-10">Hi, Admin!</h1>
+      {/* Menu Button (Visible on Mobile) */}
+      <div className="flex-none lg:hidden">
+        <button
+          className="btn btn-ghost btn-circle text-2xl text-primary focus:outline-none"
+          onClick={() => setSidebarOpen((prev) => !prev)}
+          aria-label="Open Sidebar"
+        >
+          <IoMenu />
+        </button>
+      </div>
+
+      {/* Center: "Hi, Admin!" */}
+      <div className="flex-1 flex justify-center lg:justify-start">
+        <h1 className="text-2xl font-bold text-primary">Hi, Admin!</h1>
       </div>
 
       {/* Right side with profile icon */}
       <div className="flex-none gap-6 lg:pr-4 ml-auto">
         {token ? (
-          <div className="flex items-center px-6 z-50">
+          <div className="flex items-center px-6 z-10">
             {/* Profile Icon */}
             <div className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full border-2 border-primary">
@@ -47,6 +60,10 @@ const NavbarAdmin = () => {
       </div>
     </div>
   );
+};
+
+NavbarAdmin.propTypes = {
+  setSidebarOpen: PropTypes.func.isRequired,
 };
 
 export default NavbarAdmin;

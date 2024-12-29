@@ -55,34 +55,30 @@ const InstruktorDataModule = () => {
     setShowDeleteModal(true);
   };
 
- const confirmDelete = () => {
-   if (!chapterToDelete?.id) {
-     console.error("Chapter ID is required."); // Pastikan ID chapter ada
-     return; // Hentikan proses jika id chapter tidak ada
-   }
+  const confirmDelete = () => {
+    if (!chapterToDelete?.id) {
+      console.error("Chapter ID is required."); // Pastikan ID chapter ada
+      return; // Hentikan proses jika id chapter tidak ada
+    }
 
-   // Hapus chapter
-   dispatch(deleteDataModule(chapterToDelete.id))
-     .then(() => {
-       // Tampilkan toast sukses setelah berhasil menghapus
-       toast.success("Chapter berhasil dihapus");
+    // Hapus chapter
+    dispatch(deleteDataModule(chapterToDelete.id))
+      .then(() => {
+        // Tampilkan toast sukses setelah berhasil menghapus
+        toast.success("Chapter berhasil dihapus");
 
-       setShowDeleteModal(false); // Tutup modal setelah berhasil
-       // Panggil ulang getDataModule untuk mengambil data terbaru
-      //  dispatch(getDataModule(id));
-      window.location.reload();
-     })
-     .catch((error) => {
-       // Tampilkan toast error jika ada kesalahan
-       toast.error("Gagal menghapus chapter");
+        setShowDeleteModal(false); // Tutup modal setelah berhasil
+        // Panggil ulang getDataModule untuk mengambil data terbaru
+        //  dispatch(getDataModule(id));
+        window.location.reload();
+      })
+      .catch((error) => {
+        // Tampilkan toast error jika ada kesalahan
+        toast.error("Gagal menghapus chapter");
 
-       console.error("Error deleting chapter:", error);
-       setShowDeleteModal(false);
-     });
- };
-
-  const handleDetailClick = (course) => {
-    console.log("Detail clicked for:", course);
+        console.error("Error deleting chapter:", error);
+        setShowDeleteModal(false);
+      });
   };
 
   const handleBackClick = () => {
@@ -126,23 +122,38 @@ const InstruktorDataModule = () => {
             <HeadInstruktur />
           </div>
 
-          <button
-            className="flex items-center py-2 px-4 bg-gradient-to-r from-[#FF5722] to-[#FF9800] text-white font-semibold rounded-md text-lg transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl mb-4"
-            onClick={handleDetailClick}
-          >
+          <button className="flex items-center py-2 px-4 bg-gradient-to-r from-[#FF5722] to-[#FF9800] text-white font-semibold rounded-md text-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl mb-4">
             <span className="font-bold">Data Chapter Kelas</span>
           </button>
 
           <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
-            <button
-              className="flex items-center py-2 px-4 bg-gradient-to-r from-[#0a61aa] to-[#007bbf] text-white font-semibold rounded-md text-sm transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-              onClick={handleBackClick}
-            >
-              <IoArrowBack className="text-2xl mr-2" />
-              <span className="font-bold">Kembali</span>
-            </button>
+            {/* Mobile layout: tombol kiri dan kanan */}
+            <div className="flex justify-between w-full md:hidden">
+              <button
+                className="flex items-center py-2 px-4 bg-gradient-to-r from-[#0a61aa] to-[#007bbf] text-white font-semibold rounded-md text-sm transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                onClick={handleBackClick}
+              >
+                <IoArrowBack className="text-2xl mr-2" />
+                <span className="font-bold">Kembali</span>
+              </button>
+              <button
+                className="flex items-center justify-center py-2 px-4 bg-gradient-to-r from-[#0a61aa] to-[#007bbf] text-white font-semibold rounded-md text-sm transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl ml-2"
+                onClick={handleAddClick}
+              >
+                <IoAddCircleOutline className="mr-2 text-2xl" />
+                <span className="font-bold">Tambah</span>
+              </button>
+            </div>
 
-            <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-4">
+            {/* Desktop layout: Back tetap di kiri, Tambah di kanan */}
+            <div className="hidden md:flex md:w-full items-center justify-between">
+              <button
+                className="flex items-center py-2 px-4 bg-gradient-to-r from-[#0a61aa] to-[#007bbf] text-white font-semibold rounded-md text-sm transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                onClick={handleBackClick}
+              >
+                <IoArrowBack className="text-2xl mr-2" />
+                <span className="font-bold">Kembali</span>
+              </button>
               <button
                 className="flex items-center justify-center py-2 px-4 bg-gradient-to-r from-[#0a61aa] to-[#007bbf] text-white font-semibold rounded-md text-sm transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
                 onClick={handleAddClick}
@@ -156,42 +167,81 @@ const InstruktorDataModule = () => {
           {/* Kondisi loading dan error */}
 
           <div className="overflow-x-auto bg-white p-4 rounded-lg shadow-md">
-            <table className="min-w-full table-auto">
-              <thead>
-                <tr className="bg-gray-200 text-left text-xs md:text-sm font-semibold border-b">
-                  <th className="px-4 py-3">ID</th>
-                  <th className="px-4 py-3">Judul Chapter</th>
-                  <th className="px-4 py-3">Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentItems.map((chapter, index) => (
-                  <tr key={index} className="border-b text-xs md:text-sm hover:bg-gray-50">
-                    <td className="px-4 py-2">{chapter.sort}</td>
-                    <td className="px-4 py-2">{chapter.chapterTitle}</td>
-                    <td className="px-4 py-2 flex space-x-2">
-                      <Link to={`/inst/data-konten/${chapter.id}`}>
-                        <button className="py-1 px-2 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2">
+            <div className="hidden md:block">
+              <table className="min-w-full table-auto">
+                <thead>
+                  <tr className="bg-gray-200 text-left text-xs md:text-sm font-semibold border-b">
+                    <th className="px-4 py-2 w-1/6">ID</th>
+                    <th className="px-4 py-2 w-1/6">Judul Chapter</th>
+                    <th className="px-4 py-2 w-1/6">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentItems.map((chapter, index) => (
+                    <tr key={index} className="border-b text-xs md:text-sm hover:bg-gray-50">
+                      <td className="px-4 py-2">{chapter.sort}</td>
+                      <td className="px-4 py-2">{chapter.chapterTitle}</td>
+                      <td className="px-4 py-2 flex space-x-2">
+                        <Link to={`/inst/data-konten/${chapter.id}`}>
+                          <button className="py-1 px-2 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2">
+                            Kelola
+                          </button>
+                        </Link>
+                        <button
+                          className="py-1 px-2 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                          onClick={() => handleEditClick(chapter)}
+                        >
+                          Ubah
+                        </button>
+                        <button
+                          className="py-1 px-2 bg-red-700 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                          onClick={() => handleDelete(chapter)}
+                        >
+                          Hapus
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className=" bg-white p-4 rounded-lg shadow-md block md:hidden space-y-6 ">
+              {currentItems.length > 0 ? (
+                currentItems.map((chapter) => (
+                  <div key={chapter.id} className="border rounded-md p-4 shadow-md bg-white">
+                    <div className="text-sm space-y-2">
+                      <div>
+                        <span className="font-semibold">ID:</span> {chapter.sort}
+                      </div>
+                      <div>
+                        <span className="font-semibold">Judul Chapter:</span> {chapter.chapterTitle}
+                      </div>
+                    </div>
+                    <div className="flex flex-col space-y-2 mt-4">
+                      <Link to={`/inst/data-konten/${chapter.id}`} className="flex-1">
+                        <button className="w-full py-2 bg-blue-600 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:bg-blue-700">
                           Kelola
                         </button>
                       </Link>
                       <button
-                        className="py-1 px-2 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                        className="flex-1 py-2 bg-green-600 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:bg-green-700"
                         onClick={() => handleEditClick(chapter)}
                       >
                         Ubah
                       </button>
                       <button
-                        className="py-1 px-2 bg-red-700 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                        className="flex-1 py-2 bg-red-600 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:bg-red-700"
                         onClick={() => handleDelete(chapter)}
                       >
                         Hapus
                       </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-center text-gray-500">Tidak ada chapter ditemukan.</p>
+              )}
+            </div>
           </div>
 
           {/* Pagination */}

@@ -7,11 +7,9 @@ import {
 } from "../../../redux/actions/datainstructorActions";
 import { FaSearch } from "react-icons/fa";
 import {
-  IoArrowBackCircle,
-  IoArrowForwardCircle,
   IoAddCircleOutline,
 } from "react-icons/io5";
-import SideBar from "../../../components/Sidebar/SidebarAdmin";
+import SideBar from "../../../components/Sidebar/SidebarAdminR";
 import TambahInstruktur from "../../../components/InstrukturComponents/TambahInstruktur";
 import NavbarAdmin from "../../../components/NavbarAdmin";
 import { toast } from "react-hot-toast";
@@ -36,7 +34,7 @@ const AdminDataInstruktur = () => {
     const fetchData = async () => {
       try {
         await dispatch(getAllInstructors());
-        toast.dismiss()
+        toast.dismiss();
         toast.success("Data instruktur berhasil ditampilkan", {
           style: {
             borderRadius: "8px",
@@ -45,7 +43,7 @@ const AdminDataInstruktur = () => {
           },
         });
       } catch (error) {
-        toast.dismiss()
+        toast.dismiss();
         toast.error("Gagal memuat data instruktur. Silakan coba lagi.", {
           style: {
             borderRadius: "8px",
@@ -68,29 +66,61 @@ const AdminDataInstruktur = () => {
   };
 
   const handleDeleteInstructor = (id) => {
-    Swal.fire({
-      title: "Apakah Anda yakin?",
-      text: "Data instruktur ini akan dihapus!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Hapus",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await dispatch(deleteInstructor(id));
-          toast.dismiss()
-          toast.success("Instruktur berhasil dihapus", {
-            style: {
-              borderRadius: "8px",
-              background: "#4BB543",
-              color: "#fff",
-            },
-          });
-        } catch (error) {
-          toast.dismiss()
-          toast.error("Gagal menghapus instruktur. Silakan coba lagi.", {
+  Swal.fire({
+    title: "Apakah Anda yakin?",
+    text: "Data instruktur ini akan dihapus!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Hapus",
+    showLoaderOnConfirm: true, // Menampilkan loading
+    preConfirm: async () => {
+      try {
+        await dispatch(deleteInstructor(id));
+        await dispatch(getAllInstructors());
+        setTimeout(() => {
+          toast.dismiss();
+        }, 2000);
+      } catch (error) {
+        const errorMessage =
+          error.response?.data?.message || "Gagal menghapus instruktur. Silakan coba lagi.";
+        toast.dismiss();
+        toast.error(errorMessage, {
+          style: {
+            borderRadius: "8px",
+            background: "#FF3333",
+            color: "#fff",
+          },
+        });
+        console.error("Error deleting instructor:", errorMessage);
+        Swal.showValidationMessage(errorMessage); // Tampilkan error di Swal
+      }
+    },
+    allowOutsideClick: () => !Swal.isLoading(), // Mencegah klik di luar saat loading
+  });
+};
+
+
+  const handleCloseTambahPopup = () => {
+    setShowTambahPopup(false);
+  };
+
+  const handleAddInstructor = async (newInstructor) => {
+    setIsAdding(true); // Set loading state
+    try {
+      await dispatch(addInstructor(newInstructor));
+      await dispatch(getAllInstructors()); // Refresh data after adding
+      handleCloseTambahPopup();
+    } catch (error) {
+      console.error("Error adding instructor:", error);
+      if (error.response) {
+        if (error.response.data && error.response.data.message) {
+          toast.dismiss();
+          
+        } else {
+          toast.dismiss();
+          toast.error("Gagal menambahkan instruktur. Silakan coba lagi nanti.", {
             style: {
               borderRadius: "8px",
               background: "#FF3333",
@@ -99,20 +129,8 @@ const AdminDataInstruktur = () => {
           });
         }
       }
-    });
-  };
-
-  const handleCloseTambahPopup = () => {
-    setShowTambahPopup(false);
-  };
-
-
-  const handleAddInstructor = async (newInstructor) => {
-    try {
-      await dispatch(addInstructor(newInstructor));
-      handleCloseTambahPopup();
-    } catch (error) {
-      console.error("Error adding instructor:", error);
+    } finally {
+      setIsAdding(false); // Reset loading state
     }
   };
 
@@ -127,17 +145,11 @@ const AdminDataInstruktur = () => {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
-  const totalPages = Math.ceil(filteredInstructors.length / itemsPerPage);
 
   return (
     <div className="flex">
-      <div
-        className={`fixed inset-0 z-50 transition-transform transform bg-white md:relative md:translate-x-0 md:bg-transparent ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <SideBar />
-      </div>
+      <SideBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black opacity-50 z-40 md:hidden"
@@ -153,18 +165,16 @@ const AdminDataInstruktur = () => {
             Data Instruktur
           </h2>
 
-          <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
-            <div className="relative">
-              <button
-                className="py-1 px-4 bg-[#0a61aa] text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center"
-                onClick={handleAddClick}
-              >
-                <IoAddCircleOutline className="mr-2" />
-                Tambah
-              </button>
-            </div>
+          <div className="flex justify-end items-center space-x-2 w-full md:w-auto">
+            <button
+              className="py-2 px-3 md:px-4 bg-[#0a61aa] text-white font-semibold rounded-md text-sm transition-all duration-300 hover:scale-105 flex items-center justify-center"
+              onClick={handleAddClick}
+            >
+              <IoAddCircleOutline className="mr-2" />
+              Tambah
+            </button>
 
-            <div className="relative w-full md:w-auto flex items-center">
+            <div className="relative flex items-center">
               <FaSearch
                 className="text-[#173D94] text-lg cursor-pointer"
                 onClick={toggleSearch}
@@ -172,8 +182,11 @@ const AdminDataInstruktur = () => {
               <input
                 type="text"
                 value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                className={`transition-all duration-300 ease-in-out border border-[#173D94] rounded-full ml-2 p-1 ${
+                onChange={(e) => {
+                  setSearchValue(e.target.value ?? "");
+                  setCurrentPage(1); // Reset to first page on search
+                }}
+                className={`transition-all duration-300 ease-in-out border border-[#173D94] rounded-full ml-2 p-2 text-sm ${
                   searchVisible
                     ? "w-40 opacity-100"
                     : "w-0 opacity-0 pointer-events-none"
@@ -233,50 +246,17 @@ const AdminDataInstruktur = () => {
                   ))
                 )}
               </tbody>
-
             </table>
           )}
         </div>
-      </div>
 
-      {/* Pop-up untuk tambah instruktur */}
         <TambahInstruktur
           show={showTambahPopup}
           onClose={handleCloseTambahPopup}
-          addInstructor={async (newInstructor) => {
-            setIsAdding(true);
-            try {
-              await dispatch(addInstructor(newInstructor));
-              await dispatch(getAllInstructors());
-              handleCloseTambahPopup();
-            } catch (error) {
-              console.error("Error Adding Instructor:", error);
-              if (error.response) {
-                if (error.response.data && error.response.data.message === "Email Telah Digunakan")
-                  toast.dismiss()
-                  toast.error("Gagal menambahkan instruktur. Email Telah Digunakan.", {
-                    style: {
-                      borderRadius: "8px",
-                      background: "#FF3333",
-                      color: "#fff",
-                   },
-                  });
-                } else {
-                  toast.dismiss()
-                  toast.error("Gagal menambahkan instruktur. Silakan coba lagi nanti.", {
-                    style: {
-                      borderRadius: "8px",
-                      background: "#FF3333",
-                      color: "#fff",
-                    },
-                  });
-                }
-            } finally {
-              setIsAdding(false);
-            }
-          }}
-          isAdding={isAdding}
+          addInstructor={handleAddInstructor} // Update this line
+          isAdding={isAdding} // Pass isAdding state to the child component
         />
+      </div>
     </div>
   );
 };

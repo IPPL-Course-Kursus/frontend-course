@@ -15,9 +15,10 @@ const TopikKelas = () => {
   const courses = useSelector((state) => state.course.courses);
   const [categories, setCategories] = useState([]);
   const [selectedFilter, setSelectedFilter] = useState("All");
+  
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
+  const itemsPerPage = 9;
 
   const [filterChecked, setFilterChecked] = useState({});
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -25,7 +26,7 @@ const TopikKelas = () => {
   const {
     category = [],
     courseLevel = [],
-    data: courseTypes = [], // Pastikan ini diambil dari state yang benar
+    data: courseTypes = [], 
   } = useSelector((state) => state.category);
 
   useEffect(() => {
@@ -35,35 +36,34 @@ const TopikKelas = () => {
     dispatch(getType());
   }, [dispatch]);
   
-  // Menangani URL untuk kategori yang dipilih
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const categoryFromUrl = params.get("category");  // Ambil kategori dari URL
+    const categoryFromUrl = params.get("category");
   
     if (categoryFromUrl) {
+      const formattedCategory = categoryFromUrl.replace(/_/g, " ");
       setFilterChecked((prev) => ({
         ...prev,
-        [categoryFromUrl]: true,  // Set filter kategori yang dipilih
+        [formattedCategory]: true,
       }));
-      setSelectedFilter(categoryFromUrl);  // Set kategori di state
+      setSelectedFilter(formattedCategory); 
     } else {
-      // Jika tidak ada kategori di URL, set kategori default
       setSelectedFilter("All");
     }
   }, [location.search]);
   
-  // Fungsi untuk menangani perubahan kategori atau checkbox
-  const handleCategoryClick = (category) => {
-    const url = new URL(window.location);
-    url.searchParams.set("category", category); // Update URL dengan kategori yang dipilih
-    window.history.pushState({}, "", url); // Update URL tanpa reload halaman
   
-    // Set kategori yang dipilih di state
-    setSelectedFilter(category);
-    setCurrentPage(1); // Reset halaman ke 1 saat filter berubah
+  const handleCategoryClick = (category) => {
+    const formattedCategory = category.replace(/\s+/g, "_"); 
+    const url = new URL(window.location);
+    url.searchParams.set("category", formattedCategory); 
+    window.history.pushState({}, "", url);
+  
+    setSelectedFilter(formattedCategory);
+    setCurrentPage(1); 
   };
   
-  // Menangani perubahan filter saat checkbox dipilih
   const handleCheckboxChange = (label) => {
     const updatedChecked = {
       ...filterChecked,
@@ -71,69 +71,137 @@ const TopikKelas = () => {
     };
     setFilterChecked(updatedChecked);
     setScrollPosition(window.scrollY);
+  
+    const activeFilters = Object.keys(updatedChecked).filter((key) => updatedChecked[key]);
+  
+    const filterString = activeFilters
+      .filter((filter) => filter !== selectedFilter)
+      .map((filter) => filter.replace(/\s+/g, "_"))
+      .join(",");
+  
+    const baseUrl = `${window.location.origin}${window.location.pathname}`;
+    if (filterString) {
+      const newUrl = `${baseUrl}?filter=${filterString}`;
+      window.history.pushState({}, "", newUrl);
+    } else {
+      window.history.pushState({}, "", baseUrl);
+    }
+  
     const filters = {
       isNewest: updatedChecked["Paling Baru"] || false,
       isPopular: updatedChecked["Paling Populer"] || false,
       promoStatus: updatedChecked["Promo"] || false,
-      // Jika Anda ingin menambah kategori
-      categories: Object.keys(updatedChecked).filter(
-        (key) =>
-          updatedChecked[key] &&
-          key !== "Paling Baru" &&
-          key !== "Paling Populer" &&
-          key !== "Promo"
+      categories: activeFilters.filter((key) =>
+        category.some((cat) => cat.categoryName === key && key !== selectedFilter)
       ),
-      levels: Object.keys(updatedChecked).filter(
-        (key) => courseLevel.some((level) => level.levelName === key && updatedChecked[key]) // Filter berdasarkan level
+      levels: activeFilters.filter((key) =>
+        courseLevel.some((level) => level.levelName === key)
+      ),
+      priceRanges: activeFilters.filter((key) =>
+        [
+          "Kurang dari 50.000",
+          "50.000 - 100.000",
+          "100.000 - 250.000",
+          "250.000 - 500.000",
+          "500.000 - 1.000.000",
+          "Lebih dari 1.000.000",
+        ].includes(key)
       ),
     };
+  
     if (
-      updatedChecked["Promo"] ||
-      updatedChecked["Paling Baru"] ||
-      updatedChecked["Paling Populer"]
-    )
-      if (filters.isNewest || filters.isPopular || filters.promoStatus) {
-        dispatch(getFilteredCourses(filters)); // Dispatch the filter action
-      } else {
-        dispatch(getAllCourse()); // If no filters, get all courses
-      }
-  };
-  useEffect(() => {
-    if (scrollPosition !== 0) {
-      window.scrollTo(0, scrollPosition);
+      filters.isNewest ||
+      filters.isPopular ||
+      filters.promoStatus ||
+      filters.categories.length ||
+      filters.levels.length ||
+      filters.priceRanges.length
+    ) {
+      dispatch(getFilteredCourses(filters));
+    } else {
+      dispatch(getAllCourse());
     }
-  }, [filterChecked, scrollPosition]);
+    setCurrentPage(1);
+  };
+  
   const handleFilterClick = (filter) => {
     setSelectedFilter(filter);
     setCurrentPage(1);
-    // Reset the filterChecked when "All" is clicked
+  
+    const url = new URL(window.location);
     if (filter === "All") {
-      clearFilters(); // Reset all filters when "All" is selected
+      url.searchParams.delete("category");
+    } else {
+      url.searchParams.set("category", filter.replace(/\s+/g, "_"));
     }
+    window.history.pushState({}, "", url);
+  
+    if (filter === "All") {
+      clearFilters(); 
+    }
+  
   };
+  
   const filteredCourses = () => {
     const activeFilters = Object.keys(filterChecked).filter((key) => filterChecked[key]);
     let filteredCourses = courses.filter((course) => {
       const matchesSearch =
         course.courseName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         course.category.categoryName.toLowerCase().includes(searchQuery.toLowerCase());
+  
+      if (selectedFilter === "All") return matchesSearch;
       if (selectedFilter === "Premium" && course.coursePrice === 0) return false;
       if (selectedFilter === "Free" && course.coursePrice !== 0) return false;
+      if (selectedFilter !== "All" && selectedFilter !== "Premium" && selectedFilter !== "Free" && !category.some(cat => cat.categoryName === selectedFilter)) {
+        return false;
+      }   
+  
       return matchesSearch;
     });
   
+    const priceRanges = activeFilters.filter((filter) =>
+      [
+        "Kurang dari 50.000",
+        "50.000 - 100.000",
+        "100.000 - 250.000",
+        "250.000 - 500.000",
+        "500.000 - 1.000.000",
+        "Lebih dari 1.000.000",
+      ].includes(filter)
+    );
+  
+    if (priceRanges.length > 0) {
+      filteredCourses = filteredCourses.filter((course) => {
+        const price = course.coursePrice;
+        return priceRanges.some((filter) => {
+          switch (filter) {
+            case "Kurang dari 50.000":
+              return price < 50000;
+            case "50.000 - 100.000":
+              return price >= 50000 && price <= 100000;
+            case "100.000 - 250.000":
+              return price > 100000 && price <= 250000;
+            case "250.000 - 500.000":
+              return price > 250000 && price <= 500000;
+            case "500.000 - 1.000.000":
+              return price > 500000 && price <= 1000000;
+            case "Lebih dari 1.000.000":
+              return price > 1000000;
+            default:
+              return false;
+          }
+        });
+      });
+    }
     if (filterChecked["Paling Baru"]) {
       filteredCourses = filteredCourses.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     }
-  
     if (filterChecked["Paling Populer"]) {
       filteredCourses = filteredCourses.sort((a, b) => b.popularity - a.popularity);
     }
-  
     if (filterChecked["Promo"]) {
       filteredCourses = filteredCourses.filter((course) => course.promoStatus === true);
     }
-  
     if (activeFilters.length > 0) {
       const categoryFilters = activeFilters.filter((filter) =>
         category.some((cat) => cat.categoryName === filter)
@@ -148,13 +216,13 @@ const TopikKelas = () => {
         const matchesLevel =
           levelFilters.length === 0 ||
           levelFilters.some((filter) => course.courseLevel.levelName === filter);
-        return matchesCategory && matchesLevel; // Memastikan kedua kondisi terpenuhi
+        return matchesCategory && matchesLevel;
       });
     }
+  
     return filteredCourses;
   };
   
-  // Fungsi untuk membersihkan filter
   const clearFilters = () => {
     const clearedFilterState = {
       "Paling Baru": false,
@@ -166,21 +234,18 @@ const TopikKelas = () => {
       }, {}),
     };
   
-    setScrollPosition(window.scrollY);
     setFilterChecked(clearedFilterState);
     setSelectedFilter("All");
-    window.location.hash = "";  // Reset hash URL
-    dispatch(getAllCourse());  // Ambil semua kursus lagi
+    setSearchQuery("");
+    setCurrentPage(1); 
+  
+    const url = new URL(window.location);
+    url.search = "";
+    window.history.pushState({}, "", url);
+  
+    dispatch(getAllCourse());
   };
   
-  // Menggunakan scroll yang tersimpan saat filter berubah
-  useEffect(() => {
-    if (scrollPosition !== 0) {
-      window.scrollTo(0, scrollPosition);
-    }
-  }, [filterChecked, scrollPosition]);
-  
-  // Fungsi untuk menampilkan filter tambahan
   const [showFilters, setShowFilters] = useState(false);
   const toggleFilters = () => {
     setShowFilters(!showFilters);
@@ -204,7 +269,7 @@ const TopikKelas = () => {
                 className="text-3xl font-bold mb-4"
                 style={{
                   fontFamily: "Poppins, sans-serif",
-                  color: "#1E3A8A", // Elegant deep blue color
+                  color: "#1E3A8A", 
                 }}
               >
                 Katalog Kelas
@@ -216,11 +281,11 @@ const TopikKelas = () => {
             </div>
 
             <div className="flex justify-center mt-12">
-              <div className="relative w-full max-w-md lg:w-[30rem] transition-all duration-200 ease-in-out">
+              <div className="relative w-full max-w-[85%] sm:max-w-sm md:max-w-md lg:max-w-lg transition-all duration-200 ease-in-out">
                 <input
                   type="text"
                   placeholder="Cari Kelas..."
-                  className="w-full py-3 pl-5 pr-14 text-gray-800 bg-white rounded-full border border-gray-300 shadow focus:outline-none focus:ring-2 focus:ring-blue-800 focus:border-transparent transition-all duration-200 ease-in-out hover:shadow-md"
+                  className="w-full py-3 sm:py-4 px-4 sm:px-6 text-gray-800 bg-white rounded-full border border-gray-900 shadow focus:outline-none focus:ring-2 focus:ring-blue-800 focus:border-transparent transition-all duration-200 ease-in-out hover:shadow-md"
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value.toLowerCase());
@@ -287,22 +352,25 @@ const TopikKelas = () => {
           </div>
 
           <div className="flex flex-col md:flex-row md:space-x-6 pr-4 md:pr-10 ml-10">
-            <div className="md:block md:w-1/4">
-              <button
+                <div className="md:block md:w-1/4 relative">
+                  <button
                 onClick={toggleFilters}
-                className="bg-blue-600 text-white px-4 py-2 rounded mb-4 md:hidden"
+                className="bg-blue-600 text-white px-4 py-2 rounded mb-4 w-full md:w-auto md:hidden"
               >
                 {showFilters ? "Hide Filters" : "Show Filters"}
               </button>
 
               <div
-                className={`bg-white shadow-md rounded-md p-4 ${
-                  showFilters ? "" : "hidden md:block"
-                }`}
+                className={`absolute top-full left-0 w-full bg-white shadow-md rounded-md p-4 ${
+                  showFilters
+                    ? "translate-x-0 opacity-100 pointer-events-auto"
+                    : "-translate-x-full opacity-0 pointer-events-none"
+                } transform transition-all duration-300 md:relative md:translate-x-0 md:opacity-100 md:pointer-events-auto md:top-0 md:bg-white md:transition-none`}
               >
                 <h3 className="text-xl font-bold text-gray-800 mb-4">Filter</h3>
+                <div className="md:block grid grid-cols-2 gap-2">
                 {["Paling Baru", "Paling Populer", "Promo"].map((label, index) => (
-                  <div className="flex items-center mb-2" key={index}>
+                  <div className={`inline-flex md:flex items-center mb-2 bg-gray-200 p-2 rounded md:p-0 md:bg-transparent`} key={index}>
                     <input
                       type="checkbox"
                       id={`filter-${label}`}
@@ -315,11 +383,13 @@ const TopikKelas = () => {
                     </label>
                   </div>
                 ))}
+                </div>
 
                 <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">Kategori</h3>
+                <div className="md:block grid grid-cols-2 gap-2">
                 {category &&
                   category.map((kategori, i) => (
-                    <div className="flex items-center mb-2" key={i}>
+                    <div className={`inline-flex md:flex items-center mb-2 bg-gray-200 p-2 rounded md:p-0 md:bg-transparent`} key={i}>
                       <input
                         type="checkbox"
                         id={`filter-${kategori.categoryName}`}
@@ -335,11 +405,13 @@ const TopikKelas = () => {
                       </label>
                     </div>
                   ))}
+                  </div>
 
                 <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">Level Kesulitan</h3>
+                <div className="md:block grid grid-cols-2 gap-2">
                 {courseLevel &&
                   courseLevel.map((level, i) => (
-                    <div className="flex items-center mb-2" key={i}>
+                    <div className={`inline-flex md:flex items-center mb-2 bg-gray-200 p-2 rounded md:p-0 md:bg-transparent`} key={i}>
                       <input
                         type="checkbox"
                         id={`filter-${level.levelName}`}
@@ -352,7 +424,33 @@ const TopikKelas = () => {
                       </label>
                     </div>
                   ))}
+                  </div>
 
+                <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">Harga</h3>
+                <div className="md:block grid grid-cols-2 gap-2">
+                {[
+                    "Kurang dari 50.000",
+                    "50.000 - 100.000",
+                    "100.000 - 250.000",
+                    "250.000 - 500.000",
+                    "500.000 - 1.000.000",
+                    "Lebih dari 1.000.000"
+                    ].map((priceLabel, index) => (
+                  <div className={`inline-flex md:flex items-center mb-2 bg-gray-200 p-2 rounded md:p-0 md:bg-transparent`} key={index}>
+                    <input
+                      type="checkbox"
+                      id={`filter-${priceLabel}`}
+                      checked={filterChecked[priceLabel] || false}
+                      onChange={() => handleCheckboxChange(priceLabel)}
+                      className="mr-2 checkbox-custom"
+                    />
+                    <label htmlFor={`filter-${priceLabel}`} className="text-sm md:text-base">
+                      {priceLabel}
+                    </label>
+                  </div>
+                ))}
+                </div>
+                
                 <button
                   onClick={clearFilters}
                   className="bg-red-600 text-white px-4 py-2 rounded mt-4"
@@ -404,8 +502,8 @@ const TopikKelas = () => {
                               ? "Free"
                               : `Beli Rp. ${
                                   course.promoStatus
-                                    ? course.courseDiscountPrice
-                                    : course.coursePrice
+                                    ? course.courseDiscountPrice.toLocaleString('id-ID')
+                                    : course.coursePrice.toLocaleString('id-ID')
                                 }`}
                           </Link>
                         </div>
@@ -436,7 +534,7 @@ const TopikKelas = () => {
                   </button>
 
                   {/* Responsive Page Text */}
-                  <span className="text-lg font-semibold">
+                  <span className="text-lg font-semibold flex-grow text-center">
                     <span className="hidden sm:inline">
                       Page {currentPage} of {totalPages}
                     </span>
@@ -445,6 +543,7 @@ const TopikKelas = () => {
                     </span>
                   </span>
 
+                  {currentPage < totalPages && (
                   <button
                     className={`flex items-center py-2 px-4 rounded-lg ${
                       currentPage === totalPages
@@ -457,6 +556,7 @@ const TopikKelas = () => {
                     Next
                     <IoArrowForwardCircle className="ml-2 text-xl" />
                   </button>
+                  )}
                 </div>
               )}
             </div>
