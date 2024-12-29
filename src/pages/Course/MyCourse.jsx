@@ -111,7 +111,7 @@ const CoursesPage = () => {
       <Navbar />
       <div className="bg-blue-50 flex justify-center">
         <main className="container mx-auto  py-10 bg-blue-50">
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex justify-between items-center mb-1">
             <h2 className="text-4xl font-bold text-gray-900">Kelas Saya</h2>
             {/* <button
               onClick={toggleMobileDropdown}
@@ -236,20 +236,21 @@ const CoursesPage = () => {
 
               {/* Filter untuk Mobile (dropdown toggle) */}
               <div className="w-full md:hidden">
-  {/* Tombol Dropdown */}
-  <button
-  onClick={() => setIsMobileDropdownVisible(!isMobileDropdownVisible)} // Toggle the dropdown visibility
-  className="w-full bg-blue-500 text-white font-bold text-sm md:text-base px-2 py-1.5 rounded-md mb-4"
->
-  {isMobileDropdownVisible ? "Tutup Filter" : "Tampilkan Filter"} {/* Change button text based on visibility */}
-</button>
+                {/* Tombol Dropdown */}
+                <button
+                onClick={() => setIsMobileDropdownVisible(!isMobileDropdownVisible)} // Toggle the dropdown visibility
+                className="w-full bg-blue-500 text-white font-bold text-sm md:text-base px-2 py-1.5 rounded-md mb-4"
+              >
+                {isMobileDropdownVisible ? "Tutup Filter" : "Tampilkan Filter"} {/* Change button text based on visibility */}
+              </button>
 
-{/* Kontainer Dropdown */}
-<div
-  className={`${
-    isMobileDropdownVisible ? "block" : "hidden" // Show or hide the dropdown based on state
-  } bg-white shadow-md rounded-md p-4`}
->
+              {/* Kontainer Dropdown */}
+              <div
+                className={`${
+                  isMobileDropdownVisible ? "block" : "hidden" // Show or hide the dropdown based on state
+                } bg-white shadow-md rounded-md p-4`}
+                
+              >
                 <h3 className="text-xl font-bold text-gray-800 mb-4">Filter</h3>
                 {/* Filter Konten untuk Mobile */}
                 <div>
@@ -315,20 +316,25 @@ const CoursesPage = () => {
                   return (
                     <div
                       key={index}
-                      className="bg-white shadow-md rounded-md p-4 mb-6 flex flex-col md:flex-row"
+                      className="bg-gray-50 shadow-md rounded-md p-4 pb-1 pt-3 mb-2.5 flex flex-col md:flex-row"
                     >
                       <img
                         src={courseItem.course.image || "https://via.placeholder.com/150"}
                         alt="Course"
-                        className="w-full md:w-48 h-30 mr-8 rounded-md"
+                        className="w-full md:w-48 h-56 mr-8 rounded-md"
                       />
                       <div className="flex-1">
-                        <div className="flex justify-between items-center mb-2">
+                        <div className="flex justify-between items-center mb-1">
                           <h3 className="text-xl font-bold text-blue-800">
                             {courseItem.course.courseName}
                           </h3>
                           <Link to={`/mulai-kelas/${courseItem.id}`}>
-                            <button className="bg-blue-500 hover:bg-slate-400 text-white mt-3 px-2 py-1 md:px-3 md:py-2 text-wrap rounded-md">
+                            <button className="bg-blue-500 hover:bg-slate-400 text-white mt-3 px-1.5 py-1 md:px-3 md:py-2 text-wrap rounded-md"
+                            // style={{
+                            //   fontFamily: "Poppins",
+                            //   color: "", 
+                            // }}
+                            >
                               Lihat Detail Kelas
                             </button>
                           </Link>
