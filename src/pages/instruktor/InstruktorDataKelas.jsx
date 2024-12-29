@@ -203,107 +203,205 @@ const InstruktorDataKelas = () => {
 
           {/* Tabel Data Kelas */}
           <div className="overflow-x-auto bg-white p-4 rounded-lg shadow-md">
-            <table className="min-w-full table-auto">
-              <thead>
-                <tr className="bg-gray-200 text-left text-xs md:text-sm font-semibold">
-                  <th className="px-2 md:px-4 py-2">Urutan</th>
-                  <th className="px-2 md:px-4 py-2">Image</th>
-                  <th className="px-2 md:px-4 py-2">Kategori</th>
-                  <th className="px-2 md:px-4 py-2">Nama Kelas</th>
-                  <th className="px-2 md:px-4 py-2">Tipe Kelas</th>
-                  <th className="px-2 md:px-4 py-2">Level</th>
-                  <th className="px-2 md:px-4 py-2">Publish</th>
-                  <th className="px-2 md:px-4 py-2">Harga</th>
-                  <th className="px-2 md:px-4 py-2">Aksi</th>
-                </tr>
-              </thead>
+            <div className="hidden md:block">
+              <table className="min-w-full table-auto">
+                <thead>
+                  <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
+                    <th className="px-4 py-2 w-1/12">Urutan</th>
+                    <th className="px-2 md:px-4 py-2">Image</th>
+                    <th className="px-4 py-2 w-1/6">Kategori</th>
+                    <th className="px-4 py-2 w-2/6">Nama Kelas</th>
+                    <th className="px-4 py-2 w-1/6">Tipe Kelas</th>
+                    <th className="px-4 py-2 w-1/6">Level</th>
+                    <th className="px-4 py-2 w-1/6">Publish</th>
+                    <th className="px-4 py-2 w-1/6">Harga</th>
+                    <th className="px-4 py-2 w-1/6">Aksi</th>
+                  </tr>
+                </thead>
 
-              <tbody>
-                {currentItems.map((courseType, index) => (
-                  <tr
-                    key={courseType.id}
-                    className="border-t text-xs md:text-sm hover:bg-gray-50 transition-all duration-300"
+                <tbody>
+                  {currentItems.map((courseType, index) => (
+                    <tr
+                      key={courseType.id}
+                      className="border-t text-xs md:text-sm hover:bg-gray-50 transition-all duration-300"
+                    >
+                      {/* Nomor urutan */}
+                      <td className="px-2 md:px-4 py-2 text-center">
+                        {(currentPage - 1) * itemsPerPage + index + 1}
+                      </td>
+
+                      {/* Gambar */}
+                      <td className="px-2 md:px-4 py-2 text-center">
+                        <img
+                          src={courseType.image}
+                          className="w-16 object-cover h-16 rounded-lg shadow-lg transition-transform duration-300 transform hover:scale-105"
+                        />
+                      </td>
+
+                      {/* Kategori */}
+                      <td className="px-2 md:px-4 py-2">{courseType.category.categoryName}</td>
+
+                      {/* Nama Kursus */}
+                      <td className="px-2 md:px-4 py-2 font-semibold">{courseType.courseName}</td>
+
+                      {/* Tipe Kursus */}
+                      <td
+                        className={`px-2 md:px-4 py-2 font-bold ${
+                          courseType.typeCourse.typeName === "Free" ? "text-success" : "text-failed"
+                        }`}
+                      >
+                        {courseType.typeCourse.typeName}
+                      </td>
+
+                      {/* Level Kursus */}
+                      <td className="px-2 md:px-4 py-2 text-center">
+                        {courseType.courseLevel.levelName}
+                      </td>
+
+                      {/* Status Publish */}
+                      <td className="px-2 md:px-4 py-2 text-center">
+                        {courseType.publish ? (
+                          <span className="text-green-500 font-semibold">Published</span>
+                        ) : (
+                          <span className="text-red-500 font-semibold">Unpublished</span>
+                        )}
+                      </td>
+
+                      {/* Harga */}
+                      <td className="px-2 md:px-4 py-2 font-semibold">
+                        {new Intl.NumberFormat("id-ID", {
+                          style: "currency",
+                          currency: "IDR",
+                        }).format(courseType.coursePrice)}
+                      </td>
+
+                      {/* Tombol Aksi */}
+                      <td className="px-2 md:px-4 py-2 flex justify-center space-x-3 items-center">
+                        <Link to={`/inst/data-chapter/${courseType.id}`}>
+                          <button className="py-1 px-3 bg-blue-600 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:bg-blue-700 transform hover:scale-105 mt-4">
+                            Kelola
+                          </button>
+                        </Link>
+                        <button
+                          className="py-1 px-3 bg-green-600 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:bg-green-700 transform hover:scale-105 mt-4"
+                          onClick={() => handleEditClick(courseType)}
+                        >
+                          Ubah
+                        </button>
+                        <button
+                          className="py-1 px-3 bg-yellow-600 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:bg-yellow-700 transform hover:scale-105 mt-4"
+                          onClick={() => handleDetailClick(courseType)}
+                        >
+                          Detail
+                        </button>
+                        <button
+                          className="py-1 px-3 bg-red-600 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:bg-red-700 transform hover:scale-105 mt-4"
+                          onClick={() => handleDelete(courseType)}
+                        >
+                          Hapus
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* mobile   */}
+            <div className="block md:hidden space-y-6">
+              {currentItems.length > 0 ? (
+                currentItems.map((course, index) => (
+                  <div
+                    key={course.id}
+                    className="border rounded-lg p-5 shadow-lg bg-gradient-to-r from-white to-gray-100"
                   >
-                    {/* Nomor urutan */}
-                    <td className="px-2 md:px-4 py-2 text-center">
-                      {(currentPage - 1) * itemsPerPage + index + 1}
-                    </td>
-
-                    {/* Gambar */}
-                    <td className="px-2 md:px-4 py-2 text-center">
+                    {/* Header: Nomor urutan dan nama kelas */}
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="text-lg font-bold text-gray-700">
+                        {(currentPage - 1) * itemsPerPage + index + 1}. {course.courseName}
+                      </div>
                       <img
-                        src={courseType.image}
-                        className="w-16 object-cover h-16 rounded-lg shadow-lg transition-transform duration-300 transform hover:scale-105"
+                        src={course.image}
+                        alt={course.courseName}
+                        className="w-20 h-20 object-cover rounded-md shadow-md transition-transform duration-300 hover:scale-105"
                       />
-                    </td>
+                    </div>
 
                     {/* Kategori */}
-                    <td className="px-2 md:px-4 py-2">{courseType.category.categoryName}</td>
+                    <div className="mb-3 text-sm text-gray-600">
+                      <span className="font-semibold text-gray-800">Kategori:</span>{" "}
+                      {course.category.categoryName}
+                    </div>
 
-                    {/* Nama Kursus */}
-                    <td className="px-2 md:px-4 py-2 font-semibold">{courseType.courseName}</td>
+                    {/* Tipe Kelas */}
+                    <div className="mb-3 text-sm text-gray-600">
+                      <span className="font-semibold text-gray-800">Tipe Kelas:</span>{" "}
+                      <span
+                        className={`font-bold ${
+                          course.typeCourse.typeName === "Free" ? "text-green-500" : "text-red-500"
+                        }`}
+                      >
+                        {course.typeCourse.typeName}
+                      </span>
+                    </div>
 
-                    {/* Tipe Kursus */}
-                    <td
-                      className={`px-2 md:px-4 py-2 font-bold ${
-                        courseType.typeCourse.typeName === "Free" ? "text-success" : "text-failed"
-                      }`}
-                    >
-                      {courseType.typeCourse.typeName}
-                    </td>
-
-                    {/* Level Kursus */}
-                    <td className="px-2 md:px-4 py-2 text-center">
-                      {courseType.courseLevel.levelName}
-                    </td>
-
-                    {/* Status Publish */}
-                    <td className="px-2 md:px-4 py-2 text-center">
-                      {courseType.publish ? (
-                        <span className="text-green-500 font-semibold">Published</span>
-                      ) : (
-                        <span className="text-red-500 font-semibold">Unpublished</span>
-                      )}
-                    </td>
+                    {/* Level */}
+                    <div className="mb-3 text-sm text-gray-600">
+                      <span className="font-semibold text-gray-800">Level:</span>{" "}
+                      {course.courseLevel.levelName}
+                    </div>
 
                     {/* Harga */}
-                    <td className="px-2 md:px-4 py-2 font-semibold">
+                    <div className="mb-3 text-sm text-gray-600">
+                      <span className="font-semibold text-gray-800">Harga:</span>{" "}
                       {new Intl.NumberFormat("id-ID", {
                         style: "currency",
                         currency: "IDR",
-                      }).format(courseType.coursePrice)}
-                    </td>
+                      }).format(course.coursePrice)}
+                    </div>
+
+                    {/* Status Publish */}
+                    <div className="mb-3 text-sm text-gray-600">
+                      <span className="font-semibold text-gray-800">Status:</span>{" "}
+                      {course.publish ? (
+                        <span className="text-green-600 font-semibold">Published</span>
+                      ) : (
+                        <span className="text-red-600 font-semibold">Unpublished</span>
+                      )}
+                    </div>
 
                     {/* Tombol Aksi */}
-                    <td className="px-2 md:px-4 py-2 flex justify-center space-x-3 items-center">
-                      <Link to={`/inst/data-chapter/${courseType.id}`}>
-                        <button className="py-1 px-3 bg-blue-600 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:bg-blue-700 transform hover:scale-105 mt-4">
+                    <div className="flex flex-col space-y-2 mt-4">
+                      <Link to={`/inst/data-chapter/${course.id}`} className="w-full">
+                        <button className="w-full py-2 bg-blue-600 text-white font-semibold rounded-md text-sm shadow-md hover:bg-blue-600 transition-transform duration-300 hover:scale-105">
                           Kelola
                         </button>
                       </Link>
                       <button
-                        className="py-1 px-3 bg-green-600 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:bg-green-700 transform hover:scale-105 mt-4"
-                        onClick={() => handleEditClick(courseType)}
+                        className="w-full py-2 bg-green-600 text-white font-semibold rounded-md text-sm shadow-md hover:bg-green-600 transition-transform duration-300 hover:scale-105"
+                        onClick={() => handleEditClick(course)}
                       >
                         Ubah
                       </button>
                       <button
-                        className="py-1 px-3 bg-yellow-600 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:bg-yellow-700 transform hover:scale-105 mt-4"
-                        onClick={() => handleDetailClick(courseType)}
+                        className="w-full py-2 bg-yellow-600 text-white font-semibold rounded-md text-sm shadow-md hover:bg-yellow-600 transition-transform duration-300 hover:scale-105"
+                        onClick={() => handleDetailClick(course)}
                       >
                         Detail
                       </button>
                       <button
-                        className="py-1 px-3 bg-red-600 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:bg-red-700 transform hover:scale-105 mt-4"
-                        onClick={() => handleDelete(courseType)}
+                        className="w-full py-2 bg-red-600 text-white font-semibold rounded-md text-sm shadow-md hover:bg-red-600 transition-transform duration-300 hover:scale-105"
+                        onClick={() => handleDelete(course)}
                       >
                         Hapus
                       </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-center text-gray-500">Tidak ada kelas ditemukan.</p>
+              )}
+            </div>
           </div>
           {/* Pagination */}
           <div className="flex justify-between items-center mt-4">
