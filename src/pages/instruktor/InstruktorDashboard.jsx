@@ -40,19 +40,19 @@ const InstruktorDashboard = () => {
       count: paymentStatus?.transactionCountByType?.Free || 0,
       label: "Free Class",
       color: "bg-primary",
-      icon: <IoBookSharp className="text-2xl text-primary" />, 
+      icon: <IoBookSharp className="text-2xl text-primary" />,
     },
     {
       count: paymentStatus?.transactionCountByType?.Premium || 0,
       label: "Premium Class",
       color: "bg-primary",
-      icon: <IoBookSharp className="text-2xl text-primary text-center items-center" />, 
+      icon: <IoBookSharp className="text-2xl text-primary text-center items-center" />,
     },
     {
       count: paymentStatus?.totalTransactions || 0,
       label: "Total Transaction",
       color: "bg-primary",
-      icon: <GrTransaction className="text-2xl text-[#173D94]" />, 
+      icon: <GrTransaction className="text-2xl text-[#173D94]" />,
     },
   ];
 
@@ -119,26 +119,27 @@ const InstruktorDashboard = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div className="flex">
+    <div className="flex flex-col md:flex-row">
       <div className="min-h-screen">
         <Sidebar />
       </div>
-      <div className="p-6 bg-secondary min-h-screen w-screen font-poppins">
-        <div className="bg-[#F3F7FB] p-4 flex justify-between items-center mb-4 shadow-sm">
+      <div className="p-4 bg-secondary min-h-screen w-full font-poppins">
+        <div className="bg-[#F3F7FB] p-4 flex flex-col md:flex-row justify-between items-center mb-4 shadow-sm">
           <HeadInstruktur />
         </div>
 
-        <div className="grid grid-cols-3 gap-10 px-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-4 mb-8">
           {allCardData.map((card, index) => (
             <div
               key={index}
-              className={`${card.color} text-white font-semibold p-4 rounded-lg shadow-sm flex items-center justify-start`}
+              className={`${card.color} text-white font-semibold p-4 rounded-lg shadow-sm flex items-center`}
             >
-              <div className="mr-10 -mt-10">{card.info}</div>
-              <div className="bg-white rounded-full p-2 ml-10">{card.icon}</div>
-              <div className="ml-4">
-                <div className="flex items-center text-2xl">
-                  {card.label === "Total Uang Masuk" || card.label === "QRIS" || card.label === "Bank Transfer"
+              <div className="mr-4">{card.icon}</div>
+              <div>
+                <div className="text-lg sm:text-2xl">
+                  {card.label === "Total Uang Masuk" ||
+                  card.label === "QRIS" ||
+                  card.label === "Bank Transfer"
                     ? `Rp ${card.count.toLocaleString("id-ID")}`
                     : card.count}
                 </div>
@@ -148,28 +149,28 @@ const InstruktorDashboard = () => {
           ))}
         </div>
 
-        <div className="flex justify-between items-center mb-4 p-4">
-          <h2 className="text-xl font-bold">Transaksi Kursus Instruktur</h2>
-          <div className="flex items-center">
-            <div className="relative inline-block">
-              <select
-                value={filter}
-                onChange={handleFilterChange}
-                className="flex items-center py-2 pl-10 pr-4 bg-[#0a61aa] text-white font-semibold rounded-md text-sm transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#0a61aa] focus:ring-opacity-50"
-              >
-                <option value="">Filter</option>
-                <option value="settlement">Settlement</option>
-                <option value="pending">Pending</option>
-              </select>
-              <FaFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-sm" />
-            </div>
+        <div className="flex flex-col md:flex-row justify-between items-center mb-4 p-4">
+          <h2 className="text-lg md:text-xl font-bold">
+            Transaksi Kursus Instruktur
+          </h2>
+          <div className="relative inline-block mt-4 md:mt-0">
+            <select
+              value={filter}
+              onChange={handleFilterChange}
+              className="py-2 pl-10 pr-4 bg-[#0a61aa] text-white font-semibold rounded-md text-sm transition-all duration-300 hover:scale-105 focus:outline-none"
+            >
+              <option value="">Filter</option>
+              <option value="settlement">Settlement</option>
+              <option value="pending">Pending</option>
+            </select>
+            <FaFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white" />
           </div>
         </div>
 
-        <div className="overflow-x-auto bg-white p-6 rounded-lg shadow-lg">
-          <table className="min-w-full table-auto">
+        <div className="overflow-x-auto bg-white p-4 rounded-lg shadow-lg">
+          <table className="w-full table-auto text-sm md:text-base">
             <thead>
-              <tr className="bg-gray-200 text-left text-sm md:text-base font-semibold">
+              <tr className="bg-gray-200 text-left">
                 <th className="px-4 py-3">#</th>
                 <th className="px-4 py-3">Order ID</th>
                 <th className="px-4 py-3">Kategori</th>
@@ -196,7 +197,7 @@ const InstruktorDashboard = () => {
                   return (
                     <tr
                       key={payment.id}
-                      className="border-b hover:bg-gray-50 transition-colors text-sm md:text-base"
+                      className="border-b hover:bg-gray-50 transition-colors"
                     >
                       <td className="px-4 py-3">{rowNumber}</td>
                       <td className="px-4 py-3">{payment.orderId}</td>
@@ -224,7 +225,10 @@ const InstruktorDashboard = () => {
                 })
               ) : (
                 <tr>
-                  <td colSpan="8" className="text-center py-6 text-gray-500">
+                  <td
+                    colSpan="8"
+                    className="text-center py-6 text-gray-500"
+                  >
                     Tidak ada data yang tersedia
                   </td>
                 </tr>
@@ -233,28 +237,28 @@ const InstruktorDashboard = () => {
           </table>
 
           {sortedPayments.length > itemsPerPage && (
-            <div className="flex items-center justify-between mt-6">
+            <div className="flex flex-col md:flex-row items-center justify-between mt-6">
               {currentPage > 1 && (
                 <button
-                  className="flex items-center py-2 px-5 rounded-md text-sm md:text-base font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-all"
+                  className="flex items-center py-2 px-5 rounded-md text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-all"
                   onClick={() => paginate(currentPage - 1)}
                 >
-                  <IoArrowBackCircle className="mr-2 text-xl" />
+                  <IoArrowBackCircle className="mr-2 text-lg" />
                   Previous
                 </button>
               )}
 
-              <span className="text-sm md:text-lg font-semibold mx-auto">
+              <span className="text-sm font-semibold mx-auto">
                 Page {currentPage} of {totalPages}
               </span>
 
               {currentPage < totalPages && (
                 <button
-                  className="flex items-center py-2 px-5 rounded-md text-sm md:text-base font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-all"
+                  className="flex items-center py-2 px-5 rounded-md text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-all"
                   onClick={() => paginate(currentPage + 1)}
                 >
                   Next
-                  <IoArrowForwardCircle className="ml-2 text-xl" />
+                  <IoArrowForwardCircle className="ml-2 text-lg" />
                 </button>
               )}
             </div>
