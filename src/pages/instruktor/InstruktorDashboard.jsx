@@ -10,8 +10,9 @@ import {
 } from "react-icons/io5";
 import { instfetchPayments } from "../../redux/actions/instrukturDashboardActions";
 import { IoIosInformationCircle } from "react-icons/io";
-
 import HeadInstruktur from "../../components/InstrukturComponents/HeadInstruktur";
+import { FaMoneyBillWave, FaWallet, FaCreditCard } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const InstruktorDashboard = () => {
   const dispatch = useDispatch();
@@ -20,43 +21,41 @@ const InstruktorDashboard = () => {
   );
 
   const [filter, setFilter] = useState("disable");
-  // State for pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10); // You can change this value to adjust items per page
+  const [itemsPerPage] = useState(5);
 
-  // Fetch stats, payment status, kategori status, and user data
   useEffect(() => {
-    dispatch(instfetchPayments());
+    const fetchPaymentsData = async () => {
+      try {
+        await dispatch(instfetchPayments());
+      } catch (error) {
+        toast.error("Gagal memuat data pembayaran");
+      }
+    };
+    fetchPaymentsData();
   }, [dispatch]);
 
-  // Create an array for card data
   const cardData = [
     {
       count: paymentStatus?.transactionCountByType?.Free || 0,
       label: "Free Class",
       color: "bg-primary",
-      info: <IoIosInformationCircle className="w-6 h-6" />,
-      icon: <IoBookSharp className="text-2xl text-primary" />,
+      icon: <IoBookSharp className="text-2xl text-primary" />, 
     },
     {
       count: paymentStatus?.transactionCountByType?.Premium || 0,
       label: "Premium Class",
       color: "bg-primary",
-      info: <IoIosInformationCircle className="w-6 h-6" />,
-      icon: (
-        <IoBookSharp className="text-2xl text-primary text-center items-center" />
-      ),
+      icon: <IoBookSharp className="text-2xl text-primary text-center items-center" />, 
     },
     {
       count: paymentStatus?.totalTransactions || 0,
       label: "Total Transaction",
       color: "bg-primary",
-      info: <IoIosInformationCircle className="w-6 h-6" />,
-      icon: <GrTransaction className="text-2xl text-[#173D94]" />,
+      icon: <GrTransaction className="text-2xl text-[#173D94]" />, 
     },
   ];
 
-  // Filter payments based on searches and filters
   const filteredPayments = Array.isArray(paymentStatus.transactions)
     ? paymentStatus.transactions.filter((payment) => {
         return (
@@ -69,53 +68,86 @@ const InstruktorDashboard = () => {
 
   const sortedPayments = filteredPayments.sort((a, b) => a.id - b.id);
 
-  // Get current payments based on pagination
+  const totalPages = Math.ceil(sortedPayments.length / itemsPerPage);
   const indexOfLastPayment = currentPage * itemsPerPage;
   const indexOfFirstPayment = indexOfLastPayment - itemsPerPage;
-  const currentPayments = sortedPayments.slice(
-    indexOfFirstPayment,
-    indexOfLastPayment
-  );
-  console.log("currentPayments", currentPayments);
+  const currentPayments = sortedPayments.slice(indexOfFirstPayment, indexOfLastPayment);
+
+  const totalIncome = paymentStatus.transactions
+    ? paymentStatus.transactions
+        .filter(payment => payment.paymentStatus === "settlement")
+        .reduce((total, payment) => total + payment.totalPrice, 0)
+    : 0;
+
+  const totalQRIS = paymentStatus.transactions
+    ? paymentStatus.transactions
+        .filter(payment => payment.paymentMethod === "qris" && payment.paymentStatus === "settlement")
+        .reduce((total, payment) => total + payment.totalPrice, 0)
+    : 0;
+
+  const totalBankTransfer = paymentStatus.transactions
+    ? paymentStatus.transactions
+        .filter(payment => payment.paymentMethod === "bank_transfer" && payment.paymentStatus === "settlement")
+        .reduce((total, payment) => total + payment.totalPrice, 0)
+    : 0;
+
+  const additionalCardData = [
+    {
+      count: totalIncome,
+      label: "Total Uang Masuk",
+      color: "bg-success",
+      icon: <FaMoneyBillWave className="text-2xl text-primary" />
+    },
+    {
+      count: totalQRIS,
+      label: "QRIS",
+      color: "bg-[#173D94]",
+      icon: <FaWallet className="text-2xl text-primary" />
+    },
+    {
+      count: totalBankTransfer,
+      label: "Bank Transfer",
+      color: "bg-[#173D94]",
+      icon: <FaCreditCard className="text-2xl text-primary" />
+    }
+  ];
+
+  const allCardData = [...cardData, ...additionalCardData];
 
   const handleFilterChange = (e) => setFilter(e.target.value);
 
-  // Change page
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className="flex">
-    <div className="min-h-screen">
-      <Sidebar />
+      <div className="min-h-screen">
+        <Sidebar />
       </div>
       <div className="p-6 bg-secondary min-h-screen w-screen font-poppins">
-        {/* Header */}
         <div className="bg-[#F3F7FB] p-4 flex justify-between items-center mb-4 shadow-sm">
           <HeadInstruktur />
         </div>
 
-        {/* Cards */}
-        <div className="grid grid-cols-3 gap-10 mb-8">
-          {cardData.map((card, index) => (
+        <div className="grid grid-cols-3 gap-10 px-4 mb-8">
+          {allCardData.map((card, index) => (
             <div
               key={index}
               className={`${card.color} text-white font-semibold p-4 rounded-lg shadow-sm flex items-center justify-start`}
             >
-              {/* Icon info di sebelah kiri */}
               <div className="mr-10 -mt-10">{card.info}</div>
-
-              {/* Icon utama */}
               <div className="bg-white rounded-full p-2 ml-10">{card.icon}</div>
-
               <div className="ml-4">
-                <div className="flex items-center text-2xl">{card.count}</div>
+                <div className="flex items-center text-2xl">
+                  {card.label === "Total Uang Masuk" || card.label === "QRIS" || card.label === "Bank Transfer"
+                    ? `Rp ${card.count.toLocaleString("id-ID")}`
+                    : card.count}
+                </div>
                 <div className="text-sm">{card.label}</div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Payment Table */}
         <div className="flex justify-between items-center mb-4 p-4">
           <h2 className="text-xl font-bold">Transaksi Kursus Instruktur</h2>
           <div className="flex items-center">
@@ -134,7 +166,6 @@ const InstruktorDashboard = () => {
           </div>
         </div>
 
-        {/* Payment Status Table */}
         <div className="overflow-x-auto bg-white p-6 rounded-lg shadow-lg">
           <table className="min-w-full table-auto">
             <thead>
@@ -168,23 +199,17 @@ const InstruktorDashboard = () => {
                       className="border-b hover:bg-gray-50 transition-colors text-sm md:text-base"
                     >
                       <td className="px-4 py-3">{rowNumber}</td>
-                      <td className="px-4 py-3 font-medium text-gray-800">
-                        {payment.orderId}
-                      </td>
-                      <td className="px-4 py-3">{payment.categoryName}</td>
+                      <td className="px-4 py-3">{payment.orderId}</td>
+                      <td className="px-4 py-3">{payment.category}</td>
                       <td className="px-4 py-3">{payment.courseName}</td>
-                      <td className="px-4 py-3 text-gray-900 font-semibold">
-                        Rp. {payment.totalPrice.toLocaleString("id-ID")},00
-                      </td>
                       <td className="px-4 py-3">
-                        <span
-                          className={`px-3 py-1 rounded-lg font-semibold text-sm ${statusClass}`}
-                        >
-                          {payment.paymentStatus}
-                        </span>
+                        Rp {payment.totalPrice.toLocaleString("id-ID")}
+                      </td>
+                      <td className={`px-4 py-3 ${statusClass}`}>
+                        {payment.paymentStatus}
                       </td>
                       <td className="px-4 py-3">{payment.paymentMethod}</td>
-                      <td className="px-4 py-3 text-gray-600">
+                      <td className="px-4 py-3">
                         {new Date(payment.createdAt).toLocaleDateString(
                           "id-ID",
                           {
@@ -199,7 +224,7 @@ const InstruktorDashboard = () => {
                 })
               ) : (
                 <tr>
-                  <td colSpan="7" className="text-center py-6 text-gray-500">
+                  <td colSpan="8" className="text-center py-6 text-gray-500">
                     Tidak ada data yang tersedia
                   </td>
                 </tr>
@@ -207,30 +232,23 @@ const InstruktorDashboard = () => {
             </tbody>
           </table>
 
-          {/* Kontrol Pagination */}
           {sortedPayments.length > itemsPerPage && (
             <div className="flex items-center justify-between mt-6">
-              {/* Tombol Previous */}
-              <button
-                className={`flex items-center py-2 px-5 rounded-md text-sm md:text-base font-semibold ${
-                  currentPage === 1
-                    ? "bg-gray-300 cursor-not-allowed"
-                    : "bg-blue-600 text-white hover:bg-blue-700"
-                } transition-all`}
-                onClick={() => paginate(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
-                <IoArrowBackCircle className="mr-2 text-xl" />
-                Previous
-              </button>
+              {currentPage > 1 && (
+                <button
+                  className="flex items-center py-2 px-5 rounded-md text-sm md:text-base font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-all"
+                  onClick={() => paginate(currentPage - 1)}
+                >
+                  <IoArrowBackCircle className="mr-2 text-xl" />
+                  Previous
+                </button>
+              )}
 
-              {/* Indikator Halaman */}
               <span className="text-sm md:text-lg font-semibold mx-auto">
-                Page {currentPage} of {Math.ceil(sortedPayments.length / itemsPerPage)}
+                Page {currentPage} of {totalPages}
               </span>
 
-              {/* Tombol Next - hanya muncul jika tidak di halaman terakhir */}
-              {currentPage < Math.ceil(sortedPayments.length / itemsPerPage) && (
+              {currentPage < totalPages && (
                 <button
                   className="flex items-center py-2 px-5 rounded-md text-sm md:text-base font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-all"
                   onClick={() => paginate(currentPage + 1)}
