@@ -21,6 +21,7 @@ const InstrukturForm = ({
 
   const [showPassword, setShowPassword] = useState(false);
   const [phoneError, setPhoneError] = useState("");
+  const [PassError, setPassError] = useState("");
 
   useEffect(() => {
     if (existingData) {
@@ -67,13 +68,22 @@ const InstrukturForm = ({
         setPhoneError("");
       }
     }
+
+    if (name === "password") {
+      if (value.length < 8) {
+        setPassError("Password Minimal 8 karakter.");
+      } else if (value.length > 16) {
+        setPassError("Password Maksimal 16 karakter.");
+      } else {
+        setPassError("");
+      }
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (phoneError) return; // Prevent submission if there's an error
+    if (phoneError, PassError) return; // Prevent submission if there's an error // Prevent submission if there's an error
     onSubmit(formData);
-    onClose();
   };
 
   const togglePassword = () => {
@@ -81,7 +91,7 @@ const InstrukturForm = ({
   };
 
   // Check if the button should be disabled
-  const isSubmitDisabled = phoneError;
+  const isSubmitDisabled = PassError || phoneError;
 
   return (
     <div
@@ -90,7 +100,7 @@ const InstrukturForm = ({
       onClick={onClose}
     >
       <div
-        className="bg-white w-full max-w-lg p-6 rounded-lg shadow-lg relative overflow-y-auto max-h-[90vh]"
+        className="bg-white w-full max-w-md p-6 rounded-lg shadow-lg relative overflow-y-auto max-h-[90vh] mx-4"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -179,7 +189,7 @@ const InstrukturForm = ({
                 name="password"
                 value={formData.password}
                 onChange={handleInputChange}
-                className="w-full p-2 border rounded-xl"
+                className={`w-full p-2 pr-10 border rounded-xl ${PassError ? 'border-red-500' : ''}`}
                 placeholder="Masukkan password"
                 required
               />
@@ -187,12 +197,19 @@ const InstrukturForm = ({
                 type="button"
                 aria-label="toggle password visibility"
                 onClick={togglePassword}
-                className="absolute top-1/2 right-2 transform -translate-y-1/2 px-3 py-1 border rounded-lg"
+                className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                style={{ pointerEvents: 'auto' }}
               >
-                {showPassword ? <FaRegEyeSlash /> : <FaRegEye />}
+                {showPassword ? <FaRegEyeSlash size={20} /> : <FaRegEye size={20} />}
               </button>
+              {PassError && (
+                <p className="text-red-500 font-medium text-sm mt-1 absolute bottom-[-1.5rem]">
+                  {PassError}
+                </p>
+              )}
             </div>
           </div>
+
 
           <div className="flex justify-end">
             <button
@@ -200,7 +217,7 @@ const InstrukturForm = ({
               className={`py-2 px-6 bg-[#0a61aa] text-white rounded-xl transition-colors duration-300 ${isSubmitDisabled ? "bg-gray-400 cursor-not-allowed" : "hover:bg-[#1A73E8] active:bg-[#084D8C]"}`}
               disabled={isSubmitDisabled} // Disable if there's an error
             >
-              {isAdding ? "Menambahkan..." : isEditMode ? "Update" : "Tambah"}
+              {isAdding ? "Loading..." : isEditMode ? "Update" : "Tambah"}
             </button>
           </div>
         </form>
