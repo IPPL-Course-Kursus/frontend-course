@@ -108,10 +108,8 @@ export const updateLevelCourseById = (id, levelName) => async (dispatch) => {
 export const deleteLevelCourseById = (id) => async (dispatch) => {
   dispatch(setLoading());
   try {
-    // Get the token from cookies
     const token = getCookie("token");
 
-    // Set up the config with headers
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -122,15 +120,24 @@ export const deleteLevelCourseById = (id) => async (dispatch) => {
       `${api_url}course-level/delete-course-level/${id}`,
       config
     );
+
+    // Pastikan response dan response.data ada
+    if (!response || !response.data) {
+      throw new Error("Response data tidak ditemukan");
+    }
+
     const data = response.data;
 
     if (data.message === "Course level deleted successfully") {
       dispatch(setSuccessMessage(data.message));
       dispatch(removeLevelCourse(id));
+      return { success: true, message: data.message }; // Return data success
     } else {
-      dispatch(setError("Failed to delete level course"));
+      throw new Error("Failed to delete level course");
     }
   } catch (error) {
-    dispatch(setError(error.response?.data?.message || error.message));
+    const errorMessage = error.response?.data?.message || error.message;
+    dispatch(setError(errorMessage));
+    return Promise.reject({ success: false, message: errorMessage }); // Return data error
   }
 };
