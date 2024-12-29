@@ -492,8 +492,8 @@ const TopikKelas = () => {
                               ? "Free"
                               : `Beli Rp. ${
                                   course.promoStatus
-                                    ? course.courseDiscountPrice
-                                    : course.coursePrice
+                                    ? course.courseDiscountPrice.toLocaleString('id-ID')
+                                    : course.coursePrice.toLocaleString('id-ID')
                                 }`}
                           </Link>
                         </div>
@@ -524,7 +524,7 @@ const TopikKelas = () => {
                   </button>
 
                   {/* Responsive Page Text */}
-                  <span className="text-lg font-semibold">
+                  <span className="text-lg font-semibold flex-grow text-center">
                     <span className="hidden sm:inline">
                       Page {currentPage} of {totalPages}
                     </span>
@@ -533,6 +533,7 @@ const TopikKelas = () => {
                     </span>
                   </span>
 
+                  {currentPage < totalPages && (
                   <button
                     className={`flex items-center py-2 px-4 rounded-lg ${
                       currentPage === totalPages
@@ -545,6 +546,7 @@ const TopikKelas = () => {
                     Next
                     <IoArrowForwardCircle className="ml-2 text-xl" />
                   </button>
+                  )}
                 </div>
               )}
             </div>
