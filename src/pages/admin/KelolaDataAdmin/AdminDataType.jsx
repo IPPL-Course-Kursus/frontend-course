@@ -95,6 +95,25 @@ const AdminDataType = () => {
       return;
     }
   
+    // Cek apakah nama tipe mengandung angka
+    const containsNumber = /\d/.test(formData.typeName);
+    if (containsNumber) {
+      showNotification("Nama tipe tidak boleh mengandung angka", "error");
+      return;
+    }
+  
+    // Cek apakah nama tipe yang baru sudah ada
+    if (
+      typeCourses.some(
+        (type) =>
+          type.typeName.toLowerCase() === formData.typeName.toLowerCase() &&
+          type.id !== selectedType.id // Pastikan bukan tipe yang sedang diedit
+      )
+    ) {
+      showNotification("Nama tipe sudah ada", "error");
+      return;
+    }
+  
     try {
       await dispatch(updateTypeCourseById(selectedType.id, formData.typeName));
       setFormData({ typeName: "" });
@@ -105,7 +124,7 @@ const AdminDataType = () => {
       dispatch(getAllTypeCourses());
     } catch (err) {
       showNotification("Terjadi kesalahan saat mengubah tipe", "error");
-    }
+    }   
   };
   
 
@@ -117,14 +136,33 @@ const AdminDataType = () => {
 
   const confirmDeleteType = async () => {
     try {
-      await dispatch(deleteTypeCourseById(selectedType));
-      showNotification("Tipe berhasil dihapus");
-      dispatch(getAllTypeCourses()); // Refresh the list after deletion
-      setShowDeleteModal(false); // Close the delete modal
+      const response = await dispatch(deleteTypeCourseById(selectedType));
+  
+      console.log('Delete response:', response); // Log the response to inspect it
+  
+      if (response?.success) {
+        // Show success notification if deletion was successful
+        showNotification("Tipe berhasil dihapus");
+  
+        // Refresh the list after deletion
+        dispatch(getAllTypeCourses());
+        setShowDeleteModal(false); // Close the modal
+      } else {
+        // Handle cases where deletion wasn't successful
+        showNotification("Tipe tidak dapat dihapus karena memiliki course", "error");
+        dispatch(getAllTypeCourses());
+        setShowDeleteModal(false);
+      }
     } catch (err) {
-      showNotification("Terjadi kesalahan saat menghapus tipe", "error");
+      console.error("Error during deletion:", err);
+      const errorMessage = err.response?.data?.message || "Terjadi kesalahan saat menghapus tipe";
+      showNotification(errorMessage, "error");
+      dispatch(getAllTypeCourses());
+      setShowDeleteModal(false);
     }
   };
+  
+  
 
   const cancelDeleteType = () => {
     setShowDeleteModal(false); // Close the delete modal without deleting
@@ -206,7 +244,7 @@ const AdminDataType = () => {
                         <td className="px-2 md:px-4 py-2">{type.typeName}</td>
                         <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
                           <button
-                            className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                            className="py-1 px-2 md:px-4 bg-green-600 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
                             onClick={() => openEditModal(type)}
                           >
                             Ubah
