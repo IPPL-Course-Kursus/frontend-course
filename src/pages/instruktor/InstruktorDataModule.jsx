@@ -69,7 +69,8 @@ const InstruktorDataModule = () => {
 
        setShowDeleteModal(false); // Tutup modal setelah berhasil
        // Panggil ulang getDataModule untuk mengambil data terbaru
-       dispatch(getDataModule(id));
+      //  dispatch(getDataModule(id));
+      window.location.reload();
      })
      .catch((error) => {
        // Tampilkan toast error jika ada kesalahan
