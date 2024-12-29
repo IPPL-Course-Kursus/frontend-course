@@ -281,11 +281,11 @@ const TopikKelas = () => {
             </div>
 
             <div className="flex justify-center mt-12">
-              <div className="relative w-full max-w-md lg:w-[30rem] transition-all duration-200 ease-in-out">
+              <div className="relative w-full max-w-[85%] sm:max-w-sm md:max-w-md lg:max-w-lg transition-all duration-200 ease-in-out">
                 <input
                   type="text"
                   placeholder="Cari Kelas..."
-                  className="w-full py-3 pl-5 pr-14 text-gray-800 bg-white rounded-full border border-gray-300 shadow focus:outline-none focus:ring-2 focus:ring-blue-800 focus:border-transparent transition-all duration-200 ease-in-out hover:shadow-md"
+                  className="w-full py-3 sm:py-4 px-4 sm:px-6 text-gray-800 bg-white rounded-full border border-gray-900 shadow focus:outline-none focus:ring-2 focus:ring-blue-800 focus:border-transparent transition-all duration-200 ease-in-out hover:shadow-md"
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value.toLowerCase());
@@ -351,8 +351,8 @@ const TopikKelas = () => {
             </div>
           </div>
 
-              <div className="flex flex-col md:flex-row md:space-x-6 pr-4 md:pr-10 ml-10">
-                <div className="md:block md:w-1/4">
+          <div className="flex flex-col md:flex-row md:space-x-6 pr-4 md:pr-10 ml-10">
+                <div className="md:block md:w-1/4 relative">
                   <button
                 onClick={toggleFilters}
                 className="bg-blue-600 text-white px-4 py-2 rounded mb-4 w-full md:w-auto md:hidden"
@@ -361,13 +361,16 @@ const TopikKelas = () => {
               </button>
 
               <div
-                className={`bg-white shadow-md rounded-md p-4 ${
-                  showFilters ? "" : "hidden md:block"
-                }`}
+                className={`absolute top-full left-0 w-full bg-white shadow-md rounded-md p-4 ${
+                  showFilters
+                    ? "translate-x-0 opacity-100 pointer-events-auto"
+                    : "-translate-x-full opacity-0 pointer-events-none"
+                } transform transition-all duration-300 md:relative md:translate-x-0 md:opacity-100 md:pointer-events-auto md:top-0 md:bg-white md:transition-none`}
               >
                 <h3 className="text-xl font-bold text-gray-800 mb-4">Filter</h3>
+                <div className="md:block grid grid-cols-2 gap-2">
                 {["Paling Baru", "Paling Populer", "Promo"].map((label, index) => (
-                  <div className="flex items-center mb-2" key={index}>
+                  <div className={`inline-flex md:flex items-center mb-2 bg-gray-200 p-2 rounded md:p-0 md:bg-transparent`} key={index}>
                     <input
                       type="checkbox"
                       id={`filter-${label}`}
@@ -380,11 +383,13 @@ const TopikKelas = () => {
                     </label>
                   </div>
                 ))}
+                </div>
 
                 <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">Kategori</h3>
+                <div className="md:block grid grid-cols-2 gap-2">
                 {category &&
                   category.map((kategori, i) => (
-                    <div className="flex items-center mb-2" key={i}>
+                    <div className={`inline-flex md:flex items-center mb-2 bg-gray-200 p-2 rounded md:p-0 md:bg-transparent`} key={i}>
                       <input
                         type="checkbox"
                         id={`filter-${kategori.categoryName}`}
@@ -400,11 +405,13 @@ const TopikKelas = () => {
                       </label>
                     </div>
                   ))}
+                  </div>
 
                 <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">Level Kesulitan</h3>
+                <div className="md:block grid grid-cols-2 gap-2">
                 {courseLevel &&
                   courseLevel.map((level, i) => (
-                    <div className="flex items-center mb-2" key={i}>
+                    <div className={`inline-flex md:flex items-center mb-2 bg-gray-200 p-2 rounded md:p-0 md:bg-transparent`} key={i}>
                       <input
                         type="checkbox"
                         id={`filter-${level.levelName}`}
@@ -417,8 +424,10 @@ const TopikKelas = () => {
                       </label>
                     </div>
                   ))}
+                  </div>
 
                 <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">Harga</h3>
+                <div className="md:block grid grid-cols-2 gap-2">
                 {[
                     "Kurang dari 50.000",
                     "50.000 - 100.000",
@@ -427,7 +436,7 @@ const TopikKelas = () => {
                     "500.000 - 1.000.000",
                     "Lebih dari 1.000.000"
                     ].map((priceLabel, index) => (
-                  <div className="flex items-center mb-2" key={index}>
+                  <div className={`inline-flex md:flex items-center mb-2 bg-gray-200 p-2 rounded md:p-0 md:bg-transparent`} key={index}>
                     <input
                       type="checkbox"
                       id={`filter-${priceLabel}`}
@@ -440,6 +449,7 @@ const TopikKelas = () => {
                     </label>
                   </div>
                 ))}
+                </div>
                 
                 <button
                   onClick={clearFilters}
