@@ -178,7 +178,7 @@ const AdminDataInterpreterLanguage = () => {
                           <td className="px-2 md:px-4 py-2 flex space-x-2">
                             {/* Tombol Ubah */}
                             <button
-                              className="py-2 px-4 bg-blue-500 text-white font-semibold rounded-md text-sm transition-all duration-300 hover:bg-blue-600"
+                              className="py-2 px-4 bg-green-500 text-white font-semibold rounded-md text-sm transition-all duration-300 hover:bg-blue-600"
                               onClick={() => openEditModal(language)}
                             >
                               Ubah
