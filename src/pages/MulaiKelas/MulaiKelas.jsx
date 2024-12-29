@@ -45,7 +45,7 @@ const MulaiKelas = () => {
 
   useEffect(() => {
     const fetchData = async () => {// Set isLoading ke true saat mulai fetch
-      try {
+      try { 
         if (id) {
           await dispatch(fetchMulaiKelas(id));
           if (selectedContent && selectedContent.interpreterStatus) {
@@ -71,12 +71,27 @@ const MulaiKelas = () => {
     });
   };
 
-  const handleContentClick = (content) => {
-    // Reset output sebelum berpindah ke konten yang baru
-    dispatch(resetOutput());
-    setSelectedContent(content);
-    dispatch(updateContentProgress(id, content.id));
-  };
+const [lastSelectedContentId, setLastSelectedContentId] = useState(null);
+
+const handleContentClick = (content) => {
+  // Cek jika konten yang dipilih sudah sama dengan konten yang terakhir dipilih
+  if (lastSelectedContentId === content.id) {
+    // Jika sudah sama, tidak perlu memanggil update progress
+    return;
+  }
+
+  // Reset output sebelum berpindah ke konten yang baru
+  dispatch(resetOutput());
+
+  // Set konten yang dipilih sebagai konten baru
+  setSelectedContent(content);
+
+  // Update progress hanya jika konten belum dipilih sebelumnya
+  dispatch(updateContentProgress(id, content.id));
+
+  // Update state untuk menyimpan ID konten yang terakhir dipilih
+  setLastSelectedContentId(content.id);
+};
 
   const copyCode = () => {
     navigator.clipboard.writeText(sourceCode);
@@ -196,30 +211,30 @@ const MulaiKelas = () => {
                     ? `${data.data.course.intendedFor} `
                     : "Tidak tersedia"}
                 </h2>
-                <div className="flex items-center gap-4 mt-4">
-                  <span className="text-green-600 flex items-center gap-2">
-                    <FaCheckCircle />
-                    {data?.data?.course?.courseLevel.levelName}
-                  </span>
-                  <span className="text-gray-500">{data?.data?.course?._count.chapters} modul</span>
-                  <span className="text-gray-500">
-                    {data?.data?.course?.totalDuration
-                      ? `${data.data.course.totalDuration} menit`
-                      : "Durasi tidak tersedia"}
-                  </span>
-                  {/* Tombole generate sertifikat */}
-                  <button
-                    onClick={generateCertificate}
-                    className={`p-2 rounded-lg ${
-                      data?.data?.courseStatus === "Completed"
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                    }`}
-                    disabled={data?.data?.courseStatus !== "Completed"}
-                  >
-                    Download Sertifikat
-                  </button>
-                </div>
+                <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-4 mt-4">
+  <span className="text-green-600 flex items-center gap-2">
+    <FaCheckCircle />
+    {data?.data?.course?.courseLevel.levelName}
+  </span>
+  <span className="text-gray-500">{data?.data?.course?._count.chapters} modul</span>
+  <span className="text-gray-500">
+    {data?.data?.course?.totalDuration
+      ? `${data.data.course.totalDuration} menit`
+      : "Durasi tidak tersedia"}
+  </span>
+      <button
+      onClick={generateCertificate}
+      className={`p-2 rounded-lg sm:w-auto ${
+        data?.data?.courseStatus === "Completed"
+          ? "bg-blue-600 text-white"
+          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+      }`}
+      disabled={data?.data?.courseStatus !== "Completed"}
+    >
+      Download Sertifikat
+    </button>
+
+</div>
               </div>
                                 )}
             </header>
