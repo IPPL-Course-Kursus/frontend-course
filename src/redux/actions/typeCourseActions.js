@@ -108,25 +108,22 @@ export const updateTypeCourseById = (id, typeName) => async (dispatch) => {
 export const deleteTypeCourseById = (id) => async (dispatch) => {
   dispatch(setLoading());
   try {
-    // Get the token from cookies
     const token = getCookie("token");
-
-    // Set up the config with headers
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-
+    const config = { headers: { Authorization: `Bearer ${token}` } };
     const response = await axios.delete(`${api_url}type-course/delete/${id}`, config);
     const data = response.data;
+
     if (data.success) {
       dispatch(setSuccessMessage(data.message));
       dispatch(removeTypeCourse(id));
+      return data; // Return the response to the frontend
     } else {
-      dispatch(setError("Failed to delete type course"));
+      dispatch(setError(data.message || "Failed to delete type course"));
+      return data; // Return failure response to frontend
     }
   } catch (error) {
     dispatch(setError(error.response?.data?.message || error.message));
+    return { success: false, message: error.message }; // Return error to frontend
   }
 };
+
