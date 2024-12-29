@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
-import Sidebar from "../../../components/Sidebar/SidebarAdmin";
-import { FaBars } from "react-icons/fa";
+import { useState, useEffect } from "react"; 
+import Sidebar from "../../../components/Sidebar/SidebarAdminR";
 import { IoAddCircleOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -10,7 +9,7 @@ import {
   deleteLevelCourseById,
 } from "../../../redux/actions/levelCourseActions";
 import NavbarAdmin from "../../../components/NavbarAdmin";
-import { toast } from "react-hot-toast";
+import { toast, Toaster } from "react-hot-toast";
 import DataLevelDelete from "../../../components/Admin/DataLevel/DataLevelDelete";
 
 const AdminDataLevel = () => {
@@ -18,7 +17,7 @@ const AdminDataLevel = () => {
 
   // Redux dispatch and selector
   const dispatch = useDispatch();
-  const { levelCourses, loading, error, successMessage } = useSelector(
+  const { levelCourses = [], loading, error, successMessage } = useSelector(
     (state) => state.levelCourse
   );
 
@@ -44,10 +43,8 @@ const AdminDataLevel = () => {
     setFormData({ ...formData, levelName: e.target.value });
   };
 
-  // loading//
+  // Loading state for add/edit operations
   const [loadingTambah, setLoadingTambah] = useState(false);
-
-  // const [loadingTambah, setLoadingTambah] = useState(false);
 
   // Handle add level
   const handleAddLevel = async () => {
@@ -79,12 +76,13 @@ const AdminDataLevel = () => {
       toast.success("Level berhasil ditambahkan", {
         style: { backgroundColor: "#4BB543", color: "#fff" },
       });
+      dispatch(getAllLevelCourses());
     } catch (err) {
       toast.error("Terjadi kesalahan saat menambahkan level", {
         style: { backgroundColor: "#d93025", color: "#fff" },
       });
     } finally {
-      setLoadingTambah(false); // Set loading to false
+      setLoadingTambah(false);
     }
   };
 
@@ -105,7 +103,7 @@ const AdminDataLevel = () => {
       )
     ) {
       toast.error("Nama level sudah ada", {
-        style: { backgroundColor: "#d93025", color: "#fff" }, // Merah
+        style: { backgroundColor: "#d93025", color: "#fff" },
       });
       return;
     }
@@ -122,19 +120,20 @@ const AdminDataLevel = () => {
       toast.success("Level berhasil diubah", {
         style: { backgroundColor: "#4BB543", color: "#fff" },
       });
+      dispatch(getAllLevelCourses());
     } catch (err) {
       toast.error("Terjadi kesalahan saat mengedit level", {
         style: { backgroundColor: "#d93025", color: "#fff" },
       });
     } finally {
-      setLoadingTambah(false); // Set loading to false
+      setLoadingTambah(false);
     }
   };
 
   // Handle delete level (called from modal)
   const handleDeleteLevel = (id) => {
     setLevelToDelete(id);
-    setShowDelete(true); // Show the delete confirmation modal
+    setShowDelete(true);
   };
 
   // Open modal for adding new level
@@ -163,13 +162,7 @@ const AdminDataLevel = () => {
     <>
       <div className="flex">
         {/* Sidebar */}
-        <div
-          className={`fixed inset-0 z-50 transition-transform transform bg-white md:relative md:translate-x-0 md:bg-transparent ${
-            sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
-        >
-          <Sidebar />
-        </div>
+        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
         {/* Overlay */}
         {sidebarOpen && (
@@ -181,23 +174,22 @@ const AdminDataLevel = () => {
 
         <div className="flex-1 p-4 md:p-6 bg-secondary min-h-screen font-poppins">
           <NavbarAdmin setSidebarOpen={setSidebarOpen} />
+
           {/* Section Data Level */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
             <h2 className="flex items-center py-2 px-4 mt-4 bg-gradient-to-r from-[#FF5722] to-[#FF9800] text-white font-semibold rounded-md text-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl mb-4">
-              Data Level Kelas
+              Data Level
             </h2>
 
-            <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
+            <div className="flex justify-end items-center space-x-2 w-full md:w-auto">
               {/* Tambah Level Button */}
-              <div className="relative">
-                <button
-                  className="py-1 px-4 bg-[#0a61aa] text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 flex items-center justify-center"
-                  onClick={openAddModal}
-                >
-                  <IoAddCircleOutline className="mr-2" />
-                  Tambah
-                </button>
-              </div>
+              <button
+                className="py-2 px-4 bg-[#0a61aa] text-white font-semibold rounded-md text-sm transition-all duration-300 hover:scale-105 flex items-center"
+                onClick={openAddModal}
+              >
+                <IoAddCircleOutline className="mr-2" />
+                Tambah
+              </button>
             </div>
           </div>
 
@@ -207,44 +199,91 @@ const AdminDataLevel = () => {
           )}
           {error && <p className="text-red-500 mb-4">{error}</p>}
 
-          {/* Tabel Data Level */}
-          <div className="overflow-x-auto bg-white p-4">
-            <table className="min-w-full table-auto">
-              <thead>
-                <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
-                  <th className="px-2 md:px-4 py-2">Nomor</th>
-                  <th className="px-2 md:px-4 py-2">Level</th>
-                  <th className="px-2 md:px-4 py-2">Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
-                {levelCourses.map((level, index) => {
+          {/* Responsive Layout: Table for Desktop, Cards for Mobile */}
+          <div className="overflow-x-auto bg-white p-4 rounded-md shadow-md">
+            {/* Desktop Table */}
+            <div className="hidden md:block">
+              <table className="min-w-full table-auto">
+                <thead>
+                  <tr className="bg-gray-100 text-left text-xs md:text-sm font-semibold">
+                    <th className="px-2 md:px-4 py-2">Nomor</th>
+                    <th className="px-2 md:px-4 py-2">Level</th>
+                    <th className="px-2 md:px-4 py-2">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {levelCourses && levelCourses.length > 0 ? (
+                    levelCourses.map((level, index) => {
+                      const rowNumber = index + 1;
+                      return (
+                        <tr key={level.id} className="border-t text-xs md:text-sm">
+                          <td className="px-2 md:px-4 py-2">{rowNumber}</td>
+                          <td className="px-2 md:px-4 py-2">{level.levelName}</td>
+                          <td className="px-2 md:px-4 py-2 flex space-x-2">
+                            {/* Tombol Ubah */}
+                            <button
+                              className="py-1 px-4 bg-green-600 text-white font-semibold rounded-md text-sm transition-all duration-300 hover:bg-green-700"
+                              onClick={() => openEditModal(level)}
+                            >
+                              Ubah
+                            </button>
+                            {/* Tombol Hapus */}
+                            <button
+                              className="py-1 px-4 bg-red-500 text-white font-semibold rounded-md text-sm transition-all duration-300 hover:bg-red-600"
+                              onClick={() => handleDeleteLevel(level.id)}
+                            >
+                              Hapus
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr>
+                      <td colSpan="3" className="text-center py-4">
+                        Tidak ada level ditemukan.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Cards */}
+            <div className="block md:hidden space-y-4">
+              {levelCourses && levelCourses.length > 0 ? (
+                levelCourses.map((level, index) => {
                   const rowNumber = index + 1;
                   return (
-                    <tr key={index} className="border-t text-xs md:text-sm">
-                      <td className="px-2 md:px-4 py-2">{rowNumber}</td>
-                      <td className="px-2 md:px-4 py-2">{level.levelName}</td>
-                      <td className="px-2 md:px-4 py-2 flex flex-wrap space-x-2">
+                    <div key={level.id} className="border rounded-md p-4 shadow-sm">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-semibold">
+                          {rowNumber}. {level.levelName}
+                        </span>
+                      </div>
+                      <div className="flex space-x-2">
                         {/* Tombol Ubah */}
                         <button
-                          className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                          className="py-1 px-3 bg-green-600 text-white font-semibold rounded-md text-sm transition-all duration-300 hover:bg-green-700 flex-1"
                           onClick={() => openEditModal(level)}
                         >
                           Ubah
                         </button>
                         {/* Tombol Hapus */}
                         <button
-                          className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                          className="py-1 px-3 bg-red-500 text-white font-semibold rounded-md text-sm transition-all duration-300 hover:bg-red-600 flex-1"
                           onClick={() => handleDeleteLevel(level.id)}
                         >
                           Hapus
                         </button>
-                      </td>
-                    </tr>
+                      </div>
+                    </div>
                   );
-                })}
-              </tbody>
-            </table>
+                })
+              ) : (
+                <p className="text-center text-gray-500">Tidak ada level ditemukan.</p>
+              )}
+            </div>
           </div>
 
           {/* Modal for Adding and Editing Level */}
@@ -292,11 +331,11 @@ const AdminDataLevel = () => {
                       type="submit"
                       disabled={
                         loadingTambah ||
-                        !formData.levelName.trim() || // Cek input kosong
+                        !formData.levelName.trim() ||
                         (isEditMode &&
-                          formData.levelName === selectedLevel?.levelName) // Cek jika tidak ada perubahan
+                          formData.levelName.toLowerCase() ===
+                            selectedLevel?.levelName.toLowerCase())
                       }
-                      onClick={isEditMode ? handleEditLevel : handleAddLevel}
                     >
                       {loadingTambah
                         ? "Loading..."
@@ -311,15 +350,29 @@ const AdminDataLevel = () => {
           )}
 
           {/* Delete Confirmation Modal */}
-          <DataLevelDelete
-            show={showDelete}
-            onClose={closeDeleteModal}
-            levelId={levelToDelete}
+          {showDelete && (
+            <DataLevelDelete
+              show={showDelete}
+              onClose={closeDeleteModal}
+              levelId={levelToDelete}
+            />
+          )}
+
+          {/* Toaster for react-hot-toast */}
+          <Toaster 
+            position="bottom-center"
+            toastOptions={{
+              style: {
+                borderRadius: "8px",
+                background: "#333",
+                color: "#fff",
+              },
+            }}
           />
         </div>
       </div>
     </>
-  );
-};
+    );
+  };
 
-export default AdminDataLevel;
+  export default AdminDataLevel;
