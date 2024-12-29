@@ -46,22 +46,20 @@ export const fetchuser = () => async (dispatch) => {
     }
   };
 
-export const fetchPayments = () => async (dispatch) => {
-  dispatch({ type: "FETCH_PAYMENTS_REQUEST" });
-  try {
-    const response = await fetch(`${apiUrl}transaction/`); // Menggunakan apiUrl untuk mendapatkan payment status
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-      
+  export const fetchPayments = () => async (dispatch) => {
+    dispatch({ type: "FETCH_PAYMENTS_REQUEST" });
+    try {
+      const response = await fetch(`${apiUrl}transaction/`);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      console.log("API Data:", data); // Debug: Periksa struktur data
+  
+      // Ambil transaksi dari data.transactions
+      const transactions = data?.data?.transactions || [];
+      dispatch({ type: "FETCH_PAYMENTS_SUCCESS", payload: transactions });
+    } catch (error) {
+      dispatch({ type: "FETCH_PAYMENTS_FAILURE", payload: error.message });
     }
-    const data = await response.json();
-
-    dispatch({ type: "FETCH_PAYMENTS_SUCCESS", payload: data });
-  } catch (error) {
-    dispatch({ type: "FETCH_PAYMENTS_FAILURE", payload: error.message });
-  }
-};
-
-
-
-
+  };

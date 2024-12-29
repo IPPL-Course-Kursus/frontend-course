@@ -6,14 +6,14 @@ import {
   IoArrowForwardCircle,
 } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-hot-toast";
+import { toast, Toaster } from "react-hot-toast";
 
 import {
   fetchAdminCategories,
   deleteCategory,
 } from "../../../redux/actions/adminDataKategoriActions";
 
-import SideBar from "../../../components/Sidebar/SidebarAdminR";
+import SidebarAdminR from "../../../components/Sidebar/SidebarAdminR";
 import TambahKategori from "../../../components/KategoriComponents/TambahKategori";
 import UbahKategori from "../../../components/KategoriComponents/UbahKategori";
 import NavbarAdmin from "../../../components/NavbarAdmin";
@@ -85,7 +85,6 @@ const AdminDataKategori = () => {
           },
         });
       } catch (err) {
-        // **Custom Error Handling**
         if (
           err.message.includes("tidak dapat menghapus jenis kursus") ||
           err.message.includes("cannot delete type course")
@@ -125,26 +124,26 @@ const AdminDataKategori = () => {
     (category) => category && typeof category.categoryName === "string"
   );
 
-  // 1. Filter categories based on searchValue before pagination
+  // Filter categories based on searchValue before pagination
   const filteredCategories = validCategories.filter((category) => {
     const categoryName = category.categoryName.toLowerCase();
     const searchTerm = (searchValue || "").toLowerCase();
     return categoryName.includes(searchTerm);
   });
 
-  // 2. Calculate total pages based on filtered categories
+  // Calculate total pages based on filtered categories
   const totalPages = Math.ceil(filteredCategories.length / itemsPerPage) || 1;
 
-  // 3. Adjust currentPage if it exceeds totalPages
+  // Adjust currentPage if it exceeds totalPages
   const adjustedCurrentPage = Math.min(currentPage, totalPages);
 
-  // 4. Slice the filtered categories for the current page
+  // Slice the filtered categories for the current page
   const currentItems = filteredCategories.slice(
     (adjustedCurrentPage - 1) * itemsPerPage,
     adjustedCurrentPage * itemsPerPage
   );
 
-  // 5. Update currentPage when totalPages changes
+  // Update currentPage when totalPages changes
   useEffect(() => {
     if (currentPage > totalPages) {
       setCurrentPage(totalPages);
@@ -155,7 +154,7 @@ const AdminDataKategori = () => {
     <>
       <div className="flex">
         {/* Sidebar */}
-        <SideBar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+        <SidebarAdminR sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
         {/* Overlay for mobile when sidebar is open */}
         {sidebarOpen && (
@@ -197,7 +196,7 @@ const AdminDataKategori = () => {
                   value={searchValue}
                   onChange={(e) => {
                     setSearchValue(e.target.value ?? "");
-                    setCurrentPage(1); // Reset to first page on search
+                    setCurrentPage(1);
                   }}
                   className={`transition-all duration-300 ease-in-out border border-[#173D94] rounded-full ml-2 p-2 text-sm ${
                     searchVisible
@@ -213,9 +212,9 @@ const AdminDataKategori = () => {
           {/* Desktop Table */}
           <div className="hidden md:block overflow-x-auto bg-white p-4 rounded-md shadow-md">
             {loadingFetch ? (
-              <p>Loading...</p> // Only shows when fetching categories
+              <p>Loading...</p>
             ) : errorFetch ? (
-              <p className="text-red-500">Error: {errorFetch}</p> // Only shows fetch-related errors
+              <p className="text-red-500">Error: {errorFetch}</p>
             ) : (
               <table className="min-w-full table-auto">
                 <thead>
@@ -228,7 +227,7 @@ const AdminDataKategori = () => {
                 </thead>
                 <tbody>
                   {currentItems?.map((category, index) => {
-                    if (!category || !category.categoryName) return null; // Skip undefined categories
+                    if (!category || !category.categoryName) return null;
                     const rowNumber =
                       (adjustedCurrentPage - 1) * itemsPerPage + index + 1;
                     return (
@@ -255,7 +254,7 @@ const AdminDataKategori = () => {
                         <td className="px-2 md:px-4 py-2 flex space-x-2">
                           {/* Edit Button */}
                           <button
-                            className="py-2 px-3 md:px-4 bg-red-500 text-white font-semibold rounded-md text-sm transition-all duration-300 hover:bg-blue-600"
+                            className="py-2 px-3 md:px-4 bg-green-500 text-white font-semibold rounded-md text-sm transition-all duration-300 hover:bg-blue-600"
                             onClick={() => handleEditClick(category)}
                           >
                             Ubah
@@ -279,9 +278,9 @@ const AdminDataKategori = () => {
           {/* Mobile Cards */}
           <div className="block md:hidden space-y-4">
             {loadingFetch ? (
-              <p>Loading...</p> // Only shows when fetching categories
+              <p>Loading...</p>
             ) : errorFetch ? (
-              <p className="text-red-500">Error: {errorFetch}</p> // Only shows fetch-related errors
+              <p className="text-red-500">Error: {errorFetch}</p>
             ) : (
               filteredCategories.length === 0 ? (
                 <p className="text-center text-gray-500">Tidak ada kategori ditemukan.</p>
@@ -336,36 +335,39 @@ const AdminDataKategori = () => {
 
           {/* Pagination Controls */}
           {filteredCategories.length > itemsPerPage && (
-            <div className="flex justify-between items-center mt-4">
-              <button
-                className={`flex items-center py-2 px-4 rounded-lg ${
-                  adjustedCurrentPage === 1
-                    ? "bg-gray-300 cursor-not-allowed"
-                    : "bg-[#0a61aa] text-white"
-                } transition-all duration-300 hover:scale-105`}
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={adjustedCurrentPage === 1}
-              >
-                <IoArrowBackCircle className="mr-2 text-xl" />
-                Previous
-              </button>
+            <div className="grid grid-cols-3 items-center mt-4">
+              {/* Previous Button */}
+              <div className="flex justify-start">
+                {adjustedCurrentPage > 1 && (
+                  <button
+                    className={`flex items-center py-2 px-4 rounded-lg bg-[#0a61aa] text-white transition-all duration-300 hover:scale-105`}
+                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  >
+                    <IoArrowBackCircle className="mr-2 text-xl" />
+                    Previous
+                  </button>
+                )}
+              </div>
 
-              <span className="text-lg font-semibold">
-                Page {adjustedCurrentPage} of {totalPages}
-              </span>
+              {/* Page Indicator */}
+              <div className="flex justify-center">
+                <span className="text-lg font-semibold">
+                  Page {adjustedCurrentPage} of {totalPages}
+                </span>
+              </div>
 
-              <button
-                className={`flex items-center py-2 px-4 rounded-lg ${
-                  adjustedCurrentPage === totalPages
-                    ? "bg-gray-300 cursor-not-allowed"
-                    : "bg-[#0a61aa] text-white"
-                } transition-all duration-300 hover:scale-105`}
-                onClick={() => setCurrentPage((prev) => prev + 1)}
-                disabled={adjustedCurrentPage === totalPages}
-              >
-                Next
-                <IoArrowForwardCircle className="ml-2 text-xl" />
-              </button>
+              {/* Next Button */}
+              <div className="flex justify-end">
+                {adjustedCurrentPage < totalPages && (
+                  <button
+                    className={`flex items-center py-2 px-4 rounded-lg bg-[#0a61aa] text-white transition-all duration-300 hover:scale-105`}
+                    onClick={() => setCurrentPage((prev) => prev + 1)}
+                  >
+                    Next
+                    <IoArrowForwardCircle className="ml-2 text-xl" />
+                  </button>
+                )}
+              </div>
             </div>
           )}
 
@@ -376,7 +378,6 @@ const AdminDataKategori = () => {
               setShowTambahPopup(false);
             }}
             onSuccess={() => {
-              // Optional: Refresh categories or perform additional actions
             }}
           />
 
@@ -388,7 +389,6 @@ const AdminDataKategori = () => {
                 setShowUbahPopup(false);
               }}
               onSuccess={() => {
-                // Optional: Refresh categories or perform additional actions
               }}
               existingData={selectedCategory}
             />
@@ -401,10 +401,22 @@ const AdminDataKategori = () => {
             onConfirm={confirmDelete}
             isDeleting={isDeleting}
           />
+
+          {/* Toaster for react-hot-toast */}
+          <Toaster
+            position="bottom-center"
+            toastOptions={{
+              style: {
+                borderRadius: "8px",
+                background: "#333",
+                color: "#fff",
+              },
+            }}
+          />
         </div>
       </div>
     </>
-  );
+    );
 };
 
 export default AdminDataKategori;

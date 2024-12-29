@@ -9,23 +9,32 @@ const DataLevelDelete = ({ show, onClose, levelId }) => {
   const [loading, setLoading] = useState(false); // Tambahkan state loading
 
   const handleConfirm = () => {
-    setLoading(true); // Set loading true saat proses dimulai
+    setLoading(true);
     dispatch(deleteLevelCourseById(levelId))
-      .then(() => {
-        toast.success("Level berhasil dihapus", {
-          style: { backgroundColor: "#4BB543", color: "#fff" },
+      .then((response) => {
+        if (response?.success) {
+          toast.success(response.message, {
+            style: { backgroundColor: "#4BB543", color: "#fff" },
+          });
+          onClose();
+        } else {
+          toast.error("Gagal menghapus level: " + (response?.message || "Tidak diketahui"), {
+            style: { backgroundColor: "#d93025", color: "#fff" },
+          });
+        }
+      })
+      .catch((error) => {
+        toast.error("course level cannot delete. because he is already connected in the course", {
+          style: { backgroundColor: "#d93025", color: "#fff" },
         });
         onClose();
       })
-      .catch((error) => {
-        toast.error("Terjadi kesalahan saat menghapus level", {
-          style: { backgroundColor: "#d93025", color: "#fff" },
-        });
-      })
       .finally(() => {
-        setLoading(false); // Set loading false setelah selesai
+        setLoading(false);
       });
   };
+  
+  
 
   if (!show) return null;
 
