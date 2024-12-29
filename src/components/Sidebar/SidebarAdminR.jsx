@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../redux/actions/authActions";
 import { IoClose } from "react-icons/io5"; // Import the close icon
+import Swal from "sweetalert2";
 
 const SidebarAdmin = ({ sidebarOpen, setSidebarOpen }) => {
   const [isDataMenuOpenKelas, setIsDataMenuOpenKelas] = useState(false);
@@ -21,8 +22,21 @@ const SidebarAdmin = ({ sidebarOpen, setSidebarOpen }) => {
   };
 
   const handleLogout = () => {
-    dispatch(logout());
-    navigate("/login");
+    Swal.fire({
+      title: "Konfirmasi Logout",
+      text: "Apakah Anda yakin ingin keluar?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Ya, Logout",
+      cancelButtonText: "Batal",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(logout());
+        navigate("/login");
+      }
+    });
   };
 
   return (
