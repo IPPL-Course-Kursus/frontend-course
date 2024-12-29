@@ -26,7 +26,7 @@ const TopikKelas = () => {
   const {
     category = [],
     courseLevel = [],
-    data: courseTypes = [], // Pastikan ini diambil dari state yang benar
+    data: courseTypes = [], 
   } = useSelector((state) => state.category);
 
   useEffect(() => {
@@ -121,19 +121,13 @@ const TopikKelas = () => {
     } else {
       dispatch(getAllCourse());
     }
+    setCurrentPage(1);
   };
-  
-  useEffect(() => {
-    if (scrollPosition !== 0) {
-      window.scrollTo(0, scrollPosition);
-    }
-  }, [filterChecked, scrollPosition]);
   
   const handleFilterClick = (filter) => {
     setSelectedFilter(filter);
     setCurrentPage(1);
   
-    // Update URL ketika filter dipilih
     const url = new URL(window.location);
     if (filter === "All") {
       url.searchParams.delete("category");
@@ -155,7 +149,7 @@ const TopikKelas = () => {
         course.courseName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         course.category.categoryName.toLowerCase().includes(searchQuery.toLowerCase());
   
-      if (selectedFilter === "All") return true;
+      if (selectedFilter === "All") return matchesSearch;
       if (selectedFilter === "Premium" && course.coursePrice === 0) return false;
       if (selectedFilter === "Free" && course.coursePrice !== 0) return false;
       if (selectedFilter !== "All" && selectedFilter !== "Premium" && selectedFilter !== "Free" && !category.some(cat => cat.categoryName === selectedFilter)) {
@@ -165,7 +159,6 @@ const TopikKelas = () => {
       return matchesSearch;
     });
   
-    // Filter berdasarkan harga
     const priceRanges = activeFilters.filter((filter) =>
       [
         "Kurang dari 50.000",
@@ -200,23 +193,15 @@ const TopikKelas = () => {
         });
       });
     }
-  
-    // Filter berdasarkan waktu (Paling Baru)
     if (filterChecked["Paling Baru"]) {
       filteredCourses = filteredCourses.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     }
-  
-    // Filter berdasarkan popularitas (Paling Populer)
     if (filterChecked["Paling Populer"]) {
       filteredCourses = filteredCourses.sort((a, b) => b.popularity - a.popularity);
     }
-  
-    // Filter promo
     if (filterChecked["Promo"]) {
       filteredCourses = filteredCourses.filter((course) => course.promoStatus === true);
     }
-  
-    // Filter berdasarkan kategori dan level
     if (activeFilters.length > 0) {
       const categoryFilters = activeFilters.filter((filter) =>
         category.some((cat) => cat.categoryName === filter)
@@ -249,10 +234,10 @@ const TopikKelas = () => {
       }, {}),
     };
   
-    setScrollPosition(window.scrollY);
     setFilterChecked(clearedFilterState);
     setSelectedFilter("All");
-    setCurrentPage(1); // Reset halaman ke 1
+    setSearchQuery("");
+    setCurrentPage(1); 
   
     const url = new URL(window.location);
     url.search = "";
@@ -260,13 +245,6 @@ const TopikKelas = () => {
   
     dispatch(getAllCourse());
   };
-  
-  
-  useEffect(() => {
-    if (scrollPosition !== 0) {
-      window.scrollTo(0, scrollPosition);
-    }
-  }, [filterChecked, scrollPosition]);
   
   const [showFilters, setShowFilters] = useState(false);
   const toggleFilters = () => {
@@ -546,7 +524,7 @@ const TopikKelas = () => {
                   </button>
 
                   {/* Responsive Page Text */}
-                  <span className="text-lg font-semibold">
+                  <span className="text-lg font-semibold flex-grow text-center">
                     <span className="hidden sm:inline">
                       Page {currentPage} of {totalPages}
                     </span>
@@ -555,6 +533,7 @@ const TopikKelas = () => {
                     </span>
                   </span>
 
+                  {currentPage < totalPages && (
                   <button
                     className={`flex items-center py-2 px-4 rounded-lg ${
                       currentPage === totalPages
@@ -567,6 +546,7 @@ const TopikKelas = () => {
                     Next
                     <IoArrowForwardCircle className="ml-2 text-xl" />
                   </button>
+                  )}
                 </div>
               )}
             </div>
