@@ -116,7 +116,7 @@ const InstrukturProfile = () => {
 
   return (
     <>
-      <div className="flex bg-gray-100 min-h-screen font-poppins">
+      <div className="flex  bg-gray-100 min-h-screen font-poppins">
         <div
           className={`fixed inset-0 z-50 transition-transform transform bg-white md:relative md:translate-x-0 md:bg-transparent ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full"
@@ -143,7 +143,7 @@ const InstrukturProfile = () => {
             <h1 className="text-2xl font-bold text-[#0a61aa]">Hi, Instruktur!</h1>
           </div>
 
-          <div className="flex flex-col items-center bg-[#EBF3FC] py-6 mt-10">
+          <div className="flex flex-col items-center bg-[#EBF3FC]  py-6 mt-10">
             <div className="card w-full max-w-6xl bg-base-100 shadow-xl mb-5">
               <div className="card-body flex flex-col md:flex-row items-center p-10 space-y-8 md:space-y-0">
                 <div className="flex flex-col items-center md:w-1/3">

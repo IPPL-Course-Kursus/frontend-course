@@ -58,28 +58,28 @@ const InstruktorDataKonten = () => {
     setShowDeleteModal(true);
   };
 
-const confirmDelete = () => {
-  if (!contentToDelete?.chapterId) {
-    console.error("Chapter ID is required.");
-    return; // Jangan lanjut jika chapterId tidak ada
-  }
+  const confirmDelete = () => {
+    if (!contentToDelete?.chapterId) {
+      console.error("Chapter ID is required.");
+      return; // Jangan lanjut jika chapterId tidak ada
+    }
 
-  dispatch(deleteDataKonten(contentToDelete.id, contentToDelete.chapterId))
-    .then(() => {
-      setShowDeleteModal(false); // Tutup modal setelah berhasil
-      dispatch(getDataKonten(id)); // Memuat ulang data setelah penghapusan
+    dispatch(deleteDataKonten(contentToDelete.id, contentToDelete.chapterId))
+      .then(() => {
+        setShowDeleteModal(false); // Tutup modal setelah berhasil
+        dispatch(getDataKonten(id)); // Memuat ulang data setelah penghapusan
 
-      // Menampilkan toast sukses
-      toast.success("Konten berhasil dihapus!");
-    })
-    .catch((error) => {
-      console.error("Error deleting content:", error);
-      setShowDeleteModal(false);
+        // Menampilkan toast sukses
+        toast.success("Konten berhasil dihapus!");
+      })
+      .catch((error) => {
+        console.error("Error deleting content:", error);
+        setShowDeleteModal(false);
 
-      // Menampilkan toast error
-      toast.error(`Gagal menghapus konten: ${error.message}`);
-    });
-};
+        // Menampilkan toast error
+        toast.error(`Gagal menghapus konten: ${error.message}`);
+      });
+  };
 
   const handleBackClick = () => {
     navigate(-1);
@@ -137,7 +137,8 @@ const confirmDelete = () => {
           </button>
 
           {/* Section Data Kelas */}
-          <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
+          <div className="flex justify-between items-center mb-4">
+            {/* Tombol Kembali - Mobile dan Web */}
             <button
               className="flex items-center py-2 px-4 bg-gradient-to-r from-[#0a61aa] to-[#007bbf] text-white font-semibold rounded-md text-sm transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
               onClick={handleBackClick}
@@ -146,62 +147,107 @@ const confirmDelete = () => {
               <span className="font-bold">Kembali</span>
             </button>
 
-            <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-4">
-              <button
-                className="flex items-center justify-center py-2 px-4 bg-gradient-to-r from-[#0a61aa] to-[#007bbf] text-white font-semibold rounded-md text-sm transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-                onClick={handleAddClick}
-              >
-                <IoAddCircleOutline className="mr-2 text-2xl" />
-                <span className="font-bold">Tambah</span>
-              </button>
-            </div>
+            {/* Tombol Tambah - Mobile dan Web */}
+            <button
+              className="flex items-center justify-center py-2 px-4 bg-gradient-to-r from-[#0a61aa] to-[#007bbf] text-white font-semibold rounded-md text-sm transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              onClick={handleAddClick}
+            >
+              <IoAddCircleOutline className="mr-2 text-2xl" />
+              <span className="font-bold">Tambah</span>
+            </button>
           </div>
+
           <div className="overflow-x-auto bg-white p-4 rounded-lg shadow-md">
-            <table className="min-w-full table-auto">
-              <thead>
-                <tr className="bg-gray-200 text-left text-xs md:text-sm font-semibold border-b">
-                  <th className="px-4 py-3">Urutan</th>
-                  <th className="px-4 py-3">Judul Materi</th>
-                  <th className="px-4 py-3">Teks</th>
-                  <th className="px-4 py-3">Video URL</th>
-                  <th className="px-4 py-3">Durasi</th>
-                  <th className="px-4 py-3">Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentItems.map((content) => (
-                  <tr key={content.id} className="border-t text-xs md:text-sm">
-                    <td className="px-4 py-3">{content.sort}</td>
-                    <td className="px-4 py-3">{content.contentTitle}</td>
-                    <td className="px-4 py-3 max-h-12 overflow-hidden text-ellipsis whitespace-nowrap">
-                      {truncateText(content.teks, 30)}
-                    </td>
-                    <td className="px-4 py-3">{truncateText(content.contentUrl, 60)}</td>
-                    <td className="px-4 py-3">{content.duration}</td>
-                    <td className="px-4 py-3 flex flex-wrap space-x-2">
-                      <button
-                        className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
-                        onClick={() => handleEditClick(content)}
-                      >
-                        Ubah
-                      </button>
-                      {/* <button
+            <div className="hidden md:block">
+              <table className="min-w-full table-auto">
+                <thead>
+                  <tr className="bg-gray-200 text-left text-xs md:text-sm font-semibold border-b">
+                    <th className="px-4 py-3">Urutan</th>
+                    <th className="px-4 py-3">Judul Materi</th>
+                    <th className="px-4 py-3">Teks</th>
+                    <th className="px-4 py-3">Video URL</th>
+                    <th className="px-4 py-3">Durasi</th>
+                    <th className="px-4 py-3">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentItems.map((content) => (
+                    <tr key={content.id} className="border-t text-xs md:text-sm">
+                      <td className="px-4 py-3">{content.sort}</td>
+                      <td className="px-4 py-3">{content.contentTitle}</td>
+                      <td className="px-4 py-3 max-h-12 overflow-hidden text-ellipsis whitespace-nowrap">
+                        {truncateText(content.teks, 30)}
+                      </td>
+                      <td className="px-4 py-3">{truncateText(content.contentUrl, 60)}</td>
+                      <td className="px-4 py-3">{content.duration}</td>
+                      <td className="px-4 py-3 flex flex-wrap space-x-2">
+                        <button
+                          className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                          onClick={() => handleEditClick(content)}
+                        >
+                          Ubah
+                        </button>
+                        {/* <button
                         className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
                         onClick={() => handleDetailClick(content)}
                       >
                         Detail
                       </button> */}
+                        <button
+                          className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                          onClick={() => handleDelete(content)}
+                        >
+                          Hapus
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="block md:hidden space-y-4">
+              {currentItems.length > 0 ? (
+                currentItems.map((content) => (
+                  <div key={content.id} className="border rounded-md p-4 shadow-md bg-white">
+                    <div className="flex items-start space-x-4 mb-3">
+                      <div className="flex-1">
+                        <span className="font-semibold text-sm block">Urutan: {content.sort}</span>
+                        <span className="text-sm block">Judul: {content.contentTitle}</span>
+                      </div>
+                    </div>
+                    <div className="text-sm space-y-2">
+                      <div>
+                        <span className="font-semibold">Teks:</span>{" "}
+                        {truncateText(content.teks, 30)}
+                      </div>
+                      <div>
+                        <span className="font-semibold">Video URL:</span>{" "}
+                        {truncateText(content.contentUrl, 60)}
+                      </div>
+                      <div>
+                        <span className="font-semibold">Durasi:</span> {content.duration}
+                      </div>
+                    </div>
+                    <div className="flex space-x-2 mt-4">
                       <button
-                        className="py-1 px-2 md:px-4 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 mb-2"
+                        className="flex-1 py-2 bg-blue-600 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:bg-blue-700"
+                        onClick={() => handleEditClick(content)}
+                      >
+                        Ubah
+                      </button>
+                      <button
+                        className="flex-1 py-2 bg-red-600 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:bg-red-700"
                         onClick={() => handleDelete(content)}
                       >
                         Hapus
                       </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-center text-gray-500">Tidak ada konten ditemukan.</p>
+              )}
+            </div>
           </div>
 
           {/* Pagination */}

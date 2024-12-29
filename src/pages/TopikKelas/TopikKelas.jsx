@@ -351,114 +351,131 @@ const TopikKelas = () => {
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row md:space-x-6 pr-4 md:pr-10 ml-10">
-                <div className="md:block md:w-1/4 relative">
-                  <button
-                onClick={toggleFilters}
-                className="bg-blue-600 text-white px-4 py-2 rounded mb-4 w-full md:w-auto md:hidden"
-              >
-                {showFilters ? "Hide Filters" : "Show Filters"}
-              </button>
+          <div className="flex flex-col md:flex-row md:space-x-6 pr-4 md:pr-10 ml-10 overflow-x-hidden">
+  <div className="md:block md:w-1/4 relative">
+    {/* Tombol untuk menampilkan filter di mobile */}
+    <button
+      onClick={toggleFilters}
+      className="bg-blue-600 text-white px-4 py-2 rounded mb-4 w-full md:w-auto md:hidden"
+    >
+      {showFilters ? "Hide Filters" : "Show Filters"}
+    </button>
 
-              <div
-                className={`absolute top-full left-0 w-full bg-white shadow-md rounded-md p-4 ${
-                  showFilters
-                    ? "translate-x-0 opacity-100 pointer-events-auto"
-                    : "-translate-x-full opacity-0 pointer-events-none"
-                } transform transition-all duration-300 md:relative md:translate-x-0 md:opacity-100 md:pointer-events-auto md:top-0 md:bg-white md:transition-none`}
-              >
-                <h3 className="text-xl font-bold text-gray-800 mb-4">Filter</h3>
-                <div className="md:block grid grid-cols-2 gap-2">
-                {["Paling Baru", "Paling Populer", "Promo"].map((label, index) => (
-                  <div className={`inline-flex md:flex items-center mb-2 bg-gray-200 p-2 rounded md:p-0 md:bg-transparent`} key={index}>
-                    <input
-                      type="checkbox"
-                      id={`filter-${label}`}
-                      checked={filterChecked[label]}
-                      onChange={() => handleCheckboxChange(label)}
-                      className="mr-2 checkbox-custom"
-                    />
-                    <label htmlFor={`filter-${label}`} className="text-sm md:text-base">
-                      {label}
-                    </label>
-                  </div>
-                ))}
-                </div>
+    {/* Kotak Filter */}
+    <div
+      className={`absolute top-16 right-0 w-64 bg-white shadow-md rounded-md p-4 transition-all duration-300
+        ${showFilters
+          ? "translate-x-0 opacity-100 pointer-events-auto"
+          : "translate-x-full opacity-0 pointer-events-none"}
+        transform md:relative md:w-80 md:translate-x-0 md:opacity-100 md:pointer-events-auto md:top-0 md:bg-white md:transition-none`}
+    >
+      <h3 className="text-xl font-bold text-gray-800 mb-2">Filter</h3>
 
-                <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">Kategori</h3>
-                <div className="md:block grid grid-cols-2 gap-2">
-                {category &&
-                  category.map((kategori, i) => (
-                    <div className={`inline-flex md:flex items-center mb-2 bg-gray-200 p-2 rounded md:p-0 md:bg-transparent`} key={i}>
-                      <input
-                        type="checkbox"
-                        id={`filter-${kategori.categoryName}`}
-                        checked={filterChecked[kategori.categoryName] || false}
-                        onChange={() => handleCheckboxChange(kategori.categoryName)}
-                        className="mr-2 checkbox-custom"
-                      />
-                      <label
-                        htmlFor={`filter-${kategori.categoryName}`}
-                        className="text-sm md:text-base"
-                      >
-                        {kategori.categoryName}
-                      </label>
-                    </div>
-                  ))}
-                  </div>
+      {/* Filter Paling Baru, Paling Populer, Promo */}
+      <div className="grid grid-cols-1 gap-2 mb-2">
+        {["Paling Baru", "Paling Populer", "Promo"].map((label, index) => (
+          <div
+            className="inline-flex items-center mb-1 bg-gray-200 p-2 rounded md:p-0 md:bg-transparent"
+            key={index}
+          >
+            <input
+              type="checkbox"
+              id={`filter-${label}`}
+              checked={filterChecked[label]}
+              onChange={() => handleCheckboxChange(label)}
+              className="mr-2 checkbox-custom"
+            />
+            <label htmlFor={`filter-${label}`} className="text-sm md:text-base">
+              {label}
+            </label>
+          </div>
+        ))}
+      </div>
 
-                <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">Level Kesulitan</h3>
-                <div className="md:block grid grid-cols-2 gap-2">
-                {courseLevel &&
-                  courseLevel.map((level, i) => (
-                    <div className={`inline-flex md:flex items-center mb-2 bg-gray-200 p-2 rounded md:p-0 md:bg-transparent`} key={i}>
-                      <input
-                        type="checkbox"
-                        id={`filter-${level.levelName}`}
-                        checked={filterChecked[level.levelName] || false}
-                        onChange={() => handleCheckboxChange(level.levelName)}
-                        className="mr-2 checkbox-custom"
-                      />
-                      <label htmlFor={`filter-${level.levelName}`} className="text-sm md:text-base">
-                        {level.levelName}
-                      </label>
-                    </div>
-                  ))}
-                  </div>
-
-                <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">Harga</h3>
-                <div className="md:block grid grid-cols-2 gap-2">
-                {[
-                    "Kurang dari 50.000",
-                    "50.000 - 100.000",
-                    "100.000 - 250.000",
-                    "250.000 - 500.000",
-                    "500.000 - 1.000.000",
-                    "Lebih dari 1.000.000"
-                    ].map((priceLabel, index) => (
-                  <div className={`inline-flex md:flex items-center mb-2 bg-gray-200 p-2 rounded md:p-0 md:bg-transparent`} key={index}>
-                    <input
-                      type="checkbox"
-                      id={`filter-${priceLabel}`}
-                      checked={filterChecked[priceLabel] || false}
-                      onChange={() => handleCheckboxChange(priceLabel)}
-                      className="mr-2 checkbox-custom"
-                    />
-                    <label htmlFor={`filter-${priceLabel}`} className="text-sm md:text-base">
-                      {priceLabel}
-                    </label>
-                  </div>
-                ))}
-                </div>
-                
-                <button
-                  onClick={clearFilters}
-                  className="bg-red-600 text-white px-4 py-2 rounded mt-4"
-                >
-                  Clear Filters
-                </button>
-              </div>
+      {/* Filter Kategori */}
+      <h3 className="text-xl font-bold text-gray-800 mb-2 mt-4">Kategori</h3>
+      <div className="grid grid-cols-1 gap-2 mb-2">
+        {category &&
+          category.map((kategori, i) => (
+            <div
+              className="inline-flex items-center mb-1 bg-gray-200 p-2 rounded md:p-0 md:bg-transparent"
+              key={i}
+            >
+              <input
+                type="checkbox"
+                id={`filter-${kategori.categoryName}`}
+                checked={filterChecked[kategori.categoryName] || false}
+                onChange={() => handleCheckboxChange(kategori.categoryName)}
+                className="mr-2 checkbox-custom"
+              />
+              <label htmlFor={`filter-${kategori.categoryName}`} className="text-sm md:text-base">
+                {kategori.categoryName}
+              </label>
             </div>
+          ))}
+      </div>
+
+      {/* Filter Level Kesulitan */}
+      <h3 className="text-xl font-bold text-gray-800 mb-2 mt-4">Level Kesulitan</h3>
+      <div className="grid grid-cols-1 gap-2 mb-2">
+        {courseLevel &&
+          courseLevel.map((level, i) => (
+            <div
+              className="inline-flex items-center mb-1 bg-gray-200 p-2 rounded md:p-0 md:bg-transparent"
+              key={i}
+            >
+              <input
+                type="checkbox"
+                id={`filter-${level.levelName}`}
+                checked={filterChecked[level.levelName] || false}
+                onChange={() => handleCheckboxChange(level.levelName)}
+                className="mr-2 checkbox-custom"
+              />
+              <label htmlFor={`filter-${level.levelName}`} className="text-sm md:text-base">
+                {level.levelName}
+              </label>
+            </div>
+          ))}
+      </div>
+
+      {/* Filter Harga */}
+      <h3 className="text-xl font-bold text-gray-800 mb-2 mt-4">Harga</h3>
+      <div className="grid grid-cols-1 gap-2 mb-2">
+        {[ 
+          "Kurang dari 50.000",
+          "50.000 - 100.000",
+          "100.000 - 250.000",
+          "250.000 - 500.000",
+          "500.000 - 1.000.000",
+          "Lebih dari 1.000.000",
+        ].map((priceLabel, index) => (
+          <div
+            className="inline-flex items-center mb-1 bg-gray-200 p-2 rounded md:p-0 md:bg-transparent"
+            key={index}
+          >
+            <input
+              type="checkbox"
+              id={`filter-${priceLabel}`}
+              checked={filterChecked[priceLabel] || false}
+              onChange={() => handleCheckboxChange(priceLabel)}
+              className="mr-2 checkbox-custom"
+            />
+            <label htmlFor={`filter-${priceLabel}`} className="text-sm md:text-base">
+              {priceLabel}
+            </label>
+          </div>
+        ))}
+      </div>
+
+      {/* Tombol untuk Clear Filter */}
+      <button
+        onClick={clearFilters}
+        className="bg-red-600 text-white px-4 py-2 rounded mt-4"
+      >
+        Clear Filters
+      </button>
+    </div>
+  </div>
 
             <div className="md:w-3/4">
               <div className="grid mt-2 gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">

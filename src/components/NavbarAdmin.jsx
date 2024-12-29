@@ -1,4 +1,3 @@
-import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { IoMenu } from "react-icons/io5"; // Import the menu icon
