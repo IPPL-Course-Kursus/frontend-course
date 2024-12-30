@@ -204,25 +204,25 @@ const AdminDashboard = () => {
           ))}
         </div>
 
-        {/* Filter Dropdown - Tidak mempengaruhi kolom bawah */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
-          <h2 className="mt-4 text-lg md:text-xl font-bold text-neutral05">Status Pembayaran</h2>
+{/* Filter Dropdown - Tidak mempengaruhi kolom bawah */}
+<div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
+  <h2 className="mt-4 text-lg md:text-xl font-bold text-neutral05">Status Pembayaran</h2>
 
-          <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
-            <div className="relative">
-              <select
-                value={filter}
-                onChange={handleFilterChange} // Filter untuk elemen lain yang terpengaruh status
-                className="flex items-center py-2 pl-10 pr-4 bg-[#0a61aa] text-white font-semibold rounded-md text-sm transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#0a61aa] focus:ring-opacity-50"
-              >
-                <option value="">Filter</option>
-                <option value="settlement">Settlement</option>
-                <option value="pending">Pending</option>
-              </select>
-              <FaFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-sm" />
-            </div>
-          </div>
-        </div>
+  <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
+    <div className="relative">
+      <select
+        value={filter}
+        onChange={handleFilterChange} // Filter untuk elemen lain yang terpengaruh status
+        className="flex items-center py-2 pl-10 pr-4 bg-[#0a61aa] text-white font-semibold rounded-md text-sm transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#0a61aa] focus:ring-opacity-50"
+      >
+        <option value="">Filter</option>
+        <option value="settlement">Settlement</option>
+        <option value="pending">Pending</option>
+      </select>
+      <FaFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white text-sm" />
+    </div>
+  </div>
+</div>
 
         
 
