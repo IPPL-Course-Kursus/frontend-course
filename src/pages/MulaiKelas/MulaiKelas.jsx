@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchMulaiKelas,
@@ -23,7 +23,6 @@ import sertifikat from "../../assets/sertif-ec.png";
 import Swal from "sweetalert2";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import ReactPlayer from "react-player"; // Import react-player
 
 const MulaiKelas = () => {
   const dispatch = useDispatch();
@@ -36,7 +35,6 @@ const MulaiKelas = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
   const name = profile?.fullName;
-
   const formatTanggal = (tanggal) => {
     return new Date(tanggal).toLocaleDateString("id-ID", {
       day: "numeric",
@@ -45,12 +43,15 @@ const MulaiKelas = () => {
     });
   };
 
-  // Fetch data on component mount
   useEffect(() => {
-    const fetchData = async () => {
-      try {
+    const fetchData = async () => {// Set isLoading ke true saat mulai fetch
+      try { 
         if (id) {
           await dispatch(fetchMulaiKelas(id));
+          if (selectedContent && selectedContent.interpreterStatus) {
+            setCode(selectedContent?.interpreter?.sourceCode || "");
+            setLanguage(selectedContent?.interpreter?.languageInterpreterId || "");
+          }
         }
         await dispatch(getMe());
         await dispatch(fetchCertificate(id));
@@ -62,54 +63,7 @@ const MulaiKelas = () => {
     };
 
     fetchData();
-  }, [id, dispatch]);
-
-  // Function to handle video end
-  const handleVideoEnd = () => {
-    if (!selectedContent) return;
-
-    console.log("Video ended for content:", selectedContent.id);
-    if (
-      selectedContent &&
-      !selectedContent.userContentProgress?.some((progress) => progress.contentStatus)
-    ) {
-      dispatch(updateContentProgress(id, selectedContent.id))
-        .then(async () => {
-          await dispatch(fetchMulaiKelas(id)); // Fetch updated data
-          Swal.fire({
-            icon: "success",
-            title: "Selamat!",
-            text: "Anda telah menyelesaikan video ini.",
-          });
-
-          // Cek apakah semua konten dalam kursus telah diselesaikan
-          const totalContents =
-            data?.data?.course?.chapters?.reduce(
-              (acc, chapter) => acc + chapter.contents.length,
-              0
-            ) || 0;
-          const contentFinish = data?.data?.contentFinish || 0;
-
-          console.log("Content Finish:", contentFinish, "Total Contents:", totalContents);
-
-          if (contentFinish === totalContents) {
-            Swal.fire({
-              icon: "success",
-              title: "Kursus Selesai!",
-              text: "Anda telah menyelesaikan semua materi. Sertifikat telah tersedia.",
-            });
-          }
-        })
-        .catch((error) => {
-          console.error("Error updating content progress:", error);
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "Terjadi kesalahan saat memperbarui progress.",
-          });
-        });
-    }
-  };
+  }, [id, dispatch, selectedContent]);
 
   const handleRunCode = () => {
     dispatch(runCode(language, sourceCode)).catch((error) => {
@@ -117,19 +71,27 @@ const MulaiKelas = () => {
     });
   };
 
-  const handleContentClick = (content) => {
-    if (content.userContentProgress?.some((progress) => progress.contentStatus)) {
-      setSelectedContent(content);
-      console.log("Selected content (completed):", content);
-      return;
-    }
+const [lastSelectedContentId, setLastSelectedContentId] = useState(null);
 
-    // Reset output sebelum berpindah konten
-    dispatch(resetOutput());
+const handleContentClick = (content) => {
+  // Cek jika konten yang dipilih sudah sama dengan konten yang terakhir dipilih
+  if (lastSelectedContentId === content.id) {
+    // Jika sudah sama, tidak perlu memanggil update progress
+    return;
+  }
 
-    setSelectedContent(content);
-    console.log("Selected content:", content);
-  };
+  // Reset output sebelum berpindah ke konten yang baru
+  dispatch(resetOutput());
+
+  // Set konten yang dipilih sebagai konten baru
+  setSelectedContent(content);
+
+  // Update progress hanya jika konten belum dipilih sebelumnya
+  dispatch(updateContentProgress(id, content.id));
+
+  // Update state untuk menyimpan ID konten yang terakhir dipilih
+  setLastSelectedContentId(content.id);
+};
 
   const copyCode = () => {
     navigator.clipboard.writeText(sourceCode);
@@ -150,58 +112,43 @@ const MulaiKelas = () => {
       return;
     }
 
-    if (!certificateData) {
-      Swal.fire({
-        icon: "error",
-        title: "Sertifikat Tidak Ditemukan",
-        text: "Sertifikat Anda belum tersedia. Pastikan Anda telah menyelesaikan semua materi.",
-      });
-      return;
-    }
-
     const doc = new jsPDF({
       orientation: "landscape",
       unit: "px",
       format: [842, 595],
     });
 
-    // Add certificate background image
+    // Tambahkan gambar sertifikat sebagai background
     doc.addImage(sertifikat, "PNG", 0, 0, 800, 600);
 
-    // Add participant name
-    doc.setFontSize(28);
-    doc.setTextColor(235, 167, 30);
-    doc.setFont("montserrat", "bold");
+    // Tambahkan nama peserta di bawah "Diberikan pada"
+    doc.setFontSize(28); // Ukuran font sedikit lebih besar
+    doc.setTextColor(235, 167, 30); // Warna teks mirip dengan warna pada sertifikat
+    doc.setFont("montserrat", "bold"); // Menambahkan font yang lebih tebal
     doc.text(name || "Nama Peserta", 90, 260, {
       align: "left",
-      charSpace: 0.75,
+      charSpace: 0.75, // Jarak antar karakter sedikit
     });
 
-    // Add course name
+    // Tambahkan nama kursus di bawah "Atas kelulusannya pada kelas"
     doc.setFontSize(24);
-    doc.setTextColor(235, 167, 30);
+    doc.setTextColor(235, 167, 30); // Sama dengan warna teks nama peserta
     doc.setFont("arial", "bold");
-    doc.text(
-      data?.data?.course?.courseName || "Nama Kursus",
-      90,
-      330,
-      {
-        align: "left",
-        charSpace: 0.5,
-      }
-    );
+    doc.text(data?.data?.course?.courseName || "Nama Kursus", 90, 330, {
+      align: "left",
+      charSpace: 0.5,
+    });
 
-    // Add certificate number
-    doc.setFillColor(14, 43, 92);
+    doc.setFillColor(14, 43, 92); // Warna background
     doc.roundedRect(90, 180, 130, 20, 5, 5, "F");
     doc.setFontSize(20);
-    doc.setTextColor(255, 255, 255);
+    doc.setTextColor(255, 255, 255); // Warna teks untuk nomor sertifikat
     doc.setFont("montserrat", "normal");
     doc.text(` ${certificateData?.certificateNumber || "XXXXXX"}`, 95, 195, {
       align: "left",
     });
 
-    // Add issue date
+    // Tambahkan tanggal penerbitan sertifikat
     doc.setFontSize(20);
     doc.setTextColor(0, 0, 0);
     doc.setFont("montserrat", "bold");
@@ -214,16 +161,14 @@ const MulaiKelas = () => {
       }
     );
 
-    // Download certificate
+    // Unduh sertifikat
     doc.save(`Sertifikat ${data?.data?.course?.courseName}_${name}.pdf`);
   };
 
-  // Calculate total contents for progress bar
-  const totalContents =
-    data?.data?.course?.chapters?.reduce(
-      (acc, chapter) => acc + chapter.contents.length,
-      0
-    ) || 0;
+  // if (loading) {
+  //     return <p>Loading...</p>;
+  // }
+
   const contentFinish = data?.data?.contentFinish || 0;
 
   const getCodeMirrorExtensions = () => {
@@ -241,142 +186,126 @@ const MulaiKelas = () => {
             <header className="bg-blue-50 p-6 rounded-lg shadow-sm mb-6">
               {/* Back button */}
               <Link to="/mycourse">
-                {isLoading ? (
-                  <Skeleton width="20%" height={20} className="bg-gray-300" />
-                ) : (
-                  <div className="flex items-center gap-4">
-                    <FaArrowLeft className="text-gray-500 cursor-pointer" />
-                    <h1 className="text-xl font-bold text-gray-800">Kelas Lainnya</h1>
-                  </div>
-                )}
+                  {isLoading ? (
+                                    <Skeleton width="20%" height={20} className="bg-gray-300" />
+                                ) : (
+                <div className="flex items-center gap-4">
+                  <FaArrowLeft className="text-gray-500 cursor-pointer" />
+                  <h1 className="text-xl font-bold text-gray-800">Kelas Lainnya</h1>
+                </div>
+                                )}
               </Link>
 
               {/* Main class information */}
               {isLoading ? (
-                <Skeleton width="100%" height={100} className="bg-gray-300" />
-              ) : (
-                <div className="mt-4">
-                  <h1 className="text-3xl font-bold text-gray-800 mb-2">
-                    {data?.data?.course?.courseName
-                      ? `${data.data.course.courseName} `
-                      : "Course name tidak tersedia"}
-                  </h1>
-                  <h2 className="text-xl text-gray-600">
-                    {data?.data?.course?.intendedFor
-                      ? `${data.data.course.intendedFor} `
-                      : "Tidak tersedia"}
-                  </h2>
-                  <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-4 mt-4">
-                    <span className="text-green-600 flex items-center gap-2">
-                      <FaCheckCircle />
-                      {data?.data?.course?.courseLevel.levelName}
-                    </span>
-                    <span className="text-gray-500">
-                      {data?.data?.course?._count.chapters} modul
-                    </span>
-                    <span className="text-gray-500">
-                      {data?.data?.course?.totalDuration
-                        ? `${data.data.course.totalDuration} menit`
-                        : "Durasi tidak tersedia"}
-                    </span>
-                    <button
-                      onClick={generateCertificate}
-                      className={`p-2 rounded-lg sm:w-auto ${
-                        data?.data?.courseStatus === "Completed" && certificateData
-                          ? "bg-blue-600 text-white"
-                          : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                      }`}
-                      disabled={!(data?.data?.courseStatus === "Completed" && certificateData)}
-                    >
-                      Download Sertifikat
-                    </button>
-                  </div>
-                </div>
-              )}
+                                    <Skeleton width="100%" height={100} className="bg-gray-300" />
+                                ) : (
+              <div className="mt-4">
+                <h1 className="text-3xl font-bold text-gray-800 mb-2">
+                  {data?.data?.course?.courseName
+                    ? `${data.data.course.courseName} `
+                    : "Course name tidak tersedia"}
+                </h1>
+                <h2 className="text-xl text-gray-600">
+                  {data?.data?.course?.intendedFor
+                    ? `${data.data.course.intendedFor} `
+                    : "Tidak tersedia"}
+                </h2>
+                <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-4 mt-4">
+  <span className="text-green-600 flex items-center gap-2">
+    <FaCheckCircle />
+    {data?.data?.course?.courseLevel.levelName}
+  </span>
+  <span className="text-gray-500">{data?.data?.course?._count.chapters} modul</span>
+  <span className="text-gray-500">
+    {data?.data?.course?.totalDuration
+      ? `${data.data.course.totalDuration} menit`
+      : "Durasi tidak tersedia"}
+  </span>
+      <button
+      onClick={generateCertificate}
+      className={`p-2 rounded-lg sm:w-auto ${
+        data?.data?.courseStatus === "Completed"
+          ? "bg-blue-600 text-white"
+          : "bg-gray-300 text-gray-500 cursor-not-allowed"
+      }`}
+      disabled={data?.data?.courseStatus !== "Completed"}
+    >
+      Download Sertifikat
+    </button>
+
+</div>
+              </div>
+                                )}
             </header>
 
             {/* Video Placeholder */}
             <div>
-              {isLoading ? (
-                <Skeleton width="100%" height="400px" className="bg-gray-300" />
+            {isLoading ? (
+                                    <Skeleton width="100%" height="400px" className="bg-gray-300" />
+                                ) : (
+            <section className="bg-black h-[600px] flex items-center relative justify-center mb-6">
+              {selectedContent ? (
+                selectedContent.contentUrl ? (
+                  <iframe
+                    width="560"
+                    height="215"
+                    src={selectedContent.contentUrl}
+                    title={selectedContent.contentTitle}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media;"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    allowFullScreen
+                    className="absolute w-full h-full"
+                  ></iframe>
+                ) : (
+                  <img
+                    src={data?.data?.course?.image}
+                    alt={data?.data?.course?.courseName}
+                    className="absolute w-full h-full"
+                  />
+                )
               ) : (
-                <section className="bg-black h-[600px] flex items-center relative justify-center mb-6">
-                  {selectedContent ? (
-                    selectedContent.contentUrl ? (
-                      ReactPlayer.canPlay(selectedContent.contentUrl) ? (
-                        <ReactPlayer
-                          key={selectedContent.id} // Memaksa remount saat konten berubah
-                          url={selectedContent.contentUrl}
-                          controls
-                          width="100%"
-                          height="600px"
-                          playing={true} // Autoplay video
-                          onEnded={() => {
-                            console.log("Video ended");
-                            handleVideoEnd();
-                          }}
-                          onError={(e) => {
-                            console.error("ReactPlayer Error:", e);
-                            Swal.fire({
-                              icon: "error",
-                              title: "Error",
-                              text: "Terjadi kesalahan saat memutar video.",
-                            });
-                          }}
-                        />
-                      ) : (
-                        <p className="text-red-500">URL Video Tidak Valid</p>
-                      )
-                    ) : (
-                      <img
-                        src={data?.data?.course?.image}
-                        alt={data?.data?.course?.courseName}
-                        className="absolute w-full h-full object-cover"
-                      />
-                    )
-                  ) : (
-                    <img
-                      src={data?.data?.course?.image}
-                      alt={data?.data?.course?.courseName}
-                      className="absolute w-full h-full object-cover"
-                    />
-                  )}
-                </section>
+                <img
+                  src={data?.data?.course?.image}
+                  alt={data?.data?.course?.courseName}
+                  className="absolute w-full h-full"
+                />
               )}
+            </section>
+                                )
+            }
             </div>
+            
 
             {/* Course Info Section */}
             <div>
-              {isLoading ? (
-                <Skeleton width="100%" height={100} className="bg-gray-300 mt-6 " />
+            {isLoading ? (
+                                    <Skeleton width="100%" height={100} className="bg-gray-300 mt-6 " />
+                                ) : (
+            <section className="bg-white p-6 rounded-lg shadow-lg mb-10">
+              {selectedContent ? (
+                <h3 className="text-gray-700 text-2xl font-semibold"> Deskripsi video </h3>
               ) : (
-                <section className="bg-white p-6 rounded-lg shadow-lg mb-10">
-                  {selectedContent ? (
-                    <h3 className="text-gray-700 text-2xl font-semibold">
-                      Deskripsi Video
-                    </h3>
-                  ) : (
-                    <h3 className="text-gray-700 text-2xl font-semibold">
-                      Tentang Kelas
-                    </h3>
-                  )}
-                  {selectedContent ? (
-                    <p className="text-gray-600 mt-2">{selectedContent.teks}</p>
-                  ) : (
-                    <p className="text-gray-600 mt-2">
-                      {data?.data?.course?.aboutCourse}
-                    </p>
-                  )}
-                </section>
+                <h3 className="text-gray-700 text-2xl font-semibold">Tentang Kelas</h3>
               )}
+              {/* // <h3 className="text-gray-700 text-2xl font-semibold">
+                        //     Deskripsi Video
+                        // </h3> */}
+              {selectedContent ? (
+                <p className="text-gray-600 mt-2">{selectedContent.teks}</p>
+              ) : (
+                <p className="text-gray-600 mt-2">{data?.data?.course?.aboutCourse}</p>
+              )}
+            </section>
+                                )
+            }
             </div>
 
             {/* Code Editor Section */}
+            
             {selectedContent && selectedContent.interpreterStatus && (
               <section className="bg-white p-6 rounded-lg shadow-lg mb-10">
-                <h3 className="text-gray-700 text-2xl font-semibold mb-4">
-                  Editor Kode
-                </h3>
+                <h3 className="text-gray-700 text-2xl font-semibold mb-4">Editor Kode</h3>
                 <CodeMirror
                   id="code"
                   value={sourceCode}
@@ -418,139 +347,126 @@ const MulaiKelas = () => {
           </div>
 
           {/* Sidebar */}
-          <div>
-            {isLoading ? (
-              <Skeleton width="100%" height="100%" className="bg-gray-300" />
-            ) : (
-              <aside className="col-span-1 bg-white p-6 rounded-lg shadow-lg h-screen overflow-y-auto max-h-[calc(100vh-2rem)]">
-                <h3 className="text-gray-700 text-2xl font-semibold mb-4">
-                  Materi Belajar
-                </h3>
-                {/* Progres Belajar */}
-                <div className="mb-6">
-                  <div className="flex justify-between items-center">
-                    <h4 className="text-blue-600 font-bold mb-2">
-                      Progres Belajar
-                    </h4>
-                  </div>
-                  <ProgressBar
-                    contentFinish={contentFinish}
-                    totalContents={totalContents}
-                  />
-                </div>
-                {/* Chapter List */}
-                <div className="mb-6">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-500">
-                      {data?.data?.course?.totalDuration
-                        ? `${data.data.course.totalDuration} menit`
-                        : "Durasi tidak tersedia"}
-                    </span>
-                  </div>
-                  <ul className="space-y-4 mt-4">
-                    {data?.data?.course?.chapters?.map((chapter, chapterIndex) => {
-                      const previousChapterCompleted =
-                        chapterIndex === 0 ||
-                        data.data.course.chapters[chapterIndex - 1].contents.every(
-                          (content) =>
-                            content.userContentProgress.some(
+          <div >{isLoading ? (
+                                    <Skeleton width="100%" height="100%" className="bg-gray-300" />
+                                ) : (
+          <aside className="col-span-1 bg-white p-6 rounded-lg shadow-lg h-screen overflow-y-auto max-h-[calc(100vh-2rem)]">
+            {" "}
+            {/* Adjust height */}
+            <h3 className="text-gray-700 text-2xl font-semibold mb-4">Materi Belajar</h3>
+            {/* Progres Belajar */}
+            <div className="mb-6">
+              <div className="flex justify-between items-center">
+                <h4 className="text-blue-600 font-bold mb-2">Progres Belajar</h4>
+              </div>
+              <ProgressBar contentFinish={contentFinish} />
+            </div>
+            {/* Chapter List */}
+            <div className="mb-6">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-500">
+                  {data?.data?.course?.totalDuration
+                    ? `${data.data.course.totalDuration} menit`
+                    : "Durasi tidak tersedia"}
+                </span>
+              </div>
+              <ul className="space-y-4 mt-4">
+                {data?.data?.course?.chapters?.map((chapter, chapterIndex) => {
+                  const previousChapterCompleted =
+                    chapterIndex === 0 ||
+                    data.data.course.chapters[chapterIndex - 1].contents.every((content) =>
+                      content.userContentProgress.some(
+                        (progress) => progress.contentStatus === true
+                      )
+                    );
+
+                  return (
+                    <details key={chapter.id} className="mb-4">
+                      <summary
+                        className={`${
+                          previousChapterCompleted ? "text-blue-600" : "text-gray-400"
+                        } font-semibold cursor-pointer`}
+                      >
+                        Chapter {chapter.sort} {chapter.chapterTitle}
+                      </summary>
+
+                      <div className="pl-4 mt-2">
+                        <ul>
+                          {chapter.contents?.map((content, index) => {
+                            const isLocked = !previousChapterCompleted;
+                            const isSelected = selectedContent?.id === content.id;
+                            const isCompleted = content.userContentProgress.some(
                               (progress) => progress.contentStatus === true
-                            )
-                        );
+                            );
 
-                      return (
-                        <details key={chapter.id} className="mb-4">
-                          <summary
-                            className={`${
-                              previousChapterCompleted
-                                ? "text-blue-600"
-                                : "text-gray-400"
-                            } font-semibold cursor-pointer`}
-                          >
-                            Chapter {chapter.sort} {chapter.chapterTitle}
-                          </summary>
-
-                          <div className="pl-4 mt-2">
-                            <ul>
-                              {chapter.contents?.map((content, index) => {
-                                const isLocked =
-                                  !previousChapterCompleted ||
-                                  (chapterIndex > 0 &&
-                                    index > 0 &&
-                                    !chapter.contents[index - 1].userContentProgress.some(
-                                      (progress) => progress.contentStatus
-                                    ));
-                                const isSelected = selectedContent?.id === content.id;
-                                const isCompleted = content.userContentProgress?.some(
-                                  (progress) => progress.contentStatus === true
-                                );
-
-                                return (
-                                  <li
-                                    key={content.id}
-                                    onClick={() => !isLocked && handleContentClick(content)}
-                                    className={`flex justify-between items-center cursor-pointer
-                                      ${
-                                        isLocked
-                                          ? "text-gray-400"
-                                          : "text-gray-700"
-                                      }
-                                      ${
-                                        isSelected
-                                          ? "bg-blue-100"
-                                          : "hover:bg-gray-100"
-                                      }
-                                      transition-colors duration-200 p-2 rounded-lg`}
+                            return (
+                              <li
+                                key={content.id}
+                                onClick={() => !isLocked && handleContentClick(content)}
+                                className={`flex justify-between items-center cursor-pointer
+                                                            ${
+                                                              isLocked
+                                                                ? "text-gray-400"
+                                                                : "text-gray-700"
+                                                            }
+                                                            ${
+                                                              isSelected
+                                                                ? "bg-blue-100"
+                                                                : "hover:bg-gray-100"
+                                                            }
+                                                            transition-colors duration-200 p-2 rounded-lg`}
+                              >
+                                <div className="flex items-center gap-2">
+                                  <span
+                                    className={`rounded-full h-8 w-8 flex items-center justify-center text-lg font-semibold mr-2 p-4
+                                                                    ${
+                                                                      isLocked
+                                                                        ? "bg-gray-200 text-gray-400"
+                                                                        : "bg-blue-200 text-blue-800"
+                                                                    }`}
                                   >
-                                    <div className="flex items-center gap-2">
-                                      <span
-                                        className={`rounded-full h-8 w-8 flex items-center justify-center text-lg font-semibold mr-2 p-4
-                                          ${
-                                            isLocked
-                                              ? "bg-gray-200 text-gray-400"
-                                              : "bg-blue-200 text-blue-800"
-                                          }`}
-                                      >
-                                        {index + 1}
-                                      </span>
-                                      <span
-                                        className={`${
-                                          isSelected ? "text-blue-800 font-semibold" : ""
-                                        } flex items-center`}
-                                      >
-                                        {content.contentTitle}
-                                      </span>
-                                    </div>
+                                    {index + 1}
+                                  </span>
+                                  <span
+                                    className={`${
+                                      isSelected ? "text-blue-800 font-semibold" : ""
+                                    } flex items-center`}
+                                  >
+                                    {content.contentTitle}
+                                  </span>
+                                </div>
 
-                                    <div className="flex items-center">
-                                      {isCompleted ? (
-                                        <FaCheckCircle className="w-4 h-4 text-green-500" />
-                                      ) : isLocked ? (
-                                        <IoIosLock className="w-4 h-4 text-yellow-500 " />
-                                      ) : null}
-                                    </div>
-                                  </li>
-                                );
-                              })}
-                            </ul>
-                          </div>
-                        </details>
-                      );
-                    })}
-                  </ul>
-                </div>
-                {/* Tombol Generate Sertifikat */}
-                {/* <div className="text-center border-t-2 border-gray-300">
-                  <button
-                      onClick={generateCertificate}
-                      className="bg-blue-600 text-white p-2 rounded-lg mt-5"
-                  >
-                      Download Sertifikat
-                  </button>
-                </div> */}
-              </aside>
-            )}
+                                <div className="flex items-center">
+                                  {isCompleted ? (
+                                    <FaCheckCircle className="w-4 h-4 text-green-500" />
+                                  ) : isLocked ? (
+                                    <IoIosLock className="w-4 h-4 text-yellow-500 " />
+                                  ) : null}
+                                </div>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    </details>
+                  );
+                })}
+              </ul>
+            </div>
+            {/* Tombole generate sertifikat
+                    <div className="text-center border-t-2 border-gray-300">
+                <button
+                    onClick={generateCertificate}
+                    className="bg-blue-600 text-white p-2 rounded-lg mt-5"
+                >
+                    Download Sertifikat
+                </button>
+            </div> */}
+          </aside>
+                                )
+                              }
           </div>
+          
         </div>
       </div>
       <Footer />
