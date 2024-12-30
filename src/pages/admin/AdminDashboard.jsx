@@ -154,37 +154,37 @@ const AdminDashboard = () => {
           {[
             {
               count: paymentStatus
-                .filter((payment) => payment.paymentStatus === "settlement")
-                .reduce((total, payment) => total + payment.totalPrice, 0),
-              label: "Total Uang Masuk",
-              color: "bg-success",
-              icon: <FaMoneyBillWave className="text-2xl text-primary" />,
-            },
-            {
-              count: paymentStatus
-                .filter(
+              .filter(
                   (payment) =>
                     payment.paymentMethod === "qris" &&
                     payment.paymentStatus === "settlement"
                 )
                 .reduce((total, payment) => total + payment.totalPrice, 0),
-              label: "QRIS",
-              color: "bg-[#173D94]",
-              icon: <FaWallet className="text-2xl text-primary" />,
-            },
+                label: "QRIS",
+                color: "bg-[#173D94]",
+                icon: <FaWallet className="text-2xl text-primary" />,
+              },
             {
               count: paymentStatus
                 .filter(
                   (payment) =>
                     payment.paymentMethod === "bank_transfer" &&
                     payment.paymentStatus === "settlement"
-                )
-                .reduce((total, payment) => total + payment.totalPrice, 0),
-              label: "Bank Transfer",
-              color: "bg-[#173D94]",
-              icon: <FaCreditCard className="text-2xl text-primary" />,
-            },
-          ].map(({ count, label, color, icon }) => (
+                  )
+                  .reduce((total, payment) => total + payment.totalPrice, 0),
+                  label: "Bank Transfer",
+                  color: "bg-[#173D94]",
+                  icon: <FaCreditCard className="text-2xl text-primary" />,
+                },
+                {
+                  count: paymentStatus
+                    .filter((payment) => payment.paymentStatus === "settlement")
+                    .reduce((total, payment) => total + payment.totalPrice, 0),
+                  label: "Total Uang Masuk",
+                  color: "bg-success",
+                  icon: <FaMoneyBillWave className="text-2xl text-primary" />,
+                },
+              ].map(({ count, label, color, icon }) => (
             <div
               key={label}
               className={`${color} text-white font-semibold p-4 rounded-lg shadow-sm flex items-center space-x-4`}
