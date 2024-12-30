@@ -87,7 +87,7 @@ const AdminDataKategori = () => {
       } catch (err) {
         if (
           err.message.includes("tidak dapat menghapus jenis kursus") ||
-          err.message.includes("cannot delete type course")
+          err.message.includes("Request failed with status code 400")
         ) {
           toast.error(
             "Tidak dapat menghapus kategori ini karena sudah terhubung dengan kursus yang ada.",
