@@ -23,7 +23,7 @@ const InstruktorDashboard = () => {
   const [filter, setFilter] = useState("disable");
   const [currentPage, setCurrentPage] = useState(1);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [itemsPerPage] = useState(5);
+  const [itemsPerPage] = useState(10);
   const sidebarRef = useRef(null);
   
    // Close sidebar when clicking outside
@@ -112,12 +112,6 @@ const InstruktorDashboard = () => {
 
   const additionalCardData = [
     {
-      count: totalIncome,
-      label: "Total Uang Masuk",
-      color: "bg-success",
-      icon: <FaMoneyBillWave className="text-2xl text-primary" />
-    },
-    {
       count: totalQRIS,
       label: "QRIS",
       color: "bg-[#173D94]",
@@ -128,6 +122,12 @@ const InstruktorDashboard = () => {
       label: "Bank Transfer",
       color: "bg-[#173D94]",
       icon: <FaCreditCard className="text-2xl text-primary" />
+    },
+    {
+      count: totalIncome,
+      label: "Total Uang Masuk",
+      color: "bg-success",
+      icon: <FaMoneyBillWave className="text-2xl text-primary" />
     }
   ];
 
