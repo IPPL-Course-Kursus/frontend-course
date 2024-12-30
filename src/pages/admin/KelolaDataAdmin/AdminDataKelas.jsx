@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaFilter } from "react-icons/fa";
+import { FaUsers, FaFilter } from "react-icons/fa";
 import { IoArrowBackCircle, IoArrowForwardCircle } from "react-icons/io5";
 import { IoAddCircleOutline } from "react-icons/io5"; 
 import { useDispatch, useSelector } from "react-redux";
@@ -65,6 +65,10 @@ const AdminDataKelas = () => {
     // closeDeleteModal();
   };
 
+  const freeClassesCount = courses.filter((course) => course.typeCourse.typeName === "Free").length;
+  const premiumClassesCount = courses.filter((course) => course.typeCourse.typeName === "Premium").length;
+  const totalClassesCount = courses.length;
+
   return (
     <>
       <div className="flex">
@@ -81,6 +85,24 @@ const AdminDataKelas = () => {
 
         <div className="flex-1 p-4 md:p-6 bg-secondary min-h-screen font-poppins">
           <NavbarAdmin setSidebarOpen={setSidebarOpen} />
+
+          {/* Section Data Kelas - Statistics */}
+          <div className="mt-[80px] grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-6 mb-8">
+            {[{ count: freeClassesCount, label: "Free Class", color: "bg-[#173D94]" },
+              { count: premiumClassesCount, label: "Premium Class", color: "bg-success" },
+              { count: totalClassesCount, label: "Total Class", color: "bg-[#FF5722]" }]
+              .map(({ count, label, color }) => (
+                <div key={label} className={`${color} text-white font-semibold p-4 rounded-lg shadow-sm flex items-center`}>
+                  <div className="bg-white rounded-full p-2">
+                    <FaUsers className="text-2xl text-primary" />
+                  </div>
+                  <div className="ml-4">
+                    <div className="text-2xl">{count}</div>
+                    <div className="text-sm">{label}</div>
+                  </div>
+                </div>
+              ))}
+          </div>
 
           {/* Section Data Kelas */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
@@ -252,7 +274,7 @@ const AdminDataKelas = () => {
         </div>
       </div>
     </>
-    );
+  );
 };
 
 export default AdminDataKelas;
