@@ -1,5 +1,5 @@
-import Sidebar from "../../components/Sidebar/SidebarInstruktur";
-import { useState, useEffect } from "react";
+import SidebarInstruktur from "../../components/Sidebar/SidebarInstruktur";
+import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { GrTransaction } from "react-icons/gr";
 import { FaFilter } from "react-icons/fa";
@@ -22,7 +22,26 @@ const InstruktorDashboard = () => {
 
   const [filter, setFilter] = useState("disable");
   const [currentPage, setCurrentPage] = useState(1);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [itemsPerPage] = useState(5);
+  const sidebarRef = useRef(null);
+  
+   // Close sidebar when clicking outside
+   useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+        setSidebarOpen(false);
+      }
+    };
+  
+    if (sidebarOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+  
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [sidebarOpen]);
 
   useEffect(() => {
     const fetchPaymentsData = async () => {
@@ -40,19 +59,19 @@ const InstruktorDashboard = () => {
       count: paymentStatus?.transactionCountByType?.Free || 0,
       label: "Free Class",
       color: "bg-primary",
-      icon: <IoBookSharp className="text-2xl text-primary" />, 
+      icon: <IoBookSharp className="text-2xl text-primary" />,
     },
     {
       count: paymentStatus?.transactionCountByType?.Premium || 0,
       label: "Premium Class",
       color: "bg-primary",
-      icon: <IoBookSharp className="text-2xl text-primary text-center items-center" />, 
+      icon: <IoBookSharp className="text-2xl text-primary text-center items-center" />,
     },
     {
       count: paymentStatus?.totalTransactions || 0,
       label: "Total Transaction",
       color: "bg-primary",
-      icon: <GrTransaction className="text-2xl text-[#173D94]" />, 
+      icon: <GrTransaction className="text-2xl text-[#173D94]" />,
     },
   ];
 
@@ -118,43 +137,61 @@ const InstruktorDashboard = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  return (
-    <div className="flex">
-      <div className="min-h-screen">
-        <Sidebar />
-      </div>
-      <div className="p-6 bg-secondary min-h-screen w-screen font-poppins">
-        <div className="bg-[#F3F7FB] p-4 flex justify-between items-center mb-4 shadow-sm">
-          <HeadInstruktur />
-        </div>
+  const formatTransactionTime = (time) => {
+    const date = new Date(time);
+    return date.toLocaleDateString("id-ID", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
 
-        <div className="grid grid-cols-3 gap-10 px-4 mb-8">
+  return (
+    <div className="flex flex-col md:flex-row">
+      <div
+        ref={sidebarRef} // Menggunakan useRef di sini
+        className={`fixed inset-y-0 z-50 w-64 min-h-screen transform bg-white transition-transform duration-300 ease-in-out ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } md:relative md:translate-x-0`}
+      >
+        <SidebarInstruktur />
+      </div>
+
+
+      <div className="flex-1 p-4 md:p-6 bg-secondary min-h-screen">
+        <HeadInstruktur setSidebarOpen={setSidebarOpen} />
+
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-4 pt-20 mb-8">
           {allCardData.map((card, index) => (
             <div
               key={index}
-              className={`${card.color} text-white font-semibold p-4 rounded-lg shadow-sm flex items-center justify-start`}
+              className={`${card.color} text-white font-semibold p-4 rounded-lg shadow-sm flex items-center`}
             >
-              <div className="mr-10 -mt-10">{card.info}</div>
-              <div className="bg-white rounded-full p-2 ml-10">{card.icon}</div>
-              <div className="ml-4">
-                <div className="flex items-center text-2xl">
-                  {card.label === "Total Uang Masuk" || card.label === "QRIS" || card.label === "Bank Transfer"
+              <div className="mr-4 bg-white rounded-full p-2 ml-2">{card.icon}</div>
+              <div>
+                <div className="text-lg sm:text-md">
+                  {card.label === "Total Uang Masuk" ||
+                  card.label === "QRIS" ||
+                  card.label === "Bank Transfer"
                     ? `Rp ${card.count.toLocaleString("id-ID")}`
                     : card.count}
                 </div>
-                <div className="text-sm">{card.label}</div>
+                <div className="text-md">{card.label}</div>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="flex justify-between items-center mb-4 p-4">
-          <h2 className="text-xl font-bold">Transaksi Kursus Instruktur</h2>
-          <div className="flex items-center">
-            <div className="relative inline-block">
+        {/* Filter Dropdown */}
+        <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
+          <h2 className="mt-4 text-lg md:text-xl font-bold text-neutral05">Transaksi Kursus Instruktur</h2>
+        
+          <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
+            <div className="relative">
               <select
                 value={filter}
-                onChange={handleFilterChange}
+                onChange={handleFilterChange} // Filter untuk elemen lain yang terpengaruh status
                 className="flex items-center py-2 pl-10 pr-4 bg-[#0a61aa] text-white font-semibold rounded-md text-sm transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#0a61aa] focus:ring-opacity-50"
               >
                 <option value="">Filter</option>
@@ -166,18 +203,64 @@ const InstruktorDashboard = () => {
           </div>
         </div>
 
-        <div className="overflow-x-auto bg-white p-6 rounded-lg shadow-lg">
-          <table className="min-w-full table-auto">
+        {/* Payment Table */}
+        <div className="overflow-x-auto bg-white p-4 rounded-lg shadow-lg">
+          {/* Mobile Cards */}
+          <div className="block md:hidden space-y-4">
+            {currentPayments.map((payment, index) => {
+              const rowNumber = (currentPage - 1) * itemsPerPage + index + 1;
+
+              return (
+                <div
+                  key={payment.id}
+                  className="border rounded-md p-4 shadow-sm bg-white w-full"
+                >
+                  <div className="mb-2 font-semibold text-lg">
+                    {rowNumber}. {payment.courseName}
+                  </div>
+                  <div className="mb-2">
+                    <span className="font-semibold">Harga:</span> Rp{" "}
+                    {payment.totalPrice.toLocaleString("id-ID")},00
+                  </div>
+                  <div className="mb-2">
+                    <span className="font-semibold">Status:</span>{" "}
+                    <span
+                      className={`px-2 py-1 rounded-lg font-semibold text-sm ${
+                        payment.paymentStatus === "settlement"
+                          ? "bg-green-100 text-green-700"
+                          : payment.paymentStatus === "pending"
+                          ? "bg-yellow-100 text-yellow-700"
+                          : "bg-gray-100 text-gray-700"
+                      }`}
+                    >
+                      {payment.paymentStatus}
+                    </span>
+                  </div>
+                  <div className="mb-2">
+                    <span className="font-semibold">Metode Pembayaran:</span>{" "}
+                    {payment.paymentMethod}
+                  </div>
+                  <div>
+                    <span className="font-semibold">Waktu Transaksi:</span>{" "}
+                    {formatTransactionTime(payment.updatedAt)}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Desktop Table */}
+          <table className="w-full table-auto md:w-full md:h-full hidden md:table">
             <thead>
               <tr className="bg-gray-200 text-left text-sm md:text-base font-semibold">
-                <th className="px-4 py-3">#</th>
-                <th className="px-4 py-3">Order ID</th>
-                <th className="px-4 py-3">Kategori</th>
-                <th className="px-4 py-3">Nama Kursus</th>
-                <th className="px-4 py-3">Harga</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3">Metode Pembayaran</th>
-                <th className="px-4 py-3">Tanggal Transaksi</th>
+                <th className="px-2 md:px-4 py-2">#</th>
+                <th className="px-2 md:px-4 py-2">Order ID</th>
+                <th className="px-2 md:px-4 py-2">Kategori</th>
+                <th className="px-2 md:px-4 py-2">Nama Kursus</th>
+                <th className="px-2 md:px-4 py-2">Harga</th>
+                <th className="px-2 md:px-4 py-2">Status</th>
+                <th className="px-2 md:px-4 py-2">Metode Pembayaran</th>
+                <th className="px-2 md:px-4 py-2">Tanggal Transaksi</th>
               </tr>
             </thead>
             <tbody>
@@ -185,81 +268,77 @@ const InstruktorDashboard = () => {
                 currentPayments.map((payment, index) => {
                   const rowNumber =
                     (currentPage - 1) * itemsPerPage + index + 1;
-
-                  const statusClass =
-                    payment.paymentStatus === "settlement"
-                      ? "bg-green-100 text-green-700"
-                      : payment.paymentStatus === "pending"
-                      ? "bg-yellow-100 text-yellow-700"
-                      : "bg-gray-100 text-gray-700";
-
                   return (
-                    <tr
-                      key={payment.id}
-                      className="border-b hover:bg-gray-50 transition-colors text-sm md:text-base"
-                    >
-                      <td className="px-4 py-3">{rowNumber}</td>
-                      <td className="px-4 py-3">{payment.orderId}</td>
-                      <td className="px-4 py-3">{payment.category}</td>
-                      <td className="px-4 py-3">{payment.courseName}</td>
-                      <td className="px-4 py-3">
-                        Rp {payment.totalPrice.toLocaleString("id-ID")}
+                    <tr key={payment.id} className="border-t">
+                      <td className="px-2 py-2 text-sm md:text-base">
+                        {rowNumber}
                       </td>
-                      <td className={`px-4 py-3 ${statusClass}`}>
-                        {payment.paymentStatus}
+                      <td className="px-2 py-2">{payment.orderId}</td>
+                      <td className="px-2 py-2">{payment.categoryName}</td>
+                      <td className="px-2 py-2">{payment.courseName}</td>
+                      <td className="px-2 py-2 font-bold">
+                        Rp{" "}
+                        {payment.totalPrice.toLocaleString("id-ID")},00
                       </td>
-                      <td className="px-4 py-3">{payment.paymentMethod}</td>
-                      <td className="px-4 py-3">
-                        {new Date(payment.createdAt).toLocaleDateString(
-                          "id-ID",
-                          {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          }
-                        )}
+                      <td className="px-2 py-2">
+                        <span
+                          className={`px-2 py-1 rounded-lg font-semibold text-sm ${
+                            payment.paymentStatus === "settlement"
+                              ? "bg-green-100 text-green-700"
+                              : payment.paymentStatus === "pending"
+                              ? "bg-yellow-100 text-yellow-700"
+                              : "bg-gray-100 text-gray-700"
+                          }`}
+                        >
+                          {payment.paymentStatus}
+                        </span>
+                      </td>
+                      <td className="px-2 py-2">{payment.paymentMethod}</td>
+                      <td className="px-2 py-2">
+                        {formatTransactionTime(payment.updatedAt)}
                       </td>
                     </tr>
                   );
                 })
               ) : (
                 <tr>
-                  <td colSpan="8" className="text-center py-6 text-gray-500">
-                    Tidak ada data yang tersedia
+                  <td colSpan="8" className="text-center py-4">
+                    Tidak ada transaksi yang ditemukan
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
-
-          {sortedPayments.length > itemsPerPage && (
-            <div className="flex items-center justify-between mt-6">
-              {currentPage > 1 && (
-                <button
-                  className="flex items-center py-2 px-5 rounded-md text-sm md:text-base font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-all"
-                  onClick={() => paginate(currentPage - 1)}
-                >
-                  <IoArrowBackCircle className="mr-2 text-xl" />
-                  Previous
-                </button>
-              )}
-
-              <span className="text-sm md:text-lg font-semibold mx-auto">
-                Page {currentPage} of {totalPages}
-              </span>
-
-              {currentPage < totalPages && (
-                <button
-                  className="flex items-center py-2 px-5 rounded-md text-sm md:text-base font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-all"
-                  onClick={() => paginate(currentPage + 1)}
-                >
-                  Next
-                  <IoArrowForwardCircle className="ml-2 text-xl" />
-                </button>
-              )}
-            </div>
-          )}
         </div>
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="flex justify-between items-center mt-4">
+            {currentPage > 1 && (
+              <button
+                className="flex items-center py-2 px-4 rounded-lg bg-[#0a61aa] text-white transition-all duration-300 hover:scale-105"
+                onClick={() => paginate(currentPage - 1)}
+              >
+                <IoArrowBackCircle className="mr-2 text-lg" />
+                Previous
+              </button>
+            )}
+
+            <span className="text-lg font-semibold mx-auto">
+              Page {currentPage} of {totalPages}
+            </span>
+
+            {currentPage < totalPages && (
+              <button
+                className="flex items-center py-2 px-4 rounded-lg bg-[#0a61aa] text-white transition-all duration-300 hover:scale-105"
+                onClick={() => paginate(currentPage + 1)}
+              >
+                Next
+                <IoArrowForwardCircle className="ml-2 text-lg" />
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
