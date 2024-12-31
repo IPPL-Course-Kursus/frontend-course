@@ -118,6 +118,12 @@ const MulaiKelas = () => {
     }
   };
 
+  useEffect(() => {
+    console.log("Fetched Data:", data);
+    console.log("Total Contents:", totalContents);
+    console.log("Content Finished:", contentFinish);
+  }, [data, totalContents, contentFinish]);
+  
   const handleRunCode = () => {
     dispatch(runCode(language, sourceCode)).catch((error) => {
       console.error("Error:", error.response ? error.response.data : error.message);
