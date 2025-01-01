@@ -42,7 +42,7 @@ const HeadInstruktur = ({ setSidebarOpen }) => {
       {/* Right side with profile icon */}
       <div className="flex-none gap-6 lg:pr-4 ml-auto">
         {token ? (
-          <div className="flex items-center px-6 z-50">
+          <div className="flex items-center px-6 z-10">
             {/* Profile Icon */}
             <div className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full border-2 border-primary">
