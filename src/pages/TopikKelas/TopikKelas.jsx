@@ -158,7 +158,6 @@ const TopikKelas = () => {
   
       return matchesSearch;
     });
-  
     const priceRanges = activeFilters.filter((filter) =>
       [
         "Kurang dari 50.000",
@@ -169,10 +168,13 @@ const TopikKelas = () => {
         "Lebih dari 1.000.000",
       ].includes(filter)
     );
-  
+    
     if (priceRanges.length > 0) {
       filteredCourses = filteredCourses.filter((course) => {
-        const price = course.coursePrice;
+        const price = course.promoStatus && course.courseDiscountPrice > 0
+          ? course.courseDiscountPrice
+          : course.coursePrice;
+    
         return priceRanges.some((filter) => {
           switch (filter) {
             case "Kurang dari 50.000":
@@ -518,7 +520,7 @@ const TopikKelas = () => {
                             {course.coursePrice === 0
                               ? "Free"
                               : `Beli Rp. ${
-                                  course.promoStatus
+                                  course.promoStatus && course.courseDiscountPrice 
                                     ? course.courseDiscountPrice.toLocaleString('id-ID')
                                     : course.coursePrice.toLocaleString('id-ID')
                                 }`}
