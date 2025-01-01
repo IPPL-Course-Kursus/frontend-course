@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 // import { useState } from "react";
 
 const ProgressBar = ({ contentFinish}) => {
-    const percentage = contentFinish ;
+    const percentage = Math.min(contentFinish, 100);
     const contentStatus = percentage === 100 ? "Completed" : "In Progress";
 
     return (
@@ -17,7 +17,7 @@ const ProgressBar = ({ contentFinish}) => {
                 <div
                     style={{
                         height: "100%",
-                        width: `${percentage}% `,
+                        width: `${percentage}%`,
                         backgroundColor: "purple",
                         transition: "width 0.5s",
                     }}
