@@ -187,9 +187,9 @@ const InstrukturDataLevel = () => {
 
         {/* Section Data Level */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
-            <h2 className="flex items-center py-2 px-4 mt-4 bg-gradient-to-r from-[#FF5722] to-[#FF9800] text-white font-semibold rounded-md text-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl mb-4">
-              Data Level
-            </h2>
+          <h2 className="flex items-center py-2 px-4 mt-4 bg-gradient-to-r from-[#FF5722] to-[#FF9800] text-white font-semibold rounded-md text-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl mb-4">
+            Data Level
+          </h2>
         </div>
 
         {/* Success and Error Messages */}
@@ -205,7 +205,7 @@ const InstrukturDataLevel = () => {
             <table className="min-w-full table-auto">
               <thead>
                 <tr className="bg-gray-200 text-left text-xs md:text-sm font-semibold">
-                  <th className="px-2 md:px-4 py-2">ID</th>
+                  <th className="px-2 md:px-4 py-2">No</th>
                   {/* <th className="px-2 md:px-4 py-2">Kode Kategori</th> */}
                   <th className="px-2 md:px-4 py-2">Level</th>
                 </tr>
@@ -230,7 +230,7 @@ const InstrukturDataLevel = () => {
                 })}
                 {currentItems && currentItems.length === 0 && (
                   <tr>
-                    <td colSpan="3" className="text-center py-4 text-gray-500">
+                    <td colSpan="2" className="text-center py-4 text-gray-500">
                       Tidak ada level yang ditemukan.
                     </td>
                   </tr>
@@ -250,11 +250,7 @@ const InstrukturDataLevel = () => {
                   {/* Header: Nomor urutan dan nama level */}
                   <div className="flex items-center justify-between mb-4">
                     <div className="text-lg font-bold text-gray-700">
-                      {(
-                        (currentPage - 1) * itemsPerPage +
-                        index +
-                        1
-                      ).toString()}. {level.levelName}
+                      {((currentPage - 1) * itemsPerPage + index + 1).toString()}. {level.levelName}
                     </div>
                     {/* You can add an image or icon here if needed */}
                   </div>
@@ -274,41 +270,49 @@ const InstrukturDataLevel = () => {
 
         {/* Pagination Controls */}
         {totalPages > 1 && (
-          <div className="flex justify-between items-center mt-4">
-            <button
-              className={`flex items-center py-2 px-4 rounded-lg ${
-                currentPage === 1
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-[#0a61aa] text-white"
-              } transition-all duration-300 hover:scale-105`}
-              onClick={handlePreviousPage}
-              disabled={currentPage === 1}
-            >
-              <IoArrowBackCircle className="mr-2 text-xl" />
-              Previous
-            </button>
+          <div className="grid grid-cols-3 items-center mt-4">
+            {/* Previous Button */}
+            <div className="flex justify-start">
+              {currentPage > 1 && (
+                <button
+                  className={`flex items-center py-2 px-4 rounded-lg bg-[#0a61aa] text-white transition-all duration-300 hover:scale-105`}
+                  onClick={handlePreviousPage}
+                >
+                  <IoArrowBackCircle className="mr-2 text-xl" />
+                  Previous
+                </button>
+              )}
+            </div>
 
-            <span className="text-lg font-semibold">
-              Page {currentPage} of {totalPages}
-            </span>
+            {/* Page Indicator */}
+            <div className="flex justify-center">
+              <span className="text-lg font-semibold">
+                Page {currentPage} of {totalPages}
+              </span>
+            </div>
 
-            <button
-              className={`flex items-center py-2 px-4 rounded-lg ${
-                currentPage === totalPages
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-[#0a61aa] text-white"
-              } transition-all duration-300 hover:scale-105`}
-              onClick={handleNextPage}
-              disabled={currentPage === totalPages}
-            >
-              Next
-              <IoArrowForwardCircle className="ml-2 text-xl" />
-            </button>
+            {/* Next Button */}
+            <div className="flex justify-end">
+              {currentPage < totalPages && (
+                <button
+                  className={`flex items-center py-2 px-4 rounded-lg bg-[#0a61aa] text-white transition-all duration-300 hover:scale-105`}
+                  onClick={handleNextPage}
+                >
+                  Next
+                  <IoArrowForwardCircle className="ml-2 text-xl" />
+                </button>
+              )}
+            </div>
           </div>
         )}
       </div>
     </div>
   );
+};
+
+// Define PropTypes for InstrukturDataLevel if needed
+InstrukturDataLevel.propTypes = {
+  // Add prop types if there are any props being passed
 };
 
 export default InstrukturDataLevel;

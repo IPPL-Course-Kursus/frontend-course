@@ -233,9 +233,9 @@ const InstrukturDataKategori = () => {
 
         {/* Section Data Kategori */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-4 space-y-4 md:space-y-0">
-            <h2 className="flex items-center py-2 px-4 mt-4 bg-gradient-to-r from-[#FF5722] to-[#FF9800] text-white font-semibold rounded-md text-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl mb-4">
-              Data Kategori
-            </h2>
+          <h2 className="flex items-center py-2 px-4 mt-4 bg-gradient-to-r from-[#FF5722] to-[#FF9800] text-white font-semibold rounded-md text-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl mb-4">
+            Data Kategori
+          </h2>
         </div>
 
         {/* Tabel Data Kategori */}
@@ -245,7 +245,7 @@ const InstrukturDataKategori = () => {
             <table className="min-w-full table-auto">
               <thead>
                 <tr className="bg-gray-200 text-left text-xs md:text-sm font-semibold">
-                  <th className="px-2 md:px-4 py-2">ID</th>
+                  <th className="px-2 md:px-4 py-2">No</th>
                   {/* <th className="px-2 md:px-4 py-2">Kode Kategori</th> */}
                   <th className="px-2 md:px-4 py-2">Nama Kategori</th>
                   <th className="px-2 md:px-4 py-2">Foto</th>
@@ -253,10 +253,12 @@ const InstrukturDataKategori = () => {
               </thead>
               <tbody>
                 {currentItems?.map((category, index) => {
-                  const rowNumber =
-                    (currentPage - 1) * itemsPerPage + index + 1;
+                  const rowNumber = (currentPage - 1) * itemsPerPage + index + 1;
                   return (
-                    <tr key={category.id} className="border-t text-xs md:text-sm hover:bg-gray-50 transition-all duration-300">
+                    <tr
+                      key={category.id} // Use unique identifier for key
+                      className="border-t text-xs md:text-sm hover:bg-gray-50 transition-all duration-300"
+                    >
                       <td className="px-2 md:px-4 py-2 text-left">{rowNumber}</td>
                       {/* <td className="px-2 md:px-4 py-2">{category.categoryCode}</td> */}
                       <td className="px-2 md:px-4 py-2">{category.categoryName}</td>
@@ -310,36 +312,39 @@ const InstrukturDataKategori = () => {
 
         {/* Pagination Controls */}
         {totalPages > 1 && (
-          <div className="flex justify-between items-center mt-4">
-            <button
-              className={`flex items-center py-2 px-4 rounded-lg ${
-                currentPage === 1
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-[#0a61aa] text-white"
-              } transition-all duration-300 hover:scale-105`}
-              onClick={() => setCurrentPage(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              <IoArrowBackCircle className="mr-2 text-xl" />
-              Previous
-            </button>
+          <div className="grid grid-cols-3 items-center mt-4">
+            {/* Previous Button */}
+            <div className="flex justify-start">
+              {currentPage > 1 && (
+                <button
+                  className={`flex items-center py-2 px-4 rounded-lg bg-[#0a61aa] text-white transition-all duration-300 hover:scale-105`}
+                  onClick={handlePreviousPage}
+                >
+                  <IoArrowBackCircle className="mr-2 text-xl" />
+                  Previous
+                </button>
+              )}
+            </div>
 
-            <span className="text-lg font-semibold">
-              Page {currentPage} of {totalPages}
-            </span>
+            {/* Page Indicator */}
+            <div className="flex justify-center">
+              <span className="text-lg font-semibold">
+                Page {currentPage} of {totalPages}
+              </span>
+            </div>
 
-            <button
-              className={`flex items-center py-2 px-4 rounded-lg ${
-                currentPage === totalPages
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-[#0a61aa] text-white"
-              } transition-all duration-300 hover:scale-105`}
-              onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              Next
-              <IoArrowForwardCircle className="ml-2 text-xl" />
-            </button>
+            {/* Next Button */}
+            <div className="flex justify-end">
+              {currentPage < totalPages && (
+                <button
+                  className={`flex items-center py-2 px-4 rounded-lg bg-[#0a61aa] text-white transition-all duration-300 hover:scale-105`}
+                  onClick={handleNextPage}
+                >
+                  Next
+                  <IoArrowForwardCircle className="ml-2 text-xl" />
+                </button>
+              )}
+            </div>
           </div>
         )}
       </div>
