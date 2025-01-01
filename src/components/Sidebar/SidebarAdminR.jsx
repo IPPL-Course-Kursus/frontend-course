@@ -47,16 +47,7 @@ const SidebarAdmin = ({ sidebarOpen, setSidebarOpen }) => {
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } transition-transform duration-300 ease-in-out bg-blue-900 text-white w-64 z-50 md:static md:translate-x-0`}
       >
-        {/* Close Button (Visible on Mobile) */}
-        <div className="flex justify-end p-4 md:hidden">
-          <button
-            className="text-2xl text-white focus:outline-none"
-            onClick={() => setSidebarOpen(false)}
-            aria-label="Close Sidebar"
-          >
-            <IoClose />
-          </button>
-        </div>
+        
 
         {/* Sidebar Content */}
         <div className="flex flex-col h-full">

@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
+import { IoMenu } from "react-icons/io5"; // Import the menu icon
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getMe } from "../../redux/actions/authActions";
+import PropTypes from "prop-types";
 
-const HeadInstruktur = () => {
+const HeadInstruktur = ({ setSidebarOpen }) => {
   const dispatch = useDispatch();
 
   // Get token and profile from Redux store
@@ -21,8 +23,19 @@ const HeadInstruktur = () => {
 
   return (
     <div className="navbar bg-base-100 shadow-md shadow-slate-300 z-50">
+      {/* Burger Menu Button (Visible on Mobile) */}
+      <div className="flex-none lg:hidden">
+        <button
+          className="btn btn-ghost btn-circle text-2xl text-primary focus:outline-none"
+          onClick={() => setSidebarOpen((prev) => !prev)}
+          aria-label="Open Sidebar"
+        >
+          <IoMenu />
+        </button>
+      </div>
+
       {/* Left side with "Hi, Instruktur!" */}
-      <div className="flex-none">
+      <div className="flex-1 flex justify-center lg:justify-start">
         <h1 className="text-2xl font-bold text-primary lg:ml-10">Hi, Instruktur!</h1>
       </div>
 
@@ -47,6 +60,10 @@ const HeadInstruktur = () => {
       </div>
     </div>
   );
+};
+
+HeadInstruktur.propTypes = {
+  setSidebarOpen: PropTypes.func.isRequired,
 };
 
 export default HeadInstruktur;
