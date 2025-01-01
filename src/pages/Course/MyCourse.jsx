@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Footer from "../../components/Footer";
@@ -25,6 +25,24 @@ const CoursesPage = () => {
   useEffect(() => {
     dispatch(getUserCourses());
   }, [dispatch]);
+
+  const dropdownRef = useRef(null);
+  
+   // Close  when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsMobileDropdownVisible(false);
+      }
+    };
+  
+      document.addEventListener("mousedown", handleClickOutside);
+    
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
 
   const toggleMobileDropdown = () => {
     setMobileDropdownVisible(!isMobileDropdownVisible);
@@ -208,7 +226,7 @@ const CoursesPage = () => {
                       ...new Set(
                         mycourse
                           ?.map((courseItem) => courseItem.course.courseLevel?.levelName)
-                          .filter((level) => level) // Pastikan hanya level yang valid
+                          .filter((level) => level)
                       ),
                     ].map((label, index) => (
                     <div className="flex items-center mb-2" key={index}>
@@ -232,20 +250,21 @@ const CoursesPage = () => {
 <div className="w-full md:hidden">
   {/* Tombol Dropdown */}
   <button
-    onClick={() => setIsMobileDropdownVisible(!isMobileDropdownVisible)} // Toggle the dropdown visibility
+    onClick={() => setIsMobileDropdownVisible(!isMobileDropdownVisible)}
     className={`w-full bg-blue-500 text-white font-bold text-sm md:text-base px-2 py-1.5 rounded-md mb-4 ${isMobileDropdownVisible ? "hidden" : ""}`}
   >
-    {isMobileDropdownVisible ? "Tutup Filter" : "Tampilkan Filter"} {/* Change button text based on visibility */}
+    {isMobileDropdownVisible ? "Tutup Filter" : "Tampilkan Filter"}
   </button>
 </div>
 
 {/* Dropdown filter yang muncul di sebelah kanan */}
 <div
+  ref={dropdownRef}
   className={`${
     isMobileDropdownVisible
-      ? "opacity-100 translate-x-0" // fully visible and in position
-      : "opacity-0 translate-x-full" // invisible and off-screen
-  } bg-slate-400 bg-opacity-95 shadow-md rounded-md p-4 mb-3 md:hidden fixed top-0 right-0 h-full w-1/2 z-50 transition-all duration-300 ease-in-out overflow-y-auto`}
+      ? "opacity-100 translate-x-0"
+      : "opacity-0 translate-x-full"
+  } bg-gray-200 bg-opacity-95 shadow-lg rounded-md p-4 mb-3 md:hidden fixed top-0 right-0 h-full w-1/2 z-50 transition-all duration-300 ease-in-out overflow-y-auto`}
 >
   {/* Filter Konten untuk Mobile */}
   <h3 className="text-2xl font-bold text-gray-800 mb-4">Filter</h3>
@@ -330,25 +349,14 @@ const CoursesPage = () => {
             className="mr-2 checkbox-custom"
             onChange={() => handleCheckboxChange(label)}
           />
-          <label htmlFor={`filter-${label}`} className="text-sm md:text-base">
+          <label htmlFor={`filter-${label}`} className="font-normal text-sm md:text-base">
             {label}
           </label>
         </div>
       )
     )}
+    </div>
   </div>
-
-  {/* Tombol Tutup */}
-  <div className="mt-auto">
-    <button
-      onClick={() => setIsMobileDropdownVisible(false)} // Fungsi untuk menutup dropdown
-      className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 w-full rounded-md"
-    >
-      Tutup Filter
-    </button>
-  </div>
-</div>
-
 </div>
 
             {/* Main Courses Display */}
