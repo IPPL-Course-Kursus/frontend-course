@@ -110,6 +110,9 @@ const handleInputChange = (e) => {
   const validateInputs = () => {
     let errors = {};
 
+    if (!formData.sort) errors.sortError = "Silahkan isi urutan";
+    else if (isNaN(formData.sort)) errors.sortError = "Urutan harus berupa angka!";
+
     if (!formData.contentTitle) errors.contentTitleError = "Silahkan isi judul konten";
 
     if (!formData.teks) errors.teksError = "Silahkan isi teks konten";
@@ -180,7 +183,7 @@ const handleInputChange = (e) => {
       className="fixed inset-0 flex justify-center items-center z-50"
       style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
     >
-      <div className="bg-white w-full max-w-lg h-[80vh] p-6 rounded-lg shadow-lg relative overflow-y-auto">
+      <div className="bg-white w-11/12 sm:w-9/12 md:w-2/3 lg:w-1/2 xl:w-1/3 h-[80vh] p-6 rounded-lg shadow-lg relative overflow-y-auto max-h-screen">
         <button className="absolute top-2 right-2 text-xl font-bold" onClick={onClose}>
           &times;
         </button>
@@ -189,7 +192,24 @@ const handleInputChange = (e) => {
         {/* Display error message */}
         {error && <div className="mb-4 text-center text-red-600">{error}</div>}
 
-        
+        <form onSubmit={handleAdd}>
+          <div className="mb-4">
+            <label className="block mb-1 font-semibold">Urutan</label>
+            <input
+              type="text"
+              name="sort"
+              value={formData.sort}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^\d*$/.test(value)) {
+                  handleInputChange(e); // Perbarui state
+                }
+              }}
+              className="w-full p-2 border rounded-xl"
+              placeholder="ex 1"
+            />
+            {sortError && <p className="text-red-500 text-sm">{sortError}</p>}
+          </div>
 
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Judul Materi</label>
@@ -384,7 +404,7 @@ const handleInputChange = (e) => {
               )}
             </button>
           </div>
-        
+        </form>
       </div>
     </div>
   );
