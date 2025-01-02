@@ -427,7 +427,7 @@ const TopikKelas = () => {
                   ))}
                 </div>
 
-                <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4 md:block">Filter</h3>
+                <h3 className="text-xl font-bold text-gray-800 mb-4 md:block">Filter</h3>
                 {/* Filter Paling Baru, Paling Populer, Promo */}
                 <div className="grid">
                   {["Paling Baru", "Paling Populer", "Promo"].map((label, index) => (
