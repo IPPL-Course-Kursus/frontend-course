@@ -379,7 +379,7 @@ const TopikKelas = () => {
 
             <div
               ref={filterRef}
-              className={`fixed top-0 right-0 w-2/5 bg-gray-200 shadow-lg rounded-l-md p-4 z-50 transform transition-all duration-300 ${
+              className={`fixed top-0 right-0 w-2/5 bg-gray-200 bg-opacity-95 shadow-lg rounded-l-md p-4 z-50 transform transition-all duration-300 ${
                 showFilters
                   ? "translate-x-0 opacity-100 pointer-events-auto"
                   : "translate-x-full opacity-0 pointer-events-none"
