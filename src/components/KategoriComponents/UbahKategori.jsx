@@ -120,7 +120,7 @@ const UbahKategori = ({ show, onClose, onSuccess, existingData }) => {
 
         if (
           backendMessage.includes("duplicate") ||
-          backendMessage.includes("category already exists")
+          backendMessage.includes("category name already exists")
         ) {
           errorMessage =
             "Gagal memperbarui nama kategori, nama kategori sudah ada.";

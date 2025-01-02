@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Shield, Book, Clock } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -172,7 +172,9 @@ const TopikKelas = () => {
  
     if (priceRanges.length > 0) {
       filteredCourses = filteredCourses.filter((course) => {
-        const price = course.coursePrice;
+        const price = course.promoStatus && course.courseDiscountPrice > 0
+          ? course.courseDiscountPrice
+          : course.coursePrice;
         return priceRanges.some((filter) => {
           switch (filter) {
             case "Kurang dari 50.000":
@@ -247,9 +249,22 @@ const TopikKelas = () => {
   };
  
   const [showFilters, setShowFilters] = useState(false);
+  const filterRef = useRef(null);
   const toggleFilters = () => {
     setShowFilters(!showFilters);
   };
+
+  const handleClickOutside = (event) => {
+    if (filterRef.current && !filterRef.current.contains(event.target)) {
+      setShowFilters(false);
+    }
+  };
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
  
   const filteredCourseType = filteredCourses();
   const totalPages = Math.ceil(filteredCourseType.length / itemsPerPage);
@@ -320,7 +335,7 @@ const TopikKelas = () => {
                     selectedFilter === "All"
                       ? "bg-blue-800 text-white shadow-xl transform scale-105"
                       : "bg-white text-gray-800 border border-gray-200 hover:bg-gray-100"
-                  }`}
+                  } hidden md:inline-block`}
                   onClick={() => handleFilterClick("All")}
                   style={{
                     fontFamily: "'Poppins', sans-serif",
@@ -338,7 +353,8 @@ const TopikKelas = () => {
                         selectedFilter === type.typeName
                           ? "bg-blue-800 text-white shadow-xl transform scale-105"
                           : "bg-white text-gray-800 border border-gray-200 hover:bg-gray-100"
-                      }`}
+                       
+                      } hidden md:inline-block`}
                       onClick={() => handleFilterClick(type.typeName)}
                       style={{
                         fontFamily: "'Poppins', sans-serif",
@@ -352,7 +368,7 @@ const TopikKelas = () => {
           </div>
 
           <div className="flex flex-col md:flex-row md:space-x-6 pr-4 md:pr-10 ml-10">
-                <div className="md:block md:w-1/4 relative">
+            <div className="md:hidden">
                   <button
                 onClick={toggleFilters}
                 className="bg-blue-600 text-white px-4 py-2 rounded mb-4 w-full md:w-auto md:hidden"
@@ -361,220 +377,218 @@ const TopikKelas = () => {
               </button>
             </div>
 
+            <div
+              ref={filterRef}
+              className={`fixed top-0 right-0 w-2/5 bg-gray-200 shadow-lg rounded-l-md p-4 z-50 transform transition-all duration-300 ${
+                showFilters
+                  ? "translate-x-0 opacity-100 pointer-events-auto"
+                  : "translate-x-full opacity-0 pointer-events-none"
+              } transform transition-all duration-300 md:relative md:translate-x-0 md:opacity-100 md:pointer-events-auto md:top-0 md:bg-white md:transition-none md:left-[-0%] md:w-1/4`}
+            >
 
-<div
-  className={`fixed top-0 right-0 w-1/2 bg-slate-400 shadow-lg rounded-l-md p-4 z-50 transform transition-all duration-300 ${
-    showFilters
-      ? "translate-x-0 opacity-100 pointer-events-auto"
-      : "translate-x-full opacity-0 pointer-events-none"
-  } md:w-1/4 md:relative md:translate-x-0 md:opacity-100 md:pointer-events-auto md:rounded-none md:shadow-none`}
->
-  <h3 className="text-xl font-bold text-gray-800 mb-4">Filter</h3>
-
-  {/* Kontainer utama filter */}
-  <div className="overflow-y-auto max-h-[90vh] md:max-h-none md:h-auto">
-  
-
-
- {/* Tombol Filter Tipe Kelas */}
-<h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">Tipe Kelas</h3>
-<div className="flex flex-wrap justify-center w-full md:w-auto mx-auto gap-4 mb-4">
-  {/* Tombol All */}
-  <button
-    className={`filter-btn min-w-[120px] px-6 py-2 md:px-8 md:py-3 rounded-xl font-semibold text-sm transition-all duration-300 ease-in-out shadow-md ${
-      selectedFilter === "All"
-        ? "bg-blue-800 text-white shadow-xl transform scale-105"
-        : "bg-white text-gray-800 border border-gray-200 hover:bg-gray-100"
-    }`}
-    onClick={() => handleFilterClick("All")}
-    style={{
-      fontFamily: "'Poppins', sans-serif",
-    }}
-  >
-    All
-  </button>
-
-  {/* Map tombol untuk setiap tipe kelas */}
-  {courseTypes &&
-    courseTypes.map((type, i) => (
-      <button
-        key={i}
-        className={`filter-btn min-w-[120px] px-6 py-2 md:px-8 md:py-3 rounded-xl font-semibold text-sm transition-all duration-300 ease-in-out shadow-md ${
-          selectedFilter === type.typeName
-            ? "bg-blue-800 text-white shadow-xl transform scale-105"
-            : "bg-white text-gray-800 border border-gray-200 hover:bg-gray-100"
-        }`}
-        onClick={() => handleFilterClick(type.typeName)}
-        style={{
-          fontFamily: "'Poppins', sans-serif",
-        }}
-      >
-        {type.typeName}
-      </button>
-    ))}
-</div>
-
-<h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">Kursus</h3>
-    {/* Filter Paling Baru, Paling Populer, Promo */}
-    <div className="grid">
-      {["Paling Baru", "Paling Populer", "Promo"].map((label, index) => (
-        <div
-          className="inline-flex items-center mb-2 bg-gray-200 p-2 rounded md:p-0 md:bg-transparent"
-          key={index}
-        >
-          <input
-            type="checkbox"
-            id={`filter-${label}`}
-            checked={filterChecked[label]}
-            onChange={() => handleCheckboxChange(label)}
-            className="mr-2 checkbox-custom"
-          />
-          <label htmlFor={`filter-${label}`} className="text-sm md:text-base">
-            {label}
-          </label>
-        </div>
-      ))}
-    </div>
-
-    <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">Kategori</h3>
-    <div className="grid">
-      {category &&
-        category.map((kategori, i) => (
-          <div
-            className="inline-flex items-center mb-2 bg-gray-200 p-2 rounded md:p-0 md:bg-transparent"
-            key={i}
-          >
-            <input
-              type="checkbox"
-              id={`filter-${kategori.categoryName}`}
-              checked={filterChecked[kategori.categoryName] || false}
-              onChange={() => handleCheckboxChange(kategori.categoryName)}
-              className="mr-2 checkbox-custom"
-            />
-            <label htmlFor={`filter-${kategori.categoryName}`} className="text-sm md:text-base">
-              {kategori.categoryName}
-            </label>
-          </div>
-        ))}
-    </div>
-
-    <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">Level Kesulitan</h3>
-    <div className="grid">
-      {courseLevel &&
-        courseLevel.map((level, i) => (
-          <div
-            className="inline-flex items-center mb-2 bg-gray-200 p-2 rounded md:p-0 md:bg-transparent"
-            key={i}
-          >
-            <input
-              type="checkbox"
-              id={`filter-${level.levelName}`}
-              checked={filterChecked[level.levelName] || false}
-              onChange={() => handleCheckboxChange(level.levelName)}
-              className="mr-2 checkbox-custom"
-            />
-            <label htmlFor={`filter-${level.levelName}`} className="text-sm md:text-base">
-              {level.levelName}
-            </label>
-          </div>
-        ))}
-    </div>
-
-    <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">Harga</h3>
-    <div className="grid">
-      {[
-        "Kurang dari 50.000",
-        "50.000 - 100.000",
-        "100.000 - 250.000",
-        "250.000 - 500.000",
-        "500.000 - 1.000.000",
-        "Lebih dari 1.000.000",
-      ].map((priceLabel, index) => (
-        <div
-          className="inline-flex items-center mb-2 bg-gray-200 p-2 rounded md:p-0 md:bg-transparent"
-          key={index}
-        >
-          <input
-            type="checkbox"
-            id={`filter-${priceLabel}`}
-            checked={filterChecked[priceLabel] || false}
-            onChange={() => handleCheckboxChange(priceLabel)}
-            className="mr-2 checkbox-custom"
-          />
-          <label htmlFor={`filter-${priceLabel}`} className="text-sm md:text-base">
-            {priceLabel}
-          </label>
-        </div>
-      ))}
-    </div>
-
-   
-
-    <button
-      onClick={clearFilters}
-      className="bg-red-600 text-white px-4 py-2 rounded mt-4"
-    >
-      Clear Filters
-    </button>
-  </div>
-</div>
-
-
-
-<div className="md:w-3/4">
-  <div className="grid mt-2 gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-    {currentItems.length > 0 ? (
-      currentItems.map((course) => (
-        <div key={course.id} className="bg-white shadow-xl rounded-xl overflow-hidden">
-          <img
-            src={course.image}
-            alt={course.courseName}
-            className="w-full h-28 object-cover"
-          />
-          <div className="mx-2 md:mx-4 flex flex-col mt-1 md:mt-2">
-            <p className="font-bold text-sm lg:text-base truncate">
-              {course.courseName}
-            </p>
-            <div className="flex justify-between items-center my-2">
-              <p className="text-gray-600 text-sm font-semibold flex-shrink-0">
-                Instructor: {course.user.fullName}
-              </p>
-            </div>
-            <div className="mt-3 flex justify-between flex-wrap">
-              <p className="flex items-center text-xs font-semibold text-color-primary">
-                <Shield size={18} className="mr-1" /> {course.courseLevel.levelName}
-              </p>
-              <p className="flex items-center text-xs font-semibold text-color-primary">
-                <Book size={18} className="mr-1" /> {course._count.chapters} Modul
-              </p>
-              <p className="flex items-center text-xs font-semibold text-color-primary">
-                <Clock size={18} className="mr-1" /> {course.totalDuration} Menit
-              </p>
-            </div>
-            <div className="flex left-0 mt-2 my-2">
-              <Link
-                to={`/course-detail/${course.id}`}
-                className="py-1 px-4 bg-blue-600 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
-              >
-                {course.coursePrice === 0
-                  ? "Free"
-                  : `Beli Rp. ${
-                      course.promoStatus
-                        ? course.courseDiscountPrice.toLocaleString('id-ID')
-                        : course.coursePrice.toLocaleString('id-ID')
+              {/* Kontainer utama filter */}
+              <div className="overflow-y-auto max-h-screen md:max-h-none md:h-auto py-6">
+    
+                {/* Tombol Filter Tipe Kelas */}
+                <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4 md:hidden">Tipe Kelas</h3>
+                <div className="flex flex-wrap justify-center w-full md:w-auto mx-auto gap-4 mb-4 md:hidden">
+                  {/* Tombol All */}
+                  <button
+                    className={`filter-btn min-w-[120px] px-6 py-2 md:px-8 md:py-3 rounded-xl font-semibold text-sm transition-all duration-300 ease-in-out shadow-md ${
+                      selectedFilter === "All"
+                        ? "bg-blue-800 text-white shadow-xl transform scale-105"
+                        : "bg-white text-gray-800 border border-gray-200 hover:bg-gray-100"
                     }`}
-              </Link>
-            </div>
-          </div>
-        </div>
-      ))
-    ) : (
-      <div className="col-span-3 text-2xl text-center text-gray-700 font-bold py-4">
-        No courses found for you
-      </div>
-    )}
-  </div>
+                    onClick={() => handleFilterClick("All")}
+                    style={{
+                      fontFamily: "'Poppins', sans-serif",
+                    }}
+                  >
+                    All
+                  </button>
 
+                {/* Map tombol untuk setiap tipe kelas */}
+                {courseTypes &&
+                  courseTypes.map((type, i) => (
+                    <button
+                      key={i}
+                      className={`filter-btn min-w-[120px] px-6 py-2 md:px-8 md:py-3 rounded-xl font-semibold text-sm transition-all duration-300 ease-in-out shadow-md ${
+                        selectedFilter === type.typeName
+                          ? "bg-blue-800 text-white shadow-xl transform scale-105"
+                          : "bg-white text-gray-800 border border-gray-200 hover:bg-gray-100"
+                      }`}
+                      onClick={() => handleFilterClick(type.typeName)}
+                      style={{
+                        fontFamily: "'Poppins', sans-serif",
+                      }}
+                    >
+                      {type.typeName}
+                    </button>
+                  ))}
+                </div>
+
+                <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4 md:block">Filter</h3>
+                {/* Filter Paling Baru, Paling Populer, Promo */}
+                <div className="grid">
+                  {["Paling Baru", "Paling Populer", "Promo"].map((label, index) => (
+                    <div
+                      className="inline-flex items-center mb-2 bg-gray-200 p-2 rounded md:p-0 md:bg-transparent"
+                      key={index}
+                    >
+                      <input
+                        type="checkbox"
+                        id={`filter-${label}`}
+                        checked={filterChecked[label]}
+                        onChange={() => handleCheckboxChange(label)}
+                        className="mr-2 checkbox-custom"
+                      />
+                      <label htmlFor={`filter-${label}`} className="text-sm md:text-base">
+                        {label}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+
+                <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">Kategori</h3>
+                <div className="grid">
+                  {category &&
+                    category.map((kategori, i) => (
+                      <div
+                        className="inline-flex items-center mb-2 bg-gray-200 p-2 rounded md:p-0 md:bg-transparent"
+                        key={i}
+                      >
+                        <input
+                          type="checkbox"
+                          id={`filter-${kategori.categoryName}`}
+                          checked={filterChecked[kategori.categoryName] || false}
+                          onChange={() => handleCheckboxChange(kategori.categoryName)}
+                          className="mr-2 checkbox-custom"
+                        />
+                        <label htmlFor={`filter-${kategori.categoryName}`} className="text-sm md:text-base">
+                          {kategori.categoryName}
+                        </label>
+                      </div>
+                    ))}
+                </div>
+
+                <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">Level Kesulitan</h3>
+                <div className="grid grid-cols-2 gap-4">
+  {[...new Set(mycourse?.map((courseItem) => courseItem.course.courseLevel?.levelName).filter((level) => level))].map(
+    (label, index) => (
+      <div
+        className="flex items-center mb-2 bg-gray-100 p-2 rounded-md"
+        key={index}
+      >
+        <input
+          type="checkbox"
+          id={`filter-${label}`}
+          checked={filterChecked[label] || false}
+          onChange={() => handleCheckboxChange(label)}
+          className="mr-2 checkbox-custom"
+        />
+        <label
+          htmlFor={`filter-${label}`}
+          className="font-normal text-sm md:text-base cursor-pointer"
+        >
+          {label}
+        </label>
+      </div>
+    )
+  )}
+</div>
+
+
+                <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">Harga</h3>
+                <div className="grid">
+                  {[
+                    "Kurang dari 50.000",
+                    "50.000 - 100.000",
+                    "100.000 - 250.000",
+                    "250.000 - 500.000",
+                    "500.000 - 1.000.000",
+                    "Lebih dari 1.000.000",
+                  ].map((priceLabel, index) => (
+                    <div
+                      className="inline-flex items-center mb-2 bg-gray-200 p-2 rounded md:p-0 md:bg-transparent"
+                      key={index}
+                    >
+                      <input
+                        type="checkbox"
+                        id={`filter-${priceLabel}`}
+                        checked={filterChecked[priceLabel] || false}
+                        onChange={() => handleCheckboxChange(priceLabel)}
+                        className="mr-2 checkbox-custom"
+                      />
+                      <label htmlFor={`filter-${priceLabel}`} className="text-sm md:text-base">
+                        {priceLabel}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  onClick={clearFilters}
+                  className="bg-red-600 text-white px-4 py-2 rounded mt-4"
+                >
+                  Clear Filters
+                </button>
+              </div>
+            </div>
+
+
+            <div className="md:w-3/4 ml-0">
+              <div className="grid mt-2 gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                {currentItems.length > 0 ? (
+                  currentItems.map((course) => (
+                    <div key={course.id} className="bg-white shadow-xl rounded-xl overflow-hidden">
+                      <img
+                        src={course.image}
+                        alt={course.courseName}
+                        className="w-full h-28 object-cover"
+                      />
+                      <div className="mx-2 md:mx-4 flex flex-col mt-1 md:mt-2">
+                        <p className="font-bold text-sm lg:text-base truncate">
+                          {course.courseName}
+                        </p>
+                        <div className="flex justify-between items-center my-2">
+                          <p className="text-gray-600 text-sm font-semibold flex-shrink-0">
+                            Instructor: {course.user.fullName}
+                          </p>
+                        </div>
+                        <div className="mt-3 flex justify-between flex-wrap">
+                          <p className="flex items-center text-xs font-semibold text-color-primary">
+                            <Shield size={18} className="mr-1" /> {course.courseLevel.levelName}
+                          </p>
+                          <p className="flex items-center text-xs font-semibold text-color-primary">
+                            <Book size={18} className="mr-1" /> {course._count.chapters} Modul
+                          </p>
+                          <p className="flex items-center text-xs font-semibold text-color-primary">
+                            <Clock size={18} className="mr-1" /> {course.totalDuration} Menit
+                          </p>
+                        </div>
+                        <div className="flex left-0 mt-2 my-2">
+                          <Link
+                            to={`/course-detail/${course.id}`}
+                            className="py-1 px-4 bg-blue-600 text-white font-semibold rounded-full text-xs transition-all duration-300 hover:scale-105"
+                          >
+                            {course.coursePrice === 0
+                              ? "Free"
+                              : `Beli Rp. ${
+                                  course.promoStatus && course.courseDiscountPrice 
+                                    ? course.courseDiscountPrice.toLocaleString('id-ID')
+                                    : course.coursePrice.toLocaleString('id-ID')
+                                }`}
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="col-span-3 text-2xl text-center text-gray-700 font-bold py-4">
+                    No courses found for you
+                  </div>
+                )}
+              </div>
 
               {/* Pagination */}
               {filteredCourseType.length > itemsPerPage && (
@@ -626,5 +640,6 @@ const TopikKelas = () => {
     </>
   );
 };
+
 
 export default TopikKelas;
