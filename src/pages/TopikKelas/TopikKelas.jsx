@@ -296,11 +296,11 @@ const TopikKelas = () => {
             </div>
 
             <div className="flex justify-center mt-12">
-              <div className="relative w-full max-w-[85%] sm:max-w-sm md:max-w-md lg:max-w-lg transition-all duration-200 ease-in-out">
+              <div className="relative w-full max-w-md lg:w-[30rem] transition-all duration-200 ease-in-out">
                 <input
                   type="text"
                   placeholder="Cari Kelas..."
-                  className="w-full py-3 sm:py-4 px-4 sm:px-6 text-gray-800 bg-white rounded-full border border-gray-300 shadow focus:outline-none focus:ring-2 focus:ring-blue-800 focus:border-transparent transition-all duration-200 ease-in-out hover:shadow-md"
+                  className="w-full py-3 pl-5 pr-14 text-gray-800 bg-white rounded-full border border-gray-300 shadow focus:outline-none focus:ring-2 focus:ring-blue-800 focus:border-transparent transition-all duration-200 ease-in-out hover:shadow-md"
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value.toLowerCase());
@@ -312,7 +312,7 @@ const TopikKelas = () => {
                 </button>
               </div>
             </div>
-          </section>
+          </section>
 
           <div className="py-8 px-4 md:px-10">
             <div className="flex flex-col md:flex-row items-center w-full">
@@ -472,31 +472,26 @@ const TopikKelas = () => {
                 </div>
 
                 <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">Level Kesulitan</h3>
-                <div className="grid grid-cols-2 gap-4">
-  {[...new Set(mycourse?.map((courseItem) => courseItem.course.courseLevel?.levelName).filter((level) => level))].map(
-    (label, index) => (
-      <div
-        className="flex items-center mb-2 bg-gray-100 p-2 rounded-md"
-        key={index}
-      >
-        <input
-          type="checkbox"
-          id={`filter-${label}`}
-          checked={filterChecked[label] || false}
-          onChange={() => handleCheckboxChange(label)}
-          className="mr-2 checkbox-custom"
-        />
-        <label
-          htmlFor={`filter-${label}`}
-          className="font-normal text-sm md:text-base cursor-pointer"
-        >
-          {label}
-        </label>
-      </div>
-    )
-  )}
-</div>
-
+                <div className="grid">
+                  {courseLevel &&
+                    courseLevel.map((level, i) => (
+                      <div
+                        className="inline-flex items-center mb-2 bg-gray-200 p-2 rounded md:p-0 md:bg-transparent"
+                        key={i}
+                      >
+                        <input
+                          type="checkbox"
+                          id={`filter-${level.levelName}`}
+                          checked={filterChecked[level.levelName] || false}
+                          onChange={() => handleCheckboxChange(level.levelName)}
+                          className="mr-2 checkbox-custom"
+                        />
+                        <label htmlFor={`filter-${level.levelName}`} className="text-sm md:text-base">
+                          {level.levelName}
+                        </label>
+                      </div>
+                    ))}
+                </div>
 
                 <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">Harga</h3>
                 <div className="grid">
