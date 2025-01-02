@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchMulaiKelas,
@@ -51,6 +51,10 @@ const MulaiKelas = () => {
       try {
         if (id) {
           await dispatch(fetchMulaiKelas(id));
+          if (selectedContent && selectedContent.interpreterStatus) {
+            setCode(selectedContent?.interpreter?.sourceCode || "");
+            setLanguage(selectedContent?.interpreter?.languageInterpreterId || "");
+          }
         }
         await dispatch(getMe());
         await dispatch(fetchCertificate(id));
@@ -62,7 +66,7 @@ const MulaiKelas = () => {
     };
 
     fetchData();
-  }, [id, dispatch]);
+  }, [id, dispatch, selectedContent]);
 
   // Calculate total contents and content finish
   const totalContents =
