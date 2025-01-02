@@ -18,6 +18,7 @@ import TambahKategori from "../../../components/KategoriComponents/TambahKategor
 import UbahKategori from "../../../components/KategoriComponents/UbahKategori";
 import NavbarAdmin from "../../../components/NavbarAdmin";
 import CategoryDelete from "../../../components/KategoriComponents/CategoryDelete";
+import ErrorModal from "../../../components/KategoriComponents/ErrorModal";
 
 const AdminDataKategori = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -29,6 +30,10 @@ const AdminDataKategori = () => {
   // State for delete confirmation modal
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
+
+  // State for error modal
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorCourses, setErrorCourses] = useState([]);
 
   // Loading state for deletion
   const [isDeleting, setIsDeleting] = useState(false);
@@ -85,23 +90,44 @@ const AdminDataKategori = () => {
           },
         });
       } catch (err) {
-        if (
-          err.message.includes("tidak dapat menghapus jenis kursus") ||
-          err.message.includes("cannot delete type course")
-        ) {
-          toast.error(
-            "Tidak dapat menghapus kategori ini karena sudah terhubung dengan kursus yang ada.",
-            {
-              style: {
-                borderRadius: "8px",
-                background: "#FF3333",
-                color: "#fff",
-              },
-            }
-          );
+        const errorMessage = err.response?.data?.message || err.message || "";
+
+        const specificErrorPrefix = "Cannot delete type course: it is referenced by existing courses:";
+        const specificErrorEnglish = "Cannot delete type course: it is referenced by existing courses:";
+
+        let coursesList = [];
+
+        // Check for specific error message in Bahasa Indonesia
+        if (errorMessage.includes("tidak dapat menghapus jenis kursus") && errorMessage.includes("dengan kursus yang ada.")) {
+          // Example: "tidak dapat menghapus jenis kursus karena sudah terhubung dengan kursus yang ada: TESTING 123, Testingting, React Native, Flutter Development, Kotlin for Android Development."
+          const splitMessage = errorMessage.split("dengan kursus yang ada:");
+          if (splitMessage.length > 1) {
+            coursesList = splitMessage[1]
+              .replace(".", "") // Remove trailing period
+              .split(",")
+              .map((course) => course.trim());
+          }
+        }
+        // Check for specific error message in English
+        else if (errorMessage.includes(specificErrorPrefix)) {
+          // Example: "Cannot delete type course: it is referenced by existing courses: TESTING 123, Testingting, React Native, Flutter Development, Kotlin for Android Development."
+          const splitMessage = errorMessage.split(specificErrorPrefix);
+          if (splitMessage.length > 1) {
+            coursesList = splitMessage[1]
+              .replace(".", "") // Remove trailing period
+              .split(",")
+              .map((course) => course.trim());
+          }
+        }
+
+        if (coursesList.length > 0) {
+          // Set the extracted courses and show the error modal
+          setErrorCourses(coursesList);
+          setShowErrorModal(true);
         } else {
+          // Show generic error toast
           toast.error(
-            err.message || "Gagal menghapus kategori. Silakan coba lagi.",
+            "Gagal menghapus kategori. Silakan coba lagi.",
             {
               style: {
                 borderRadius: "8px",
@@ -254,7 +280,7 @@ const AdminDataKategori = () => {
                         <td className="px-2 md:px-4 py-2 flex space-x-2">
                           {/* Edit Button */}
                           <button
-                            className="py-2 px-3 md:px-4 bg-green-500 text-white font-semibold rounded-md text-sm transition-all duration-300 hover:bg-blue-600"
+                            className="py-2 px-3 md:px-4 bg-green-500 text-white font-semibold rounded-md text-sm transition-all duration-300 hover:bg-green-600"
                             onClick={() => handleEditClick(category)}
                           >
                             Ubah
@@ -314,7 +340,7 @@ const AdminDataKategori = () => {
                     <div className="flex justify-center space-x-4">
                       {/* Edit Button */}
                       <button
-                        className="py-2 px-4 bg-blue-500 text-white font-semibold rounded-md text-sm transition-all duration-300 hover:bg-blue-600"
+                        className="py-2 px-4 bg-green-500 text-white font-semibold rounded-md text-sm transition-all duration-300 hover:bg-green-600"
                         onClick={() => handleEditClick(category)}
                       >
                         Ubah
@@ -378,6 +404,7 @@ const AdminDataKategori = () => {
               setShowTambahPopup(false);
             }}
             onSuccess={() => {
+              // Optional: Refresh categories or perform additional actions
             }}
           />
 
@@ -389,6 +416,7 @@ const AdminDataKategori = () => {
                 setShowUbahPopup(false);
               }}
               onSuccess={() => {
+                // Optional: Refresh categories or perform additional actions
               }}
               existingData={selectedCategory}
             />
@@ -400,6 +428,15 @@ const AdminDataKategori = () => {
             onClose={() => setShowDeleteModal(false)}
             onConfirm={confirmDelete}
             isDeleting={isDeleting}
+          />
+
+          {/* Error Modal */}
+          <ErrorModal
+            show={showErrorModal}
+            onClose={() => setShowErrorModal(false)}
+            title="Gagal menghapus kategori"
+            message="Kategori sudah digunakan oleh:"
+            courses={errorCourses}
           />
 
           {/* Toaster for react-hot-toast */}
