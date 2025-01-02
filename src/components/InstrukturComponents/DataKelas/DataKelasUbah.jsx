@@ -26,8 +26,8 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
   const [courseNameError, setCourseNameError] = useState(null);
   const [typeCourseIdError, setTypeCourseIdError] = useState(null);
   const [courseLevelIdError, setCourseLevelIdError] = useState(null);
-  // const [coursePriceError, setCoursePriceError] = useState(null);
-  // const [courseDiscountPercentError, setCourseDiscountPercentError] = useState(null);
+  const [coursePriceError, setCoursePriceError] = useState(null);
+  const [courseDiscountPercentError, setCourseDiscountPercentError] = useState(null);
   const [intendedForError, setIntendedForError] = useState(null);
   const [aboutCourseError, setAboutCourseError] = useState(null);
   const [publishError, setPublishError] = useState(null);
@@ -65,29 +65,23 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
-    // Jika value 'free', set harga dan diskon menjadi 0
-    if (value === "free") {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        coursePrice: 0,
-        courseDiscountPercent: 0,
-      }));
-    } else {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        [name]: value,
-      }));
-    }
+    setFormData((prevFormData) => {
+      let updatedFormData = { ...prevFormData, [name]: value };
 
+      if (value === "free") {
+        updatedFormData.coursePrice = 0;
+        updatedFormData.courseDiscountPercent = 0;
+      } else if (value === "premium" && name === "typeCourseId") {
+        updatedFormData.coursePrice = Math.max(prevFormData.coursePrice, 10000);
+      }
+
+      return updatedFormData;
+    });
+
+    // Reset error untuk field yang sesuai
     if (name === "courseName") {
       setCourseNameError(null);
-    } 
-    // else if (name === "coursePrice") {
-    //   setCoursePriceError(null);
-    // } else if (name === "courseDiscountPercent") {
-    //   setCourseDiscountPercentError(null);
-    // } 
-    else if (name === "intendedFor") {
+    } else if (name === "intendedFor") {
       setIntendedForError(null);
     } else if (name === "aboutCourse") {
       setAboutCourseError(null);
@@ -101,7 +95,13 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
       setPublishError(null);
     } else if (name === "certificateStatus") {
       setCertificateStatusError(null);
+    } else if (name === "coursePrice") {
+      setCoursePriceError(null);
+    } else if (name === "courseDiscountPercent") {
+      setCourseDiscountPercentError(null);
     }
+
+
   };
 
   const handleImageUpload = (e) => {
@@ -132,10 +132,9 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
       image: imageFile ? imageFile : null, // Pastikan imageFile sudah ada dan valid
     };
 
-
     setCourseNameError(null);
-    // setCoursePriceError(null);
-    // setCourseDiscountPercentError(null);
+    setCoursePriceError(null);
+    setCourseDiscountPercentError(null);
     setIntendedForError(null);
     setAboutCourseError(null);
     setCategoryIdError(null);
@@ -165,14 +164,14 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
       setCourseLevelIdError("Silahkan pilih level kelas");
       hasError = true;
     }
-    // if (!existingData.coursePrice) {
-    //   setCoursePriceError("Silahkan isi harga kelas");
-    //   hasError = true;
-    // }
-    // if (!existingData.courseDiscountPercent) {
-    //   setCourseDiscountPercentError("Silahkan isi diskon kelas");
-    //   hasError = true;
-    // }
+    if (!existingData.coursePrice) {
+      setCoursePriceError("Silahkan isi harga kelas");
+      hasError = true;
+    }
+    if (!existingData.courseDiscountPercent) {
+      setCourseDiscountPercentError("Silahkan isi diskon kelas");
+      hasError = true;
+    }
     if (!existingData.intendedFor) {
       setIntendedForError("Silahkan isi tujuan kelas");
       hasError = true;
@@ -297,10 +296,16 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
               value={formData.typeCourseId}
               onChange={(e) => {
                 const { value } = e.target;
-                handleInputChange(e); // Update state untuk tipe kelas yang dipilih
+                handleInputChange(e);
 
-                // Periksa jika tipe kelas adalah 'free' dan set harga serta diskon menjadi 0
-                if (value === "free") {
+                // Jika tipe kelas premium, pastikan harga minimal 10.000
+                if (value === "premium") {
+                  setFormData((prevFormData) => ({
+                    ...prevFormData,
+                    coursePrice: Math.max(prevFormData.coursePrice, 10000), // Atur minimal 10.000
+                  }));
+                } else if (value === "free") {
+                  // Reset harga dan diskon jika free
                   setFormData((prevFormData) => ({
                     ...prevFormData,
                     coursePrice: 0,
@@ -349,20 +354,30 @@ const DataKelasUbah = ({ show, onClose, existingData }) => {
           <div className="mb-4">
             <label className="block mb-1 font-semibold">Harga Kelas</label>
             <input
-              type="text" // Tetap sebagai teks agar tidak muncul panah
+              type="text"
               name="coursePrice"
-              value={formData.coursePrice === 0 ? "" : formData.coursePrice} // Kosongkan jika harga 0
+              value={formData.coursePrice === 0 ? "" : formData.coursePrice}
               onChange={(e) => {
                 const value = e.target.value;
                 if (/^\d*$/.test(value)) {
-                  // Validasi hanya angka
-                  handleInputChange(e); // Perbarui state dengan nilai yang valid
+                  const numericValue = parseInt(value || "0", 10);
+
+                  // Validasi untuk tipe premium
+                  if (formData.typeCourseId === "premium" && numericValue < 10000) {
+                    setCoursePriceError("Harga minimal 10.000 untuk tipe premium.");
+                  } else {
+                    setCoursePriceError(null);
+                  }
+
+                  handleInputChange({ target: { name: "coursePrice", value: numericValue } });
                 }
               }}
-              className="w-full p-2 border rounded-xl"
+              className={`w-full p-2 border rounded-xl ${
+                coursePriceError ? "border-red-500" : "border-gray-300"
+              }`}
               placeholder="Rp"
             />
-            {/* {coursePriceError && <div className="text-red-500">{coursePriceError}</div>} */}
+            {coursePriceError && <div className="text-red-500">{coursePriceError}</div>}
           </div>
 
           <div className="mb-4">
