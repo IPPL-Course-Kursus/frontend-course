@@ -178,7 +178,7 @@ const CoursesPage = () => {
             {/* Filter Box */}
             <div className="md:w-1/4">
               {/* Filter selalu terlihat di desktop dan tablet, tersembunyi di HP */}
-              <div className="hidden md:block bg-white shadow-md rounded-md p-4">
+              <div className="hidden md:block bg-slate-400 shadow-md rounded-md p-4">
                 <h3 className="text-xl font-bold text-gray-800 mb-3">Filter</h3>
                 <h3 className="text-xl font-bold text-gray-800 mb-3 mt-6">Category</h3>
                 {/* Filter Konten */}
@@ -235,7 +235,7 @@ const CoursesPage = () => {
     onClick={() => setIsMobileDropdownVisible(!isMobileDropdownVisible)} // Toggle the dropdown visibility
     className={`w-full bg-blue-500 text-white font-bold text-sm md:text-base px-2 py-1.5 rounded-md mb-4 ${isMobileDropdownVisible ? "hidden" : ""}`}
   >
-    {isMobileDropdownVisible ? "Tutup Filter" : "Tampilkan Filter"} {/* Change button text based on visibility */}
+    {isMobileDropdownVisible ? "Close Filter" : "Show Filter"} {/* Change button text based on visibility */}
   </button>
 </div>
 
@@ -348,7 +348,6 @@ const CoursesPage = () => {
     </button>
   </div>
 </div>
-
 </div>
 
             {/* Main Courses Display */}
