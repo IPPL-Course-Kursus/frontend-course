@@ -335,7 +335,7 @@ const TopikKelas = () => {
                     selectedFilter === "All"
                       ? "bg-blue-800 text-white shadow-xl transform scale-105"
                       : "bg-white text-gray-800 border border-gray-200 hover:bg-gray-100"
-                  } hidden md:block`} 
+                  } hidden md:inline-block`}
                   onClick={() => handleFilterClick("All")}
                   style={{
                     fontFamily: "'Poppins', sans-serif",
@@ -349,15 +349,12 @@ const TopikKelas = () => {
                   courseTypes.map((type, i) => (
                     <button
                       key={i}
-                      className={`filter-btn px-6 py-2 md:px-8 md:py-3 rounded-xl font-semibold text-sm transition-all duration-300 ease-in-out shadow-md hidden md:block${
+                      className={`filter-btn px-6 py-2 md:px-8 md:py-3 rounded-xl font-semibold text-sm transition-all duration-300 ease-in-out shadow-md ${
                         selectedFilter === type.typeName
                           ? "bg-blue-800 text-white shadow-xl transform scale-105"
                           : "bg-white text-gray-800 border border-gray-200 hover:bg-gray-100"
-                        } ${
-                          type.typeName === "Premium" || type.typeName === "Free"
-                            ? ""
-                            : ""
-                      }`}
+                       
+                      } hidden md:inline-block`}
                       onClick={() => handleFilterClick(type.typeName)}
                       style={{
                         fontFamily: "'Poppins', sans-serif",
@@ -532,7 +529,6 @@ const TopikKelas = () => {
                 </button>
               </div>
             </div>
-
 
 
             <div className="md:w-3/4 ml-0">
