@@ -472,26 +472,31 @@ const TopikKelas = () => {
                 </div>
 
                 <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">Level Kesulitan</h3>
-                <div className="grid">
-                  {courseLevel &&
-                    courseLevel.map((level, i) => (
-                      <div
-                        className="inline-flex items-center mb-2 bg-gray-200 p-2 rounded md:p-0 md:bg-transparent"
-                        key={i}
-                      >
-                        <input
-                          type="checkbox"
-                          id={`filter-${level.levelName}`}
-                          checked={filterChecked[level.levelName] || false}
-                          onChange={() => handleCheckboxChange(level.levelName)}
-                          className="mr-2 checkbox-custom"
-                        />
-                        <label htmlFor={`filter-${level.levelName}`} className="text-sm md:text-base">
-                          {level.levelName}
-                        </label>
-                      </div>
-                    ))}
-                </div>
+                <div className="grid grid-cols-2 gap-4">
+  {[...new Set(mycourse?.map((courseItem) => courseItem.course.courseLevel?.levelName).filter((level) => level))].map(
+    (label, index) => (
+      <div
+        className="flex items-center mb-2 bg-gray-100 p-2 rounded-md"
+        key={index}
+      >
+        <input
+          type="checkbox"
+          id={`filter-${label}`}
+          checked={filterChecked[label] || false}
+          onChange={() => handleCheckboxChange(label)}
+          className="mr-2 checkbox-custom"
+        />
+        <label
+          htmlFor={`filter-${label}`}
+          className="font-normal text-sm md:text-base cursor-pointer"
+        >
+          {label}
+        </label>
+      </div>
+    )
+  )}
+</div>
+
 
                 <h3 className="text-xl font-bold text-gray-800 mb-4 mt-4">Harga</h3>
                 <div className="grid">

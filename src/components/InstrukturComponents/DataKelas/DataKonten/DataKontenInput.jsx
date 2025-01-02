@@ -183,7 +183,7 @@ const handleInputChange = (e) => {
       className="fixed inset-0 flex justify-center items-center z-50"
       style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
     >
-      <div className="bg-white w-full max-w-lg h-[80vh] p-6 rounded-lg shadow-lg relative overflow-y-auto">
+      <div className="bg-white w-11/12 sm:w-9/12 md:w-2/3 lg:w-1/2 xl:w-1/3 h-[80vh] p-6 rounded-lg shadow-lg relative overflow-y-auto max-h-screen">
         <button className="absolute top-2 right-2 text-xl font-bold" onClick={onClose}>
           &times;
         </button>
