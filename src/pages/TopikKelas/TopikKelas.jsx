@@ -296,11 +296,11 @@ const TopikKelas = () => {
             </div>
 
             <div className="flex justify-center mt-12">
-              <div className="relative w-full max-w-md lg:w-[30rem] transition-all duration-200 ease-in-out">
+              <div className="relative w-full max-w-[85%] sm:max-w-sm md:max-w-md lg:max-w-lg transition-all duration-200 ease-in-out">
                 <input
                   type="text"
                   placeholder="Cari Kelas..."
-                  className="w-full py-3 pl-5 pr-14 text-gray-800 bg-white rounded-full border border-gray-300 shadow focus:outline-none focus:ring-2 focus:ring-blue-800 focus:border-transparent transition-all duration-200 ease-in-out hover:shadow-md"
+                  className="w-full py-3 sm:py-4 px-4 sm:px-6 text-gray-800 bg-white rounded-full border border-gray-300 shadow focus:outline-none focus:ring-2 focus:ring-blue-800 focus:border-transparent transition-all duration-200 ease-in-out hover:shadow-md"
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value.toLowerCase());
@@ -312,7 +312,7 @@ const TopikKelas = () => {
                 </button>
               </div>
             </div>
-          </section>
+          </section>
 
           <div className="py-8 px-4 md:px-10">
             <div className="flex flex-col md:flex-row items-center w-full">
