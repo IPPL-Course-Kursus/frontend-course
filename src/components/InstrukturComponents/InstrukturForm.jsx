@@ -1,6 +1,9 @@
+// src/components/InstrukturComponents/InstrukturForm.jsx
+
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import { ClipLoader } from "react-spinners"; // Import spinner
 
 const InstrukturForm = ({
   show,
@@ -82,7 +85,7 @@ const InstrukturForm = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (phoneError, PassError) return; // Prevent submission if there's an error // Prevent submission if there's an error
+    if (phoneError || PassError) return; // Prevent submission jika ada error
     onSubmit(formData);
   };
 
@@ -147,12 +150,16 @@ const InstrukturForm = ({
               name="phoneNumber"
               value={formData.phoneNumber}
               onChange={handleInputChange}
-              className={`w-full p-2 border rounded-xl ${phoneError ? 'border-red-500' : ''}`}
+              className={`w-full p-2 border rounded-xl ${
+                phoneError ? "border-red-500" : ""
+              }`}
               placeholder="Masukkan nomor telepon"
               required
             />
             {phoneError && (
-              <p className="text-red-500 font-medium text-sm mt-1">{phoneError}</p>
+              <p className="text-red-500 font-medium text-sm mt-1">
+                {phoneError}
+              </p>
             )}
           </div>
 
@@ -189,7 +196,9 @@ const InstrukturForm = ({
                 name="password"
                 value={formData.password}
                 onChange={handleInputChange}
-                className={`w-full p-2 pr-10 border rounded-xl ${PassError ? 'border-red-500' : ''}`}
+                className={`w-full p-2 pr-10 border rounded-xl ${
+                  PassError ? "border-red-500" : ""
+                }`}
                 placeholder="Masukkan password"
                 required
               />
@@ -198,9 +207,13 @@ const InstrukturForm = ({
                 aria-label="toggle password visibility"
                 onClick={togglePassword}
                 className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                style={{ pointerEvents: 'auto' }}
+                style={{ pointerEvents: "auto" }}
               >
-                {showPassword ? <FaRegEyeSlash size={20} /> : <FaRegEye size={20} />}
+                {showPassword ? (
+                  <FaRegEyeSlash size={20} />
+                ) : (
+                  <FaRegEye size={20} />
+                )}
               </button>
               {PassError && (
                 <p className="text-red-500 font-medium text-sm mt-1 absolute bottom-[-1.5rem]">
@@ -210,14 +223,26 @@ const InstrukturForm = ({
             </div>
           </div>
 
-
           <div className="flex justify-end">
             <button
               type="submit"
-              className={`py-2 px-6 bg-[#0a61aa] text-white rounded-xl transition-colors duration-300 ${isSubmitDisabled ? "bg-gray-400 cursor-not-allowed" : "hover:bg-[#1A73E8] active:bg-[#084D8C]"}`}
-              disabled={isSubmitDisabled} // Disable if there's an error
+              className={`flex items-center justify-center py-2 px-6 bg-[#0a61aa] text-white rounded-xl transition-colors duration-300 ${
+                isSubmitDisabled || isAdding
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "hover:bg-[#1A73E8] active:bg-[#084D8C]"
+              }`}
+              disabled={isSubmitDisabled || isAdding} // Disable jika ada error atau sedang menambahkan
             >
-              {isAdding ? "Loading..." : isEditMode ? "Update" : "Tambah"}
+              {isAdding ? (
+                <>
+                  <ClipLoader size={20} color="#ffffff" />
+                  <span className="ml-2">Memproses...</span>
+                </>
+              ) : isEditMode ? (
+                "Update"
+              ) : (
+                "Tambah"
+              )}
             </button>
           </div>
         </form>

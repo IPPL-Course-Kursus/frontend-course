@@ -6,9 +6,7 @@ import {
   deleteInstructor,
 } from "../../../redux/actions/datainstructorActions";
 import { FaSearch } from "react-icons/fa";
-import {
-  IoAddCircleOutline,
-} from "react-icons/io5";
+import { IoAddCircleOutline } from "react-icons/io5";
 import SideBar from "../../../components/Sidebar/SidebarAdminR";
 import TambahInstruktur from "../../../components/InstrukturComponents/TambahInstruktur";
 import NavbarAdmin from "../../../components/NavbarAdmin";
@@ -17,7 +15,7 @@ import Swal from "sweetalert2";
 
 const AdminDataInstruktur = () => {
   const dispatch = useDispatch();
-  const { instructors, loading, error } = useSelector(
+  const { instructors, loadingFetch, loadingOperation, error } = useSelector(
     (state) => state.instructors
   );
 
@@ -26,7 +24,7 @@ const AdminDataInstruktur = () => {
   const [searchVisible, setSearchVisible] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [isAdding, setIsAdding] = useState(false);
+  // State lokal tidak diperlukan untuk loading karena sudah dihandle oleh Redux
 
   const itemsPerPage = 7;
 
@@ -66,71 +64,63 @@ const AdminDataInstruktur = () => {
   };
 
   const handleDeleteInstructor = (id) => {
-  Swal.fire({
-    title: "Apakah Anda yakin?",
-    text: "Data instruktur ini akan dihapus!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Hapus",
-    showLoaderOnConfirm: true, // Menampilkan loading
-    preConfirm: async () => {
-      try {
-        await dispatch(deleteInstructor(id));
-        await dispatch(getAllInstructors());
-        setTimeout(() => {
+    Swal.fire({
+      title: "Apakah Anda yakin?",
+      text: "Data instruktur ini akan dihapus!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Hapus",
+      showLoaderOnConfirm: true,
+      preConfirm: async () => {
+        try {
+          await dispatch(deleteInstructor(id));
+          await dispatch(getAllInstructors());
+          setTimeout(() => {
+	    toast.dismiss();
+	  }, 2000);
+        } catch (error) {
+          const errorMessage =
+            error.response?.data?.message || "Gagal menghapus instruktur. Silakan coba lagi.";
           toast.dismiss();
-        }, 2000);
-      } catch (error) {
-        const errorMessage =
-          error.response?.data?.message || "Gagal menghapus instruktur. Silakan coba lagi.";
-        toast.dismiss();
-        toast.error(errorMessage, {
-          style: {
-            borderRadius: "8px",
-            background: "#FF3333",
-            color: "#fff",
-          },
-        });
-        console.error("Error deleting instructor:", errorMessage);
-        Swal.showValidationMessage(errorMessage); // Tampilkan error di Swal
-      }
-    },
-    allowOutsideClick: () => !Swal.isLoading(), // Mencegah klik di luar saat loading
-  });
-};
-
-
-  const handleCloseTambahPopup = () => {
-    setShowTambahPopup(false);
-  };
-
-  const handleAddInstructor = async (newInstructor) => {
-    setIsAdding(true); // Set loading state
-    try {
-      await dispatch(addInstructor(newInstructor));
-      await dispatch(getAllInstructors()); // Refresh data after adding
-      handleCloseTambahPopup();
-    } catch (error) {
-      console.error("Error adding instructor:", error);
-      if (error.response) {
-        if (error.response.data && error.response.data.message) {
-          toast.dismiss();
-          
-        } else {
-          toast.dismiss();
-          toast.error("Gagal menambahkan instruktur. Silakan coba lagi nanti.", {
+          toast.error(errorMessage, {
             style: {
               borderRadius: "8px",
               background: "#FF3333",
               color: "#fff",
             },
           });
+          console.error("Error deleting instructor:", errorMessage);
+          Swal.showValidationMessage(errorMessage);
         }
-      }
-    } finally {
-      setIsAdding(false); // Reset loading state
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    });
+  };
+
+  const handleCloseTambahPopup = () => {
+    setShowTambahPopup(false);
+  };
+
+  const handleAddInstructor = async (newInstructor) => {
+    try {
+      await dispatch(addInstructor(newInstructor));
+      await dispatch(getAllInstructors());
+      toast.dismiss();
+      handleCloseTambahPopup();
+    } catch (error) {
+      console.error("Error adding instructor:", error);
+      const errorMessage =
+        error.response?.data?.message || "Gagal menambahkan instruktur. Silakan coba lagi nanti.";
+      toast.dismiss();
+      toast.error(errorMessage, {
+        style: {
+          borderRadius: "8px",
+          background: "#FF3333",
+          color: "#fff",
+        },
+      });
     }
   };
 
@@ -167,11 +157,14 @@ const AdminDataInstruktur = () => {
 
           <div className="flex justify-end items-center space-x-2 w-full md:w-auto">
             <button
-              className="py-2 px-3 md:px-4 bg-[#0a61aa] text-white font-semibold rounded-md text-sm transition-all duration-300 hover:scale-105 flex items-center justify-center"
+              className={`py-2 px-3 md:px-4 bg-[#0a61aa] text-white font-semibold rounded-md text-sm transition-all duration-300 hover:scale-105 flex items-center justify-center ${
+                loadingOperation ? "opacity-50 cursor-not-allowed" : ""
+              }`}
               onClick={handleAddClick}
+              disabled={loadingOperation}
             >
               <IoAddCircleOutline className="mr-2" />
-              Tambah
+              {loadingOperation ? "Memproses..." : "Tambah"}
             </button>
 
             <div className="relative flex items-center">
@@ -184,7 +177,7 @@ const AdminDataInstruktur = () => {
                 value={searchValue}
                 onChange={(e) => {
                   setSearchValue(e.target.value ?? "");
-                  setCurrentPage(1); // Reset to first page on search
+                  setCurrentPage(1); // Reset ke halaman pertama saat pencarian
                 }}
                 className={`transition-all duration-300 ease-in-out border border-[#173D94] rounded-full ml-2 p-2 text-sm ${
                   searchVisible
@@ -198,10 +191,10 @@ const AdminDataInstruktur = () => {
         </div>
 
         <div className="overflow-x-auto bg-white p-4">
-          {loading ? (
+          {loadingFetch ? (
             <p>Loading...</p>
           ) : error ? (
-            <p>{error}</p>
+            <p className="text-red-500">{error}</p>
           ) : (
             <table className="min-w-full table-auto">
               <thead>
@@ -236,10 +229,13 @@ const AdminDataInstruktur = () => {
                       </td>
                       <td className="px-4 py-2 text-center">
                         <button
-                          className="py-1 px-2 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105"
+                          className={`py-1 px-2 bg-red-500 text-white font-semibold rounded-md text-xs transition-all duration-300 hover:scale-105 ${
+                            loadingOperation ? "opacity-50 cursor-not-allowed" : ""
+                          }`}
                           onClick={() => handleDeleteInstructor(instructor.id)}
+                          disabled={loadingOperation}
                         >
-                          Hapus
+                          {loadingOperation ? "Memproses..." : "Hapus"}
                         </button>
                       </td>
                     </tr>
@@ -253,8 +249,8 @@ const AdminDataInstruktur = () => {
         <TambahInstruktur
           show={showTambahPopup}
           onClose={handleCloseTambahPopup}
-          addInstructor={handleAddInstructor} // Update this line
-          isAdding={isAdding} // Pass isAdding state to the child component
+          addInstructor={handleAddInstructor}
+          // Tidak perlu lagi menggunakan isAdding karena loading dihandle oleh Redux
         />
       </div>
     </div>
