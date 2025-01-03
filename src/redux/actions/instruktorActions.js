@@ -79,7 +79,7 @@ export const fetchUserCourses = () => async (dispatch) => {
     dispatch(fetchUserCoursesFailure(error.message));
   }
 };
-
+// redux/actions/instruktorActions.js
 export const addDataKelas = (requestData, imageFile) => async (dispatch) => {
   dispatch(addCourseRequest());
 
@@ -88,7 +88,7 @@ export const addDataKelas = (requestData, imageFile) => async (dispatch) => {
     const formData = new FormData();
 
     const categoryId = parseInt(requestData.categoryId, 10);
-    const courseLevelId = parseInt(requestData.courseLevelId);
+    const courseLevelId = parseInt(requestData.courseLevelId, 10);
     const typeCourseId = parseInt(requestData.typeCourseId, 10);
 
     formData.append("categoryId", !isNaN(categoryId) ? categoryId : null);
@@ -116,11 +116,14 @@ export const addDataKelas = (requestData, imageFile) => async (dispatch) => {
     const response = await axios.post(`${api_url}course/createCourse`, formData, config);
     dispatch(addCourseSuccess(response.data.message));
     dispatch(getAllKelas());
+    return response.data; // Kembalikan data untuk penanganan di komponen
   } catch (error) {
     const errorMessage = error.response?.data?.message || error.message || "Add data kelas failed";
     dispatch(addCourseFailure(errorMessage));
+    throw error; // Lempar error untuk ditangani di komponen
   }
 };
+
 
 export const updateDataCourse = (courseId, updatedData) => async (dispatch) => {
   dispatch(updateCourseRequest());
