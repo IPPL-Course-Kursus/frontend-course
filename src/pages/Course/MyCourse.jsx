@@ -123,28 +123,7 @@ const CoursesPage = () => {
         <main className="container mx-auto  py-10 bg-blue-50">
           <div className="flex justify-between items-center mb-1">
             <h2 className="text-4xl font-bold text-gray-900">Kelas Saya</h2>
-            {/* <button
-              onClick={toggleMobileDropdown}
-              className="md:hidden bg-blue-500 text-white px-2 py-2 rounded"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16m-7 6h7"
-                />
-              </svg>
-            </button> */}
           </div>
-
-
           {/* Tombol Filter Status */}
           <div className="mb-4 flex-wrap justify-center hidden md:flex">
             <button
@@ -221,7 +200,6 @@ const CoursesPage = () => {
                 <h3 className="text-xl font-bold text-gray-800 mb-3 mt-6">Level Kesulitan</h3>
                 {/* Filter Konten */}
                 <div>
-                  {/* {["Beginner", "Intermediate", "Advanced"].map((label, index) => ( */}
                     {[
                       ...new Set(
                         mycourse
@@ -244,44 +222,42 @@ const CoursesPage = () => {
                 </div>
               </div>
 
+      {/* Filter untuk Mobile (dropdown toggle) */}
+      <div className="w-full md:hidden">
+        {/* Tombol Dropdown */}
+        <button
+          onClick={() => setIsMobileDropdownVisible(!isMobileDropdownVisible)}
+          className={`w-full bg-blue-500 text-white font-bold text-sm md:text-base px-2 py-1.5 rounded-md mb-4 ${isMobileDropdownVisible ? "hidden" : ""}`}
+        >
+          {isMobileDropdownVisible ? "Tutup Filter" : "Tampilkan Filter"}
+        </button>
+      </div>
 
+      {/* Dropdown filter yang muncul di sebelah kanan */}
+      <div
+        ref={dropdownRef}
+        className={`${
+          isMobileDropdownVisible
+            ? "opacity-100 translate-x-0"
+            : "opacity-0 translate-x-full"
+        } bg-gray-200 bg-opacity-95 shadow-lg rounded-md p-4 mb-3 md:hidden fixed top-0 right-0 h-full w-1/2 z-50 transition-all duration-300 ease-in-out overflow-y-auto`}
+      >
+        {/* Filter Konten untuk Mobile */}
+        <h3 className="text-2xl font-bold text-gray-800 mb-4">Filter</h3>
 
-{/* Filter untuk Mobile (dropdown toggle) */}
-<div className="w-full md:hidden">
-  {/* Tombol Dropdown */}
-  <button
-    onClick={() => setIsMobileDropdownVisible(!isMobileDropdownVisible)}
-    className={`w-full bg-blue-500 text-white font-bold text-sm md:text-base px-2 py-1.5 rounded-md mb-4 ${isMobileDropdownVisible ? "hidden" : ""}`}
-  >
-    {isMobileDropdownVisible ? "Tutup Filter" : "Tampilkan Filter"}
-  </button>
-</div>
-
-{/* Dropdown filter yang muncul di sebelah kanan */}
-<div
-  ref={dropdownRef}
-  className={`${
-    isMobileDropdownVisible
-      ? "opacity-100 translate-x-0"
-      : "opacity-0 translate-x-full"
-  } bg-gray-200 bg-opacity-95 shadow-lg rounded-md p-4 mb-3 md:hidden fixed top-0 right-0 h-full w-1/2 z-50 transition-all duration-300 ease-in-out overflow-y-auto`}
->
-  {/* Filter Konten untuk Mobile */}
-  <h3 className="text-2xl font-bold text-gray-800 mb-4">Filter</h3>
-
-  {/* Status Filter */}
-  <h3 className="text-xl font-bold text-gray-800 mb-1 mt-6">Status</h3>
-  <div className="mb-4 flex flex-wrap justify-center">
-    <button
-      onClick={() => handleStatusFilterChange("all")}
-      className={`w-40 font-bold text-sm md:text-base mx-1 mt-2 px-3 py-1 rounded-md ${
-        courseStatusFilter === "all"
-          ? "bg-blue-500 text-white"
-          : "bg-white text-gray-800 hover:bg-gray-400"
-      }`}
-    >
-      Semua
-    </button>
+        {/* Status Filter */}
+        <h3 className="text-xl font-bold text-gray-800 mb-1 mt-6">Status</h3>
+        <div className="mb-4 flex flex-wrap justify-center">
+          <button
+            onClick={() => handleStatusFilterChange("all")}
+            className={`w-40 font-bold text-sm md:text-base mx-1 mt-2 px-3 py-1 rounded-md ${
+              courseStatusFilter === "all"
+                ? "bg-blue-500 text-white"
+                : "bg-white text-gray-800 hover:bg-gray-400"
+            }`}
+          >
+            Semua
+          </button>
 
     <button
       onClick={() => handleStatusFilterChange("notStarted")}
@@ -318,45 +294,60 @@ const CoursesPage = () => {
   </div>
 
   {/* Category Filter */}
-  <h3 className="text-xl font-bold text-gray-800 mb-3 mt-6">Category</h3>
-  <div>
-    {[...new Set(mycourse?.map((courseItem) => courseItem.course.category.categoryName))].map(
-      (categoryName, index) => (
-        <div className="flex items-center mb-2" key={index}>
-          <input
-            type="checkbox"
-            id={`filter-${categoryName}`}
-            className="mr-2 checkbox-custom"
-            onChange={() => handleCheckboxChange(categoryName)}
-          />
-          <label htmlFor={`filter-${categoryName}`} className="text-sm md:text-base">
-            {categoryName}
-          </label>
-        </div>
-      )
-    )}
-  </div>
+  <h3 className="text-xl font-bold text-gray-800 mb-3 mt-6">Kategori</h3>
+<div className="grid">
+  {[...new Set(mycourse?.map((courseItem) => courseItem.course.category?.categoryName).filter((category) => category))].map(
+    (categoryName, index) => (
+      <div
+        key={index}
+        className="flex items-center opacity-100 p-2 rounded-md"
+      >
+        <input
+          type="checkbox"
+          id={`filter-${categoryName}`}
+          checked={filterChecked[categoryName] || false}
+          onChange={() => handleCheckboxChange(categoryName)}
+          className="mr-2 checkbox-custom"
+        />
+        <label
+          htmlFor={`filter-${categoryName}`}
+          className="font-normal text-sm md:text-base cursor-pointer"
+        >
+          {categoryName}
+        </label>
+      </div>
+    )
+  )}
+</div>
+
 
   {/* Level Kesulitan Filter */}
   <h3 className="text-xl font-bold text-gray-800 mb-3 mt-6">Level Kesulitan</h3>
-  <div>
-    {[...new Set(mycourse?.map((courseItem) => courseItem.course.courseLevel?.levelName).filter((level) => level))].map(
-      (label, index) => (
-        <div className="flex items-center mb-2" key={index}>
-          <input
-            type="checkbox"
-            id={`filter-${label}`}
-            className="mr-2 checkbox-custom"
-            onChange={() => handleCheckboxChange(label)}
-          />
-          <label htmlFor={`filter-${label}`} className="font-normal text-sm md:text-base">
-            {label}
-          </label>
-        </div>
-      )
-    )}
-    </div>
+  <div className="grid">
+  {[...new Set(mycourse?.map((courseItem) => courseItem.course.courseLevel?.levelName).filter((level) => level))].map(
+    (label, index) => (
+      <div
+        key={index}
+        className="flex items-center opacity-100 p-2 rounded-md"
+      >
+        <input
+          type="checkbox"
+          id={`filter-${label}`}
+          checked={filterChecked[label] || false}
+          onChange={() => handleCheckboxChange(label)}
+          className="mr-2 checkbox-custom"
+        />
+        <label
+          htmlFor={`filter-${label}`}
+          className="font-normal text-sm md:text-base cursor-pointer"
+        >
+          {label}
+        </label>
+      </div>
+    )
+  )}
   </div>
+</div>
 </div>
 
             {/* Main Courses Display */}
